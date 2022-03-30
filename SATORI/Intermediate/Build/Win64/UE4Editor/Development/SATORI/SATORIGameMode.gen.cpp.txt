@@ -1,0 +1,9 @@
+E:\Engine_Clase\SATORI\SATORI\Intermediate\Build\Win64\UE4Editor\Development\SATORI\Definitions.SATORI.h
+E:\UnrealEngine4\UE_4.27\Engine\Source\Runtime\CoreUObject\Public\UObject/GeneratedCppIncludes.h
+E:\UnrealEngine4\UE_4.27\Engine\Source\Runtime\CoreUObject\Public\UObject/MetaData.h
+E:\Engine_Clase\SATORI\SATORI\Source\SATORI/SATORIGameMode.h
+E:\UnrealEngine4\UE_4.27\Engine\Source\Runtime\Engine\Classes\GameFramework/GameModeBase.h
+E:\UnrealEngine4\UE_4.27\Engine\Source\Runtime\Engine\Classes\Engine/ServerStatReplicator.h
+E:\UnrealEngine4\UE_4.27\Engine\Intermediate\Build\Win64\UE4Editor\Inc\Engine\ServerStatReplicator.generated.h
+E:\UnrealEngine4\UE_4.27\Engine\Intermediate\Build\Win64\UE4Editor\Inc\Engine\GameModeBase.generated.h
+E:\Engine_Clase\SATORI\SATORI\Intermediate\Build\Win64\UE4Editor\Inc\SATORI\SATORIGameMode.generated.h

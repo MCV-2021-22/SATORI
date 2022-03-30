@@ -1,0 +1,2 @@
+E:\Engine_Clase\SATORI\SATORI\Intermediate\Build\Win64\UE4Editor\Development\SATORI\Definitions.SATORI.h
+E:\Engine_Clase\SATORI\SATORI\Source\SATORI\SATORI.h

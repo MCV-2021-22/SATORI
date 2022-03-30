@@ -1,0 +1,14 @@
+{
+	"Targets": [
+		{
+			"Name": "SATORI",
+			"Path": "E:\\Engine_Clase\\SATORI\\SATORI\\Source\\SATORI.Target.cs",
+			"Type": "Game"
+		},
+		{
+			"Name": "SATORIEditor",
+			"Path": "E:\\Engine_Clase\\SATORI\\SATORI\\Source\\SATORIEditor.Target.cs",
+			"Type": "Editor"
+		}
+	]
+}

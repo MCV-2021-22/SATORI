@@ -1,0 +1,8 @@
+{
+	"SourceFiles": [
+		"E:\\Engine_Clase\\SATORI\\SATORI\\Source\\SATORI\\SATORI.Build.cs",
+		"E:\\Engine_Clase\\SATORI\\SATORI\\Source\\SATORI.Target.cs",
+		"E:\\Engine_Clase\\SATORI\\SATORI\\Source\\SATORIEditor.Target.cs"
+	],
+	"EngineVersion": "4.27.2"
+}
