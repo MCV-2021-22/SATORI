@@ -1,3 +1,0 @@
-E:\Engine_Clase\SATORI\SATORI\Intermediate\Build\Win64\UE4Editor\Development\SATORI\Definitions.SATORI.h
-E:\UnrealEngine4\UE_4.27\Engine\Source\Runtime\CoreUObject\Public\UObject/GeneratedCppIncludes.h
-E:\UnrealEngine4\UE_4.27\Engine\Source\Runtime\CoreUObject\Public\UObject/MetaData.h
