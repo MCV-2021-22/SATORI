@@ -63,19 +63,32 @@ UAbilitySystemComponent* ASATORICharacter::GetAbilitySystemComponent() const
 
 void ASATORICharacter::ApplyDefaultAbilities()
 {
-	if (!AbilitySystemComponent || !DefaultAbilities)
-		return;
-
-	for (FSATORIGameplayAbilityInfo gameplayAbilityInfo : DefaultAbilities->Abilities)
+	if (!DefaultAbilities)
 	{
-		GrantedAbilities(gameplayAbilityInfo);
+		//UE_LOG(LogTemp, Error, TEXT("%s() Missing DefaultAbility for %s. Please fill in the character's Blueprint."), *FString(__FUNCTION__), *GetName());
+		return;
+	}
+
+	for (FSATORIGameplayAbilityInfo Ability : DefaultAbilities->Abilities)
+	{
+		GrantAbilityToPlayer(FGameplayAbilitySpec(Ability.SATORIAbility, 1, static_cast<uint32>(Ability.AbilityKeys), this));
 	}
 }
 
-void ASATORICharacter::GrantedAbilities(FSATORIGameplayAbilityInfo gameplayAbilityInfo)
+void ASATORICharacter::GrantAbilityToPlayer(FGameplayAbilitySpec Ability)
 {
-	FGameplayAbilitySpec gameSpec = FGameplayAbilitySpec(gameplayAbilityInfo.SATORIAbility, 1, static_cast<uint32>(gameplayAbilityInfo.AbilityKeys), this);
-	AbilitySystemComponent->GiveAbility(gameSpec);
+	if (!AbilitySystemComponent)
+	{
+		return;
+	}
+
+	if (!Ability.Ability)
+	{
+		UE_LOG(LogTemp, Error, TEXT("%s() Ability Not Granted for %s. Ability is not valid."), *FString(__FUNCTION__), *GetName());
+		return;
+	}
+
+	AbilitySystemComponent->GiveAbility(Ability);
 }
 
 //////////////////////////////////////////////////////////////////////////

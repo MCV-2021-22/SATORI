@@ -9,7 +9,6 @@
 #include "SATORICharacter.generated.h"
 
 class USATORI_AbilityDataAsset;
-struct FSATORIGameplayAbilityInfo;
 
 UCLASS(config=Game)
 class ASATORICharacter : public ACharacter, public IAbilitySystemInterface
@@ -73,7 +72,7 @@ protected:
 	// End of APawn interface
 
 	void ApplyDefaultAbilities();
-	void GrantedAbilities(FSATORIGameplayAbilityInfo gameplayAbilityInfo);
+	void GrantAbilityToPlayer(FGameplayAbilitySpec Ability);
 
 private:
 	// The core ActorComponent for interfacing with the GameplayAbilities System
