@@ -8,6 +8,9 @@
 #include "AbilitySystemComponent.h"
 #include "SATORICharacter.generated.h"
 
+class USATORI_AbilityDataAsset;
+struct FSATORIGameplayAbilityInfo;
+
 UCLASS(config=Game)
 class ASATORICharacter : public ACharacter, public IAbilitySystemInterface
 {
@@ -23,6 +26,8 @@ class ASATORICharacter : public ACharacter, public IAbilitySystemInterface
 public:
 	ASATORICharacter();
 
+	virtual void PossessedBy(AController* NewController) override;
+
 	/** Base turn rate, in deg/sec. Other scaling may affect final turn rate. */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category=Camera)
 	float BaseTurnRate;
@@ -30,6 +35,10 @@ public:
 	/** Base look up/down rate, in deg/sec. Other scaling may affect final rate. */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category=Camera)
 	float BaseLookUpRate;
+
+	/** Base look up/down rate, in deg/sec. Other scaling may affect final rate. */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Player|Data")
+	USATORI_AbilityDataAsset* DefaultAbilities;
 
 	UAbilitySystemComponent* GetAbilitySystemComponent() const override;
 protected:
@@ -63,11 +72,14 @@ protected:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 	// End of APawn interface
 
+	void ApplyDefaultAbilities();
+	void GrantedAbilities(FSATORIGameplayAbilityInfo gameplayAbilityInfo);
+
 private:
 	// The core ActorComponent for interfacing with the GameplayAbilities System
 	UPROPERTY()
 	class UAbilitySystemComponent* AbilitySystemComponent;
-
+	
 public:
 	/** Returns CameraBoom subobject **/
 	FORCEINLINE class USpringArmComponent* GetCameraBoom() const { return CameraBoom; }

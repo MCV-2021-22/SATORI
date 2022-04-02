@@ -1,6 +1,7 @@
 // Copyright Epic Games, Inc. All Rights Reserved.
 
 #include "SATORICharacter.h"
+#include "SATORI.h"
 #include "HeadMountedDisplayFunctionLibrary.h"
 #include "Camera/CameraComponent.h"
 #include "Components/CapsuleComponent.h"
@@ -8,6 +9,8 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/Controller.h"
 #include "GameFramework/SpringArmComponent.h"
+#include "SATORI/Data/SATORI_AbilityDataAsset.h"
+#include "Abilities/GameplayAbility.h"
 
 //////////////////////////////////////////////////////////////////////////
 // ASATORICharacter
@@ -43,13 +46,36 @@ ASATORICharacter::ASATORICharacter()
 	FollowCamera->SetupAttachment(CameraBoom, USpringArmComponent::SocketName); // Attach the camera to the end of the boom and let the boom adjust to match the controller orientation
 	FollowCamera->bUsePawnControlRotation = false; // Camera does not rotate relative to arm
 
-	// Note: The skeletal mesh and anim blueprint references on the Mesh component (inherited from Character) 
-	// are set in the derived blueprint asset named MyCharacter (to avoid direct content references in C++)
+	AbilitySystemComponent = CreateDefaultSubobject<UAbilitySystemComponent>(TEXT("AbilitySystemComponent"));
+}
+
+void ASATORICharacter::PossessedBy(AController* NewController)
+{
+	UE_LOG(LogTemp, Warning, TEXT("oN Possessed"));
+
+	ApplyDefaultAbilities();
 }
 
 UAbilitySystemComponent* ASATORICharacter::GetAbilitySystemComponent() const
 {
 	return AbilitySystemComponent;
+}
+
+void ASATORICharacter::ApplyDefaultAbilities()
+{
+	if (!AbilitySystemComponent || !DefaultAbilities)
+		return;
+
+	for (FSATORIGameplayAbilityInfo gameplayAbilityInfo : DefaultAbilities->Abilities)
+	{
+		GrantedAbilities(gameplayAbilityInfo);
+	}
+}
+
+void ASATORICharacter::GrantedAbilities(FSATORIGameplayAbilityInfo gameplayAbilityInfo)
+{
+	FGameplayAbilitySpec gameSpec = FGameplayAbilitySpec(gameplayAbilityInfo.SATORIAbility, 1, static_cast<uint32>(gameplayAbilityInfo.AbilityKeys), this);
+	AbilitySystemComponent->GiveAbility(gameSpec);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -76,6 +102,9 @@ void ASATORICharacter::SetupPlayerInputComponent(class UInputComponent* PlayerIn
 	// handle touch devices
 	PlayerInputComponent->BindTouch(IE_Pressed, this, &ASATORICharacter::TouchStarted);
 	PlayerInputComponent->BindTouch(IE_Released, this, &ASATORICharacter::TouchStopped);
+
+	AbilitySystemComponent->BindAbilityActivationToInputComponent(InputComponent, FGameplayAbilityInputBinds(FString("ConfirmTarget"),
+		FString("CancelTarget"), FString("ESATORIAbilityInputID"), static_cast<int32>(ESATORIAbilityInputID::Type::Confirm), static_cast<int32>(ESATORIAbilityInputID::Type::Cancel)));
 }
 
 void ASATORICharacter::TouchStarted(ETouchIndex::Type FingerIndex, FVector Location)

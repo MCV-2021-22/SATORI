@@ -3,3 +3,7 @@
 
 #include "SATORI_AbilityDataAsset.h"
 
+USATORI_AbilityDataAsset::USATORI_AbilityDataAsset()
+{
+
+}
