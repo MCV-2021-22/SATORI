@@ -84,7 +84,7 @@ void ASATORICharacter::GrantAbilityToPlayer(FGameplayAbilitySpec Ability)
 
 	if (!Ability.Ability)
 	{
-		UE_LOG(LogTemp, Error, TEXT("%s() Ability Not Granted for %s. Ability is not valid."), *FString(__FUNCTION__), *GetName());
+		//UE_LOG(LogTemp, Error, TEXT("%s() Ability Not Granted for %s. Ability is not valid."), *FString(__FUNCTION__), *GetName());
 		return;
 	}
 
