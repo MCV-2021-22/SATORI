@@ -11,6 +11,8 @@
 #include "GameFramework/SpringArmComponent.h"
 #include "SATORI/Data/SATORI_AbilityDataAsset.h"
 #include "Abilities/GameplayAbility.h"
+#include "Character/SATORI_PlayerState.h"
+#include "SATORI/GAS/Attributes/SATORI_AttributeSet.h"
 
 //////////////////////////////////////////////////////////////////////////
 // ASATORICharacter
@@ -47,11 +49,13 @@ ASATORICharacter::ASATORICharacter()
 	FollowCamera->bUsePawnControlRotation = false; // Camera does not rotate relative to arm
 
 	AbilitySystemComponent = CreateDefaultSubobject<UAbilitySystemComponent>(TEXT("AbilitySystemComponent"));
+	AttributeSetBase = CreateDefaultSubobject<USATORI_AttributeSet>(TEXT("AttributeSetBase"));
 }
 
 void ASATORICharacter::PossessedBy(AController* NewController)
 {
-	UE_LOG(LogTemp, Warning, TEXT("oN Possessed"));
+	Super::PossessedBy(NewController);
+	UE_LOG(LogTemp, Warning, TEXT("On Possessed"));
 
 	ApplyDefaultAbilities();
 }
@@ -65,8 +69,22 @@ void ASATORICharacter::ApplyDefaultAbilities()
 {
 	if (!DefaultAbilities)
 	{
-		//UE_LOG(LogTemp, Error, TEXT("%s() Missing DefaultAbility for %s. Please fill in the character's Blueprint."), *FString(__FUNCTION__), *GetName());
+		UE_LOG(LogTemp, Error, TEXT("%s() Missing DefaultAbility for %s. Please fill in the character's Blueprint."), *FString(__FUNCTION__), *GetName());
 		return;
+	}
+
+	// Now apply passives
+	for (TSubclassOf<UGameplayEffect>& GameplayEffect : PassiveGameplayEffects)
+	{
+		FGameplayEffectContextHandle EffectContext = AbilitySystemComponent->MakeEffectContext();
+		EffectContext.AddSourceObject(this);
+
+		FGameplayEffectSpecHandle NewHandle = AbilitySystemComponent->MakeOutgoingSpec(GameplayEffect, GetCharacterLevel(), EffectContext);
+		if (NewHandle.IsValid())
+		{
+			FActiveGameplayEffectHandle ActiveGEHandle = AbilitySystemComponent->ApplyGameplayEffectSpecToTarget(*NewHandle.Data.Get(),
+				AbilitySystemComponent);
+		}
 	}
 
 	for (FSATORIGameplayAbilityInfo Ability : DefaultAbilities->Abilities)
@@ -89,6 +107,74 @@ void ASATORICharacter::GrantAbilityToPlayer(FGameplayAbilitySpec Ability)
 	}
 
 	AbilitySystemComponent->GiveAbility(Ability);
+}
+
+void ASATORICharacter::InitializeAttributes()
+{
+	if (!AbilitySystemComponent)
+	{
+		return;
+	}
+
+	// Now apply passives
+	for (TSubclassOf<UGameplayEffect>& GameplayEffect : PassiveGameplayEffects)
+	{
+		FGameplayEffectContextHandle EffectContext = AbilitySystemComponent->MakeEffectContext();
+		EffectContext.AddSourceObject(this);
+
+		FGameplayEffectSpecHandle NewHandle = AbilitySystemComponent->MakeOutgoingSpec(GameplayEffect, GetCharacterLevel(), EffectContext);
+		if (NewHandle.IsValid())
+		{
+			FActiveGameplayEffectHandle ActiveGEHandle = AbilitySystemComponent->ApplyGameplayEffectSpecToTarget(*NewHandle.Data.Get(),
+				AbilitySystemComponent);
+		}
+	}
+}
+
+// Getters
+float ASATORICharacter::GetHealth() const
+{
+	if (AttributeSetBase)
+		return AttributeSetBase->GetHealth();
+
+	return 0.0f;
+}
+
+float ASATORICharacter::GetMaxHealth() const
+{
+	if (AttributeSetBase)
+		return AttributeSetBase->GetMaxHealth();
+
+	return 0.0f;
+}
+
+float ASATORICharacter::GetDefense() const
+{
+	if (AttributeSetBase)
+		return AttributeSetBase->GetDefense();
+
+	return 0.0f;
+}
+
+float ASATORICharacter::GetAttack() const
+{
+	if (AttributeSetBase)
+		return AttributeSetBase->GetAttack();
+
+	return 0.0f;
+}
+
+float ASATORICharacter::GetMoveSpeed() const
+{
+	if (AttributeSetBase)
+		return AttributeSetBase->GetMoveSpeed();
+
+	return 0.0f;
+}
+
+int32 ASATORICharacter::GetCharacterLevel() const
+{
+	return 1;
 }
 
 //////////////////////////////////////////////////////////////////////////

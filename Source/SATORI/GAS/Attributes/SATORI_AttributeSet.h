@@ -28,6 +28,11 @@ public:
 	// Only triggers after changes to the BaseValue of an Attribute from an instant GameplayEffect
 	virtual void PostGameplayEffectExecute(const struct FGameplayEffectModCallbackData& Data) override;
 
+protected:
+	// Helper function to proportionally adjust the value of an attribute when it's associated max attribute changes.
+	void AdjustAttributeForMaxChange(FGameplayAttributeData& AffectedAttribute, 
+		const FGameplayAttributeData& MaxAttribute, float NewMaxValue, const FGameplayAttribute& AffectedAttributeProperty);
+
 public:
 	// Health Attribute
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "SATORI|Attributes")
@@ -37,4 +42,20 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "SATORI|Attributes")
 	FGameplayAttributeData MaxHealth;
 	ATTRIBUTE_ACCESSORS(USATORI_AttributeSet, MaxHealth);
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "SATORI|Attributes")
+	FGameplayAttributeData MoveSpeed;
+	ATTRIBUTE_ACCESSORS(USATORI_AttributeSet, MoveSpeed);
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "SATORI|Attributes")
+	FGameplayAttributeData Damage;
+	ATTRIBUTE_ACCESSORS(USATORI_AttributeSet, Damage);
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "SATORI|Attributes")
+	FGameplayAttributeData Defense;
+	ATTRIBUTE_ACCESSORS(USATORI_AttributeSet, Defense);
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "SATORI|Attributes")
+	FGameplayAttributeData Attack;
+	ATTRIBUTE_ACCESSORS(USATORI_AttributeSet, Attack);
 };
