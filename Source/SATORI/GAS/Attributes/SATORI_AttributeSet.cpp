@@ -17,13 +17,9 @@ void USATORI_AttributeSet::PreAttributeChange(const FGameplayAttribute& Attribut
 	Super::PreAttributeChange(Attribute, NewValue);
 
 	// Health
-	if (Attribute == GetHealthAttribute())
+	if (Attribute == GetMaxHealthAttribute())
 	{
 		AdjustAttributeForMaxChange(Health, MaxHealth, NewValue, GetHealthAttribute());
-	}
-	else if (Attribute == GetMaxHealthAttribute())
-	{
-		NewValue = FMath::Clamp<float>(NewValue, 0.001f, 100.0f);
 	}
 	else if (Attribute == GetMoveSpeedAttribute())
 	{

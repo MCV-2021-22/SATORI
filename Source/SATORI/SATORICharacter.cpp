@@ -13,6 +13,7 @@
 #include "Abilities/GameplayAbility.h"
 #include "Character/SATORI_PlayerState.h"
 #include "SATORI/GAS/Attributes/SATORI_AttributeSet.h"
+#include "SATORI/GAS/SATORI_AbilitySystemComponent.h"
 
 //////////////////////////////////////////////////////////////////////////
 // ASATORICharacter
@@ -48,8 +49,8 @@ ASATORICharacter::ASATORICharacter()
 	FollowCamera->SetupAttachment(CameraBoom, USpringArmComponent::SocketName); // Attach the camera to the end of the boom and let the boom adjust to match the controller orientation
 	FollowCamera->bUsePawnControlRotation = false; // Camera does not rotate relative to arm
 
-	AbilitySystemComponent = CreateDefaultSubobject<UAbilitySystemComponent>(TEXT("AbilitySystemComponent"));
-	AttributeSetBase = CreateDefaultSubobject<USATORI_AttributeSet>(TEXT("AttributeSetBase"));
+	/*AbilitySystemComponent = CreateDefaultSubobject<UAbilitySystemComponent>(TEXT("AbilitySystemComponent"));
+	AttributeSetBase = CreateDefaultSubobject<USATORI_AttributeSet>(TEXT("AttributeSetBase"));*/
 }
 
 void ASATORICharacter::PossessedBy(AController* NewController)
@@ -57,12 +58,26 @@ void ASATORICharacter::PossessedBy(AController* NewController)
 	Super::PossessedBy(NewController);
 	UE_LOG(LogTemp, Warning, TEXT("On Possessed"));
 
-	ApplyDefaultAbilities();
+	ASATORI_PlayerState* PS = GetPlayerState<ASATORI_PlayerState>();
+	if (PS)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("GetPlayerState"));
+
+		AbilitySystemComponent = Cast<USATORI_AbilitySystemComponent>(PS->GetAbilitySystemComponent());;
+
+		AttributeSetBase = PS->GetSatoriAttributeSet();
+
+		InitializePassiveAttributes();
+		ApplyDefaultAbilities();
+
+		// Set Health to Max Health Value
+		SetHealth(GetMaxHealth());
+	}		
 }
 
 UAbilitySystemComponent* ASATORICharacter::GetAbilitySystemComponent() const
 {
-	return AbilitySystemComponent;
+	return AbilitySystemComponent.Get();
 }
 
 void ASATORICharacter::ApplyDefaultAbilities()
@@ -73,20 +88,6 @@ void ASATORICharacter::ApplyDefaultAbilities()
 		return;
 	}
 
-	// Now apply passives
-	for (TSubclassOf<UGameplayEffect>& GameplayEffect : PassiveGameplayEffects)
-	{
-		FGameplayEffectContextHandle EffectContext = AbilitySystemComponent->MakeEffectContext();
-		EffectContext.AddSourceObject(this);
-
-		FGameplayEffectSpecHandle NewHandle = AbilitySystemComponent->MakeOutgoingSpec(GameplayEffect, GetCharacterLevel(), EffectContext);
-		if (NewHandle.IsValid())
-		{
-			FActiveGameplayEffectHandle ActiveGEHandle = AbilitySystemComponent->ApplyGameplayEffectSpecToTarget(*NewHandle.Data.Get(),
-				AbilitySystemComponent);
-		}
-	}
-
 	for (FSATORIGameplayAbilityInfo Ability : DefaultAbilities->Abilities)
 	{
 		GrantAbilityToPlayer(FGameplayAbilitySpec(Ability.SATORIAbility, 1, static_cast<uint32>(Ability.AbilityKeys), this));
@@ -95,7 +96,7 @@ void ASATORICharacter::ApplyDefaultAbilities()
 
 void ASATORICharacter::GrantAbilityToPlayer(FGameplayAbilitySpec Ability)
 {
-	if (!AbilitySystemComponent)
+	if (!AbilitySystemComponent.IsValid())
 	{
 		return;
 	}
@@ -109,9 +110,9 @@ void ASATORICharacter::GrantAbilityToPlayer(FGameplayAbilitySpec Ability)
 	AbilitySystemComponent->GiveAbility(Ability);
 }
 
-void ASATORICharacter::InitializeAttributes()
+void ASATORICharacter::InitializePassiveAttributes()
 {
-	if (!AbilitySystemComponent)
+	if (!AbilitySystemComponent.IsValid())
 	{
 		return;
 	}
@@ -126,7 +127,7 @@ void ASATORICharacter::InitializeAttributes()
 		if (NewHandle.IsValid())
 		{
 			FActiveGameplayEffectHandle ActiveGEHandle = AbilitySystemComponent->ApplyGameplayEffectSpecToTarget(*NewHandle.Data.Get(),
-				AbilitySystemComponent);
+				AbilitySystemComponent.Get());
 		}
 	}
 }
@@ -134,7 +135,7 @@ void ASATORICharacter::InitializeAttributes()
 // Getters
 float ASATORICharacter::GetHealth() const
 {
-	if (AttributeSetBase)
+	if (AttributeSetBase.IsValid())
 		return AttributeSetBase->GetHealth();
 
 	return 0.0f;
@@ -142,7 +143,7 @@ float ASATORICharacter::GetHealth() const
 
 float ASATORICharacter::GetMaxHealth() const
 {
-	if (AttributeSetBase)
+	if (AttributeSetBase.IsValid())
 		return AttributeSetBase->GetMaxHealth();
 
 	return 0.0f;
@@ -150,7 +151,7 @@ float ASATORICharacter::GetMaxHealth() const
 
 float ASATORICharacter::GetDefense() const
 {
-	if (AttributeSetBase)
+	if (AttributeSetBase.IsValid())
 		return AttributeSetBase->GetDefense();
 
 	return 0.0f;
@@ -158,7 +159,7 @@ float ASATORICharacter::GetDefense() const
 
 float ASATORICharacter::GetAttack() const
 {
-	if (AttributeSetBase)
+	if (AttributeSetBase.IsValid())
 		return AttributeSetBase->GetAttack();
 
 	return 0.0f;
@@ -166,7 +167,7 @@ float ASATORICharacter::GetAttack() const
 
 float ASATORICharacter::GetMoveSpeed() const
 {
-	if (AttributeSetBase)
+	if (AttributeSetBase.IsValid())
 		return AttributeSetBase->GetMoveSpeed();
 
 	return 0.0f;
@@ -175,6 +176,13 @@ float ASATORICharacter::GetMoveSpeed() const
 int32 ASATORICharacter::GetCharacterLevel() const
 {
 	return 1;
+}
+
+// Setters
+void ASATORICharacter::SetHealth(float Health)
+{
+	if (AttributeSetBase.IsValid())
+		AttributeSetBase->SetHealth(Health);
 }
 
 //////////////////////////////////////////////////////////////////////////

@@ -11,6 +11,7 @@
 class USATORI_AbilityDataAsset;
 class UGameplayEffect;
 class USATORI_AttributeSet;
+class USATORI_AbilitySystemComponent;
 
 UCLASS(config=Game)
 class ASATORICharacter : public ACharacter, public IAbilitySystemInterface
@@ -63,14 +64,15 @@ protected:
 
 	void ApplyDefaultAbilities();
 	void GrantAbilityToPlayer(FGameplayAbilitySpec Ability);
-	void InitializeAttributes();
+	void InitializePassiveAttributes();
+
+	virtual void SetHealth(float Health);
 private:
 	// The core ActorComponent for interfacing with the GameplayAbilities System
-	UPROPERTY()
-	class UAbilitySystemComponent* AbilitySystemComponent;
+	TWeakObjectPtr<USATORI_AbilitySystemComponent> AbilitySystemComponent;
 	
 	// USATORI_AttributeSet from the PlayerState 
-	USATORI_AttributeSet* AttributeSetBase;
+	TWeakObjectPtr<USATORI_AttributeSet> AttributeSetBase;
 private:
 	/** Camera boom positioning the camera behind the character */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))

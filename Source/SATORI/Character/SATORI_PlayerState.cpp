@@ -3,10 +3,20 @@
 
 #include "SATORI_PlayerState.h"
 #include "SATORI/GAS/Attributes/SATORI_AttributeSet.h"
+#include "SATORI/GAS/SATORI_AbilitySystemComponent.h"
 
 ASATORI_PlayerState::ASATORI_PlayerState()
 {
+	// Create ability system component, and set it to be explicitly replicated
+	AbilitySystemComponent = CreateDefaultSubobject<USATORI_AbilitySystemComponent>(TEXT("AbilitySystemComponent"));
+	AbilitySystemComponent->SetIsReplicated(true);
+
 	AttributeSetBase = CreateDefaultSubobject<USATORI_AttributeSet>(TEXT("AttributeSetBase"));
+}
+
+UAbilitySystemComponent* ASATORI_PlayerState::GetAbilitySystemComponent() const
+{
+	return AbilitySystemComponent;
 }
 
 USATORI_AttributeSet* ASATORI_PlayerState::GetSatoriAttributeSet() const

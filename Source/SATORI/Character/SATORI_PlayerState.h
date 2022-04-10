@@ -4,12 +4,16 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/PlayerState.h"
+#include "AbilitySystemInterface.h"
+#include "GameplayEffectTypes.h"
 #include "SATORI_PlayerState.generated.h"
 
 class USATORI_AttributeSet;
+class USATORI_AbilitySystemComponent;
+class UAbilitySystemComponent;
 
 UCLASS()
-class SATORI_API ASATORI_PlayerState : public APlayerState
+class SATORI_API ASATORI_PlayerState : public APlayerState, public IAbilitySystemInterface
 {
 	GENERATED_BODY()
 	
@@ -17,6 +21,9 @@ public:
 	ASATORI_PlayerState();
 
 	USATORI_AttributeSet* GetSatoriAttributeSet() const;
+
+	// Implement IAbilitySystemInterface
+	UAbilitySystemComponent* GetAbilitySystemComponent() const override;
 
 	// Getters for attributes from USATORI_AttributeSet.
 	UFUNCTION(BlueprintCallable, Category = "Player|Attributes")
@@ -41,4 +48,7 @@ protected:
 protected:
 	UPROPERTY()
 	USATORI_AttributeSet* AttributeSetBase;
+
+	UPROPERTY()
+	USATORI_AbilitySystemComponent* AbilitySystemComponent;
 };
