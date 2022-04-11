@@ -61,8 +61,6 @@ void ASATORICharacter::PossessedBy(AController* NewController)
 	ASATORI_PlayerState* PS = GetPlayerState<ASATORI_PlayerState>();
 	if (PS)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("GetPlayerState"));
-
 		AbilitySystemComponent = Cast<USATORI_AbilitySystemComponent>(PS->GetAbilitySystemComponent());;
 
 		AttributeSetBase = PS->GetSatoriAttributeSet();

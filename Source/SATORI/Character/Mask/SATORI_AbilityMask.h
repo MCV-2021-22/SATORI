@@ -6,6 +6,15 @@
 #include "Components/ActorComponent.h"
 #include "SATORI_AbilityMask.generated.h"
 
+UENUM(BlueprintType)
+enum class SATORIMaskType : uint8
+{
+	NONE UMETA(DisplayName = "NONE"),
+	Aka UMETA(DisplayName = "Aka"),
+	Ao UMETA(DisplayName = "Ao"),
+	Midori UMETA(DisplayName = "Midori"),
+};
+
 class UGameplayEffect;
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
@@ -17,13 +26,11 @@ public:
 	// Sets default values for this component's properties
 	USATORI_AbilityMask();
 
+	void GrantedMaskEffects();
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
 
 public:	
-	// Called every frame
-	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
-
-		
+	//TMap<SATORIMaskType, UGameplayEffect> MaskEffects;
 };

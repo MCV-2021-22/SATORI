@@ -2,6 +2,8 @@
 
 
 #include "SATORI_AbilityMask.h"
+#include "SATORI/SATORICharacter.h"
+#include "SATORI/Character/SATORI_PlayerState.h"
 
 // Sets default values for this component's properties
 USATORI_AbilityMask::USATORI_AbilityMask()
@@ -19,16 +21,21 @@ void USATORI_AbilityMask::BeginPlay()
 {
 	Super::BeginPlay();
 
-	// ...
-	
 }
 
-
-// Called every frame
-void USATORI_AbilityMask::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
+void USATORI_AbilityMask::GrantedMaskEffects()
 {
-	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
+	/*for (TSubclassOf<UGameplayEffect>& GameplayEffect : MaskPassive)
+	{
+		FGameplayEffectContextHandle EffectContext = AbilitySystemComponent->MakeEffectContext();
+		EffectContext.AddSourceObject(this);
 
-	// ...
+		FGameplayEffectSpecHandle NewHandle = AbilitySystemComponent->MakeOutgoingSpec(GameplayEffect, GetCharacterLevel(), EffectContext);
+		if (NewHandle.IsValid())
+		{
+			FActiveGameplayEffectHandle ActiveGEHandle = AbilitySystemComponent->ApplyGameplayEffectSpecToTarget(*NewHandle.Data.Get(),
+				AbilitySystemComponent.Get());
+		}
+	}*/
 }
 

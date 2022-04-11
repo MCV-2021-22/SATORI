@@ -6,6 +6,7 @@
 #include "GameFramework/Character.h"
 #include "AbilitySystemInterface.h"
 #include "AbilitySystemComponent.h"
+#include "Character/Mask/SATORI_AbilityMask.h"
 #include "SATORICharacter.generated.h"
 
 class USATORI_AbilityDataAsset;
@@ -38,6 +39,9 @@ public:
 	// Default attributes for a character for initializing
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Player|GameplayEffect")
 	TArray<TSubclassOf<UGameplayEffect>> PassiveGameplayEffects;
+
+	UPROPERTY()
+	SATORIMaskType MaskType = SATORIMaskType::NONE;
 public:
 
 	UAbilitySystemComponent* GetAbilitySystemComponent() const override;
