@@ -14,6 +14,7 @@
 #include "Character/SATORI_PlayerState.h"
 #include "SATORI/GAS/Attributes/SATORI_AttributeSet.h"
 #include "SATORI/GAS/SATORI_AbilitySystemComponent.h"
+#include "Character/Mask/SATORI_AbilityMask.h"
 
 //////////////////////////////////////////////////////////////////////////
 // ASATORICharacter
@@ -49,8 +50,8 @@ ASATORICharacter::ASATORICharacter()
 	FollowCamera->SetupAttachment(CameraBoom, USpringArmComponent::SocketName); // Attach the camera to the end of the boom and let the boom adjust to match the controller orientation
 	FollowCamera->bUsePawnControlRotation = false; // Camera does not rotate relative to arm
 
-	/*AbilitySystemComponent = CreateDefaultSubobject<UAbilitySystemComponent>(TEXT("AbilitySystemComponent"));
-	AttributeSetBase = CreateDefaultSubobject<USATORI_AttributeSet>(TEXT("AttributeSetBase"));*/
+	// Components
+	SATORIAbilityMaskComponent = CreateDefaultSubobject<USATORI_AbilityMask>("MaskComponent");
 }
 
 void ASATORICharacter::PossessedBy(AController* NewController)
@@ -67,6 +68,11 @@ void ASATORICharacter::PossessedBy(AController* NewController)
 
 		InitializePassiveAttributes();
 		ApplyDefaultAbilities();
+
+		// Test Mask Effect
+		MaskType = SATORIMaskType::Aka;
+		SATORIAbilityMaskComponent->GrantedMaskEffects(MaskType);
+		// -------------------
 
 		// Set Health to Max Health Value
 		SetHealth(GetMaxHealth());

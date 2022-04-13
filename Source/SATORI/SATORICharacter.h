@@ -13,6 +13,7 @@ class USATORI_AbilityDataAsset;
 class UGameplayEffect;
 class USATORI_AttributeSet;
 class USATORI_AbilitySystemComponent;
+class USATORI_AbilityMask;
 
 UCLASS(config=Game)
 class ASATORICharacter : public ACharacter, public IAbilitySystemInterface
@@ -39,6 +40,9 @@ public:
 	// Default attributes for a character for initializing
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Player|GameplayEffect")
 	TArray<TSubclassOf<UGameplayEffect>> PassiveGameplayEffects;
+
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Player|Component")
+	USATORI_AbilityMask* SATORIAbilityMaskComponent;
 
 	UPROPERTY()
 	SATORIMaskType MaskType = SATORIMaskType::NONE;

@@ -26,11 +26,20 @@ public:
 	// Sets default values for this component's properties
 	USATORI_AbilityMask();
 
-	void GrantedMaskEffects();
+	void GrantedMaskEffects(SATORIMaskType MaskType);
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
 
+private:
+	TSubclassOf<UGameplayEffect> ChooseMaskEffectoToApply(SATORIMaskType MaskType);
+
 public:	
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "GameplayEffect")
+	TSubclassOf<UGameplayEffect> AkaGameplayEffect;
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "GameplayEffect")
+	TSubclassOf<UGameplayEffect> AoGameplayEffect;
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "GameplayEffect")
+	TSubclassOf<UGameplayEffect> MidoriGameplayEffect;
 	//TMap<SATORIMaskType, UGameplayEffect> MaskEffects;
 };

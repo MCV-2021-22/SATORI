@@ -4,6 +4,8 @@
 #include "SATORI_AbilityMask.h"
 #include "SATORI/SATORICharacter.h"
 #include "SATORI/Character/SATORI_PlayerState.h"
+#include "Kismet/GameplayStatics.h"
+#include "SATORI/GAS/SATORI_AbilitySystemComponent.h"
 
 // Sets default values for this component's properties
 USATORI_AbilityMask::USATORI_AbilityMask()
@@ -23,19 +25,49 @@ void USATORI_AbilityMask::BeginPlay()
 
 }
 
-void USATORI_AbilityMask::GrantedMaskEffects()
+void USATORI_AbilityMask::GrantedMaskEffects(SATORIMaskType MaskType)
 {
-	/*for (TSubclassOf<UGameplayEffect>& GameplayEffect : MaskPassive)
+	ASATORICharacter* PlayerCharacter = Cast<ASATORICharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
+	if (PlayerCharacter)
 	{
-		FGameplayEffectContextHandle EffectContext = AbilitySystemComponent->MakeEffectContext();
-		EffectContext.AddSourceObject(this);
-
-		FGameplayEffectSpecHandle NewHandle = AbilitySystemComponent->MakeOutgoingSpec(GameplayEffect, GetCharacterLevel(), EffectContext);
-		if (NewHandle.IsValid())
+		UAbilitySystemComponent* AbilitySystemComponent = PlayerCharacter->GetAbilitySystemComponent();
+		if (AbilitySystemComponent)
 		{
-			FActiveGameplayEffectHandle ActiveGEHandle = AbilitySystemComponent->ApplyGameplayEffectSpecToTarget(*NewHandle.Data.Get(),
-				AbilitySystemComponent.Get());
+			FGameplayEffectContextHandle EffectContext = AbilitySystemComponent->MakeEffectContext();
+			EffectContext.AddSourceObject(this);
+
+			TSubclassOf<UGameplayEffect> GameplayEffect = ChooseMaskEffectoToApply(MaskType);
+
+			FGameplayEffectSpecHandle NewHandle = AbilitySystemComponent->MakeOutgoingSpec(GameplayEffect,
+				PlayerCharacter->GetCharacterLevel(), EffectContext);
+
+			if (NewHandle.IsValid())
+			{
+				FActiveGameplayEffectHandle ActiveGEHandle = AbilitySystemComponent->ApplyGameplayEffectSpecToTarget(*NewHandle.Data.Get(),
+					AbilitySystemComponent);
+			}
 		}
-	}*/
+	}
 }
 
+TSubclassOf<UGameplayEffect> USATORI_AbilityMask::ChooseMaskEffectoToApply(SATORIMaskType MaskType)
+{
+	TSubclassOf<UGameplayEffect> Effect;
+
+	switch (MaskType)
+	{
+	case SATORIMaskType::NONE:
+		break;
+	case SATORIMaskType::Aka:
+		Effect = AkaGameplayEffect;
+		break;
+	case SATORIMaskType::Ao:
+		Effect = AoGameplayEffect;
+		break;
+	case SATORIMaskType::Midori:
+		Effect = MidoriGameplayEffect;
+		break;
+	}
+
+	return Effect;
+}
