@@ -41,6 +41,8 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Player|Attributes")
 	float GetMoveSpeed() const;
 
+	UFUNCTION(BlueprintCallable, Category = "Player|Attributes")
+	float GetGold() const;
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;

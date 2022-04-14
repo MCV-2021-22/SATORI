@@ -49,6 +49,11 @@ float ASATORI_PlayerState::GetMoveSpeed() const
 	return AttributeSetBase->GetMoveSpeed();
 }
 
+float ASATORI_PlayerState::GetGold() const
+{
+	return AttributeSetBase->GetGold();
+}
+
 void ASATORI_PlayerState::BeginPlay()
 {
 

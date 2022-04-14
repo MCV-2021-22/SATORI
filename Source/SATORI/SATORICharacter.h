@@ -67,6 +67,9 @@ public:
 	float GetMoveSpeed() const;
 
 	UFUNCTION(BlueprintCallable, Category = "Player|Attributes")
+	float GetGold() const;
+
+	UFUNCTION(BlueprintCallable, Category = "Player|Attributes")
 	int32 GetCharacterLevel() const;
 protected:
 

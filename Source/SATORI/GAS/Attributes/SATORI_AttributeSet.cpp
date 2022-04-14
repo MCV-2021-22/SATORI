@@ -33,6 +33,10 @@ void USATORI_AttributeSet::PreAttributeChange(const FGameplayAttribute& Attribut
 	{
 		NewValue = FMath::Clamp<float>(NewValue, 1, 100);
 	}
+	else if (Attribute == GetGoldAttribute())
+	{
+		NewValue = FMath::Clamp<float>(NewValue, 0, 10000);
+	}
 }
 
 void USATORI_AttributeSet::PostGameplayEffectExecute(const struct FGameplayEffectModCallbackData& Data)

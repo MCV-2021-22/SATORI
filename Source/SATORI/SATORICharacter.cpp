@@ -177,6 +177,14 @@ float ASATORICharacter::GetMoveSpeed() const
 	return 0.0f;
 }
 
+float ASATORICharacter::GetGold() const
+{
+	if (AttributeSetBase.IsValid())
+		return AttributeSetBase->GetGold();
+
+	return 0.0f;
+}
+
 int32 ASATORICharacter::GetCharacterLevel() const
 {
 	return 1;

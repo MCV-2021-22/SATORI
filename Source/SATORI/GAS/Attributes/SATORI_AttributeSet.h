@@ -58,4 +58,8 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "SATORI|Attributes")
 	FGameplayAttributeData Attack;
 	ATTRIBUTE_ACCESSORS(USATORI_AttributeSet, Attack);
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "SATORI|Attributes")
+	FGameplayAttributeData Gold;
+	ATTRIBUTE_ACCESSORS(USATORI_AttributeSet, Gold);
 };
