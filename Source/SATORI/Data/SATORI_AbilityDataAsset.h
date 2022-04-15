@@ -34,4 +34,6 @@ public:
 
 	UPROPERTY(BlueprintReadOnly, EditAnywhere)
 	TArray<FSATORIGameplayAbilityInfo> Abilities;
+
+	void GiveAbilities(UAbilitySystemComponent* AbilitySystemComponent) const;
 };

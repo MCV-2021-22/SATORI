@@ -52,6 +52,8 @@ ASATORICharacter::ASATORICharacter()
 
 	// Components
 	SATORIAbilityMaskComponent = CreateDefaultSubobject<USATORI_AbilityMask>("MaskComponent");
+	/*AbilitySystemComponent = CreateDefaultSubobject<USATORI_AbilitySystemComponent>(TEXT("AbilitySystemComponent"));
+	AbilitySystemComponent->SetIsReplicated(true);*/
 }
 
 void ASATORICharacter::PossessedBy(AController* NewController)
@@ -62,7 +64,7 @@ void ASATORICharacter::PossessedBy(AController* NewController)
 	ASATORI_PlayerState* PS = GetPlayerState<ASATORI_PlayerState>();
 	if (PS)
 	{
-		AbilitySystemComponent = Cast<USATORI_AbilitySystemComponent>(PS->GetAbilitySystemComponent());;
+		AbilitySystemComponent = Cast<USATORI_AbilitySystemComponent>(PS->GetAbilitySystemComponent());	
 
 		AttributeSetBase = PS->GetSatoriAttributeSet();
 

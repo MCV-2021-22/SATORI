@@ -18,7 +18,6 @@ public:
 	USATORI_GameplayAbility();
 
 	// If an ability is marked as 'ActivateAbilityOnGranted', activate them immediately when given here
-	// Epic's comment: Projects may want to initiate passives or do other "BeginPlay" type of logic here.
 	virtual void OnAvatarSet(const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilitySpec& Spec) override;
 
 public:
