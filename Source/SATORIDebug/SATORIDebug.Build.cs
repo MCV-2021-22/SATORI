@@ -17,6 +17,14 @@ public class SATORIDebug : ModuleRules
 		//The path for the source files
 		PrivateIncludePaths.AddRange(new string[] { "SATORIDebug/Private" });
 
-		PublicIncludePaths.Add("SATORIDebug");
+		if ((Target.bBuildDeveloperTools || Target.Configuration != UnrealTargetConfiguration.Shipping && Target.Configuration != UnrealTargetConfiguration.Test))
+		{
+			PrivateDependencyModuleNames.Add("GameplayDebugger");
+			PublicDefinitions.Add("WITH_GAMEPLAY_DEBUGGER=1");
+		}
+		else
+		{
+			PublicDefinitions.Add("WITH_GAMEPLAY_DEBUGGER=0");
+		}
 	}
 }
