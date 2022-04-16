@@ -2,6 +2,7 @@
 
 #if WITH_GAMEPLAY_DEBUGGER
 #include "SATORIDebug/Public/SATORIDebug_Attribute.h"
+#include "SATORIDebug/Public/SATORIDebug_OwnedTags.h"
 #include "GameplayDebugger.h"
 #endif
 
@@ -24,6 +25,10 @@ void FSATORIDebugModule::StartupModule()
 	GameplayDebuggerModule.RegisterCategory("Character Attributtes", IGameplayDebugger::FOnGetCategory::CreateStatic(
 		&SATORIDebug_Attribute::MakeInstance), EGameplayDebuggerCategoryState::EnabledInSimulate);
 	GameplayDebuggerModule.NotifyCategoriesChanged();
+
+	GameplayDebuggerModule.RegisterCategory("Character Tags", IGameplayDebugger::FOnGetCategory::CreateStatic(
+		&SATORIDebug_OwnedTags::MakeInstance), EGameplayDebuggerCategoryState::EnabledInSimulate);
+	GameplayDebuggerModule.NotifyCategoriesChanged();
 #endif
 }
 
@@ -35,6 +40,7 @@ void FSATORIDebugModule::ShutdownModule()
 	{
 		IGameplayDebugger& GameplayDebuggerModule = IGameplayDebugger::Get();
 		GameplayDebuggerModule.UnregisterCategory("Character Attributtes");
+		GameplayDebuggerModule.UnregisterCategory("Character Tags");
 	}
 #endif
 }
