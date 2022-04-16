@@ -10,5 +10,7 @@ public class SATORI : ModuleRules
 
 		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "HeadMountedDisplay",
 			"GameplayAbilities", "GameplayTags", "GameplayTasks",});
+
+		PublicIncludePaths.Add("SATORI");
 	}
 }

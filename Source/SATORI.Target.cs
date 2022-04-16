@@ -10,5 +10,6 @@ public class SATORITarget : TargetRules
 		Type = TargetType.Game;
 		DefaultBuildSettings = BuildSettingsVersion.V2;
 		ExtraModuleNames.Add("SATORI");
+		ExtraModuleNames.Add("SATORIDebug");
 	}
 }

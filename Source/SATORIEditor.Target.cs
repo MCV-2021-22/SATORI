@@ -10,5 +10,6 @@ public class SATORIEditorTarget : TargetRules
 		Type = TargetType.Editor;
 		DefaultBuildSettings = BuildSettingsVersion.V2;
 		ExtraModuleNames.Add("SATORI");
+		ExtraModuleNames.Add("SATORIDebug");
 	}
 }

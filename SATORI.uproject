@@ -12,6 +12,11 @@
 				"GameplayAbilities",
 				"Engine"
 			]
+		},
+		{
+			"Name": "SATORIDebug",
+			"Type": "Runtime",
+			"LoadingPhase": "Default"
 		}
 	],
 	"Plugins": [
