@@ -15,6 +15,7 @@
 #include "SATORI/GAS/Attributes/SATORI_AttributeSet.h"
 #include "SATORI/GAS/SATORI_AbilitySystemComponent.h"
 #include "Character/Mask/SATORI_AbilityMask.h"
+#include "Components/Player/SATORI_StatsComponent.h"
 
 //////////////////////////////////////////////////////////////////////////
 // ASATORICharacter
@@ -52,6 +53,7 @@ ASATORICharacter::ASATORICharacter()
 
 	// Components
 	SATORIAbilityMaskComponent = CreateDefaultSubobject<USATORI_AbilityMask>("MaskComponent");
+	StatsComponent = CreateDefaultSubobject<USATORI_StatsComponent>("StatsComponent");
 	/*AbilitySystemComponent = CreateDefaultSubobject<USATORI_AbilitySystemComponent>(TEXT("AbilitySystemComponent"));
 	AbilitySystemComponent->SetIsReplicated(true);*/
 }

@@ -71,6 +71,10 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "Player|Attributes")
 	int32 GetCharacterLevel() const;
+
+	// Getters for Components
+	FORCEINLINE class USATORI_StatsComponent* GetStatsComponent() const { return StatsComponent; }
+
 protected:
 
 	void ApplyDefaultAbilities();
@@ -78,12 +82,19 @@ protected:
 	void InitializePassiveAttributes();
 
 	virtual void SetHealth(float Health);
-private:
+
+protected:
+
 	// The core ActorComponent for interfacing with the GameplayAbilities System
 	TWeakObjectPtr<USATORI_AbilitySystemComponent> AbilitySystemComponent;
 	
 	// USATORI_AttributeSet from the PlayerState 
 	TWeakObjectPtr<USATORI_AttributeSet> AttributeSetBase;
+
+	// Component
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Player|Data")
+	class USATORI_StatsComponent* StatsComponent;
+
 private:
 	/** Camera boom positioning the camera behind the character */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
