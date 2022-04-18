@@ -56,5 +56,6 @@ float ASATORI_PlayerState::GetGold() const
 
 void ASATORI_PlayerState::BeginPlay()
 {
+	Super::BeginPlay();
 
 }
