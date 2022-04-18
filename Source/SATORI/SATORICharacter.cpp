@@ -68,6 +68,8 @@ void ASATORICharacter::PossessedBy(AController* NewController)
 	{
 		AbilitySystemComponent = Cast<USATORI_AbilitySystemComponent>(PS->GetAbilitySystemComponent());	
 
+		AbilitySystemComponent->InitAbilityActorInfo(PS, this);
+
 		AttributeSetBase = PS->GetSatoriAttributeSet();
 
 		InitializePassiveAttributes();
