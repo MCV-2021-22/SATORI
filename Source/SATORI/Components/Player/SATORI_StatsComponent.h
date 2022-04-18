@@ -12,6 +12,11 @@ class ASATORI_PlayerState;
 class USATORI_AttributeSet;
 class UAbilitySystemComponent;
 
+/*
+* Class represent All Player Stats, we can use for UI 
+* To listen for when an Attribute changes to update the UI or other gameplay, 
+* use UAbilitySystemComponent::GetGameplayAttributeValueChangeDelegate(FGameplayAttribute Attribute)
+*/
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class SATORI_API USATORI_StatsComponent : public UActorComponent
 {
@@ -25,15 +30,18 @@ protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
 
+	// Initialize all Health attributes for local values
 	virtual void InitializeHealthAttribute(ASATORI_PlayerState* PlayerState);
+	// Helper function if we change some value attributes and we capture the changes
 	virtual void BindAttributeChage(ASATORICharacter* PlayerCharacter);
 
-	// Health
+	// Health Functions
 	virtual void HealthChanged(const FOnAttributeChangeData& Data);
 	virtual void MaxHealthChanged(const FOnAttributeChangeData& Data);
 protected:
-
+	// Attributes 
 	TWeakObjectPtr<USATORI_AttributeSet> PlayerAttributes;
+	// Ability Component
 	TWeakObjectPtr<UAbilitySystemComponent> AbilitySystemComponent;
 
 	// Attributes

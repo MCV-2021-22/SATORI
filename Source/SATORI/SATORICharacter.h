@@ -23,6 +23,7 @@ class ASATORICharacter : public ACharacter, public IAbilitySystemInterface
 public:
 	ASATORICharacter();
 
+	// For player controlled characters where the ASC lives on the Pawn
 	virtual void PossessedBy(AController* NewController) override;
 
 	/** Base turn rate, in deg/sec. Other scaling may affect final turn rate. */
@@ -77,7 +78,9 @@ public:
 
 protected:
 
+	// Initialization for player abilities
 	void ApplyDefaultAbilities();
+	// Helper function Granting a GameplayAbility to an ASC adds it to the ASC's list of ActivatableAbilities allowing it to activate the GameplayAbility
 	void GrantAbilityToPlayer(FGameplayAbilitySpec Ability);
 	void InitializePassiveAttributes();
 
