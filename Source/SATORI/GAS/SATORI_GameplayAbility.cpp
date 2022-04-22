@@ -4,6 +4,8 @@
 #include "SATORI_GameplayAbility.h"
 #include "AbilitySystemComponent.h"
 #include "GameplayTagContainer.h"
+#include "SATORICharacter.h"
+#include "Character/SATORI_PlayerState.h"
 
 USATORI_GameplayAbility::USATORI_GameplayAbility()
 {
@@ -19,4 +21,16 @@ void USATORI_GameplayAbility::OnAvatarSet(const FGameplayAbilityActorInfo* Actor
 	{
 		bool ActivatedAbility = ActorInfo->AbilitySystemComponent->TryActivateAbility(Spec.Handle, false);
 	}
+}
+
+ASATORICharacter* USATORI_GameplayAbility::GetOwningSatoriCharacter() const
+{
+	ASATORI_PlayerState* PS = Cast<ASATORI_PlayerState>(GetOwningActorFromActorInfo());
+	if (PS)
+	{
+		ASATORICharacter* PlayerCharacter = Cast<ASATORICharacter>(PS->GetPawn());
+		if (PlayerCharacter)
+			return PlayerCharacter;
+	}
+	return nullptr;
 }
