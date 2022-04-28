@@ -30,6 +30,15 @@ public:
 
 	void RegisterActorToSave();
 	void UnRegisterActorToSave();
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		float PlayerLife = 0.0f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		float PlayerMana = 0.0f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		int PlayerAbility = 0;
 private:
 	void InitSaveGame();
 
@@ -38,4 +47,6 @@ private:
 
 	UPROPERTY()
 	FString SaveSlotName = "MCVSaveData";
+
+	
 };

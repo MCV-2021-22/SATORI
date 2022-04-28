@@ -18,6 +18,15 @@ ASATORIGameMode::ASATORIGameMode()
 	}
 }
 
+void ASATORIGameMode::OpenLevel()
+{
+
+	int lastIndex = LevelName.Num();
+
+	int arrayValue = FMath::RandRange(0, lastIndex);
+
+}
+
 //void ASATORIGameMode::InitGame(const FString& MapName, const FString& Options, FString& ErrorMessage)
 //{
 //	// Restor level Actor state
