@@ -68,6 +68,8 @@ void ASATORICharacter::PossessedBy(AController* NewController)
 	{
 		AbilitySystemComponent = Cast<USATORI_AbilitySystemComponent>(PS->GetAbilitySystemComponent());	
 
+		AbilitySystemComponent->InitAbilityActorInfo(PS, this);
+
 		AttributeSetBase = PS->GetSatoriAttributeSet();
 
 		InitializePassiveAttributes();
@@ -96,8 +98,10 @@ void ASATORICharacter::ApplyDefaultAbilities()
 		return;
 	}
 
+	// Granting a GameplayAbility to an ASC adds it to the ASC's list of ActivatableAbilities allowing it to activate the GameplayAbility
 	for (FSATORIGameplayAbilityInfo Ability : DefaultAbilities->Abilities)
 	{
+		// GameplayAbilitySpec exists on the ASC after a GameplayAbility is granted and defines the activatable GameplayAbility
 		GrantAbilityToPlayer(FGameplayAbilitySpec(Ability.SATORIAbility, 1, static_cast<uint32>(Ability.AbilityKeys), this));
 	}
 }

@@ -13,6 +13,17 @@ class ASATORIGameMode : public AGameModeBase
 
 public:
 	ASATORIGameMode();
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		TArray<FName> LevelName = { FName("LevelFloorType1"), FName("LevelFloorType1_2"), FName("LevelFloorType1_3") };
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		int NumEnemies = 0;
+
+	UFUNCTION(BlueprintCallable)
+		void OpenLevel();
+
+	//virtual void InitGame(const FString& MapName, const FString& Options, FString& ErrorMessage) override;
 };
 
 

@@ -3,6 +3,9 @@
 #include "SATORIGameMode.h"
 #include "SATORICharacter.h"
 #include "UObject/ConstructorHelpers.h"
+#include "GameplayFramework/SATORI_GameInstance.h"
+#include "Savegame/SATORI_SaveGame.h"
+#include "Savegame/SATORI_ActorSaveData.h"
 
 ASATORIGameMode::ASATORIGameMode()
 {
@@ -14,3 +17,31 @@ ASATORIGameMode::ASATORIGameMode()
 		DefaultPawnClass = PlayerPawnBPClass.Class;
 	}
 }
+
+void ASATORIGameMode::OpenLevel()
+{
+
+	int lastIndex = LevelName.Num();
+
+	int arrayValue = FMath::RandRange(0, lastIndex);
+
+}
+
+//void ASATORIGameMode::InitGame(const FString& MapName, const FString& Options, FString& ErrorMessage)
+//{
+//	// Restor level Actor state
+//	USATORI_GameInstance* GameInst = GetWorld()->GetGameInstance<USATORI_GameInstance>();
+//	if (GameInst)
+//	{
+//		if (USATORI_SaveGame* SaveGame = GameInst->GetSATORISaveGame())
+//		{
+//			const FName LevelName = GetWorld()->GetPackage()->GetFName();
+//
+//			FSATORI_ActorDeleteData* DeleteActors = SaveGame->LevelActorSaveData.DeletedActorsByLevel.Find(LevelName);
+//			if (DeleteActors)
+//			{
+//				
+//			}
+//		}
+//	}
+//}

@@ -17,6 +17,9 @@ enum class SATORIMaskType : uint8
 
 class UGameplayEffect;
 
+/*
+* SATORI Mask Class contain 3 Mask Type
+*/
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class SATORI_API USATORI_AbilityMask : public UActorComponent
 {
@@ -32,13 +35,17 @@ protected:
 	virtual void BeginPlay() override;
 
 private:
+	// Helper function to choose which GE to Apply after player choose the mask
 	TSubclassOf<UGameplayEffect> ChooseMaskEffectoToApply(SATORIMaskType MaskType);
 
 public:	
+	// Mask Passvie GE to apply to player
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "GameplayEffect")
 	TSubclassOf<UGameplayEffect> AkaGameplayEffect;
+
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "GameplayEffect")
 	TSubclassOf<UGameplayEffect> AoGameplayEffect;
+
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "GameplayEffect")
 	TSubclassOf<UGameplayEffect> MidoriGameplayEffect;
 	//TMap<SATORIMaskType, UGameplayEffect> MaskEffects;

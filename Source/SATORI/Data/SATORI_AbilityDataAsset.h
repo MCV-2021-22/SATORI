@@ -24,6 +24,9 @@ struct FSATORIGameplayAbilityInfo
 	FText AbilityName;
 };
 
+/*
+* Data Asset register all player Abilities and we can activating in SATORICharacter Class
+*/
 UCLASS()
 class SATORI_API USATORI_AbilityDataAsset : public UDataAsset
 {
@@ -32,6 +35,7 @@ class SATORI_API USATORI_AbilityDataAsset : public UDataAsset
 public:
 	USATORI_AbilityDataAsset();
 
+	// Array of abilities
 	UPROPERTY(BlueprintReadOnly, EditAnywhere)
 	TArray<FSATORIGameplayAbilityInfo> Abilities;
 

@@ -8,6 +8,9 @@
 
 class USATORI_HealthWidget;
 
+/*
+* Player Main UI, contain health bar, coins etc
+*/
 UCLASS()
 class SATORI_API USATORI_MainUI : public UUserWidget
 {
@@ -15,10 +18,12 @@ class SATORI_API USATORI_MainUI : public UUserWidget
 public:
 	bool Initialize() override;
 
+	// Health widge
 	UPROPERTY(meta = (BindWidget))
 	USATORI_HealthWidget* PlayerHealth;
 
 public:
+	// Health helper functions
 	void SetHealthBarPercentage(float value);
 	void SetHealthTextBlock(float health, float MaxHealth);
 };

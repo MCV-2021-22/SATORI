@@ -8,12 +8,18 @@
 #include "SATORI_AttributeSet.generated.h"
 
 // Uses macros from AttributeSet.h
+// It will automatically generate getter and setter functions for your Attributes.
 #define ATTRIBUTE_ACCESSORS(ClassName, PropertyName) \
 	GAMEPLAYATTRIBUTE_PROPERTY_GETTER(ClassName, PropertyName) \
 	GAMEPLAYATTRIBUTE_VALUE_GETTER(PropertyName) \
 	GAMEPLAYATTRIBUTE_VALUE_SETTER(PropertyName) \
 	GAMEPLAYATTRIBUTE_VALUE_INITTER(PropertyName)
-
+/*
+* The AttributeSet defines, holds, and manages changes to Attributes
+* BaseValue and CurrentValue
+* - The "BaseValue" is the permanent value of the Attribute
+* whereas the "CurrentValue" is the BaseValue plus temporary modifications from GameplayEffects
+*/
 UCLASS()
 class SATORI_API USATORI_AttributeSet : public UAttributeSet
 {

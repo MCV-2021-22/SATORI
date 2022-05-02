@@ -59,6 +59,8 @@ void USATORI_DamageExecutionCalc::Execute_Implementation(const FGameplayEffectCu
 	EvaluationParameters.SourceTags = SourceTags;
 	EvaluationParameters.TargetTags = TargetTags;
 
+	// There are a few ways to send data to an ExecutionCalculation in addition to capturing Attributes
+	// 1 -SetByCaller
 	// Sending Data to Execution Calculations
 
 	float Defense = 0.0f;
