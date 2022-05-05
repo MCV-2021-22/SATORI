@@ -13,5 +13,10 @@ UCLASS()
 class SATORI_API ASATORI_Spawner : public ASATORI_AICharacter
 {
 	GENERATED_BODY()
+
+public:
+	ASATORI_Spawner();
+
+
 	
 };

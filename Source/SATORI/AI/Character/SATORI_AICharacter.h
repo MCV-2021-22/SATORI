@@ -6,6 +6,7 @@
 #include "GameFramework/Character.h"
 #include "AbilitySystemInterface.h"
 #include "AbilitySystemComponent.h"
+#include "GameplayTags.h"
 #include "SATORI_AICharacter.generated.h"
 
 class UGameplayEffect;
@@ -13,11 +14,17 @@ class USATORI_AttributeSet;
 class USATORI_AbilitySystemComponent;
 class USATORI_GameplayAbility;
 class USATORI_AbilityDataAsset;
+class UBehaviorTree;
+
+
 
 UCLASS()
 class SATORI_API ASATORI_AICharacter : public ACharacter, public IAbilitySystemInterface
 {
 	GENERATED_BODY()
+
+	
+
 
 public:
 	// Sets default values for this character's properties
@@ -35,6 +42,10 @@ protected:
 	virtual void AddAICharacterAbilities();
 
 	void GrantAbilityToPlayer(FGameplayAbilitySpec Ability);
+
+	virtual void PossessedBy(AController* NewController) override;
+
+
 public:
 	UPROPERTY()
 	USATORI_AttributeSet* AttributeSet;
@@ -53,5 +64,12 @@ protected:
 
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "AI|GAS")
 	TArray<TSubclassOf<USATORI_GameplayAbility>> AICharacterAbilities;
+
+	
+	UPROPERTY(EditAnywhere)
+		TSoftObjectPtr <UBehaviorTree> bte;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
+	UBehaviorTree* btree;
 
 };
