@@ -17,7 +17,7 @@ class SATORI_API USATORI_AbilitySystemComponent : public UAbilitySystemComponent
 	
 public:
 	//~ Begin UAbilitySystemComponent interface
-	virtual void InitAbilityActorInfo(AActor* InOwnerActor, AActor* InAvatarActor) override;
+	//virtual void InitAbilityActorInfo(AActor* InOwnerActor, AActor* InAvatarActor) override;
 	//~ End UAbilitySystemComponent interface
 
 	//~ Begin UObject interface
