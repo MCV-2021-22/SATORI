@@ -34,6 +34,10 @@ namespace ESATORIAbilityInputID
 		// 8 Sprint
 		Sprint			UMETA(DisplayName = "Sprint"),
 		// 9 Jump
-		Jump			UMETA(DisplayName = "Jump")
+		Jump			UMETA(DisplayName = "Jump"),
+		// Attack
+		Attack			UMETA(DisplayName = "Attack"),
+		// HeavyAttack
+		HeavyAttack			UMETA(DisplayName = "HeavyAttack")
 	};
 }
