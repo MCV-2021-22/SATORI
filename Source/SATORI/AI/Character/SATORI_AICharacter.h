@@ -15,7 +15,7 @@ class USATORI_AbilitySystemComponent;
 class USATORI_GameplayAbility;
 class USATORI_AbilityDataAsset;
 class UBehaviorTree;
-
+class UPawnSensingComponent;
 
 
 UCLASS()
@@ -56,12 +56,17 @@ public:
 	// Character Default Abilities Asset (Contain List of Player Abilities)
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "AI|GAS")
 	USATORI_AbilityDataAsset* DefaultAbilities;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Awareness)
+		UPawnSensingComponent* PawnSensor;
+
 protected:
 	// Default attributes for a character for initializing on spawn/respawn.
 	// This is an instant GE that overrides the values for attributes that get reset on spawn/respawn.
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "AI|GAS")
 	TSubclassOf<UGameplayEffect> DefaultAttributes;
 
+	
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "AI|GAS")
 	TArray<TSubclassOf<USATORI_GameplayAbility>> AICharacterAbilities;
 

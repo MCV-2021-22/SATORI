@@ -10,6 +10,7 @@
 #include "Data/SATORI_AbilityDataAsset.h"
 #include "BehaviorTree/BehaviorTree.h"
 #include "AIController.h"
+#include "Perception/PawnSensingComponent.h"
 
 // Sets default values
 ASATORI_AICharacter::ASATORI_AICharacter()
@@ -22,6 +23,10 @@ ASATORI_AICharacter::ASATORI_AICharacter()
 
 	AttributeSet = CreateDefaultSubobject<USATORI_AttributeSet>(TEXT("AttributeSet"));
 
+	PawnSensor = CreateDefaultSubobject<UPawnSensingComponent>(TEXT("Pawn Sensor"));
+	PawnSensor->SensingInterval = .25f; // 4 times per second
+	PawnSensor->bOnlySensePlayers = false;
+	PawnSensor->SetPeripheralVisionAngle(85.f);
 
 	//bte = TSoftObjectPtr <UBehaviorTree>(FSoftObjectPath(TEXT("/Game/SATORI/AI/Spawner/BT_Spawner.BT_Spawner")));
 	//btree = bte.LoadSynchronous();
