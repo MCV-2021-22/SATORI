@@ -14,6 +14,7 @@ class UGameplayEffect;
 class USATORI_AttributeSet;
 class USATORI_AbilitySystemComponent;
 class USATORI_AbilityMask;
+class USATORI_ANS_JumpSection;
 
 UCLASS(config=Game)
 class ASATORICharacter : public ACharacter, public IAbilitySystemInterface
@@ -73,9 +74,17 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Player|Attributes")
 	int32 GetCharacterLevel() const;
 
+	void SetComboJumpSection(USATORI_ANS_JumpSection* JumpSection);
+
+	// Combos 
+	UFUNCTION(BlueprintCallable)
+	bool AttackJumpSectionCombo();
+
+	UFUNCTION(BlueprintCallable)
+	bool PlayerActiveAbilityWithTag(FGameplayTag TagName);
+
 	// Getters for Components
 	FORCEINLINE class USATORI_StatsComponent* GetStatsComponent() const { return StatsComponent; }
-
 protected:
 
 	// Initialization for player abilities
@@ -97,6 +106,10 @@ protected:
 	// Component
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Player|Data")
 	class USATORI_StatsComponent* StatsComponent;
+
+	// Anim Notify Section
+	UPROPERTY()
+	USATORI_ANS_JumpSection* JumpSectionNS = nullptr;
 
 private:
 	/** Camera boom positioning the camera behind the character */

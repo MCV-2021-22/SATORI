@@ -16,6 +16,7 @@
 #include "SATORI/GAS/SATORI_AbilitySystemComponent.h"
 #include "Character/Mask/SATORI_AbilityMask.h"
 #include "Components/Player/SATORI_StatsComponent.h"
+#include "AnimNotify/State/SATORI_ANS_JumpSection.h"
 
 //////////////////////////////////////////////////////////////////////////
 // ASATORICharacter
@@ -203,6 +204,67 @@ void ASATORICharacter::SetHealth(float Health)
 {
 	if (AttributeSetBase.IsValid())
 		AttributeSetBase->SetHealth(Health);
+}
+
+void ASATORICharacter::SetComboJumpSection(USATORI_ANS_JumpSection* JumpSection)
+{
+	this->JumpSectionNS = JumpSection;
+
+	if (this->JumpSectionNS != nullptr)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Set jump section %s"), *JumpSection->NextMontageNames[0].ToString());
+	}
+}
+
+bool ASATORICharacter::AttackJumpSectionCombo()
+{
+	if (this->JumpSectionNS == nullptr)
+	{
+		UE_LOG(LogTemp, Display, TEXT("JumpSection failed : No JumpSectioNS!"));
+		return false;
+	}
+
+	if (!GetMesh())
+	{
+		return false;
+	}
+
+	UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
+	if(!AnimInstance)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("TriggerJumpSection failed: no anim instance!"));
+		return false;
+	}
+
+	UAnimMontage* CurrentActiveMontage = AnimInstance->GetCurrentActiveMontage();
+	if (!CurrentActiveMontage)
+	{
+		UE_LOG(LogTemp, Display, TEXT("TriggerJumpSection failed: no current montage!"));
+		return false;
+	}
+
+	const FName CurrentSectionName = AnimInstance->Montage_GetCurrentSection(CurrentActiveMontage);
+
+	const int RandInt = FMath::RandRange(0, this->JumpSectionNS->NextMontageNames.Num() - 1);
+	const FName NextSectionName = JumpSectionNS->NextMontageNames[RandInt];
+
+	AnimInstance->Montage_JumpToSection(NextSectionName, CurrentActiveMontage);
+
+	return true;
+}
+
+bool ASATORICharacter::PlayerActiveAbilityWithTag(FGameplayTag TagName)
+{
+	FGameplayTagContainer TagContainer;
+	TagContainer.AddTag(TagName);
+
+	if (!AbilitySystemComponent->TryActivateAbilitiesByTag(TagContainer))
+	{
+		UE_LOG(LogTemp, Warning, TEXT("TryActivateAbilitiesByTag failed "));
+		return false;
+	}
+
+	return true;
 }
 
 //////////////////////////////////////////////////////////////////////////
