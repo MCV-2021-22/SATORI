@@ -9,6 +9,7 @@
 #include "GameplayTags.h"
 #include "SATORI_AICharacter.generated.h"
 
+
 class UGameplayEffect;
 class USATORI_AttributeSet;
 class USATORI_AbilitySystemComponent;
@@ -59,6 +60,8 @@ public:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Awareness)
 		UPawnSensingComponent* PawnSensor;
+
+	
 
 protected:
 	// Default attributes for a character for initializing on spawn/respawn.

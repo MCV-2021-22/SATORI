@@ -6,6 +6,8 @@
 #include "AI/Character/SATORI_AICharacter.h"
 #include "SATORI_RangeMovable.generated.h"
 
+
+class USATORI_ArcherProjectileSpawnerComponent;
 /**
  * 
  */
@@ -14,4 +16,12 @@ class SATORI_API ASATORI_RangeMovable : public ASATORI_AICharacter
 {
 	GENERATED_BODY()
 	
+public:
+	
+	ASATORI_RangeMovable();
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+		USATORI_ArcherProjectileSpawnerComponent* ProjectileSpawnerComponent = nullptr;
+
+
 };

@@ -12,6 +12,7 @@
 #include "AIController.h"
 #include "Perception/PawnSensingComponent.h"
 
+
 // Sets default values
 ASATORI_AICharacter::ASATORI_AICharacter()
 {
@@ -31,6 +32,7 @@ ASATORI_AICharacter::ASATORI_AICharacter()
 	//bte = TSoftObjectPtr <UBehaviorTree>(FSoftObjectPath(TEXT("/Game/SATORI/AI/Spawner/BT_Spawner.BT_Spawner")));
 	//btree = bte.LoadSynchronous();
 
+	
 }
 
 // Called when the game starts or when spawned
