@@ -46,7 +46,7 @@ protected:
 	UPROPERTY(BlueprintReadOnly, EditAnywhere)
 	float Range;
 
-	UPROPERTY(BlueprintReadOnly, EditAnywhere)
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, meta = (UIMin = "5.0", UIMax = "85"))
 	float AngleRange;
 
 	UPROPERTY(BlueprintReadOnly, EditAnywhere)

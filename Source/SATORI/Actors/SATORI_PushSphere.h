@@ -29,6 +29,13 @@ public:
 	UPROPERTY(BlueprintReadOnly, EditAnywhere)
 	float Speed;
 
+	UPROPERTY(BlueprintReadOnly, EditAnywhere)
+	float Power;
+
+
+	UPROPERTY(BlueprintReadOnly, EditAnywhere)
+	bool Grounded;
+
 	UFUNCTION(BlueprintNativeEvent)
 	void HandleHit(AActor* OtherActor);
 
@@ -54,5 +61,7 @@ public:
 private:
 
 	void DestroyMyself();
+
+	UPrimitiveComponent* RootComp;
 	
 };

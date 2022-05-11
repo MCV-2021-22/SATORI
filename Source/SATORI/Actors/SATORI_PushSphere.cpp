@@ -13,7 +13,9 @@ ASATORI_PushSphere::ASATORI_PushSphere()
 	
 	//This shouldn't be here
 	Speed = 300.0f;
-	SphereRadius = 32.0f;
+	SphereRadius = 64.0f;
+	Power = 200.0f;
+	Grounded = false;
 
 	SphereComponent = CreateDefaultSubobject<USphereComponent>(TEXT("Sphere"));
 	SphereComponent->SetSphereRadius(SphereRadius);
@@ -46,15 +48,18 @@ void ASATORI_PushSphere::HandleHit_Implementation(AActor* OtherActor)
 	//TO DO: Use Tags for this
 	if (OtherActor->IsRootComponentMovable()) {
 
-		UPrimitiveComponent* RootComp = Cast<UPrimitiveComponent>(OtherActor->GetRootComponent());
-
-		RootComp->SetSimulatePhysics(true);
-		RootComp->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+		RootComp = Cast<UPrimitiveComponent>(OtherActor->GetRootComponent());
 
 		FVector Forward = GetActorForwardVector();
-		FVector Impulse = Forward * 200;
+		FVector Impulse = Forward * Power;
 
-		RootComp->AddImpulse(Impulse * RootComp->GetMass());
+		//Physics way
+		//RootComp->SetSimulatePhysics(true);
+		//RootComp->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+		//RootComp->AddImpulse(Impulse * RootComp->GetMass());
+
+		//No physics way
+		//RootComp->SetWorldLocation(GetActorLocation() + Impulse, true, 0, ETeleportType::None);
 
 		//Debug
 		FVector PosStart = GetActorLocation();
@@ -70,7 +75,41 @@ void ASATORI_PushSphere::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	SetActorLocation(GetActorLocation() + GetActorForwardVector() * Speed * DeltaTime);
+	FVector Start = GetActorLocation();
+
+	//Movement
+	SetActorLocation(Start + GetActorForwardVector() * Speed * DeltaTime);
+
+	//Testing
+	if (RootComp) {
+		RootComp->SetWorldLocation(GetActorLocation(), true, 0, ETeleportType::None);
+	}
+
+	if(Grounded){
+	//Stay always at X distance from ground
+	FHitResult OutHit;
+	FVector End = Start;
+	End.Z -= 150;
+	FCollisionQueryParams CollisionParams(FName("BlockAll"));
+	UWorld* World = GetWorld();
+	bool bHitAnything = World->LineTraceSingleByChannel(OutHit, Start, End, ECC_WorldStatic, CollisionParams);
+	DrawDebugLine(World, Start, End, bHitAnything ? FColor::Green : FColor::Red, false, 1.0f);
+
+
+	if (OutHit.Distance > 50) {
+		Start.Z -= 10;
+		SetActorLocation(Start);
+	}
+	if (OutHit.Distance < 30) {
+		Start.Z += 10;
+		SetActorLocation(Start);
+	}
+	}
+	//if (bHitAnything) {
+	//	GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Green, FString::Printf(TEXT("The Component Being Hit is: %s"), *OutHit.GetComponent()->GetName()));
+	//}
+
+
 
 }
 

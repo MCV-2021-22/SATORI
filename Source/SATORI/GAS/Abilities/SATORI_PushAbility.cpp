@@ -20,7 +20,7 @@ USATORI_PushAbility::USATORI_PushAbility ()
 	Speed = 300.0f;
 	Range = 500.0f;
 	AngleRange = 30.0f;
-	SphereRadius = 32.0f;
+	SphereRadius = 64.0f;
 	Damage = 12.0f;
 
 }
@@ -45,19 +45,19 @@ void USATORI_PushAbility::ActivateAbility(
 	}
 
 	//Calc for number of spheres to spawn to cover all range
-	int NumberOfSpheresToSpawn = (FMath::Tan(FMath::DegreesToRadians(AngleRange))) * Range * 2 / SphereRadius;
+	int NumberOfSpheresToSpawn = (FMath::Tan(FMath::DegreesToRadians(AngleRange))) * Range * 2 / (SphereRadius * 2);
 	UE_LOG(LogTemp, Display, TEXT("Number of spheres: %d"), NumberOfSpheresToSpawn);
 
 	//Calc for cone spawning
 	FRotator RotationOfSphere = Character->GetActorRotation();
-	RotationOfSphere.Yaw = RotationOfSphere.Yaw - AngleRange / 2;
+	RotationOfSphere.Yaw -= AngleRange / 2;
 	float IncrementAngle = AngleRange / NumberOfSpheresToSpawn;
 	
 	float TimeToDestroy = Range / Speed; //Time to destroy sphere
 
 	for (int i = 0; i < NumberOfSpheresToSpawn; i++) {
 
-		RotationOfSphere.Yaw = RotationOfSphere.Yaw + IncrementAngle;
+		RotationOfSphere.Yaw += IncrementAngle;
 
 		ASATORI_PushSphere* Sphere = GetWorld()->SpawnActor<ASATORI_PushSphere>(
 			PushSphereClass, //Actor to Spawn
