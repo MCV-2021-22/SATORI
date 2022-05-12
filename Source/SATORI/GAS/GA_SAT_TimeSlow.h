@@ -19,6 +19,8 @@ class SATORI_API UGA_SAT_TimeSlow : public UGameplayAbility
 	virtual void EndAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateEndAbility, bool bWasCancelled) override;
 
 public:
+	FTimerDelegate TimerDelegate;
+
 	FTimerHandle TimerHandle;
 
 protected:
@@ -26,8 +28,7 @@ protected:
 	float AbilityTime = 5.0f;
 
 private:
-	UFUNCTION()
-	void OnTimerFinished();
+	void OnTimerFinished(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo);
 
-	void StartTimeSlow();
+	void StartTimeSlow(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo);
 };
