@@ -4,6 +4,7 @@
 #include "GAS/Abilities/SATORI_PushAbility.h"
 #include "AbilitySystemComponent.h"
 #include "SATORICharacter.h"
+#include "TimerManager.h"
 
 USATORI_PushAbility::USATORI_PushAbility ()
 {
@@ -19,6 +20,7 @@ USATORI_PushAbility::USATORI_PushAbility ()
 	ActivationBlockedTags.AddTag(FGameplayTag::RequestGameplayTag(FName("Ability")));
 
 	//Ability default parameters
+	TimeToFinish = 0.5f;
 	CastDelay = 0.2f;
 	Speed = 2000.0f;
 	Range = 1000.0f;
@@ -78,8 +80,17 @@ void USATORI_PushAbility::ActivateAbility(
 		//	Sphere->InitializeParameters(SphereRadius, Speed, TimeToDestroy);
 	}
 
-	EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true);
+	FTimerHandle TimerHandle;
+	FTimerDelegate TimerDelegate = FTimerDelegate::CreateUObject(this, &USATORI_PushAbility::OnTimerExpiredFinish);
+	GetWorld()->GetTimerManager().SetTimer(TimerHandle, TimerDelegate, TimeToFinish, false);
+	
+	//EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true);
 
+}
+
+void USATORI_PushAbility::OnTimerExpiredFinish()
+{
+	EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true);
 }
 
 void USATORI_PushAbility::OnCancelled(FGameplayTag EventTag, FGameplayEventData EventData)

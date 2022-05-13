@@ -34,8 +34,12 @@ public:
 	UPROPERTY(BlueprintReadOnly, EditAnywhere)
 	TSubclassOf<ASATORI_PushSphere> PushSphereClass;
 
+	void OnTimerExpiredFinish();
 
 protected:
+
+	UPROPERTY(BlueprintReadOnly, EditAnywhere)
+	float TimeToFinish;
 
 	UPROPERTY(BlueprintReadOnly, EditAnywhere)
 	float CastDelay;

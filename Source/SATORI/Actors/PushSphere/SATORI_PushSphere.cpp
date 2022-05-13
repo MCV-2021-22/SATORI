@@ -30,13 +30,9 @@ ASATORI_PushSphere::ASATORI_PushSphere()
 void ASATORI_PushSphere::BeginPlay() {
 
 	Super::BeginPlay();
+
 	FTimerHandle UnusedHandle;
-	GetWorldTimerManager().SetTimer(
-		UnusedHandle,
-		this,
-		&ASATORI_PushSphere::OnTimerExpiredDestroy,
-		TimeToDestroy,
-		false);
+	GetWorldTimerManager().SetTimer(UnusedHandle, this, &ASATORI_PushSphere::OnTimerExpiredDestroy, TimeToDestroy, false);
 }
 
 //void ASATORI_PushSphere::InitializeParameters(float Radius, float Vel, float Delay)
