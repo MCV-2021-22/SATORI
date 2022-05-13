@@ -40,20 +40,17 @@ protected:
 	UPROPERTY(BlueprintReadOnly, EditAnywhere)
 	float CastDelay;
 
-	UPROPERTY(BlueprintReadOnly, EditAnywhere)
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, meta = (UIMin = "50.0"))
 	float Speed;
 
-	UPROPERTY(BlueprintReadOnly, EditAnywhere)
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, meta = (UIMin = "100.0", UIMax = "10000.0"))
 	float Range;
 
-	UPROPERTY(BlueprintReadOnly, EditAnywhere, meta = (UIMin = "5.0", UIMax = "85"))
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, meta = (UIMin = "5.0", UIMax = "85.0"))
 	float AngleRange;
 
-	UPROPERTY(BlueprintReadOnly, EditAnywhere)
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, meta = (UIMin = "8.0", UIMax = "128.0"))
 	float SphereRadius;
-
-	UPROPERTY(BlueprintReadOnly, EditAnywhere)
-	float Damage;
 
 	UFUNCTION()
 	void OnCancelled(FGameplayTag EventTag, FGameplayEventData EventData);

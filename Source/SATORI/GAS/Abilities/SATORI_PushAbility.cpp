@@ -4,24 +4,27 @@
 #include "GAS/Abilities/SATORI_PushAbility.h"
 #include "AbilitySystemComponent.h"
 #include "SATORICharacter.h"
-#include "Kismet/KismetMathLibrary.h"
+//#include "Kismet/KismetMathLibrary.h"
 
 USATORI_PushAbility::USATORI_PushAbility ()
 {
 
 	InstancingPolicy = EGameplayAbilityInstancingPolicy::InstancedPerActor;
+
+	//Ability Tags
 	FGameplayTag PushTag = FGameplayTag::RequestGameplayTag(FName("Ability.Push"));
 	AbilityTags.AddTag(PushTag);
 	ActivationOwnedTags.AddTag(PushTag);
 
+	BlockAbilitiesWithTag.AddTag(FGameplayTag::RequestGameplayTag(FName("Ability")));
 	ActivationBlockedTags.AddTag(FGameplayTag::RequestGameplayTag(FName("Ability")));
 
+	//Ability default parameters
 	CastDelay = 0.2f;
-	Speed = 300.0f;
-	Range = 500.0f;
+	Speed = 2000.0f;
+	Range = 1000.0f;
 	AngleRange = 30.0f;
-	SphereRadius = 64.0f;
-	Damage = 12.0f;
+	SphereRadius = 32.0f;
 
 }
 
@@ -44,6 +47,8 @@ void USATORI_PushAbility::ActivateAbility(
 		EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true);
 	}
 
+	//This calcs are for designing parameters for the ability
+	// 
 	//Calc for number of spheres to spawn to cover all range
 	int NumberOfSpheresToSpawn = (FMath::Tan(FMath::DegreesToRadians(AngleRange))) * Range * 2 / (SphereRadius * 2);
 	UE_LOG(LogTemp, Display, TEXT("Number of spheres: %d"), NumberOfSpheresToSpawn);
@@ -55,17 +60,25 @@ void USATORI_PushAbility::ActivateAbility(
 	
 	float TimeToDestroy = Range / Speed; //Time to destroy sphere
 
+	//Spawn location
+	FVector InFront = Character->GetActorForwardVector() * 100.0f;
+	FTransform SphereTransform = Character->GetTransform();
+	SphereTransform.AddToTranslation(InFront);
+
 	for (int i = 0; i < NumberOfSpheresToSpawn; i++) {
 
+		//Spawn Rotation
 		RotationOfSphere.Yaw += IncrementAngle;
-
+		SphereTransform.SetRotation(RotationOfSphere.Quaternion());
+		
 		ASATORI_PushSphere* Sphere = GetWorld()->SpawnActor<ASATORI_PushSphere>(
 			PushSphereClass, //Actor to Spawn
 			Character->GetActorLocation() + Character->GetActorForwardVector() * 100, //Spawn location
 			RotationOfSphere); //Spawn rotation
-
-		Sphere->delayedDestroy(TimeToDestroy);
+		if(Sphere)
+			Sphere->InitializeParameters(SphereRadius, Speed, TimeToDestroy);
 	}
+
 
 	EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true);
 

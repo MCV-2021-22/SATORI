@@ -17,32 +17,22 @@ class SATORI_API ASATORI_PushSphere : public AActor
 	
 public:	
 
-	// Sets default values for this actor's properties
+	UPROPERTY(BlueprintReadOnly, EditAnywhere)
+	float SphereRadius;
+	UPROPERTY(BlueprintReadOnly, EditAnywhere)
+	float Speed;
+	UPROPERTY(BlueprintReadOnly, EditAnywhere)
+	float TimeToDestroy;
+
 	ASATORI_PushSphere();
 
 	UPROPERTY(EditDefaultsOnly)
 	USphereComponent* SphereComponent = nullptr;
 
-	UPROPERTY(BlueprintReadOnly, EditAnywhere)
-	float SphereRadius;
-
-	UPROPERTY(BlueprintReadOnly, EditAnywhere)
-	float Speed;
-
-	UPROPERTY(BlueprintReadOnly, EditAnywhere)
-	float Power;
-
-
-	UPROPERTY(BlueprintReadOnly, EditAnywhere)
-	bool Grounded;
-
-	UFUNCTION(BlueprintNativeEvent)
-	void HandleHit(AActor* OtherActor);
-
-public:	
+	virtual void Tick(float DeltaTime) override;
 
 	UFUNCTION()
-		void OnOverlapSphere(
+	void OnOverlapSphere(
 			UPrimitiveComponent* OverlappedComp,
 			AActor* OtherActor,
 			UPrimitiveComponent* OtherComp,
@@ -50,18 +40,12 @@ public:
 			bool bFromSweep,
 			const FHitResult& SweepResult);
 
-	virtual void Tick(float DeltaTime) override;
+	void InitializeParameters(float, float, float);
 
-
-//TO DO: Improve destroy of actor
-public:
-
-	void delayedDestroy(float);
+	void OnTimerExpiredDestroy();
 
 private:
 
-	void DestroyMyself();
+	TArray<UPrimitiveComponent*> ArrayPushed;
 
-	UPrimitiveComponent* RootComp;
-	
 };
