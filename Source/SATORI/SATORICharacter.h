@@ -48,7 +48,6 @@ public:
 
 	UPROPERTY()
 	SATORIMaskType MaskType = SATORIMaskType::NONE;
-
 public:
 
 	UAbilitySystemComponent* GetAbilitySystemComponent() const override;
@@ -86,7 +85,6 @@ public:
 
 	// Getters for Components
 	FORCEINLINE class USATORI_StatsComponent* GetStatsComponent() const { return StatsComponent; }
-
 protected:
 
 	// Initialization for player abilities
@@ -112,7 +110,6 @@ protected:
 	// Anim Notify Section
 	UPROPERTY()
 	USATORI_ANS_JumpSection* JumpSectionNS = nullptr;
-
 
 private:
 	/** Camera boom positioning the camera behind the character */
@@ -148,6 +145,5 @@ protected:
 
 	/** Handler for when a touch input stops. */
 	void TouchStopped(ETouchIndex::Type FingerIndex, FVector Location);
-
 };
 

@@ -4,7 +4,6 @@
 #include "GAS/Abilities/SATORI_PushAbility.h"
 #include "AbilitySystemComponent.h"
 #include "SATORICharacter.h"
-//#include "Kismet/KismetMathLibrary.h"
 
 USATORI_PushAbility::USATORI_PushAbility ()
 {
@@ -75,10 +74,9 @@ void USATORI_PushAbility::ActivateAbility(
 			PushSphereClass, //Actor to Spawn
 			Character->GetActorLocation() + Character->GetActorForwardVector() * 100, //Spawn location
 			RotationOfSphere); //Spawn rotation
-		if(Sphere)
-			Sphere->InitializeParameters(SphereRadius, Speed, TimeToDestroy);
+		//if(Sphere)
+		//	Sphere->InitializeParameters(SphereRadius, Speed, TimeToDestroy);
 	}
-
 
 	EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true);
 
