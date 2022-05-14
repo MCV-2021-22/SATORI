@@ -16,6 +16,7 @@
 #include "SATORI/GAS/SATORI_AbilitySystemComponent.h"
 #include "Character/Mask/SATORI_AbilityMask.h"
 #include "Components/Player/SATORI_StatsComponent.h"
+#include "Components/Player/SATORI_ComboSystemComponent.h"
 #include "AnimNotify/State/SATORI_ANS_JumpSection.h"
 
 //////////////////////////////////////////////////////////////////////////
@@ -55,8 +56,8 @@ ASATORICharacter::ASATORICharacter()
 	// Components
 	SATORIAbilityMaskComponent = CreateDefaultSubobject<USATORI_AbilityMask>("MaskComponent");
 	StatsComponent = CreateDefaultSubobject<USATORI_StatsComponent>("StatsComponent");
-	/*AbilitySystemComponent = CreateDefaultSubobject<USATORI_AbilitySystemComponent>(TEXT("AbilitySystemComponent"));
-	AbilitySystemComponent->SetIsReplicated(true);*/
+	ComboSystemComponent = CreateDefaultSubobject<USATORI_ComboSystemComponent>("ComboSystemComponent");
+	
 }
 
 void ASATORICharacter::PossessedBy(AController* NewController)

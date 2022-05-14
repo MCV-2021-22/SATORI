@@ -85,6 +85,7 @@ public:
 
 	// Getters for Components
 	FORCEINLINE class USATORI_StatsComponent* GetStatsComponent() const { return StatsComponent; }
+	FORCEINLINE class USATORI_ComboSystemComponent* GetComboSystemComponent() const { return ComboSystemComponent; }
 protected:
 
 	// Initialization for player abilities
@@ -103,9 +104,12 @@ protected:
 	// USATORI_AttributeSet from the PlayerState 
 	TWeakObjectPtr<USATORI_AttributeSet> AttributeSetBase;
 
-	// Component
+	// Components
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Player|Data")
 	class USATORI_StatsComponent* StatsComponent;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Player|Data")
+	class USATORI_ComboSystemComponent* ComboSystemComponent;
 
 	// Anim Notify Section
 	UPROPERTY()
