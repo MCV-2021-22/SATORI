@@ -268,6 +268,16 @@ bool ASATORICharacter::PlayerActiveAbilityWithTag(FGameplayTag TagName)
 	return true;
 }
 
+void ASATORICharacter::AddGameplayTag(const FGameplayTag& TagToAdd)
+{
+	AbilitySystemComponent->AddLooseGameplayTag(TagToAdd);
+}
+
+void ASATORICharacter::RemoveGameplayTag(const FGameplayTag& TagToRemove)
+{
+	AbilitySystemComponent->RemoveLooseGameplayTag(TagToRemove);
+}
+
 //////////////////////////////////////////////////////////////////////////
 // Input
 

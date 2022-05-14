@@ -29,18 +29,18 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void HeavyAttack();
 
+	UFUNCTION(BlueprintCallable)
+	bool CanComboAttack();
+
 	void ResetAllAttribute();
 
 public:
 	int lightAttackCounter = 0;
 	int HeavyAttackCounter = 0;
 
+	bool isLightAttack = true;
+	bool isHeavyAttack = true;
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
-
-	bool isLightAttack = true;
-	bool isHeavyAttack = true;
-
-	
 };

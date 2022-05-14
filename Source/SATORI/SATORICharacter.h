@@ -83,9 +83,12 @@ public:
 	UFUNCTION(BlueprintCallable)
 	bool PlayerActiveAbilityWithTag(FGameplayTag TagName);
 
+	void AddGameplayTag(const FGameplayTag& TagToAdd);
+	void RemoveGameplayTag(const FGameplayTag& TagToRemove);
+
 	// Getters for Components
 	FORCEINLINE class USATORI_StatsComponent* GetStatsComponent() const { return StatsComponent; }
-	FORCEINLINE class USATORI_ComboSystemComponent* GetComboSystemComponent() const { return ComboSystemComponent; }
+	class USATORI_ComboSystemComponent* GetComboSystemComponent() const { return ComboSystemComponent; }
 protected:
 
 	// Initialization for player abilities
@@ -105,10 +108,10 @@ protected:
 	TWeakObjectPtr<USATORI_AttributeSet> AttributeSetBase;
 
 	// Components
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Player|Data")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	class USATORI_StatsComponent* StatsComponent;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Player|Data")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	class USATORI_ComboSystemComponent* ComboSystemComponent;
 
 	// Anim Notify Section

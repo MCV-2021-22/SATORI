@@ -18,10 +18,11 @@ void USATORI_ANS_Combo::NotifyBegin(USkeletalMeshComponent* MeshComp, UAnimSeque
 		if (ComboSystem)
 		{
 			UE_LOG(LogTemp, Display, TEXT("ComboSection Begin"));
-			if (ComboState == EComboState::SafeAttack)
+			/*if (ComboState == EComboState::SafeAttack)
 			{
 				ComboSystem->lightAttackCounter += 1;
-			}
+			}*/
+			ComboSystem->isLightAttack = false;
 		}
 	}
 	/*
@@ -42,20 +43,20 @@ void USATORI_ANS_Combo::NotifyEnd(USkeletalMeshComponent* MeshComp, UAnimSequenc
 {
 	Super::NotifyEnd(MeshComp, Animation);
 
-	//UE_LOG(LogTemp, Display, TEXT("ComboSection End"));
+	UE_LOG(LogTemp, Display, TEXT("ComboSection End"));
 
-	//ASATORICharacter* PlayerCharacter = Cast<ASATORICharacter>(MeshComp->GetOwner());
-	//USATORI_ComboSystemComponent* ComboSystem = PlayerCharacter->GetComboSystemComponent();
-
-	//if (ComboState == EComboResetState::ResetAttack)
-	//{
-	//	// Reset only Attack and Counter
-	//}
-
-	//else if (ComboState == EComboResetState::SafeAttack)
-	//{
-	//	// Reset Only Attack
-	//}
-
-	//ComboSystem->ResetAllAttribute();
+	ASATORICharacter* PlayerCharacter = Cast<ASATORICharacter>(MeshComp->GetOwner());
+	if (PlayerCharacter)
+	{
+		USATORI_ComboSystemComponent* ComboSystem = PlayerCharacter->GetComboSystemComponent();
+		if (ComboSystem)
+		{
+			UE_LOG(LogTemp, Display, TEXT("ComboSection Begin"));
+			/*if (ComboState == EComboState::SafeAttack)
+			{
+				ComboSystem->lightAttackCounter += 1;
+			}*/
+			ComboSystem->isLightAttack = true;
+		}
+	}
 }

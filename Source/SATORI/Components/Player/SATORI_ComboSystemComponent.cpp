@@ -24,14 +24,14 @@ void USATORI_ComboSystemComponent::LigthAttack()
 	if (isLightAttack)
 	{
 		isHeavyAttack = false;
-		isLightAttack = false;
+		//isLightAttack = false;
 		if (lightAttackCounter >= LightAttackMontageToPlay.Num() - 1)
 		{
 			lightAttackCounter = 0;
 		}
 		else
 		{
-			lightAttackCounter++;
+			lightAttackCounter ++;
 		}
 	}
 	
@@ -53,4 +53,12 @@ void USATORI_ComboSystemComponent::ResetAllAttribute()
 	isHeavyAttack = true;*/
 	lightAttackCounter = 0;
 	HeavyAttackCounter = 0;
+}
+
+bool USATORI_ComboSystemComponent::CanComboAttack()
+{
+	if (isLightAttack || isHeavyAttack)
+		return true;
+
+	return false;
 }
