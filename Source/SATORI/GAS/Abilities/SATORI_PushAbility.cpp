@@ -12,19 +12,18 @@ USATORI_PushAbility::USATORI_PushAbility ()
 	InstancingPolicy = EGameplayAbilityInstancingPolicy::InstancedPerActor;
 
 	//Ability Tags
-	FGameplayTag PushTag = FGameplayTag::RequestGameplayTag(FName("Ability.Push"));
-	AbilityTags.AddTag(PushTag);
-	ActivationOwnedTags.AddTag(PushTag);
+	FGameplayTag Tag = FGameplayTag::RequestGameplayTag(FName("Ability.Push"));
+	AbilityTags.AddTag(Tag);
+	ActivationOwnedTags.AddTag(Tag);
 
 	BlockAbilitiesWithTag.AddTag(FGameplayTag::RequestGameplayTag(FName("Ability")));
 	ActivationBlockedTags.AddTag(FGameplayTag::RequestGameplayTag(FName("Ability")));
 
 	//Ability default parameters
-	TimeToFinish = 0.5f;
+	TimeToFinish = 1.5f;
 	CastDelay = 0.2f;
-	Speed = 2000.0f;
-	Range = 1000.0f;
-	AngleRange = 30.0f;
+	Range = 3000.0f;
+	AngleRange = 60.0f;
 	SphereRadius = 32.0f;
 
 }
@@ -58,8 +57,6 @@ void USATORI_PushAbility::ActivateAbility(
 	FRotator RotationOfSphere = Character->GetActorRotation();
 	RotationOfSphere.Yaw -= AngleRange / 2;
 	float IncrementAngle = AngleRange / NumberOfSpheresToSpawn;
-	
-	float TimeToDestroy = Range / Speed; //Time to destroy sphere
 
 	//Spawn location
 	FVector InFront = Character->GetActorForwardVector() * 100.0f;
@@ -72,8 +69,8 @@ void USATORI_PushAbility::ActivateAbility(
 		RotationOfSphere.Yaw += IncrementAngle;
 		SphereTransform.SetRotation(RotationOfSphere.Quaternion());
 		
-		ASATORI_PushSphere* Sphere = GetWorld()->SpawnActor<ASATORI_PushSphere>(
-			PushSphereClass, //Actor to Spawn
+		ASATORI_PushActor* Push = GetWorld()->SpawnActor<ASATORI_PushActor>(
+			PushActor, //Actor to Spawn
 			Character->GetActorLocation() + Character->GetActorForwardVector() * 100, //Spawn location
 			RotationOfSphere); //Spawn rotation
 		//if(Sphere)

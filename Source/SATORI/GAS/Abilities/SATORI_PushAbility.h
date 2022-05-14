@@ -5,7 +5,7 @@
 #include "CoreMinimal.h"
 #include "GAS/SATORI_GameplayAbility.h"
 #include "SATORI/AbilityTask/SATORI_PlayMontageandWaitNotify.h"
-#include "Actors/PushSphere/SATORI_PushSphere.h"
+#include "Actors/Push/SATORI_PushActor.h"
 #include "SATORI_PushAbility.generated.h"
 
 /**
@@ -32,7 +32,7 @@ public:
 		override;
 
 	UPROPERTY(BlueprintReadOnly, EditAnywhere)
-	TSubclassOf<ASATORI_PushSphere> PushSphereClass;
+	TSubclassOf<ASATORI_PushActor> PushActor;
 
 	void OnTimerExpiredFinish();
 
@@ -43,9 +43,6 @@ protected:
 
 	UPROPERTY(BlueprintReadOnly, EditAnywhere)
 	float CastDelay;
-
-	UPROPERTY(BlueprintReadOnly, EditAnywhere, meta = (UIMin = "50.0"))
-	float Speed;
 
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, meta = (UIMin = "100.0", UIMax = "10000.0"))
 	float Range;

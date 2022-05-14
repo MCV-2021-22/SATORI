@@ -23,8 +23,8 @@ namespace ESATORIAbilityInputID
 		Cancel			UMETA(DisplayName = "Cancel"),
 		// Push
 		Push			UMETA(DisplayName = "Push"),
-		// 4 RMB
-		Ability2		UMETA(DisplayName = "Ability2"),
+		// Pull
+		Pull			UMETA(DisplayName = "Pull"),
 		// 5 Q
 		Ability3		UMETA(DisplayName = "Ability3"),
 		// 6 E
