@@ -278,6 +278,11 @@ void ASATORICharacter::RemoveGameplayTag(const FGameplayTag& TagToRemove)
 	AbilitySystemComponent->RemoveLooseGameplayTag(TagToRemove);
 }
 
+void ASATORICharacter::BlockGameplayTag(const FGameplayTagContainer& TagsToBlock)
+{
+	AbilitySystemComponent->BlockAbilitiesWithTags(TagsToBlock);
+}
+
 //////////////////////////////////////////////////////////////////////////
 // Input
 
