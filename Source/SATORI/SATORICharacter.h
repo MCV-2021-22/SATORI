@@ -48,6 +48,10 @@ public:
 
 	UPROPERTY()
 	SATORIMaskType MaskType = SATORIMaskType::NONE;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	int AbilityToChoose = 0;
+
 public:
 
 	UAbilitySystemComponent* GetAbilitySystemComponent() const override;
