@@ -283,6 +283,11 @@ void ASATORICharacter::BlockGameplayTag(const FGameplayTagContainer& TagsToBlock
 	AbilitySystemComponent->BlockAbilitiesWithTags(TagsToBlock);
 }
 
+void ASATORICharacter::UnBlockGameplayTag(const FGameplayTagContainer& TagsToBlock)
+{
+	AbilitySystemComponent->UnBlockAbilitiesWithTags(TagsToBlock);
+}
+
 //////////////////////////////////////////////////////////////////////////
 // Input
 

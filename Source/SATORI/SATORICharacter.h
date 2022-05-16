@@ -86,6 +86,7 @@ public:
 	void AddGameplayTag(const FGameplayTag& TagToAdd);
 	void RemoveGameplayTag(const FGameplayTag& TagToRemove);
 	void BlockGameplayTag(const FGameplayTagContainer& TagsToBlock);
+	void UnBlockGameplayTag(const FGameplayTagContainer& TagsToBlock);
 
 	// Getters for Components
 	FORCEINLINE class USATORI_StatsComponent* GetStatsComponent() const { return StatsComponent; }

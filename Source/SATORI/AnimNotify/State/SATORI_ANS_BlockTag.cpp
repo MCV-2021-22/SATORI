@@ -36,6 +36,8 @@ void USATORI_ANS_BlockTag::NotifyEnd(USkeletalMeshComponent* MeshComp, UAnimSequ
 	}
 
 	if (ASATORICharacter* Character = MeshComp->GetOwner<ASATORICharacter>()) {
-		Character->RemoveGameplayTag(TagToBlock);
+		FGameplayTagContainer TagContainer;
+		TagContainer.AddTag(TagToBlock);
+		Character->UnBlockGameplayTag(TagContainer);
 	}
 }
