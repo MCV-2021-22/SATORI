@@ -12,6 +12,7 @@ class USATORI_ArcherProjectileSpawnerComponent : public UActorComponent
 
 public:
 
+
 	UPROPERTY(EditAnywhere)
 		TSubclassOf<ASATORI_ArcherProjectile> ProjectileClass;
 

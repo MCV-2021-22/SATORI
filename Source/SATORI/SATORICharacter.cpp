@@ -54,8 +54,18 @@ ASATORICharacter::ASATORICharacter()
 	// Components
 	SATORIAbilityMaskComponent = CreateDefaultSubobject<USATORI_AbilityMask>("MaskComponent");
 	StatsComponent = CreateDefaultSubobject<USATORI_StatsComponent>("StatsComponent");
-	/*AbilitySystemComponent = CreateDefaultSubobject<USATORI_AbilitySystemComponent>(TEXT("AbilitySystemComponent"));
-	AbilitySystemComponent->SetIsReplicated(true);*/
+	AbilitySystemComponent = CreateDefaultSubobject<USATORI_AbilitySystemComponent>(TEXT("AbilitySystemComponent"));
+	AbilitySystemComponent->SetIsReplicated(true);
+}
+
+void ASATORICharacter::AddGameplayTag(const FGameplayTag& TagToAdd)
+{
+	AbilitySystemComponent->AddLooseGameplayTag(TagToAdd);
+}
+
+void ASATORICharacter::RemoveGameplayTag(const FGameplayTag& TagToRemove)
+{
+	AbilitySystemComponent->RemoveLooseGameplayTag(TagToRemove);
 }
 
 void ASATORICharacter::PossessedBy(AController* NewController)
@@ -72,6 +82,13 @@ void ASATORICharacter::PossessedBy(AController* NewController)
 
 		AttributeSetBase = PS->GetSatoriAttributeSet();
 
+	
+		GameplayTags.AddTag(FGameplayTag::RequestGameplayTag("PossessedBy.Player"));
+		
+
+		Tags.Add("PossessedBy.Player");
+
+
 		InitializePassiveAttributes();
 		ApplyDefaultAbilities();
 
@@ -82,7 +99,17 @@ void ASATORICharacter::PossessedBy(AController* NewController)
 
 		// Set Health to Max Health Value
 		SetHealth(GetMaxHealth());
-	}		
+	}
+
+	if (Cast<APlayerController>(NewController) != nullptr) {
+		int a = 1;
+		GameplayTags.AddTag(FGameplayTag::RequestGameplayTag("PossessedBy.Player"));
+		//AbilitySystemComponent->AddLooseGameplayTag(FGameplayTag::RequestGameplayTag("PossessedBy.Player"));
+		//AddGameplayTag(FGameplayTag::RequestGameplayTag("PossessedBy.AI"));
+
+
+
+	}
 }
 
 UAbilitySystemComponent* ASATORICharacter::GetAbilitySystemComponent() const
@@ -283,4 +310,24 @@ void ASATORICharacter::MoveRight(float Value)
 		// add movement in that direction
 		AddMovementInput(Direction, Value);
 	}
+}
+
+void ASATORICharacter::GetOwnedGameplayTags(FGameplayTagContainer& TagContainer) const
+{
+	TagContainer = GameplayTags;
+}
+
+bool ASATORICharacter::HasMatchingGameplayTag(FGameplayTag TagToCheck) const
+{
+	return GameplayTags.HasTag(TagToCheck);
+}
+
+bool ASATORICharacter::HasAllMatchingGameplayTags(const FGameplayTagContainer& TagContainer) const
+{
+	return GameplayTags.HasAll(TagContainer);
+}
+
+bool ASATORICharacter::HasAnyMatchingGameplayTags(const FGameplayTagContainer& TagContainer) const
+{
+	return GameplayTags.HasAny(TagContainer);
 }

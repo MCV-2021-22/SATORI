@@ -17,10 +17,10 @@ class SATORI_API ISATORI_GameplayTagInterface
 {
 	GENERATED_BODY()
 
-	UFUNCTION(BlueprintCallable, Category = MCVGameplayTags)
+	UFUNCTION(BlueprintCallable, Category = SATORIGameplayTags)
 	virtual void AddGameplayTag(const FGameplayTag& TagToAdd) = 0;
 
-	UFUNCTION(BlueprintCallable, Category= MCVGameplayTags)
+	UFUNCTION(BlueprintCallable, Category= SATORIGameplayTags)
 	virtual void RemoveGameplayTag(const FGameplayTag& TagToRemove) = 0;
 
 };

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+
 #include "GameplayTagAssetInterface.h"
 #include "SATORI_ArcherProjectile.generated.h"
 
@@ -13,6 +14,7 @@ class ASATORI_ArcherProjectile : public AActor
 	GENERATED_BODY()
 
 public:
+	ASATORI_ArcherProjectile();
 
 	UPROPERTY(EditDefaultsOnly)
 		USphereComponent* SphereComponent = nullptr;
@@ -20,31 +22,30 @@ public:
 	UPROPERTY(EditDefaultsOnly)
 		UStaticMeshComponent* StaticMeshComponent = nullptr;
 
-	UPROPERTY(EditDefaultsOnly)
-		int RemainingSeconds = 5;
 
 	UPROPERTY(EditDefaultsOnly)
 	float Damage = 10.0f;
 
-	ASATORI_ArcherProjectile();
-
-	void BeginPlay() override;
-
-	void Explode();
-
-	UFUNCTION(BlueprintImplementableEvent)
-		void BP_OnExplosion();
-
 	
+
+	virtual void BeginPlay() override;
+
+	virtual void Tick(float DeltaTime) override;
+
+	void setDirection(FVector newDirection);
+
 
 protected:
 
-	FTimerHandle ExplodeTimerHandle;
 
-	UFUNCTION()
-	void OnComponentHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
+
+	//UFUNCTION()
+	//void OnComponentHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
 
 	bool IsHostile(const IGameplayTagAssetInterface* InstigatorTagInterface, const IGameplayTagAssetInterface* OtherTagInterface) const;
+
+	FVector direction;
+
 };
 
 

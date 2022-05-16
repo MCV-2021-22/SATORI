@@ -6,7 +6,6 @@
 #include "SATORI/GAS/SATORI_AbilitySystemComponent.h"
 #include "Abilities/GameplayAbility.h"
 #include "GameFramework/Controller.h"
-#include "GAS/SATORI_GameplayAbility.h"
 #include "Data/SATORI_AbilityDataAsset.h"
 #include "BehaviorTree/BehaviorTree.h"
 #include "AIController.h"

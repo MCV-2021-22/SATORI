@@ -13,5 +13,7 @@ UCLASS()
 class SATORI_API ASATORI_RangeStatic : public ASATORI_AICharacter
 {
 	GENERATED_BODY()
-	
+
+public:
+	ASATORI_RangeStatic();
 };

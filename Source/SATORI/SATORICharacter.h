@@ -7,7 +7,10 @@
 #include "AbilitySystemInterface.h"
 #include "AbilitySystemComponent.h"
 #include "Character/Mask/SATORI_AbilityMask.h"
+#include "GameplayTags.h"
+#include "Interfaces/SATORI_GameplayTagInterface.h"
 #include "SATORICharacter.generated.h"
+
 
 class USATORI_AbilityDataAsset;
 class UGameplayEffect;
@@ -16,7 +19,7 @@ class USATORI_AbilitySystemComponent;
 class USATORI_AbilityMask;
 
 UCLASS(config=Game)
-class ASATORICharacter : public ACharacter, public IAbilitySystemInterface
+class ASATORICharacter : public ACharacter, public IAbilitySystemInterface, public IGameplayTagAssetInterface
 {
 	GENERATED_BODY()
 
@@ -76,6 +79,10 @@ public:
 	// Getters for Components
 	FORCEINLINE class USATORI_StatsComponent* GetStatsComponent() const { return StatsComponent; }
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		FGameplayTagContainer GameplayTags;
+
+
 protected:
 
 	// Initialization for player abilities
@@ -85,6 +92,8 @@ protected:
 	void InitializePassiveAttributes();
 
 	virtual void SetHealth(float Health);
+
+	
 
 protected:
 
@@ -112,6 +121,17 @@ public:
 	FORCEINLINE class USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
 	/** Returns FollowCamera subobject **/
 	FORCEINLINE class UCameraComponent* GetFollowCamera() const { return FollowCamera; }
+
+	
+
+	virtual void AddGameplayTag(const FGameplayTag& TagToAdd);
+	virtual void RemoveGameplayTag(const FGameplayTag& TagToRemove);
+
+	virtual void GetOwnedGameplayTags(FGameplayTagContainer& TagContainer) const override;
+	virtual bool HasMatchingGameplayTag(FGameplayTag TagToCheck) const override;
+	virtual bool HasAllMatchingGameplayTags(const FGameplayTagContainer& TagContainer) const override;
+	virtual bool HasAnyMatchingGameplayTags(const FGameplayTagContainer& TagContainer) const override;
+
 
 protected:
 	// SetupPlayerInputComponent
