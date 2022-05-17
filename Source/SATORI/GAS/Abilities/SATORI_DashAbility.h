@@ -19,6 +19,12 @@ class SATORI_API USATORI_DashAbility : public USATORI_GameplayAbility
 {
 	GENERATED_BODY()
 
+	FVector Direction = FVector::FVector(1.0f, 0.0f, 0.0f); //It just works
+
+	FTimerHandle TimerHandleDash;
+
+	int CallTrackerRegistry;
+
 public:
 
 	USATORI_DashAbility();
@@ -35,6 +41,8 @@ public:
 
 	void OnTimerExpiredFinish();
 
+	void Dashing();
+
 protected:
 
 	UPROPERTY(BlueprintReadOnly, EditAnywhere)
@@ -44,7 +52,10 @@ protected:
 		float CastDelay;
 
 	UPROPERTY(BlueprintReadOnly, EditAnywhere)
-		float DashDistance;
+	float DashDistance;
+
+	UPROPERTY(BlueprintReadOnly, EditAnywhere)
+	int CallTracker;
 
 	UPROPERTY(BlueprintReadOnly, EditAnywhere)
 		float DashSpeed;

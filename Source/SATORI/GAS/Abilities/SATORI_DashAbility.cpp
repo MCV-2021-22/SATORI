@@ -19,10 +19,12 @@ USATORI_DashAbility::USATORI_DashAbility() {
 	ActivationBlockedTags.AddTag(FGameplayTag::RequestGameplayTag(FName("Ability")));
 
 	//Ability default parameters
-	TimeToFinish = 0.5f;
+	TimeToFinish = 1.0f;
 	CastDelay = 0.1f;
-	DashDistance = 100.0f;
-	DashSpeed = 50.0f;
+	DashDistance = 25.0f;
+	CallTracker = 50;
+	CallTrackerRegistry = CallTracker;
+	DashSpeed = 0.01f;
 
 }
 
@@ -33,28 +35,42 @@ void USATORI_DashAbility::ActivateAbility(
 	const FGameplayEventData* TriggerEventData)
 {
 
-	if (!CommitAbility(Handle, ActorInfo, ActivationInfo))
-	{
-		EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true);
-	}
-
 	ASATORICharacter* Character = Cast<ASATORICharacter>(GetAvatarActorFromActorInfo());
-
+	
 	if (!Character)
 	{
 		EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true);
 	}
 
-	const FVector Dash = Character->GetCharacterMovement()->GetLastInputVector();
-	if (Character->GetCharacterMovement()->Velocity != FVector::ZeroVector)
-	{
-		Character->LaunchCharacter(Dash * DashDistance * DashSpeed, true, true);
+	if (Character->GetCharacterMovement()->Velocity != FVector::ZeroVector) {
+
+		const FVector Dash = Character->GetCharacterMovement()->GetLastInputVector();
+
+		FTimerDelegate TimerDelegateDash = FTimerDelegate::CreateUObject(this, &USATORI_DashAbility::Dashing);
+		GetWorld()->GetTimerManager().SetTimer(TimerHandleDash, TimerDelegateDash, DashSpeed, true);
+
+
+		FTimerHandle TimerHandleFinish;
+		FTimerDelegate TimerDelegateFinish = FTimerDelegate::CreateUObject(this, &USATORI_DashAbility::OnTimerExpiredFinish);
+		GetWorld()->GetTimerManager().SetTimer(TimerHandleFinish, TimerDelegateFinish, TimeToFinish, false);
+	}
+	else {
+		EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true);
 	}
 
+}
 
-	FTimerHandle TimerHandle;
-	FTimerDelegate TimerDelegate = FTimerDelegate::CreateUObject(this, &USATORI_DashAbility::OnTimerExpiredFinish);
-	GetWorld()->GetTimerManager().SetTimer(TimerHandle, TimerDelegate, TimeToFinish, false);
+void USATORI_DashAbility::Dashing() {
+
+	ASATORICharacter* Character = Cast<ASATORICharacter>(GetAvatarActorFromActorInfo());
+	Character->AddActorLocalOffset(Direction * DashDistance);
+
+	CallTracker--;
+	UE_LOG(LogTemp, Display, TEXT("CallTracker: %d"), CallTracker);
+	if (CallTracker == 0) {
+		GetWorld()->GetTimerManager().ClearTimer(TimerHandleDash);
+		CallTracker = CallTrackerRegistry;
+	}
 
 }
 
