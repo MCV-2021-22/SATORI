@@ -55,12 +55,10 @@ void UGA_ArquerosMisil::ActivateAbility(const FGameplayAbilitySpecHandle Handle,
 			
 			FTransform IATransform = ActorInfo->AvatarActor->GetTransform();
 
-			ASATORICharacter* Character = Cast<ASATORICharacter>(GetAvatarActorFromActorInfo());
-			FRotator RotationOfSphere = Character->GetActorRotation();
 
 			ASATORI_ArcherProjectile* Sphere = GetWorld()->SpawnActor<ASATORI_ArcherProjectile>(ProjectileClass,
-				Character->GetActorLocation() + Character->GetActorForwardVector() * 100,
-				RotationOfSphere);
+				ActorInfo->AvatarActor->GetActorLocation() + ActorInfo->AvatarActor->GetActorForwardVector() * 100,
+				RotationOfIA);
 
 			
 		/*	ASATORI_ArcherProjectile* Sphere = GetWorld()->SpawnActor<ASATORI_ArcherProjectile>(

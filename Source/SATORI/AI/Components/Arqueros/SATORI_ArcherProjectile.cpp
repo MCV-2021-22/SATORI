@@ -26,7 +26,7 @@ ASATORI_ArcherProjectile::ASATORI_ArcherProjectile()
 	TArray< AActor* > enemigos;
 	UGameplayStatics::GetAllActorsWithTag(GetWorld(), FName("PossessedBy.Player"), enemigos);
 
-	for (AActor* Actor : enemigos)
+	/*for (AActor* Actor : enemigos)
 	{
 		//Actor->Tags.Add("PossessedBy.Player");
 		if (Cast<ASATORICharacter>(Actor) != nullptr)
@@ -43,16 +43,16 @@ ASATORI_ArcherProjectile::ASATORI_ArcherProjectile()
 			FVector newForward = dest - this->GetActorLocation();
 			newForward.Normalize();
 
-			//direction = newForward * 50;
-			direction = FVector(1, 1, 0);
-			direction.Normalize();
-			direction = direction * 50;
+			direction = newForward * 50;
+			//direction = FVector(1, 1, 0);
+			//direction.Normalize();
+			//direction = direction * 50;
 			UE_LOG(LogTemp, Display, TEXT("Se esta creando la bala"));
 			break;
 
 		}
 
-	}
+	}*/
 	UE_LOG(LogTemp, Display, TEXT("Bala creada 222 "));
 }
 
@@ -88,10 +88,10 @@ void ASATORI_ArcherProjectile::BeginPlay()
 			FVector newForward = dest - this->GetActorLocation();
 			newForward.Normalize();
 
-			//direction = newForward * 50;
-			direction = FVector(1, 1, 0);
-			direction.Normalize();
-			direction = direction * 50;
+			direction = newForward * 50;
+			//direction = FVector(1, 1, 0);
+			//direction.Normalize();
+			//direction = direction * 50;
 
 			break;
 

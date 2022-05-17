@@ -133,6 +133,7 @@ void ASATORI_AICharacter::PossessedBy(AController* NewController)
 		btree = bte.LoadSynchronous();
 		controller->RunBehaviorTree(btree);
 
+		AddAICharacterAbilities();
 
 
 	}
