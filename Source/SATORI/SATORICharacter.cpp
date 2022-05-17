@@ -16,8 +16,6 @@
 #include "SATORI/GAS/SATORI_AbilitySystemComponent.h"
 #include "Character/Mask/SATORI_AbilityMask.h"
 #include "Components/Player/SATORI_StatsComponent.h"
-#include "Components/Player/SATORI_ComboSystemComponent.h"
-#include "AnimNotify/State/SATORI_ANS_JumpSection.h"
 
 //////////////////////////////////////////////////////////////////////////
 // ASATORICharacter
@@ -56,8 +54,18 @@ ASATORICharacter::ASATORICharacter()
 	// Components
 	SATORIAbilityMaskComponent = CreateDefaultSubobject<USATORI_AbilityMask>("MaskComponent");
 	StatsComponent = CreateDefaultSubobject<USATORI_StatsComponent>("StatsComponent");
-	ComboSystemComponent = CreateDefaultSubobject<USATORI_ComboSystemComponent>("ComboSystemComponent");
-	
+	AbilitySystemComponent = CreateDefaultSubobject<USATORI_AbilitySystemComponent>(TEXT("AbilitySystemComponent"));
+	AbilitySystemComponent->SetIsReplicated(true);
+}
+
+void ASATORICharacter::AddGameplayTag(const FGameplayTag& TagToAdd)
+{
+	AbilitySystemComponent->AddLooseGameplayTag(TagToAdd);
+}
+
+void ASATORICharacter::RemoveGameplayTag(const FGameplayTag& TagToRemove)
+{
+	AbilitySystemComponent->RemoveLooseGameplayTag(TagToRemove);
 }
 
 void ASATORICharacter::PossessedBy(AController* NewController)
@@ -74,6 +82,13 @@ void ASATORICharacter::PossessedBy(AController* NewController)
 
 		AttributeSetBase = PS->GetSatoriAttributeSet();
 
+	
+		GameplayTags.AddTag(FGameplayTag::RequestGameplayTag("PossessedBy.Player"));
+		
+
+		Tags.Add("PossessedBy.Player");
+
+
 		InitializePassiveAttributes();
 		ApplyDefaultAbilities();
 
@@ -84,7 +99,17 @@ void ASATORICharacter::PossessedBy(AController* NewController)
 
 		// Set Health to Max Health Value
 		SetHealth(GetMaxHealth());
-	}		
+	}
+
+	if (Cast<APlayerController>(NewController) != nullptr) {
+		int a = 1;
+		GameplayTags.AddTag(FGameplayTag::RequestGameplayTag("PossessedBy.Player"));
+		//AbilitySystemComponent->AddLooseGameplayTag(FGameplayTag::RequestGameplayTag("PossessedBy.Player"));
+		//AddGameplayTag(FGameplayTag::RequestGameplayTag("PossessedBy.AI"));
+
+
+
+	}
 }
 
 UAbilitySystemComponent* ASATORICharacter::GetAbilitySystemComponent() const
@@ -207,87 +232,6 @@ void ASATORICharacter::SetHealth(float Health)
 		AttributeSetBase->SetHealth(Health);
 }
 
-void ASATORICharacter::SetComboJumpSection(USATORI_ANS_JumpSection* JumpSection)
-{
-	this->JumpSectionNS = JumpSection;
-
-	if (this->JumpSectionNS != nullptr)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("Set jump section %s"), *JumpSection->NextMontageNames[0].ToString());
-	}
-}
-
-bool ASATORICharacter::AttackJumpSectionCombo()
-{
-	if (this->JumpSectionNS == nullptr)
-	{
-		UE_LOG(LogTemp, Display, TEXT("JumpSection failed : No JumpSectioNS!"));
-		return false;
-	}
-
-	if (!GetMesh())
-	{
-		return false;
-	}
-
-	UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
-	if(!AnimInstance)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("TriggerJumpSection failed: no anim instance!"));
-		return false;
-	}
-
-	UAnimMontage* CurrentActiveMontage = AnimInstance->GetCurrentActiveMontage();
-	if (!CurrentActiveMontage)
-	{
-		UE_LOG(LogTemp, Display, TEXT("TriggerJumpSection failed: no current montage!"));
-		return false;
-	}
-
-	const FName CurrentSectionName = AnimInstance->Montage_GetCurrentSection(CurrentActiveMontage);
-
-	const int RandInt = FMath::RandRange(0, this->JumpSectionNS->NextMontageNames.Num() - 1);
-	const FName NextSectionName = JumpSectionNS->NextMontageNames[RandInt];
-
-	AnimInstance->Montage_JumpToSection(NextSectionName, CurrentActiveMontage);
-
-	return true;
-}
-
-bool ASATORICharacter::PlayerActiveAbilityWithTag(FGameplayTag TagName)
-{
-	FGameplayTagContainer TagContainer;
-	TagContainer.AddTag(TagName);
-
-	if (!AbilitySystemComponent->TryActivateAbilitiesByTag(TagContainer))
-	{
-		UE_LOG(LogTemp, Warning, TEXT("TryActivateAbilitiesByTag failed "));
-		return false;
-	}
-
-	return true;
-}
-
-void ASATORICharacter::AddGameplayTag(const FGameplayTag& TagToAdd)
-{
-	AbilitySystemComponent->AddLooseGameplayTag(TagToAdd);
-}
-
-void ASATORICharacter::RemoveGameplayTag(const FGameplayTag& TagToRemove)
-{
-	AbilitySystemComponent->RemoveLooseGameplayTag(TagToRemove);
-}
-
-void ASATORICharacter::BlockGameplayTag(const FGameplayTagContainer& TagsToBlock)
-{
-	AbilitySystemComponent->BlockAbilitiesWithTags(TagsToBlock);
-}
-
-void ASATORICharacter::UnBlockGameplayTag(const FGameplayTagContainer& TagsToBlock)
-{
-	AbilitySystemComponent->UnBlockAbilitiesWithTags(TagsToBlock);
-}
-
 //////////////////////////////////////////////////////////////////////////
 // Input
 
@@ -366,4 +310,24 @@ void ASATORICharacter::MoveRight(float Value)
 		// add movement in that direction
 		AddMovementInput(Direction, Value);
 	}
+}
+
+void ASATORICharacter::GetOwnedGameplayTags(FGameplayTagContainer& TagContainer) const
+{
+	TagContainer = GameplayTags;
+}
+
+bool ASATORICharacter::HasMatchingGameplayTag(FGameplayTag TagToCheck) const
+{
+	return GameplayTags.HasTag(TagToCheck);
+}
+
+bool ASATORICharacter::HasAllMatchingGameplayTags(const FGameplayTagContainer& TagContainer) const
+{
+	return GameplayTags.HasAll(TagContainer);
+}
+
+bool ASATORICharacter::HasAnyMatchingGameplayTags(const FGameplayTagContainer& TagContainer) const
+{
+	return GameplayTags.HasAny(TagContainer);
 }
