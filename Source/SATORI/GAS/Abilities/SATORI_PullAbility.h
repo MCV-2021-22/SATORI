@@ -21,7 +21,7 @@ public:
 	USATORI_PullAbility();
 
 	UPROPERTY(BlueprintReadOnly, EditAnywhere)
-		UAnimMontage* PushAnimMontage;
+		UAnimMontage* AnimMontage;
 
 	virtual void ActivateAbility(
 		const FGameplayAbilitySpecHandle Handle,

@@ -21,6 +21,8 @@ namespace ESATORIAbilityInputID
 		Confirm			UMETA(DisplayName = "Confirm"),
 		// 2 Cancel
 		Cancel			UMETA(DisplayName = "Cancel"),
+		// Dash
+		Dash			UMETA(DisplayName = "Dash"),
 		// Push
 		Push			UMETA(DisplayName = "Push"),
 		// Pull

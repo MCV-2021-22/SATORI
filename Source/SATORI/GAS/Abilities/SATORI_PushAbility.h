@@ -22,7 +22,7 @@ public:
 	USATORI_PushAbility();
 
 	UPROPERTY(BlueprintReadOnly, EditAnywhere)
-	UAnimMontage* PushAnimMontage;
+	UAnimMontage* AnimMontage;
 
 	virtual void ActivateAbility(
 		const FGameplayAbilitySpecHandle Handle, 

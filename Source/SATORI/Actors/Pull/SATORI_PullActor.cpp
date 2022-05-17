@@ -2,6 +2,7 @@
 #include "Actors/Pull/SATORI_PullActor.h"
 #include "Components/SphereComponent.h"
 #include "DrawDebugHelpers.h"
+#include "Kismet/KismetMathLibrary.h"
 #include "SATORICharacter.h"
 
 // Sets default values
@@ -11,7 +12,7 @@ ASATORI_PullActor::ASATORI_PullActor()
 	PrimaryActorTick.bCanEverTick = true;
 
 	//Default
-	SphereRadius = 32.0f;
+	SphereRadius = 128.0f;
 	SpeedForward = 4000.0f;
 	SpeedPulling = 2000.0f;
 	TimeToDestroy = 2.5f;
@@ -38,8 +39,6 @@ void ASATORI_PullActor::BeginPlay()
 
 	FTimerHandle UnusedHandle;
 	GetWorldTimerManager().SetTimer(UnusedHandle, this, &ASATORI_PullActor::OnTimerExpiredDestroy, TimeToDestroy, false);
-	
-	Start = GetActorLocation();
 
 }
 
@@ -52,10 +51,18 @@ void ASATORI_PullActor::Tick(float DeltaTime)
 	FVector Pos = GetActorLocation();
 
 	if (Pulling) {
-		SetActorLocation(Pos + -(GetActorForwardVector()) * SpeedPulling * DeltaTime);
+
+		FVector PlayerPosition = GetWorld()->GetFirstPlayerController()->GetPawn()->GetActorLocation();
+
+		FVector dir = UKismetMathLibrary::GetDirectionUnitVector(Pos, PlayerPosition);
+
+		SetActorLocation(Pos + dir * SpeedPulling * DeltaTime);
+
 		Pos = GetActorLocation();
 		Pulling->SetWorldLocation(Pos);
-		if (FVector::Dist(Start, Pos) < 25) {
+
+
+		if (FVector::Dist(PlayerPosition, Pos) < 100) {
 			Destroy();
 		}
 	}
