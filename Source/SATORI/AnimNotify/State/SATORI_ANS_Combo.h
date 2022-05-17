@@ -19,8 +19,7 @@ class SATORI_API USATORI_ANS_Combo : public UAnimNotifyState
 {
 	GENERATED_BODY()
 public:
-	UPROPERTY(EditAnywhere)
-	TEnumAsByte<EComboState> ComboState;
+	
 
 	virtual void NotifyBegin(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, float TotalDuration) override;
 	virtual void NotifyEnd(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation) override;

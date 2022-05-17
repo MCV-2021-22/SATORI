@@ -16,6 +16,8 @@
 #include "SATORI/GAS/SATORI_AbilitySystemComponent.h"
 #include "Character/Mask/SATORI_AbilityMask.h"
 #include "Components/Player/SATORI_StatsComponent.h"
+#include "Components/Player/SATORI_ComboSystemComponent.h"
+#include "AnimNotify/State/SATORI_ANS_JumpSection.h"
 
 //////////////////////////////////////////////////////////////////////////
 // ASATORICharacter
@@ -52,6 +54,7 @@ ASATORICharacter::ASATORICharacter()
 	FollowCamera->bUsePawnControlRotation = false; // Camera does not rotate relative to arm
 
 	// Components
+	ComboSystemComponent = CreateDefaultSubobject<USATORI_ComboSystemComponent>("ComboSystemComponent");
 	SATORIAbilityMaskComponent = CreateDefaultSubobject<USATORI_AbilityMask>("MaskComponent");
 	StatsComponent = CreateDefaultSubobject<USATORI_StatsComponent>("StatsComponent");
 	AbilitySystemComponent = CreateDefaultSubobject<USATORI_AbilitySystemComponent>(TEXT("AbilitySystemComponent"));
@@ -330,4 +333,73 @@ bool ASATORICharacter::HasAllMatchingGameplayTags(const FGameplayTagContainer& T
 bool ASATORICharacter::HasAnyMatchingGameplayTags(const FGameplayTagContainer& TagContainer) const
 {
 	return GameplayTags.HasAny(TagContainer);
+}
+void ASATORICharacter::SetComboJumpSection(USATORI_ANS_JumpSection* JumpSection)
+{
+	this->JumpSectionNS = JumpSection;
+
+	if (this->JumpSectionNS != nullptr)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Set jump section %s"), *JumpSection->NextMontageNames[0].ToString());
+	}
+}
+
+bool ASATORICharacter::AttackJumpSectionCombo()
+{
+	if (this->JumpSectionNS == nullptr)
+	{
+		UE_LOG(LogTemp, Display, TEXT("JumpSection failed : No JumpSectioNS!"));
+		return false;
+	}
+
+	if (!GetMesh())
+	{
+		return false;
+	}
+
+	UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
+	if (!AnimInstance)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("TriggerJumpSection failed: no anim instance!"));
+		return false;
+	}
+
+	UAnimMontage* CurrentActiveMontage = AnimInstance->GetCurrentActiveMontage();
+	if (!CurrentActiveMontage)
+	{
+		UE_LOG(LogTemp, Display, TEXT("TriggerJumpSection failed: no current montage!"));
+		return false;
+	}
+
+	const FName CurrentSectionName = AnimInstance->Montage_GetCurrentSection(CurrentActiveMontage);
+
+	const int RandInt = FMath::RandRange(0, this->JumpSectionNS->NextMontageNames.Num() - 1);
+	const FName NextSectionName = JumpSectionNS->NextMontageNames[RandInt];
+
+	AnimInstance->Montage_JumpToSection(NextSectionName, CurrentActiveMontage);
+
+	return true;
+}
+void ASATORICharacter::BlockGameplayTag(const FGameplayTagContainer& TagsToBlock)
+{
+	AbilitySystemComponent->BlockAbilitiesWithTags(TagsToBlock);
+}
+
+void ASATORICharacter::UnBlockGameplayTag(const FGameplayTagContainer& TagsToBlock)
+{
+	AbilitySystemComponent->UnBlockAbilitiesWithTags(TagsToBlock);
+}
+
+bool ASATORICharacter::PlayerActiveAbilityWithTag(FGameplayTag TagName)
+{
+	FGameplayTagContainer TagContainer;
+	TagContainer.AddTag(TagName);
+
+	if (!AbilitySystemComponent->TryActivateAbilitiesByTag(TagContainer))
+	{
+		UE_LOG(LogTemp, Warning, TEXT("TryActivateAbilitiesByTag failed "));
+		return false;
+	}
+
+	return true;
 }

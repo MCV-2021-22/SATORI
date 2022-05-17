@@ -48,6 +48,9 @@ public:
 
 	UPROPERTY()
 	SATORIMaskType MaskType = SATORIMaskType::NONE;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		FGameplayTagContainer GameplayTags;
 public:
 
 	UAbilitySystemComponent* GetAbilitySystemComponent() const override;
@@ -87,6 +90,13 @@ public:
 	void RemoveGameplayTag(const FGameplayTag& TagToRemove);
 	void BlockGameplayTag(const FGameplayTagContainer& TagsToBlock);
 	void UnBlockGameplayTag(const FGameplayTagContainer& TagsToBlock);
+
+	void GetOwnedGameplayTags(FGameplayTagContainer& TagContainer) const;
+	bool HasMatchingGameplayTag(FGameplayTag TagToCheck) const;
+
+	bool HasAllMatchingGameplayTags(const FGameplayTagContainer& TagContainer) const;
+
+	bool HasAnyMatchingGameplayTags(const FGameplayTagContainer& TagContainer) const;
 
 	// Getters for Components
 	FORCEINLINE class USATORI_StatsComponent* GetStatsComponent() const { return StatsComponent; }
