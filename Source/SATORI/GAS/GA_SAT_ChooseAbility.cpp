@@ -9,14 +9,10 @@ void UGA_SAT_ChooseAbility::ActivateAbility(const FGameplayAbilitySpecHandle Han
 {
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
 
-	TArray<FGameplayAbilitySpec> Abilities = ActorInfo->AbilitySystemComponent->GetActivatableAbilities();
-
 	ASATORICharacter* Player = Cast<ASATORICharacter>(ActorInfo->AvatarActor);
 
-	ActorInfo->AbilitySystemComponent->TryActivateAbility(Abilities[Player->AbilityToChoose].Handle);
-
 	Player->AbilityToChoose++;
-	if (Player->AbilityToChoose >= Abilities.Num()-1)
+	if (Player->AbilityToChoose >= 2)
 		Player->AbilityToChoose = 0;
 
 	EndAbility(Handle, ActorInfo, ActivationInfo, false, false);
