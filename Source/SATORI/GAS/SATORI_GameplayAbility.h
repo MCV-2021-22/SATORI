@@ -28,4 +28,8 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = Ability)
 	class ASATORICharacter* GetOwningSatoriCharacter() const;
+
+	// Gameplay Effect
+	//virtual void ApplyEffectContainer();
+	//virtual void ApplyEffectContainerSpec();
 };
