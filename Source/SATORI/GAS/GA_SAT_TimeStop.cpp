@@ -15,10 +15,20 @@ void UGA_SAT_TimeStop::ActivateAbility(const FGameplayAbilitySpecHandle Handle, 
 void UGA_SAT_TimeStop::StartTimeStop(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo)
 {
 	UGameplayStatics::SetGlobalTimeDilation(GetWorld(), 0.0001f);
+
+	TimerD = FTimerDelegate::CreateUObject(this, &UGA_SAT_TimeStop::SetActorVelocity, ActorInfo);
+	GetWorld()->GetTimerManager().SetTimer(TimerH, TimerD,0.000001f, false);
+
 	TimerDelegate = FTimerDelegate::CreateUObject(this, &UGA_SAT_TimeStop::OnTimerFinished, Handle, ActorInfo, ActivationInfo);
 	GetWorld()->GetTimerManager().SetTimer(TimerHandle, TimerDelegate, AbilityTime * 0.0001f, false);
+	
+}
+
+void UGA_SAT_TimeStop::SetActorVelocity(const FGameplayAbilityActorInfo* ActorInfo)
+{
 	ActorInfo->AvatarActor->CustomTimeDilation = 10000.f;
 }
+
 
 void UGA_SAT_TimeStop::OnTimerFinished(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo)
 {

@@ -21,7 +21,11 @@ class SATORI_API UGA_SAT_TimeStop : public UGameplayAbility
 public:
 	FTimerDelegate TimerDelegate;
 
+	FTimerDelegate TimerD;
+
 	FTimerHandle TimerHandle;
+
+	FTimerHandle TimerH;
 
 protected:
 	UPROPERTY(EditAnywhere)
@@ -31,4 +35,6 @@ private:
 	void OnTimerFinished(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo);
 
 	void StartTimeStop(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo);
+
+	void SetActorVelocity(const FGameplayAbilityActorInfo* ActorInfo);
 };
