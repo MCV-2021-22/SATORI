@@ -24,6 +24,9 @@ public:
 	float MinimumDistanceToTarget;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Target System")
+	float BreakLineOfSightDelay = 2.0f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Target System")
 	FName TargetActorsWithTag;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Target System")
@@ -68,6 +71,8 @@ private:
 
 	UPROPERTY()
 	AActor* LockedOnTargetActor;
+
+	FTimerHandle LineOfSightBreakTimerHandle;
 
 	bool bIsBreakingLineOfSight = false;
 	bool bIsSwitchingTarget = false;

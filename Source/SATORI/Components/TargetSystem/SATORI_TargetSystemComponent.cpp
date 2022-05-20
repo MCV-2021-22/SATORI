@@ -63,6 +63,34 @@ void USATORI_TargetSystemComponent::TickComponent(const float DeltaTime, const E
 		TargetLockOff();
 	}
 
+	if (ShouldBreakLineOfSight() && !bIsBreakingLineOfSight)
+	{
+		if (BreakLineOfSightDelay <= 0)
+		{
+			TargetLockOff();
+		}
+		else
+		{
+			bIsBreakingLineOfSight = true;
+			GetWorld()->GetTimerManager().SetTimer(
+				LineOfSightBreakTimerHandle,
+				this,
+				&USATORI_TargetSystemComponent::BreakLineOfSight,
+				BreakLineOfSightDelay
+			);
+		}
+	}
+
+	//if(IsValid(LockedOnTargetActor))
+	//DrawDebugLine(
+	//GetWorld(),
+	//OwnerActor->GetActorLocation(),
+	//LockedOnTargetActor->GetActorLocation(),
+	//FColor(255, 0, 0),
+	//false, 1.0f, 0,
+	//1
+	//);
+
 
 }
 
@@ -107,6 +135,8 @@ void USATORI_TargetSystemComponent::TargetLockOn(AActor* TargetToLockOn)
 	}
 
 	bTargetLocked = true;
+
+	OwnerPlayerController->SetIgnoreLookInput(true);
 
 	//CreateAndAttachTargetLockedOnWidgetComponent(TargetToLockOn);
 
@@ -228,11 +258,28 @@ bool USATORI_TargetSystemComponent::LineTraceForActor(AActor* OtherActor)
 
 bool USATORI_TargetSystemComponent::ShouldBreakLineOfSight()
 {
-	return false;
+	if (!LockedOnTargetActor)
+	{
+		return true;
+	}
+
+	bool bHit = LineTraceForActor(LockedOnTargetActor);
+
+	if (bHit)
+	{
+		return false;
+	}
+
+	return true;
 }
 
 void USATORI_TargetSystemComponent::BreakLineOfSight()
 {
+	bIsBreakingLineOfSight = false;
+	if (ShouldBreakLineOfSight())
+	{
+		TargetLockOff();
+	}
 }
 
 bool USATORI_TargetSystemComponent::IsInViewport(const AActor* TargetActor)
