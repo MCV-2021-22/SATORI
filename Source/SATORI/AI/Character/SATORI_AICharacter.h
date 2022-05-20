@@ -6,18 +6,26 @@
 #include "GameFramework/Character.h"
 #include "AbilitySystemInterface.h"
 #include "AbilitySystemComponent.h"
+#include "GameplayTags.h"
 #include "SATORI_AICharacter.generated.h"
+
 
 class UGameplayEffect;
 class USATORI_AttributeSet;
 class USATORI_AbilitySystemComponent;
 class USATORI_GameplayAbility;
 class USATORI_AbilityDataAsset;
+class UBehaviorTree;
+class UPawnSensingComponent;
+
 
 UCLASS()
 class SATORI_API ASATORI_AICharacter : public ACharacter, public IAbilitySystemInterface
 {
 	GENERATED_BODY()
+
+	
+
 
 public:
 	// Sets default values for this character's properties
@@ -35,6 +43,10 @@ protected:
 	virtual void AddAICharacterAbilities();
 
 	void GrantAbilityToPlayer(FGameplayAbilitySpec Ability);
+
+	virtual void PossessedBy(AController* NewController) override;
+
+
 public:
 	UPROPERTY()
 	USATORI_AttributeSet* AttributeSet;
@@ -45,13 +57,27 @@ public:
 	// Character Default Abilities Asset (Contain List of Player Abilities)
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "AI|GAS")
 	USATORI_AbilityDataAsset* DefaultAbilities;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Awareness)
+		UPawnSensingComponent* PawnSensor;
+
+	
+
 protected:
 	// Default attributes for a character for initializing on spawn/respawn.
 	// This is an instant GE that overrides the values for attributes that get reset on spawn/respawn.
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "AI|GAS")
 	TSubclassOf<UGameplayEffect> DefaultAttributes;
 
+	
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "AI|GAS")
 	TArray<TSubclassOf<USATORI_GameplayAbility>> AICharacterAbilities;
+
+	
+	UPROPERTY(EditAnywhere)
+		TSoftObjectPtr <UBehaviorTree> bte;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
+	UBehaviorTree* btree;
 
 };

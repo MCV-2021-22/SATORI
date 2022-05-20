@@ -23,7 +23,7 @@ void USATORI_StatsComponent::BeginPlay()
 	ASATORICharacter* PlayerCharacter = Cast<ASATORICharacter>(GetOwner());
 	ASATORI_PlayerState* PlayerState = PlayerCharacter->GetPlayerState<ASATORI_PlayerState>();
 
-	if (PlayerCharacter && PlayerCharacter)
+	if (PlayerCharacter && PlayerState)
 	{
 		InitializeHealthAttribute(PlayerState);
 		BindAttributeChage(PlayerCharacter);

@@ -5,8 +5,12 @@
 #include "SATORI/GAS/Attributes/SATORI_AttributeSet.h"
 #include "SATORI/GAS/SATORI_AbilitySystemComponent.h"
 #include "Abilities/GameplayAbility.h"
-#include "GAS/SATORI_GameplayAbility.h"
+#include "GameFramework/Controller.h"
 #include "Data/SATORI_AbilityDataAsset.h"
+#include "BehaviorTree/BehaviorTree.h"
+#include "AIController.h"
+#include "Perception/PawnSensingComponent.h"
+
 
 // Sets default values
 ASATORI_AICharacter::ASATORI_AICharacter()
@@ -18,6 +22,16 @@ ASATORI_AICharacter::ASATORI_AICharacter()
 	AbilitySystemComponent->SetIsReplicated(true);
 
 	AttributeSet = CreateDefaultSubobject<USATORI_AttributeSet>(TEXT("AttributeSet"));
+
+	PawnSensor = CreateDefaultSubobject<UPawnSensingComponent>(TEXT("Pawn Sensor"));
+	PawnSensor->SensingInterval = .25f; // 4 times per second
+	PawnSensor->bOnlySensePlayers = false;
+	PawnSensor->SetPeripheralVisionAngle(85.f);
+
+	//bte = TSoftObjectPtr <UBehaviorTree>(FSoftObjectPath(TEXT("/Game/SATORI/AI/Spawner/BT_Spawner.BT_Spawner")));
+	//btree = bte.LoadSynchronous();
+
+	
 }
 
 // Called when the game starts or when spawned
@@ -98,4 +112,31 @@ void ASATORI_AICharacter::GrantAbilityToPlayer(FGameplayAbilitySpec Ability)
 	}
 
 	AbilitySystemComponent->GiveAbility(Ability);
+}
+
+
+void ASATORI_AICharacter::PossessedBy(AController* NewController)
+{
+	Super::PossessedBy(NewController);
+
+	UE_LOG(LogTemp, Display, TEXT("LLEGAMOS A VER SI SE LLAMA A ESTA FUNCION PADRE"));
+
+	
+	if (Cast<AAIController>(NewController) != nullptr) {
+		int a = 1;
+		//AddGameplayTag(FGameplayTag::RequestGameplayTag("PossessedBy.AI"));
+
+		UE_LOG(LogTemp, Display, TEXT("EJECUTAMOS EL BT"));
+
+		AAIController* controller = Cast<AAIController>(NewController);
+
+		btree = bte.LoadSynchronous();
+		controller->RunBehaviorTree(btree);
+
+		AddAICharacterAbilities();
+
+
+	}
+
+
 }
