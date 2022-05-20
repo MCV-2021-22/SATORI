@@ -21,8 +21,8 @@ namespace ESATORIAbilityInputID
 		Confirm			UMETA(DisplayName = "Confirm"),
 		// 2 Cancel
 		Cancel			UMETA(DisplayName = "Cancel"),
-		// 3 LMB
-		Ability1		UMETA(DisplayName = "Ability1"),
+		// Push
+		Push			UMETA(DisplayName = "Push"),
 		// 4 RMB
 		Ability2		UMETA(DisplayName = "Ability2"),
 		// 5 Q
