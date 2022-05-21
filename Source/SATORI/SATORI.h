@@ -23,23 +23,25 @@ namespace ESATORIAbilityInputID
 		Cancel			UMETA(DisplayName = "Cancel"),
 		// Dash
 		Dash			UMETA(DisplayName = "Dash"),
+		// Attack
+		Attack			UMETA(DisplayName = "Attack"),
+		// HeavyAttack
+		HeavyAttack		UMETA(DisplayName = "HeavyAttack"),
 		// Push
 		Push			UMETA(DisplayName = "Push"),
 		// Pull
 		Pull			UMETA(DisplayName = "Pull"),
-		// 5 Q
-		Ability3		UMETA(DisplayName = "Ability3"),
-		// 6 E
-		Ability4		UMETA(DisplayName = "Ability4"),
-		// 7 R
-		Ability5		UMETA(DisplayName = "Ability5"),
-		// 8 Sprint
-		Sprint			UMETA(DisplayName = "Sprint"),
-		// 9 Jump
-		Jump			UMETA(DisplayName = "Jump"),
-		// Attack
-		Attack			UMETA(DisplayName = "Attack"),
-		// HeavyAttack
-		HeavyAttack			UMETA(DisplayName = "HeavyAttack")
+		// Misile
+		Misile			UMETA(DisplayName = "Misile"),
+		// BlackHole
+		BlackHole		UMETA(DisplayName = "BlackHole"),
+		// Decoy
+		Decoy			UMETA(DisplayName = "Decoy"),
+		// Clone
+		Clone			UMETA(DisplayName = "Clone"),
+		// TimeSlow
+		TimeSlow		UMETA(DisplayName = "TimeSlow"),
+		// TimeStop
+		TimeStop		UMETA(DisplayName = "TimeStop")
 	};
 }

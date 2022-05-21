@@ -5,6 +5,7 @@
 #include "AbilitySystemComponent.h"
 #include "SATORICharacter.h"
 #include "TimerManager.h"
+#include "Engine/Classes/Camera/CameraComponent.h"
 
 USATORI_PushAbility::USATORI_PushAbility ()
 {
@@ -53,8 +54,13 @@ void USATORI_PushAbility::ActivateAbility(
 	int NumberOfSpheresToSpawn = (FMath::Tan(FMath::DegreesToRadians(AngleRange))) * Range * 2 / (SphereRadius * 2);
 	UE_LOG(LogTemp, Display, TEXT("Number of spheres: %d"), NumberOfSpheresToSpawn);
 
+	UCameraComponent* CameraComponent = Character->FindComponentByClass<UCameraComponent>();
+	FVector CameraForward = CameraComponent->GetForwardVector();
+	FRotator CameraRotation = CameraComponent->GetComponentRotation();
+	CameraRotation.Pitch = 0.f;
+	
 	//Calc for cone spawning
-	FRotator RotationOfSphere = Character->GetActorRotation();
+	FRotator RotationOfSphere = CameraRotation;
 	RotationOfSphere.Yaw -= AngleRange / 2;
 	float IncrementAngle = AngleRange / NumberOfSpheresToSpawn;
 
@@ -62,6 +68,8 @@ void USATORI_PushAbility::ActivateAbility(
 	FVector InFront = Character->GetActorForwardVector() * 100.0f;
 	FTransform SphereTransform = Character->GetTransform();
 	SphereTransform.AddToTranslation(InFront);
+
+
 
 	for (int i = 0; i < NumberOfSpheresToSpawn; i++) {
 
@@ -71,7 +79,7 @@ void USATORI_PushAbility::ActivateAbility(
 		
 		ASATORI_PushActor* Push = GetWorld()->SpawnActor<ASATORI_PushActor>(
 			PushActor, //Actor to Spawn
-			Character->GetActorLocation() + Character->GetActorForwardVector() * 100, //Spawn location
+			Character->GetActorLocation() + CameraForward * 50, //Spawn location
 			RotationOfSphere); //Spawn rotation
 		//if(Sphere)
 		//	Sphere->InitializeParameters(SphereRadius, Speed, TimeToDestroy);

@@ -14,6 +14,8 @@ class SATORI_API ASATORI_PullActor : public AActor
 	
 public:	
 	
+	ASATORI_PullActor();
+	
 	UPROPERTY(BlueprintReadOnly, EditAnywhere)
 		float SphereRadius;
 
@@ -26,7 +28,6 @@ public:
 	UPROPERTY(BlueprintReadOnly, EditAnywhere)
 		float TimeToDestroy;
 
-	ASATORI_PullActor();
 
 	UPROPERTY(EditDefaultsOnly)
 	USphereComponent* SphereComponent = nullptr;

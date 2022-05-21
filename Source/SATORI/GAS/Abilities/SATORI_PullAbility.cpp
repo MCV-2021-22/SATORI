@@ -5,6 +5,7 @@
 #include "AbilitySystemComponent.h"
 #include "SATORICharacter.h"
 #include "TimerManager.h"
+#include "Engine/Classes/Camera/CameraComponent.h"
 
 USATORI_PullAbility::USATORI_PullAbility() {
 
@@ -43,10 +44,15 @@ void USATORI_PullAbility::ActivateAbility(
 		EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true);
 	}
 
+	UCameraComponent* CameraComponent = Character->FindComponentByClass<UCameraComponent>();
+	FVector CameraForward = CameraComponent->GetForwardVector();
+	FRotator CameraRotation = CameraComponent->GetComponentRotation();
+	CameraRotation.Pitch = 0.f;
+
 	ASATORI_PullActor* Pull = GetWorld()->SpawnActor<ASATORI_PullActor>(
 		PullActor, //Actor to Spawn
-		Character->GetActorLocation() + Character->GetActorForwardVector() * 100, //Spawn location
-		Character->GetActorRotation()); //Spawn rotation
+		Character->GetActorLocation() + CameraForward * 50, //Spawn location
+		CameraRotation); //Spawn rotation
 
 	FTimerHandle TimerHandle;
 	FTimerDelegate TimerDelegate = FTimerDelegate::CreateUObject(this, &USATORI_PullAbility::OnTimerExpiredFinish);

@@ -86,7 +86,7 @@ void ASATORI_PullActor::OnOverlapSphere(
 	const FHitResult& SweepResult)
 {
 
-	//TO DO: add Tag canbpushed
+	//TO DO: add Tag canbpulled
 	if (OtherActor->ActorHasTag(FName("Enemy"))) {
 		Pulling = Cast<UPrimitiveComponent>(OtherActor->GetRootComponent());
 	}
