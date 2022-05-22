@@ -94,10 +94,13 @@ void USATORI_MisileAbility::EventReceived(FGameplayTag EventTag, FGameplayEventD
 			SpawnTransform.SetRotation(Character->GetActorRotation().Quaternion());
 		}
 
+		FGameplayEffectSpecHandle DamageEffectSpecHandle = MakeOutgoingGameplayEffectSpec(DamageGameplayEffect, GetAbilityLevel());
+
 		ASATORI_MisileActor* Misile = GetWorld()->SpawnActorDeferred<ASATORI_MisileActor>(MisileActor, SpawnTransform, GetOwningActorFromActorInfo(),
 		Character, ESpawnActorCollisionHandlingMethod::AlwaysSpawn);
-		//Data to initialize Actor can go here
-		//Misile->Range = Range;
+		Misile->Speed = Speed;
+		Misile->TimeToDestroy = TimeToDestroy;
+		Misile->DamageEffectSpecHandle = DamageEffectSpecHandle;
 		Misile->FinishSpawning(SpawnTransform);
 
 	}

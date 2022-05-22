@@ -4,9 +4,11 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "GameplayEffect.h"
 #include "SATORI_MisileActor.generated.h"
 
 class USphereComponent;
+class UStaticMeshComponent;
 
 UCLASS()
 class SATORI_API ASATORI_MisileActor : public AActor
@@ -14,23 +16,29 @@ class SATORI_API ASATORI_MisileActor : public AActor
 	GENERATED_BODY()
 	
 public:	
-	// Sets default values for this actor's properties
+	
 	ASATORI_MisileActor();
 
-	UPROPERTY(BlueprintReadOnly, EditAnywhere)
-		float SphereRadius;
+	UPROPERTY(EditDefaultsOnly, Category = "Misile")
+	USphereComponent* CollisionSphereComponent;
 
-	UPROPERTY(BlueprintReadOnly, EditAnywhere)
-		float Speed;
+	UPROPERTY(EditDefaultsOnly, Category = "Misile")
+	UStaticMeshComponent* StaticMeshComponent;
 
-	UPROPERTY(BlueprintReadOnly, EditAnywhere)
-		float TimeToDestroy;
+	UPROPERTY(EditDefaultsOnly, Category = "Misile")
+	USphereComponent* SeekingSphereComponent;
+	
+	UPROPERTY(BlueprintReadWrite, Meta = (ExposeOnSpawn = true), Category = "Misile")
+	FGameplayEffectSpecHandle DamageEffectSpecHandle;
 
-	UPROPERTY(EditDefaultsOnly)
-		USphereComponent* SphereComponent = nullptr;
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Meta = (ExposeOnSpawn = true), Category = "Misile")
+	float Speed;
 
-	UFUNCTION()
-		void OnOverlapSphere(
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Meta = (ExposeOnSpawn = true), Category = "Misile")
+	float TimeToDestroy;
+
+	UFUNCTION(BlueprintCallable, Category = "Misile")
+		void OnOverlapCollisionSphere(
 			UPrimitiveComponent* OverlappedComp,
 			AActor* OtherActor,
 			UPrimitiveComponent* OtherComp,
@@ -38,14 +46,29 @@ public:
 			bool bFromSweep,
 			const FHitResult& SweepResult);
 
-	void OnTimerExpiredDestroy();
+	UFUNCTION(BlueprintCallable, Category = "Misile")
+		void OnOverlapSeekingSphere(
+			UPrimitiveComponent* OverlappedComp,
+			AActor* OtherActor,
+			UPrimitiveComponent* OtherComp,
+			int32 OtherBodyIndex,
+			bool bFromSweep,
+			const FHitResult& SweepResult);
 
 protected:
-	// Called when the game starts or when spawned
+	
 	virtual void BeginPlay() override;
 
 public:	
-	// Called every frame
+	
 	virtual void Tick(float DeltaTime) override;
+
+private:
+
+	AActor* Target;
+
+	FTimerHandle TimerHandleDestroy;
+
+	void Explode();
 
 };

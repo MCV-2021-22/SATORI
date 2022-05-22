@@ -24,6 +24,9 @@ public:
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Ability")
 	TSubclassOf<ASATORI_MisileActor> MisileActor;
 
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Ability")
+	TSubclassOf<UGameplayEffect> DamageGameplayEffect;
+
 	virtual void ActivateAbility(
 		const FGameplayAbilitySpecHandle Handle,
 		const FGameplayAbilityActorInfo* ActorInfo,
@@ -32,6 +35,12 @@ public:
 		override;
 
 protected:
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Ability|Misile")
+	float Speed;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Ability|Misile")
+	float TimeToDestroy;
 
 	UFUNCTION()
 		void OnCancelled(FGameplayTag EventTag, FGameplayEventData EventData);
