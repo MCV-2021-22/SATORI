@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+//
 
 #pragma once
 
@@ -27,6 +27,9 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, Category = "Misile")
 	USphereComponent* SeekingSphereComponent;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Misile")
+	FName TargetActorWithTag;
 	
 	UPROPERTY(BlueprintReadWrite, Meta = (ExposeOnSpawn = true), Category = "Misile")
 	FGameplayEffectSpecHandle DamageEffectSpecHandle;

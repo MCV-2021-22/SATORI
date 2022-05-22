@@ -1,15 +1,13 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
+//
 
 #include "GAS/Abilities/SATORI_MisileAbility.h"
 #include "AbilitySystemComponent.h"
 #include "SATORICharacter.h"
 #include "Engine/Classes/Camera/CameraComponent.h"
 
-USATORI_MisileAbility::USATORI_MisileAbility() {
-
+USATORI_MisileAbility::USATORI_MisileAbility() 
+{
 	InstancingPolicy = EGameplayAbilityInstancingPolicy::InstancedPerActor;
-
 }
 
 void USATORI_MisileAbility::ActivateAbility(
@@ -30,8 +28,8 @@ void USATORI_MisileAbility::ActivateAbility(
 		UE_LOG(LogTemp, Display, TEXT("[%s] USATORI_MisileAbility: Cannot Commit Ability ... "), *GetName());
 		EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true);
 	}
-
 	
+	//Handling of events
 	USATORI_PlayMontageAndWaitEvent* Task = USATORI_PlayMontageAndWaitEvent::PlayMontageAndWaitForEvent(this, NAME_None, AnimMontage, FGameplayTagContainer(), 1.0f, NAME_None, bStopWhenAbilityEnds, 1.0f);
 	Task->OnBlendOut.AddDynamic(this, &USATORI_MisileAbility::OnCompleted);
 	Task->OnCompleted.AddDynamic(this, &USATORI_MisileAbility::OnCompleted);
@@ -57,7 +55,6 @@ void USATORI_MisileAbility::EventReceived(FGameplayTag EventTag, FGameplayEventD
 
 	if (EventTag == FGameplayTag::RequestGameplayTag(FName("Event.Montage.EndAbility")))
 	{
-		UE_LOG(LogTemp, Display, TEXT("[%s] USATORI_MisileAbility: Ending Ability ... "), *GetName());
 		EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, false);
 		return;
 	}
@@ -72,7 +69,7 @@ void USATORI_MisileAbility::EventReceived(FGameplayTag EventTag, FGameplayEventD
 			EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true);
 		}
 
-		//Should work with Targeting System
+		//Aiming when Targeting Enemy
 		if (Character->ActorHasTag(TEXT("State.Targeting")))
 		{
 			UCameraComponent* CameraComponent = Character->FindComponentByClass<UCameraComponent>();
@@ -88,6 +85,7 @@ void USATORI_MisileAbility::EventReceived(FGameplayTag EventTag, FGameplayEventD
 			SpawnTransform.SetRotation(CameraRotation.Quaternion());
 
 		}
+		//Aiming when not targeting
 		else
 		{
 			SpawnTransform.SetLocation(Character->GetActorLocation() + Character->GetActorForwardVector() * 100);
@@ -96,6 +94,7 @@ void USATORI_MisileAbility::EventReceived(FGameplayTag EventTag, FGameplayEventD
 
 		FGameplayEffectSpecHandle DamageEffectSpecHandle = MakeOutgoingGameplayEffectSpec(DamageGameplayEffect, GetAbilityLevel());
 
+		//Misile Actor creation
 		ASATORI_MisileActor* Misile = GetWorld()->SpawnActorDeferred<ASATORI_MisileActor>(MisileActor, SpawnTransform, GetOwningActorFromActorInfo(),
 		Character, ESpawnActorCollisionHandlingMethod::AlwaysSpawn);
 		Misile->Speed = Speed;

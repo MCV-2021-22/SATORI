@@ -131,6 +131,8 @@ void USATORI_TargetSystemComponent::TargetLockOff()
 
 	OwnerPlayerController->ResetIgnoreLookInput();
 
+	LockedOnTargetActor->Tags.Remove(FName("State.Targeted"));
+
 	LockedOnTargetActor = nullptr;
 
 }
@@ -145,6 +147,8 @@ void USATORI_TargetSystemComponent::TargetLockOn(AActor* TargetToLockOn)
 	bTargetLocked = true;
 
 	OwnerActor->Tags.Add(FName("State.Targeting"));
+
+	TargetToLockOn->Tags.Add(FName("State.Targeted"));
 
 	OwnerPlayerController->SetIgnoreLookInput(true);
 
