@@ -14,7 +14,7 @@ ASATORI_MissileActor::ASATORI_MissileActor()
 
 	StaticMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("StaticMesh"));
 	RootComponent = StaticMeshComponent;
-	StaticMeshComponent->SetCollisionProfileName(FName(UCollisionProfile::NoCollision_ProfileName));
+	StaticMeshComponent->SetCollisionProfileName(UCollisionProfile::NoCollision_ProfileName);
 	
 	//If collides will explode
 	CollisionSphereComponent = CreateDefaultSubobject<USphereComponent>(TEXT("CollisionSphere"));
@@ -27,7 +27,7 @@ ASATORI_MissileActor::ASATORI_MissileActor()
 	//If not targeting will Target first collision with it
 	SeekingSphereComponent = CreateDefaultSubobject<USphereComponent>(TEXT("SeekingSphere"));
 	SeekingSphereComponent->SetSphereRadius(SeekingSphereRadius);
-	SeekingSphereComponent->SetCollisionProfileName(FName(TEXT("IgnoreSelfOverlapsAll")));
+	SeekingSphereComponent->SetCollisionProfileName(FName(TEXT("IgnoreAllOverlapOnlyPawn")));
 	SeekingSphereComponent->SetupAttachment(RootComponent);
 	SeekingSphereComponent->SetGenerateOverlapEvents(true);
 	SeekingSphereComponent->OnComponentBeginOverlap.AddDynamic(this, &ASATORI_MissileActor::OnOverlapSeekingSphere);
@@ -40,10 +40,12 @@ ASATORI_MissileActor::ASATORI_MissileActor()
 //Collision for exploding
 void ASATORI_MissileActor::OnOverlapCollisionSphere(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	if (OtherActor->ActorHasTag(EnemyTag)) {
+	if (OtherActor->ActorHasTag(EnemyTag)) 
+	{
 		Explode();
 	}
-	if (!OtherActor->ActorHasTag(PlayerTag) && !OtherActor->ActorHasTag(EnemyTag)) {
+	if (!OtherActor->ActorHasTag(PlayerTag) && !OtherActor->ActorHasTag(EnemyTag)) 
+	{
 		Explode();
 	}
 }
@@ -51,7 +53,8 @@ void ASATORI_MissileActor::OnOverlapCollisionSphere(UPrimitiveComponent* Overlap
 //Collision for aiming
 void ASATORI_MissileActor::OnOverlapSeekingSphere(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	if (OtherActor->ActorHasTag(EnemyTag) && !Target) {
+	if (OtherActor->ActorHasTag(EnemyTag) && !Target) 
+	{
 		Target = OtherActor;
 	}
 }
@@ -68,9 +71,11 @@ void ASATORI_MissileActor::BeginPlay()
 	//Check if Player is currently targeting an enemy
 	TArray<AActor*> Actors;
 	UGameplayStatics::GetAllActorsWithTag(GetWorld(), TargetActorWithTag, Actors);
-	if (Actors.Num() != 0) {
+	if (Actors.Num() != 0) 
+	{
 		Target = Actors.Pop();
 	}
+
 	//Set max time before auto destruc if not collides
 	GetWorldTimerManager().SetTimer(TimerHandleDestroy, this, &ASATORI_MissileActor::Explode, TimeToDestroy, false);
 	
@@ -81,18 +86,18 @@ void ASATORI_MissileActor::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 
 	//Movement
-	FVector Pos = GetActorLocation();
+	FVector ActorPosition = GetActorLocation();
 	//If has Target
 	if(Target)
 	{
 		FVector TargetPosition = Target->GetActorLocation();
-		FVector Direction = UKismetMathLibrary::GetDirectionUnitVector(Pos, TargetPosition);
-		SetActorLocation(Pos + Direction * Speed * DeltaTime);
+		FVector Direction = UKismetMathLibrary::GetDirectionUnitVector(ActorPosition, TargetPosition);
+		SetActorLocation(ActorPosition + Direction * Speed * DeltaTime);
 	}
 	//If not has Target
 	else
 	{
-		SetActorLocation(Pos + GetActorForwardVector() * Speed * DeltaTime);
+		SetActorLocation(ActorPosition + GetActorForwardVector() * Speed * DeltaTime);
 	}
 }
 

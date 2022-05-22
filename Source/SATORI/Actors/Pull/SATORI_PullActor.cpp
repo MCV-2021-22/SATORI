@@ -1,44 +1,81 @@
 
 #include "Actors/Pull/SATORI_PullActor.h"
 #include "Components/SphereComponent.h"
-#include "DrawDebugHelpers.h"
 #include "Kismet/KismetMathLibrary.h"
+#include "Kismet/GameplayStatics.h"
 #include "SATORICharacter.h"
 
 // Sets default values
 ASATORI_PullActor::ASATORI_PullActor()
 {
- 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
+	float SphereRadius = 32.0f;
+	float SeekingSphereRadius = 256.0f;
 
-	//Default
-	SphereRadius = 128.0f;
-	SpeedForward = 4000.0f;
-	SpeedPulling = 2000.0f;
-	TimeToDestroy = 2.5f;
+	StaticMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("StaticMesh"));
+	RootComponent = StaticMeshComponent;
+	StaticMeshComponent->SetCollisionProfileName(UCollisionProfile::NoCollision_ProfileName);
 
-	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
-	PrimaryActorTick.bCanEverTick = true;
+	//If collides will grab
+	CollisionSphereComponent = CreateDefaultSubobject<USphereComponent>(TEXT("CollisionSphere"));
+	CollisionSphereComponent->SetSphereRadius(SphereRadius);
+	CollisionSphereComponent->SetCollisionProfileName(FName(TEXT("IgnoreSelfOverlapsAll")));
+	CollisionSphereComponent->SetupAttachment(RootComponent);
+	CollisionSphereComponent->SetGenerateOverlapEvents(true);
+	CollisionSphereComponent->OnComponentBeginOverlap.AddDynamic(this, &ASATORI_PullActor::OnOverlapCollisionSphere);
 
-	SphereComponent = CreateDefaultSubobject<USphereComponent>(TEXT("Sphere"));
-	SphereComponent->SetSphereRadius(SphereRadius);
-	SphereComponent->SetCollisionProfileName(FName(TEXT("IgnoreSelfOverlapsAll")));
-	RootComponent = SphereComponent;
-	SphereComponent->SetGenerateOverlapEvents(true);
-	SphereComponent->OnComponentBeginOverlap.AddDynamic(this, &ASATORI_PullActor::OnOverlapSphere);
+	//If not targeting will Target first collision with it
+	SeekingSphereComponent = CreateDefaultSubobject<USphereComponent>(TEXT("SeekingSphere"));
+	SeekingSphereComponent->SetSphereRadius(SeekingSphereRadius);
+	SeekingSphereComponent->SetCollisionProfileName(FName(TEXT("IgnoreAllOverlapOnlyPawn")));
+	SeekingSphereComponent->SetupAttachment(RootComponent);
+	SeekingSphereComponent->SetGenerateOverlapEvents(true);
+	SeekingSphereComponent->OnComponentBeginOverlap.AddDynamic(this, &ASATORI_PullActor::OnOverlapSeekingSphere);
 
 	//Debug
-	SphereComponent->bHiddenInGame = false;
+	CollisionSphereComponent->bHiddenInGame = false;
+	SeekingSphereComponent->bHiddenInGame = false;
 
 }
+
+//Collision for Grabing
+void ASATORI_PullActor::OnOverlapCollisionSphere(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	if (OtherActor->ActorHasTag(EnemyTag)) 
+	{
+		Pulling = Cast<UPrimitiveComponent>(OtherActor->GetRootComponent());
+		GetWorldTimerManager().ClearTimer(TimerHandleDestroy);
+	}
+	if (!OtherActor->ActorHasTag(PlayerTag) && !OtherActor->ActorHasTag(EnemyTag)) 
+	{
+		DestroySelf();
+	}
+}
+
+//Collision for aiming
+void ASATORI_PullActor::OnOverlapSeekingSphere(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	if (OtherActor->ActorHasTag(EnemyTag) && !Target) 
+	{
+		Target = OtherActor;
+	}
+}
+
 
 // Called when the game starts or when spawned
 void ASATORI_PullActor::BeginPlay()
 {
 	Super::BeginPlay();
 
-	FTimerHandle UnusedHandle;
-	GetWorldTimerManager().SetTimer(UnusedHandle, this, &ASATORI_PullActor::OnTimerExpiredDestroy, TimeToDestroy, false);
+	//Check if Player is currently targeting an enemy
+	TArray<AActor*> Actors;
+	UGameplayStatics::GetAllActorsWithTag(GetWorld(), TargetActorWithTag, Actors);
+	if (Actors.Num() != 0) {
+		Target = Actors.Pop();
+	}
+
+	//Set max time before auto destruc if not collides
+	GetWorldTimerManager().SetTimer(TimerHandleDestroy, this, &ASATORI_PullActor::DestroySelf, TimeToDestroy, false);
 
 }
 
@@ -48,50 +85,42 @@ void ASATORI_PullActor::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 
 	//Movement
-	FVector Pos = GetActorLocation();
-
-	if (Pulling) {
+	FVector ActorPosition = GetActorLocation();
+	//If has grabbed adn enemy
+	if (Pulling)
+	{
 
 		FVector PlayerPosition = GetWorld()->GetFirstPlayerController()->GetPawn()->GetActorLocation();
+		FVector Direction = UKismetMathLibrary::GetDirectionUnitVector(ActorPosition, PlayerPosition);
+		SetActorLocation(ActorPosition + Direction * SpeedPulling * DeltaTime);
 
-		FVector dir = UKismetMathLibrary::GetDirectionUnitVector(Pos, PlayerPosition);
+		ActorPosition = GetActorLocation();
+		Pulling->SetWorldLocation(ActorPosition);
 
-		SetActorLocation(Pos + dir * SpeedPulling * DeltaTime);
-
-		Pos = GetActorLocation();
-		Pulling->SetWorldLocation(Pos);
-
-
-		if (FVector::Dist(PlayerPosition, Pos) < 100) {
-			Destroy();
+		//If has reached the player
+		if (FVector::Dist(PlayerPosition, ActorPosition) < 100) {
+			DestroySelf();
 		}
 	}
-	else {
-		SetActorLocation(Pos + GetActorForwardVector() * SpeedForward * DeltaTime);
+	//Movement forward
+	else
+	{	
+		//If has target
+		if (Target)
+		{
+			FVector TargetPosition = Target->GetActorLocation();
+			FVector Direction = UKismetMathLibrary::GetDirectionUnitVector(ActorPosition, TargetPosition);
+			SetActorLocation(ActorPosition + Direction * SpeedForward * DeltaTime);
+		}
+		//If not has Target
+		else
+		{
+			SetActorLocation(ActorPosition + GetActorForwardVector() * SpeedForward * DeltaTime);
+		}
 	}
 }
 
-
-void ASATORI_PullActor::OnTimerExpiredDestroy()
+void ASATORI_PullActor::DestroySelf()
 {
 	Destroy();
-}
-
-void ASATORI_PullActor::OnOverlapSphere(
-	UPrimitiveComponent* OverlappedComp,
-	AActor* OtherActor,
-	UPrimitiveComponent* OtherComp,
-	int32 OtherBodyIndex,
-	bool bFromSweep,
-	const FHitResult& SweepResult)
-{
-
-	//TO DO: add Tag canbpulled
-	if (OtherActor->ActorHasTag(FName("Enemy"))) {
-		Pulling = Cast<UPrimitiveComponent>(OtherActor->GetRootComponent());
-	}
-	if (!OtherActor->ActorHasTag(FName("Player")) && !OtherActor->ActorHasTag(FName("Enemy"))) {
-		Destroy();
-	}
-
 }

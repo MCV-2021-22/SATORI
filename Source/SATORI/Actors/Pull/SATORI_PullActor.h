@@ -1,11 +1,14 @@
+//
 
 #pragma once
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "GameplayEffect.h"
 #include "SATORI_PullActor.generated.h"
 
 class USphereComponent;
+class UStaticMeshComponent;
 
 UCLASS()
 class SATORI_API ASATORI_PullActor : public AActor
@@ -15,46 +18,73 @@ class SATORI_API ASATORI_PullActor : public AActor
 public:	
 	
 	ASATORI_PullActor();
+
+	UPROPERTY(EditDefaultsOnly, Category = "Pull")
+	USphereComponent* CollisionSphereComponent = nullptr;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Pull")
+	UStaticMeshComponent* StaticMeshComponent = nullptr;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Pull")
+	USphereComponent* SeekingSphereComponent = nullptr;
+
+	UPROPERTY(BlueprintReadWrite, Meta = (ExposeOnSpawn = true), Category = "Pull")
+	FGameplayEffectSpecHandle DamageEffectSpecHandle;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Meta = (ExposeOnSpawn = true), Category = "Pull")
+	float SpeedForward;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Meta = (ExposeOnSpawn = true), Category = "Pull")
+	float SpeedPulling;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Meta = (ExposeOnSpawn = true), Category = "Pull")
+	float TimeToDestroy;
 	
-	UPROPERTY(BlueprintReadOnly, EditAnywhere)
-		float SphereRadius;
+	UFUNCTION(BlueprintCallable, Category = "Pull")
+	void OnOverlapCollisionSphere(
+			UPrimitiveComponent* OverlappedComp,
+			AActor* OtherActor,
+			UPrimitiveComponent* OtherComp,
+			int32 OtherBodyIndex,
+			bool bFromSweep,
+			const FHitResult& SweepResult);
 
-	UPROPERTY(BlueprintReadOnly, EditAnywhere)
-		float SpeedForward;
+	UFUNCTION(BlueprintCallable, Category = "Pull")
+	void OnOverlapSeekingSphere(
+			UPrimitiveComponent* OverlappedComp,
+			AActor* OtherActor,
+			UPrimitiveComponent* OtherComp,
+			int32 OtherBodyIndex,
+			bool bFromSweep,
+			const FHitResult& SweepResult);
 
-	UPROPERTY(BlueprintReadOnly, EditAnywhere)
-		float SpeedPulling;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Pull|Tags")
+	FName TargetActorWithTag = FName(TEXT("State.Targeted"));
 
-	UPROPERTY(BlueprintReadOnly, EditAnywhere)
-		float TimeToDestroy;
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Pull|Tags")
+	FName EnemyTag = FName(TEXT("Enemy"));
 
-
-	UPROPERTY(EditDefaultsOnly)
-	USphereComponent* SphereComponent = nullptr;
-
-	UFUNCTION()
-	void OnOverlapSphere(
-		UPrimitiveComponent* OverlappedComp,
-		AActor* OtherActor,
-		UPrimitiveComponent* OtherComp,
-		int32 OtherBodyIndex,
-		bool bFromSweep,
-		const FHitResult& SweepResult);
-
-	void OnTimerExpiredDestroy();
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Pull|Tags")
+	FName PlayerTag = FName(TEXT("Player"));
 
 protected:
-	// Called when the game starts or when spawned
+
 	virtual void BeginPlay() override;
 
 public:	
-	// Called every frame
+
 	virtual void Tick(float DeltaTime) override;
 
 private:
 
+	AActor* Target;
+
+	FTimerHandle TimerHandleDestroy;
+
 	FVector Start;
 
 	UPrimitiveComponent* Pulling = nullptr;
+
+	void DestroySelf();
 
 };

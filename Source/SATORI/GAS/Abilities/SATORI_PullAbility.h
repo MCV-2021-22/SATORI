@@ -1,10 +1,10 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+//
 
 #pragma once
 
 #include "CoreMinimal.h"
 #include "GAS/SATORI_GameplayAbility.h"
-#include "SATORI/AbilityTask/SATORI_PlayMontageandWaitNotify.h"
+#include "SATORI/AbilityTask/SATORI_PlayMontageAndWaitEvent.h"
 #include "Actors/Pull/SATORI_PullActor.h"
 #include "SATORI_PullAbility.generated.h"
 
@@ -20,8 +20,14 @@ public:
 
 	USATORI_PullAbility();
 
-	UPROPERTY(BlueprintReadOnly, EditAnywhere)
-		UAnimMontage* AnimMontage;
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Ability")
+	UAnimMontage* AnimMontage;
+
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Ability")
+	TSubclassOf<ASATORI_PullActor> PullActor;
+
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Ability")
+	TSubclassOf<UGameplayEffect> DamageGameplayEffect;
 
 	virtual void ActivateAbility(
 		const FGameplayAbilitySpecHandle Handle,
@@ -30,26 +36,39 @@ public:
 		const FGameplayEventData* TriggerEventData)
 		override;
 
-	void OnTimerExpiredFinish();
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Ability|Tags")
+	FName TagSpawnAbility = FName(TEXT("Event.Montage.SpawnAbility"));
 
-	UPROPERTY(BlueprintReadOnly, EditAnywhere)
-	TSubclassOf<ASATORI_PullActor> PullActor;
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Ability|Tags")
+	FName TagEndAbility = FName(TEXT("Event.Montage.EndAbility"));
+
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Ability|Tags")
+	FName PlayerTargetingTag = FName(TEXT("State.Targeting"));
 
 protected:
 
-	UPROPERTY(BlueprintReadOnly, EditAnywhere)
-		float TimeToFinish;
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Ability|Pull")
+	float SpeedForward;
 
-	UPROPERTY(BlueprintReadOnly, EditAnywhere)
-		float CastDelay;
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Ability|Pull")
+	float SpeedPulling;
 
-	UFUNCTION()
-		void OnCancelled(FGameplayTag EventTag, FGameplayEventData EventData);
-
-	UFUNCTION()
-		void OnCompleted(FGameplayTag EventTag, FGameplayEventData EventData);
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Ability|Pull")
+	float TimeToDestroy;
 
 	UFUNCTION()
-		void EventReceived(FGameplayTag EventTag, FGameplayEventData EventData);
+	void OnCancelled(FGameplayTag EventTag, FGameplayEventData EventData);
+
+	UFUNCTION()
+	void OnCompleted(FGameplayTag EventTag, FGameplayEventData EventData);
+
+	UFUNCTION()
+	void EventReceived(FGameplayTag EventTag, FGameplayEventData EventData);
+
+private:
+
+	const bool bStopWhenAbilityEnds = true;
+
+	FTransform SpawnTransform;
 	
 };

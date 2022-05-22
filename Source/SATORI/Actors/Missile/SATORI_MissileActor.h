@@ -38,7 +38,7 @@ public:
 	float TimeToDestroy;
 
 	UFUNCTION(BlueprintCallable, Category = "Missile")
-		void OnOverlapCollisionSphere(
+	void OnOverlapCollisionSphere(
 			UPrimitiveComponent* OverlappedComp,
 			AActor* OtherActor,
 			UPrimitiveComponent* OtherComp,
@@ -47,7 +47,7 @@ public:
 			const FHitResult& SweepResult);
 
 	UFUNCTION(BlueprintCallable, Category = "Missile")
-		void OnOverlapSeekingSphere(
+	void OnOverlapSeekingSphere(
 			UPrimitiveComponent* OverlappedComp,
 			AActor* OtherActor,
 			UPrimitiveComponent* OtherComp,
