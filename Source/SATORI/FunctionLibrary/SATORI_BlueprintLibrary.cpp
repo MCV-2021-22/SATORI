@@ -7,6 +7,7 @@
 #include "Abilities/GameplayAbility.h"
 #include "AbilitySystemComponent.h"
 #include "GAS/Attributes/SATORI_AttributeSet.h"
+#include "Character/SATORI_CharacterBase.h"
 
 float USATORI_BlueprintLibrary::ApplyGameplayEffectDamage(AActor* DamagedActor, float BaseDamage,
 	AActor* DamageCauser, TSubclassOf<UGameplayEffect> DamageEffect)
