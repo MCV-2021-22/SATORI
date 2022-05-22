@@ -1,10 +1,10 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+//
 
 #pragma once
 
 #include "CoreMinimal.h"
 #include "GAS/SATORI_GameplayAbility.h"
-#include "SATORI/AbilityTask/SATORI_PlayMontageandWaitNotify.h"
+#include "SATORI/AbilityTask/SATORI_PlayMontageAndWaitEvent.h"
 #include "Actors/BlackHole/SATORI_BlackHoleActor.h"
 #include "SATORI_BlackHoleAbility.generated.h"
 
@@ -20,8 +20,14 @@ public:
 
 	USATORI_BlackHoleAbility();
 
-	UPROPERTY(BlueprintReadOnly, EditAnywhere)
-		UAnimMontage* AnimMontage;
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Ability")
+	UAnimMontage* AnimMontage;
+
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Ability")
+	TSubclassOf<ASATORI_BlackHoleActor> BlackHoleActor;
+
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Ability")
+	TSubclassOf<UGameplayEffect> DamageGameplayEffect;
 
 	virtual void ActivateAbility(
 		const FGameplayAbilitySpecHandle Handle,
@@ -30,26 +36,39 @@ public:
 		const FGameplayEventData* TriggerEventData)
 		override;
 
-	UPROPERTY(BlueprintReadOnly, EditAnywhere)
-	TSubclassOf<ASATORI_BlackHoleActor> BlackHoleActor;
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Ability|Tags")
+	FName TagSpawnAbility = FName(TEXT("Event.Montage.SpawnAbility"));
 
-	void OnTimerExpiredFinish();
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Ability|Tags")
+	FName TagEndAbility = FName(TEXT("Event.Montage.EndAbility"));
+
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Ability|Tags")
+	FName PlayerTargetingTag = FName(TEXT("State.Targeting"));
 
 protected:
 
-	UPROPERTY(BlueprintReadOnly, EditAnywhere)
-		float TimeToFinish;
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (UIMin = "1.0"), Category = "Ability|BlackHole")
+	float Speed = 1.0f;
 
-	UPROPERTY(BlueprintReadOnly, EditAnywhere)
-		float CastDelay;
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (UIMin = "1.0"), Category = "Ability|BlackHole")
+	float SphereRadiusOnExplosion = 1.0f;
 
-	UFUNCTION()
-		void OnCancelled(FGameplayTag EventTag, FGameplayEventData EventData);
-
-	UFUNCTION()
-		void OnCompleted(FGameplayTag EventTag, FGameplayEventData EventData);
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (UIMin = "1.0"), Category = "Ability|BlackHole")
+	float TimeToDestroy = 1.0f;
 
 	UFUNCTION()
-		void EventReceived(FGameplayTag EventTag, FGameplayEventData EventData);
+	void OnCancelled(FGameplayTag EventTag, FGameplayEventData EventData);
+
+	UFUNCTION()
+	void OnCompleted(FGameplayTag EventTag, FGameplayEventData EventData);
+
+	UFUNCTION()
+	void EventReceived(FGameplayTag EventTag, FGameplayEventData EventData);
+
+private:
+
+	const bool bStopWhenAbilityEnds = true;
+
+	FTransform SpawnTransform;
 	
 };

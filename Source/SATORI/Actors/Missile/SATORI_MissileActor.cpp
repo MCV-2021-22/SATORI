@@ -42,11 +42,11 @@ void ASATORI_MissileActor::OnOverlapCollisionSphere(UPrimitiveComponent* Overlap
 {
 	if (OtherActor->ActorHasTag(EnemyTag)) 
 	{
-		Explode();
+		DestroyMyself();
 	}
 	if (!OtherActor->ActorHasTag(PlayerTag) && !OtherActor->ActorHasTag(EnemyTag)) 
 	{
-		Explode();
+		DestroyMyself();
 	}
 }
 
@@ -59,7 +59,7 @@ void ASATORI_MissileActor::OnOverlapSeekingSphere(UPrimitiveComponent* Overlappe
 	}
 }
 
-void ASATORI_MissileActor::Explode()
+void ASATORI_MissileActor::DestroyMyself()
 {
 	Destroy();
 }
@@ -77,7 +77,7 @@ void ASATORI_MissileActor::BeginPlay()
 	}
 
 	//Set max time before auto destruc if not collides
-	GetWorldTimerManager().SetTimer(TimerHandleDestroy, this, &ASATORI_MissileActor::Explode, TimeToDestroy, false);
+	GetWorldTimerManager().SetTimer(TimerHandleDestroy, this, &ASATORI_MissileActor::DestroyMyself, TimeToDestroy, false);
 	
 }
 

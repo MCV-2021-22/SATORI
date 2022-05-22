@@ -96,7 +96,7 @@ void USATORI_MissileAbility::EventReceived(FGameplayTag EventTag, FGameplayEvent
 
 		//Missile Actor creation
 		ASATORI_MissileActor* Missile = GetWorld()->SpawnActorDeferred<ASATORI_MissileActor>(MissileActor, SpawnTransform, GetOwningActorFromActorInfo(),
-		Character, ESpawnActorCollisionHandlingMethod::AlwaysSpawn);
+			Character, ESpawnActorCollisionHandlingMethod::AlwaysSpawn);
 		Missile->Speed = Speed;
 		Missile->TimeToDestroy = TimeToDestroy;
 		Missile->DamageEffectSpecHandle = DamageEffectSpecHandle;

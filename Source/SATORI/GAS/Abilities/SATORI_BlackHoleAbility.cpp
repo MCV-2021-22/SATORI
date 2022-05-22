@@ -1,28 +1,13 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
+//
 
 #include "GAS/Abilities/SATORI_BlackHoleAbility.h"
 #include "AbilitySystemComponent.h"
 #include "SATORICharacter.h"
-#include "TimerManager.h"
 #include "Engine/Classes/Camera/CameraComponent.h"
 
-USATORI_BlackHoleAbility::USATORI_BlackHoleAbility() {
-
+USATORI_BlackHoleAbility::USATORI_BlackHoleAbility() 
+{
 	InstancingPolicy = EGameplayAbilityInstancingPolicy::InstancedPerActor;
-
-	//Ability Tags
-	FGameplayTag Tag = FGameplayTag::RequestGameplayTag(FName("Ability.BlackHole"));
-	AbilityTags.AddTag(Tag);
-	ActivationOwnedTags.AddTag(Tag);
-
-	BlockAbilitiesWithTag.AddTag(FGameplayTag::RequestGameplayTag(FName("Ability")));
-	ActivationBlockedTags.AddTag(FGameplayTag::RequestGameplayTag(FName("Ability")));
-
-	//Ability default parameters
-	TimeToFinish = 1.5f;
-	CastDelay = 0.2f;
-
 }
 
 void USATORI_BlackHoleAbility::ActivateAbility(
@@ -32,39 +17,27 @@ void USATORI_BlackHoleAbility::ActivateAbility(
 	const FGameplayEventData* TriggerEventData)
 {
 
+	if (!IsValid(AnimMontage))
+	{
+		UE_LOG(LogTemp, Warning, TEXT("[%s] USATORI_BlackHoleAbility: Cannot get Animation Montage ... "), *GetName());
+		return;
+	}
+
 	if (!CommitAbility(Handle, ActorInfo, ActivationInfo))
 	{
+		UE_LOG(LogTemp, Display, TEXT("[%s] USATORI_BlackHoleAbility: Cannot Commit Ability ... "), *GetName());
 		EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true);
 	}
 
-	ASATORICharacter* Character = Cast<ASATORICharacter>(GetAvatarActorFromActorInfo());
+	//Handling of events
+	USATORI_PlayMontageAndWaitEvent* Task = USATORI_PlayMontageAndWaitEvent::PlayMontageAndWaitForEvent(this, NAME_None, AnimMontage, FGameplayTagContainer(), 1.0f, NAME_None, bStopWhenAbilityEnds, 1.0f);
+	Task->OnBlendOut.AddDynamic(this, &USATORI_BlackHoleAbility::OnCompleted);
+	Task->OnCompleted.AddDynamic(this, &USATORI_BlackHoleAbility::OnCompleted);
+	Task->OnInterrupted.AddDynamic(this, &USATORI_BlackHoleAbility::OnCancelled);
+	Task->OnCancelled.AddDynamic(this, &USATORI_BlackHoleAbility::OnCancelled);
+	Task->EventReceived.AddDynamic(this, &USATORI_BlackHoleAbility::EventReceived);
+	Task->ReadyForActivation();
 
-	if (!Character)
-	{
-		EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true);
-	}
-
-	UCameraComponent* CameraComponent = Character->FindComponentByClass<UCameraComponent>();
-	FVector CameraForward = CameraComponent->GetForwardVector();
-	FRotator CameraRotation = CameraComponent->GetComponentRotation();
-	CameraRotation.Pitch = 0.f;
-
-	ASATORI_BlackHoleActor* Misile = GetWorld()->SpawnActor<ASATORI_BlackHoleActor>(
-		BlackHoleActor, //Actor to Spawn
-		Character->GetActorLocation() + CameraForward * 100, //Spawn location
-		Character->GetActorRotation()); //Spawn rotation
-
-	FTimerHandle TimerHandle;
-	FTimerDelegate TimerDelegate = FTimerDelegate::CreateUObject(this, &USATORI_BlackHoleAbility::OnTimerExpiredFinish);
-	GetWorld()->GetTimerManager().SetTimer(TimerHandle, TimerDelegate, TimeToFinish, false);
-
-	//EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true);
-
-}
-
-void USATORI_BlackHoleAbility::OnTimerExpiredFinish()
-{
-	EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true);
 }
 
 void USATORI_BlackHoleAbility::OnCancelled(FGameplayTag EventTag, FGameplayEventData EventData)
@@ -80,4 +53,55 @@ void USATORI_BlackHoleAbility::OnCompleted(FGameplayTag EventTag, FGameplayEvent
 void USATORI_BlackHoleAbility::EventReceived(FGameplayTag EventTag, FGameplayEventData EventData)
 {
 
+	if (EventTag == FGameplayTag::RequestGameplayTag(TagEndAbility))
+	{
+		EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, false);
+		return;
+	}
+
+	if (EventTag == FGameplayTag::RequestGameplayTag(TagSpawnAbility))
+	{
+
+		ASATORICharacter* Character = Cast<ASATORICharacter>(GetAvatarActorFromActorInfo());
+		if (!Character)
+		{
+			UE_LOG(LogTemp, Display, TEXT("[%s] USATORI_BlackHoleAbility: Cannot Cast ASATORICharacter ... "), *GetName());
+			EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true);
+		}
+
+		//Aiming when Targeting Enemy
+		if (Character->ActorHasTag(PlayerTargetingTag))
+		{
+			UCameraComponent* CameraComponent = Character->FindComponentByClass<UCameraComponent>();
+			if (!CameraComponent)
+			{
+				UE_LOG(LogTemp, Display, TEXT("[%s] USATORI_BlackHoleAbility: Cannot Cast UCameraComponent ... "), *GetName());
+				EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true);
+			}
+
+			FRotator CameraRotation = CameraComponent->GetComponentRotation();
+			CameraRotation.Pitch = 0.0f;
+			SpawnTransform.SetLocation(Character->GetActorLocation() + CameraComponent->GetForwardVector() * 100);
+			SpawnTransform.SetRotation(CameraRotation.Quaternion());
+
+		}
+		//Aiming when not targeting
+		else
+		{
+			SpawnTransform.SetLocation(Character->GetActorLocation() + Character->GetActorForwardVector() * 100);
+			SpawnTransform.SetRotation(Character->GetActorRotation().Quaternion());
+		}
+
+		FGameplayEffectSpecHandle DamageEffectSpecHandle = MakeOutgoingGameplayEffectSpec(DamageGameplayEffect, GetAbilityLevel());
+
+		//BlackHole Actor creation
+		ASATORI_BlackHoleActor* BlackHole = GetWorld()->SpawnActorDeferred<ASATORI_BlackHoleActor>(BlackHoleActor, SpawnTransform, GetOwningActorFromActorInfo(),
+			Character, ESpawnActorCollisionHandlingMethod::AlwaysSpawn);
+		BlackHole->Speed = Speed;
+		BlackHole->TimeToDestroy = TimeToDestroy;
+		BlackHole->SphereRadiusOnExplosion = SphereRadiusOnExplosion;
+		BlackHole->DamageEffectSpecHandle = DamageEffectSpecHandle;
+		BlackHole->FinishSpawning(SpawnTransform);
+
+	}
 }

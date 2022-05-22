@@ -1,75 +1,95 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+//
 
 #pragma once
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "GameplayEffect.h"
 #include "SATORI_BlackHoleActor.generated.h"
 
 class USphereComponent;
+class UStaticMeshComponent;
 
 UCLASS()
 class SATORI_API ASATORI_BlackHoleActor : public AActor
 {
 	GENERATED_BODY()
 
-	APlayerController* Controller;
-	TArray<UPrimitiveComponent*> ArrayTrapped;
-	bool Exploded = false;
-
-	FTimerHandle UnusedHandle;
-
 public:	
-	// Sets default values for this actor's properties
+
 	ASATORI_BlackHoleActor();
 
-	UPROPERTY(BlueprintReadOnly, EditAnywhere)
-		float SphereRadius;
+	UPROPERTY(EditDefaultsOnly, Category = "BlackHole")
+	USphereComponent* CollisionSphereComponent = nullptr;
 
-	UPROPERTY(BlueprintReadOnly, EditAnywhere)
-		float Speed;
+	UPROPERTY(EditDefaultsOnly, Category = "BlackHole")
+	UStaticMeshComponent* StaticMeshComponent = nullptr;
 
-	UPROPERTY(BlueprintReadOnly, EditAnywhere)
-		float TimeToDestroy;
+	UPROPERTY(BlueprintReadWrite, Meta = (ExposeOnSpawn = true), Category = "BlackHole")
+	FGameplayEffectSpecHandle DamageEffectSpecHandle;
 
-	UPROPERTY(BlueprintReadOnly, EditAnywhere)
-		bool Active = false;
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Meta = (ExposeOnSpawn = true), Category = "BlackHole")
+	float Speed;
 
-	UPROPERTY(EditDefaultsOnly)
-		USphereComponent* SphereComponent = nullptr;
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Meta = (ExposeOnSpawn = true), Category = "BlackHole")
+	float TimeToDestroy;
 
-	UPROPERTY(BlueprintReadOnly, EditAnywhere)
-		float SphereRadiusOnExplosion;
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Meta = (ExposeOnSpawn = true), Category = "BlackHole")
+	float SphereRadiusOnExplosion;
 
-	UFUNCTION(BlueprintCallable)
+	UPROPERTY(BlueprintReadWrite, Category = "BlackHole")
+	bool Active = false;
+
+	UFUNCTION(BlueprintCallable, Category = "BlackHole")
+	void OnOverlapCollisionSphere(
+			UPrimitiveComponent* OverlappedComp,
+			AActor* OtherActor,
+			UPrimitiveComponent* OtherComp,
+			int32 OtherBodyIndex,
+			bool bFromSweep,
+			const FHitResult& SweepResult);
+
+	UFUNCTION(BlueprintCallable, Category = "BlackHole")
+	void OnOverlapSphereOnExplosion(
+			UPrimitiveComponent* OverlappedComp,
+			AActor* OtherActor,
+			UPrimitiveComponent* OtherComp,
+			int32 OtherBodyIndex,
+			bool bFromSweep,
+			const FHitResult& SweepResult);
+
+	UFUNCTION(BlueprintCallable, Category = "BlackHole")
 	void Explode();
 
-	UFUNCTION()
-		void OnOverlapSphere(
-			UPrimitiveComponent* OverlappedComp,
-			AActor* OtherActor,
-			UPrimitiveComponent* OtherComp,
-			int32 OtherBodyIndex,
-			bool bFromSweep,
-			const FHitResult& SweepResult);
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "BlackHole|Tags")
+	FName TargetActorWithTag = FName(TEXT("State.Targeted"));
 
-	UFUNCTION()
-		void OnOverlapSphereOnExplosion(
-			UPrimitiveComponent* OverlappedComp,
-			AActor* OtherActor,
-			UPrimitiveComponent* OtherComp,
-			int32 OtherBodyIndex,
-			bool bFromSweep,
-			const FHitResult& SweepResult);
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "BlackHole|Tags")
+	FName EnemyTag = FName(TEXT("Enemy"));
 
-	void OnTimerExpiredDestroy();
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "BlackHole|Tags")
+	FName PlayerTag = FName(TEXT("Player"));
 
 protected:
-	// Called when the game starts or when spawned
+
 	virtual void BeginPlay() override;
 
 public:	
-	// Called every frame
+
 	virtual void Tick(float DeltaTime) override;
+
+private:
+
+	AActor* Target;
+
+	APlayerController* Controller;
+
+	TArray<UPrimitiveComponent*> ArrayTrapped;
+
+	bool Exploded = false;
+
+	FTimerHandle TimerHandleDestroy;
+
+	void DestroyMyself();
 
 };

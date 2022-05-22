@@ -55,13 +55,13 @@ public:
 			bool bFromSweep,
 			const FHitResult& SweepResult);
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Missile|Tags")
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Missile|Tags")
 	FName TargetActorWithTag = FName(TEXT("State.Targeted"));
 
-	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Missile|Tags")
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Missile|Tags")
 	FName EnemyTag = FName(TEXT("Enemy"));
 
-	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Missile|Tags")
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Missile|Tags")
 	FName PlayerTag = FName(TEXT("Player"));
 
 
@@ -79,6 +79,6 @@ private:
 
 	FTimerHandle TimerHandleDestroy;
 
-	void Explode();
+	void DestroyMyself();
 
 };

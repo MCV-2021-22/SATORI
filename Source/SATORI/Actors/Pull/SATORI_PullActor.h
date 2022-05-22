@@ -58,13 +58,13 @@ public:
 			bool bFromSweep,
 			const FHitResult& SweepResult);
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Pull|Tags")
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Pull|Tags")
 	FName TargetActorWithTag = FName(TEXT("State.Targeted"));
 
-	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Pull|Tags")
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Pull|Tags")
 	FName EnemyTag = FName(TEXT("Enemy"));
 
-	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Pull|Tags")
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Pull|Tags")
 	FName PlayerTag = FName(TEXT("Player"));
 
 protected:

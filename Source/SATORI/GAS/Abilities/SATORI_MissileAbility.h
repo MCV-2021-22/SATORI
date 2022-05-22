@@ -47,11 +47,11 @@ public:
 
 protected:
 
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Ability|Missile")
-	float Speed;
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (UIMin = "1.0"), Category = "Ability|Missile")
+	float Speed = 1.0f;
 
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Ability|Missile")
-	float TimeToDestroy;
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (UIMin = "1.0"), Category = "Ability|Missile")
+	float TimeToDestroy = 1.0f;
 
 	UFUNCTION()
 	void OnCancelled(FGameplayTag EventTag, FGameplayEventData EventData);

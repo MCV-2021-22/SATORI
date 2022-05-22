@@ -47,14 +47,14 @@ public:
 
 protected:
 
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Ability|Pull")
-	float SpeedForward;
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (UIMin = "1.0"), Category = "Ability|Pull")
+	float SpeedForward = 1.0f;
 
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Ability|Pull")
-	float SpeedPulling;
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (UIMin = "1.0"), Category = "Ability|Pull")
+	float SpeedPulling = 1.0f;
 
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Ability|Pull")
-	float TimeToDestroy;
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (UIMin = "1.0"), Category = "Ability|Pull")
+	float TimeToDestroy = 1.0f;
 
 	UFUNCTION()
 	void OnCancelled(FGameplayTag EventTag, FGameplayEventData EventData);

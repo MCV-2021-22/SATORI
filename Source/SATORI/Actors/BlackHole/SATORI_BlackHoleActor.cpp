@@ -1,35 +1,81 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
+//
 
 #include "Actors/BlackHole/SATORI_BlackHoleActor.h"
 #include "Kismet/GameplayStatics.h"
+#include "Kismet/KismetMathLibrary.h"
 #include "Components/SphereComponent.h"
 
-// Sets default values
 ASATORI_BlackHoleActor::ASATORI_BlackHoleActor()
 {
- 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
-	SphereRadius = 128.0f;
-	SphereRadiusOnExplosion = 1000.0f;
-	Speed = 2000.0f;
-	TimeToDestroy = 2.5f;
+	float SphereRadius = 32.0f;
 
-	SphereComponent = CreateDefaultSubobject<USphereComponent>(TEXT("Sphere"));
-	SphereComponent->SetSphereRadius(SphereRadius);
-	SphereComponent->SetCollisionProfileName(FName(TEXT("IgnoreSelfOverlapsAll")));
-	RootComponent = SphereComponent;
-	SphereComponent->SetGenerateOverlapEvents(true);
-	SphereComponent->OnComponentBeginOverlap.AddDynamic(this, &ASATORI_BlackHoleActor::OnOverlapSphere);
-	SphereComponent->OnComponentBeginOverlap.AddDynamic(this, &ASATORI_BlackHoleActor::OnOverlapSphereOnExplosion);
+	StaticMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("StaticMesh"));
+	RootComponent = StaticMeshComponent;
+	StaticMeshComponent->SetCollisionProfileName(UCollisionProfile::NoCollision_ProfileName);
+
+	//If collides will explode
+	CollisionSphereComponent = CreateDefaultSubobject<USphereComponent>(TEXT("CollisionSphere"));
+	CollisionSphereComponent->SetSphereRadius(SphereRadius);
+	CollisionSphereComponent->SetCollisionProfileName(FName(TEXT("IgnoreSelfOverlapsAll")));
+	CollisionSphereComponent->SetupAttachment(RootComponent);
+	CollisionSphereComponent->SetGenerateOverlapEvents(true);
+	CollisionSphereComponent->OnComponentBeginOverlap.AddDynamic(this, &ASATORI_BlackHoleActor::OnOverlapCollisionSphere);
+	CollisionSphereComponent->OnComponentBeginOverlap.AddDynamic(this, &ASATORI_BlackHoleActor::OnOverlapSphereOnExplosion);
 
 	//Debug
-	SphereComponent->bHiddenInGame = false;
+	CollisionSphereComponent->bHiddenInGame = false;
 
 }
 
-// Called when the game starts or when spawned
+//Collision for exploding
+void ASATORI_BlackHoleActor::OnOverlapCollisionSphere(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	if (OtherActor->ActorHasTag(EnemyTag))
+	{
+		Explode();
+	}
+	if (!OtherActor->ActorHasTag(PlayerTag) && !OtherActor->ActorHasTag(EnemyTag))
+	{
+		Explode();
+	}
+}
+
+//Collision when exploding
+void ASATORI_BlackHoleActor::OnOverlapSphereOnExplosion(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	if (Exploded) {
+		if (OtherActor->ActorHasTag(FName("Enemy"))) {
+			ArrayTrapped.AddUnique(Cast<UPrimitiveComponent>(OtherActor->GetRootComponent()));
+		}
+	}
+}
+
+void ASATORI_BlackHoleActor::Explode() 
+{
+
+	GetWorldTimerManager().ClearTimer(TimerHandleDestroy);
+
+	Exploded = true;
+
+	if (IsValid(Controller)) {
+		DisableInput(Controller);
+	}
+
+	Active = false;
+
+	CollisionSphereComponent->SetSphereRadius(SphereRadiusOnExplosion, true);
+
+	GetWorldTimerManager().SetTimer(TimerHandleDestroy, this, &ASATORI_BlackHoleActor::DestroyMyself, TimeToDestroy, false);
+
+}
+
+void ASATORI_BlackHoleActor::DestroyMyself()
+{
+	Destroy();
+}
+
 void ASATORI_BlackHoleActor::BeginPlay()
 {
 	Super::BeginPlay();
@@ -40,9 +86,17 @@ void ASATORI_BlackHoleActor::BeginPlay()
 		EnableInput(Controller);
 	}
 
+	//Check if Player is currently targeting an enemy
+	TArray<AActor*> Actors;
+	UGameplayStatics::GetAllActorsWithTag(GetWorld(), TargetActorWithTag, Actors);
+	if (Actors.Num() != 0)
+	{
+		Target = Actors.Pop();
+	}
+
 	Active = true;
 
-	GetWorldTimerManager().SetTimer(UnusedHandle, this, &ASATORI_BlackHoleActor::OnTimerExpiredDestroy, TimeToDestroy, false);
+	GetWorldTimerManager().SetTimer(TimerHandleDestroy, this, &ASATORI_BlackHoleActor::DestroyMyself, TimeToDestroy, false);
 
 }
 
@@ -52,62 +106,30 @@ void ASATORI_BlackHoleActor::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 
 	//Movement
-	FVector Pos = GetActorLocation();
-	if(!Exploded)
-	SetActorLocation(Pos + GetActorForwardVector() * Speed * DeltaTime);
+	FVector ActorPosition = GetActorLocation();
+
+	if (!Exploded)
+	{
+		//If has Target
+		if (Target)
+		{
+			FVector TargetPosition = Target->GetActorLocation();
+			FVector Direction = UKismetMathLibrary::GetDirectionUnitVector(ActorPosition, TargetPosition);
+			SetActorLocation(ActorPosition + Direction * Speed * DeltaTime);
+		}
+		//If not has Target
+		else
+		{
+			SetActorLocation(ActorPosition + GetActorForwardVector() * Speed * DeltaTime);
+		}
+	}
 
 	if (Exploded) {
 		for (UPrimitiveComponent* RootComp : ArrayTrapped) {
 			FVector EnemyPos = RootComp->GetComponentLocation();
-			RootComp->SetWorldLocation(EnemyPos + (Pos - EnemyPos));
-		}
-	}
-
-}
-
-void ASATORI_BlackHoleActor::OnOverlapSphere(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
-{
-
-	if (OtherActor->ActorHasTag(FName("Enemy"))) {
-		Explode();
-	}
-	if (!OtherActor->ActorHasTag(FName("Player")) && !OtherActor->ActorHasTag(FName("Enemy"))) {
-		Explode();
-	}
-
-}
-
-void ASATORI_BlackHoleActor::OnTimerExpiredDestroy()
-{
-
-	Destroy();
-
-}
-
-void ASATORI_BlackHoleActor::Explode() 
-{
-
-
-	GetWorldTimerManager().ClearTimer(UnusedHandle);
-
-	Exploded = true;
-
-	if (IsValid(Controller)) {
-		DisableInput(Controller);
-	}
-	Active = false;
-
-	SphereComponent->SetSphereRadius(SphereRadiusOnExplosion, true);
-
-	GetWorldTimerManager().SetTimer(UnusedHandle, this, &ASATORI_BlackHoleActor::OnTimerExpiredDestroy, TimeToDestroy, false);
-
-}
-
-void ASATORI_BlackHoleActor::OnOverlapSphereOnExplosion(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
-{
-	if (Exploded) {
-		if (OtherActor->ActorHasTag(FName("Enemy"))) {
-			ArrayTrapped.AddUnique(Cast<UPrimitiveComponent>(OtherActor->GetRootComponent()));
+			RootComp->SetWorldLocation(EnemyPos + (ActorPosition - EnemyPos));
 		}
 	}
 }
+
+
