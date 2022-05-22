@@ -64,7 +64,6 @@ void USATORI_MisileAbility::EventReceived(FGameplayTag EventTag, FGameplayEventD
 
 	if (EventTag == FGameplayTag::RequestGameplayTag(FName("Event.Montage.SpawnAbility")))
 	{
-		UE_LOG(LogTemp, Display, TEXT("[%s] USATORI_MisileAbility: Spawning Misiles ... "), *GetName());
 
 		ASATORICharacter* Character = Cast<ASATORICharacter>(GetAvatarActorFromActorInfo());
 		if (!Character)
@@ -83,8 +82,10 @@ void USATORI_MisileAbility::EventReceived(FGameplayTag EventTag, FGameplayEventD
 				EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true);
 			}
 
+			FRotator CameraRotation = CameraComponent->GetComponentRotation();
+			CameraRotation.Pitch = 0.0f;
 			SpawnTransform.SetLocation(Character->GetActorLocation() + CameraComponent->GetForwardVector() * 100);
-			SpawnTransform.SetRotation(CameraComponent->GetComponentRotation().Quaternion());
+			SpawnTransform.SetRotation(CameraRotation.Quaternion());
 
 		}
 		else
