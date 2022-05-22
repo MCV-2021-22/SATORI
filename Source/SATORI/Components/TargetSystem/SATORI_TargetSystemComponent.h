@@ -20,23 +20,23 @@ public:
 
 	USATORI_TargetSystemComponent();
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Target System")
-	float MinimumDistanceToTarget;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (UIMin = "100.0"), Category = "Target System")
+	float MinimumDistanceToTarget = 1200.0f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (UIMin = "0.0"), Category = "Target System")
+	float PlusDistanceToNotLoseTarget = 600.0f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (UIMin = "1.0"), Category = "Target System")
+	float BreakLineOfSightDelay = 5.0f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Target System")
-	float PlusDistanceToNotLoseTarget;
+	FName TargetActorsWithTag = FName(TEXT("Enemy"));
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Target System")
-	float BreakLineOfSightDelay;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Target System")
-	FName TargetActorsWithTag;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Target System")
-	TEnumAsByte<ECollisionChannel> TargetableCollisionChannel;
+	TEnumAsByte<ECollisionChannel> TargetableCollisionChannel =  ECollisionChannel::ECC_Pawn;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Target System|Widget")
-	UWidgetComponent* TargetLockedOnWidgetComponent;
+	UWidgetComponent* TargetLockedOnWidgetComponent = nullptr;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Target System|Widget")
 	TSubclassOf<UUserWidget> LockedOnWidgetClass;
@@ -46,17 +46,17 @@ public:
 	float LockedOnWidgetDrawSize = 32.0f;
 
 	// The Socket name to attach the LockedOn Widget.
-//
-// You should use this to configure the Bone or Socket name the widget should be attached to, and allow
-// the widget to move with target character's animation (Ex: spine_03)
-//
-// Set it to None to attach the Widget Component to the Root Component instead of the Mesh.
+	//
+	// You should use this to configure the Bone or Socket name the widget should be attached to, and allow
+	// the widget to move with target character's animation (Ex: spine_03)
+	//
+	// Set it to None to attach the Widget Component to the Root Component instead of the Mesh.
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Target System|Widget")
-		FName LockedOnWidgetParentSocket = FName("spine_03");
+	FName LockedOnWidgetParentSocket = FName("spine_03");
 
 	// The Relative Location to apply on Target LockedOn Widget when attached to a target.
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Target System|Widget")
-		FVector LockedOnWidgetRelativeLocation = FVector(0.0f, 0.0f, 0.0f);
+	FVector LockedOnWidgetRelativeLocation = FVector(0.0f, 0.0f, 0.0f);
 
 	UFUNCTION(BlueprintCallable, Category = "Target System")
 	void TargetActor();
@@ -147,10 +147,9 @@ private:
 	void CreateAndAttachTargetLockedOnWidgetComponent(AActor* TargetActor);
 
 protected:
-	// Called when the game starts
+	
 	virtual void BeginPlay() override;
 
-	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
 };

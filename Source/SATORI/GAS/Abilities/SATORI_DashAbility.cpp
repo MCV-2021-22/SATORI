@@ -1,31 +1,14 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
+//
 
 #include "GAS/Abilities/SATORI_DashAbility.h"
 #include "AbilitySystemComponent.h"
 #include "SATORICharacter.h"
-#include "TimerManager.h"
 
-USATORI_DashAbility::USATORI_DashAbility() {
-
+USATORI_DashAbility::USATORI_DashAbility() 
+{
 	InstancingPolicy = EGameplayAbilityInstancingPolicy::InstancedPerActor;
 
-	//Ability Tags
-	FGameplayTag Tag = FGameplayTag::RequestGameplayTag(FName("Ability.Dash"));
-	AbilityTags.AddTag(Tag);
-	ActivationOwnedTags.AddTag(Tag);
-
-	BlockAbilitiesWithTag.AddTag(FGameplayTag::RequestGameplayTag(FName("Ability")));
-	ActivationBlockedTags.AddTag(FGameplayTag::RequestGameplayTag(FName("Ability")));
-
-	//Ability default parameters
-	TimeToFinish = 1.0f;
-	CastDelay = 0.1f;
-	DashDistance = 25.0f;
-	CallTracker = 50;
 	CallTrackerRegistry = CallTracker;
-	DashSpeed = 0.01f;
-
 }
 
 void USATORI_DashAbility::ActivateAbility(
@@ -35,60 +18,80 @@ void USATORI_DashAbility::ActivateAbility(
 	const FGameplayEventData* TriggerEventData)
 {
 
-	ASATORICharacter* Character = Cast<ASATORICharacter>(GetAvatarActorFromActorInfo());
-	
-	if (!Character)
+	if (!IsValid(AnimMontage))
 	{
+		UE_LOG(LogTemp, Warning, TEXT("[%s] USATORI_DashAbility: Cannot get Animation Montage ... "), *GetName());
+		return;
+	}
+
+	if (!CommitAbility(Handle, ActorInfo, ActivationInfo))
+	{
+		UE_LOG(LogTemp, Display, TEXT("[%s] USATORI_DashAbility: Cannot Commit Ability ... "), *GetName());
 		EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true);
 	}
 
-	if (Character->GetCharacterMovement()->Velocity != FVector::ZeroVector) {
+	//Handling of events
+	USATORI_PlayMontageAndWaitEvent* Task = USATORI_PlayMontageAndWaitEvent::PlayMontageAndWaitForEvent(this, NAME_None, AnimMontage, FGameplayTagContainer(), 1.0f, NAME_None, bStopWhenAbilityEnds, 1.0f);
+	Task->OnBlendOut.AddDynamic(this, &USATORI_DashAbility::OnCompleted);
+	Task->OnCompleted.AddDynamic(this, &USATORI_DashAbility::OnCompleted);
+	Task->OnInterrupted.AddDynamic(this, &USATORI_DashAbility::OnCancelled);
+	Task->OnCancelled.AddDynamic(this, &USATORI_DashAbility::OnCancelled);
+	Task->EventReceived.AddDynamic(this, &USATORI_DashAbility::EventReceived);
+	Task->ReadyForActivation();
 
+}
+
+void USATORI_DashAbility::OnCancelled(FGameplayTag EventTag, FGameplayEventData EventData) 
+{
+	CallTracker = CallTrackerRegistry;
+	EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, false);
+}
+
+void USATORI_DashAbility::OnCompleted(FGameplayTag EventTag, FGameplayEventData EventData) 
+{
+	ASATORICharacter* Character = Cast<ASATORICharacter>(GetAvatarActorFromActorInfo());
+	Character->GetCharacterMovement()->StopMovementImmediately();
+	CallTracker = CallTrackerRegistry;
+	EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, false);
+}
+
+void USATORI_DashAbility::EventReceived(FGameplayTag EventTag, FGameplayEventData EventData) 
+{
+	if (EventTag == FGameplayTag::RequestGameplayTag(TagEndAbility))
+	{
+		ASATORICharacter* Character = Cast<ASATORICharacter>(GetAvatarActorFromActorInfo());
+		Character->GetCharacterMovement()->StopMovementImmediately();
+		EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, false);
+		return;
+	}
+
+	if (EventTag == FGameplayTag::RequestGameplayTag(TagSpawnAbility))
+	{
+
+		ASATORICharacter* Character = Cast<ASATORICharacter>(GetAvatarActorFromActorInfo());
+		if (!Character)
+		{
+			UE_LOG(LogTemp, Display, TEXT("[%s] USATORI_DashAbility: Cannot Cast ASATORICharacter ... "), *GetName());
+			EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true);
+		}
+			
 		const FVector Dash = Character->GetCharacterMovement()->GetLastInputVector();
 
 		FTimerDelegate TimerDelegateDash = FTimerDelegate::CreateUObject(this, &USATORI_DashAbility::Dashing);
 		GetWorld()->GetTimerManager().SetTimer(TimerHandleDash, TimerDelegateDash, DashSpeed, true);
 
-
-		FTimerHandle TimerHandleFinish;
-		FTimerDelegate TimerDelegateFinish = FTimerDelegate::CreateUObject(this, &USATORI_DashAbility::OnTimerExpiredFinish);
-		GetWorld()->GetTimerManager().SetTimer(TimerHandleFinish, TimerDelegateFinish, TimeToFinish, false);
 	}
-	else {
-		EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true);
-	}
-
 }
 
-void USATORI_DashAbility::Dashing() {
+void USATORI_DashAbility::Dashing() 
+{
 
 	ASATORICharacter* Character = Cast<ASATORICharacter>(GetAvatarActorFromActorInfo());
 	Character->AddActorLocalOffset(Direction * DashDistance);
 
 	CallTracker--;
-	UE_LOG(LogTemp, Display, TEXT("CallTracker: %d"), CallTracker);
 	if (CallTracker == 0) {
 		GetWorld()->GetTimerManager().ClearTimer(TimerHandleDash);
 		CallTracker = CallTrackerRegistry;
 	}
-
-}
-
-void USATORI_DashAbility::OnTimerExpiredFinish() 
-{
-	ASATORICharacter* Character = Cast<ASATORICharacter>(GetAvatarActorFromActorInfo());
-	Character->GetCharacterMovement()->StopMovementImmediately();
-	EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, false);
-}
-
-void USATORI_DashAbility::OnCancelled(FGameplayTag EventTag, FGameplayEventData EventData) {
-	EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, false);
-}
-
-void USATORI_DashAbility::OnCompleted(FGameplayTag EventTag, FGameplayEventData EventData) {
-	EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, false);
-}
-
-void USATORI_DashAbility::EventReceived(FGameplayTag EventTag, FGameplayEventData EventData) {
-
 }

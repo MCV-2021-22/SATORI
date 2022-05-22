@@ -1,3 +1,4 @@
+//
 
 #include "Components/TargetSystem/SATORI_TargetSystemComponent.h"
 #include "Kismet/GameplayStatics.h"
@@ -9,21 +10,9 @@
 //Debug
 #include "DrawDebugHelpers.h"
 
-
 USATORI_TargetSystemComponent::USATORI_TargetSystemComponent()
 {
 	PrimaryComponentTick.bCanEverTick = true;
-
-	MinimumDistanceToTarget = 1200.0f;
-	PlusDistanceToNotLoseTarget = 600.0f;
-
-	BreakLineOfSightDelay = 5.0f;
-
-	TargetActorsWithTag = FName(TEXT("Enemy"));
-	TargetableCollisionChannel = ECollisionChannel::ECC_Pawn;
-
-	TargetLockedOnWidgetComponent = nullptr;
-
 }
 
 void USATORI_TargetSystemComponent::BeginPlay()
@@ -33,17 +22,23 @@ void USATORI_TargetSystemComponent::BeginPlay()
 	OwnerActor = GetOwner(); 
 	if (!OwnerActor)
 	{
+		UE_LOG(LogTemp, Warning, TEXT("[%s] USATORI_TargetSystemComponent: Cannot get owner actor ... "), *GetName());
 		return;
 	}
 
 	OwnerPawn = Cast<APawn>(OwnerActor);
-	if (!ensure(OwnerPawn) || !IsValid(OwnerPawn))
+	if (!ensure(OwnerPawn) || !OwnerPawn)
 	{
+		UE_LOG(LogTemp, Warning, TEXT("[%s] USATORI_TargetSystemComponent: Cannot get owner pawn ... "), *GetName());
 		return;
 	}
 	
 	OwnerPlayerController = Cast<APlayerController>(OwnerPawn->GetController());
-
+	if (!OwnerPlayerController)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("[%s] USATORI_TargetSystemComponent: Cannot get owner controller ... "), *GetName());
+		return;
+	}
 }
 
 void USATORI_TargetSystemComponent::TickComponent(const float DeltaTime, const ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
@@ -97,7 +92,6 @@ void USATORI_TargetSystemComponent::TickComponent(const float DeltaTime, const E
 	1
 	);
 
-
 }
 
 void USATORI_TargetSystemComponent::TargetActor()
@@ -116,7 +110,6 @@ void USATORI_TargetSystemComponent::TargetActor()
 		LockedOnTargetActor = FindNearestTarget(Actors);
 		TargetLockOn(LockedOnTargetActor);
 	}
-
 }
 
 void USATORI_TargetSystemComponent::TargetLockOff()
@@ -131,7 +124,10 @@ void USATORI_TargetSystemComponent::TargetLockOff()
 
 	OwnerPlayerController->ResetIgnoreLookInput();
 
-	LockedOnTargetActor->Tags.Remove(FName("State.Targeted"));
+	if (IsValid(LockedOnTargetActor))
+	{
+		LockedOnTargetActor->Tags.Remove(FName("State.Targeted"));
+	}
 
 	LockedOnTargetActor = nullptr;
 

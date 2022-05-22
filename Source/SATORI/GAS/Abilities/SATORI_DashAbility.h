@@ -1,10 +1,10 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+//
 
 #pragma once
 
 #include "CoreMinimal.h"
 #include "GAS/SATORI_GameplayAbility.h"
-#include "SATORI/AbilityTask/SATORI_PlayMontageandWaitNotify.h"
+#include "SATORI/AbilityTask/SATORI_PlayMontageAndWaitEvent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "SATORI_DashAbility.generated.h"
 
@@ -19,18 +19,12 @@ class SATORI_API USATORI_DashAbility : public USATORI_GameplayAbility
 {
 	GENERATED_BODY()
 
-	FVector Direction = FVector::FVector(1.0f, 0.0f, 0.0f); //It just works
-
-	FTimerHandle TimerHandleDash;
-
-	int CallTrackerRegistry;
-
 public:
 
 	USATORI_DashAbility();
 
-	UPROPERTY(BlueprintReadOnly, EditAnywhere)
-		UAnimMontage* AnimMontage;
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Ability")
+	UAnimMontage* AnimMontage;
 
 	virtual void ActivateAbility(
 		const FGameplayAbilitySpecHandle Handle,
@@ -39,35 +33,42 @@ public:
 		const FGameplayEventData* TriggerEventData)
 		override;
 
-	void OnTimerExpiredFinish();
 
-	void Dashing();
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Ability|Tags")
+	FName TagSpawnAbility = FName(TEXT("Event.Montage.SpawnAbility"));
+
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Ability|Tags")
+	FName TagEndAbility = FName(TEXT("Event.Montage.EndAbility"));
 
 protected:
 
-	UPROPERTY(BlueprintReadOnly, EditAnywhere)
-		float TimeToFinish;
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (UIMin = "1.0"), Category = "Ability|Dash")
+	float DashDistance = 25.0f;
 
-	UPROPERTY(BlueprintReadOnly, EditAnywhere)
-		float CastDelay;
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (UIMin = "0.001", UIMax = "1.0"), Category = "Ability|Dash")
+	float DashSpeed = 0.01f;
 
-	UPROPERTY(BlueprintReadOnly, EditAnywhere)
-	float DashDistance;
-
-	UPROPERTY(BlueprintReadOnly, EditAnywhere)
-	int CallTracker;
-
-	UPROPERTY(BlueprintReadOnly, EditAnywhere)
-		float DashSpeed;
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (UIMin = "1"), Category = "Ability|Dash")
+	int CallTracker = 50;
 
 	UFUNCTION()
-		void OnCancelled(FGameplayTag EventTag, FGameplayEventData EventData);
+	void OnCancelled(FGameplayTag EventTag, FGameplayEventData EventData);
 
 	UFUNCTION()
-		void OnCompleted(FGameplayTag EventTag, FGameplayEventData EventData);
+	void OnCompleted(FGameplayTag EventTag, FGameplayEventData EventData);
 
 	UFUNCTION()
-		void EventReceived(FGameplayTag EventTag, FGameplayEventData EventData);
+	void EventReceived(FGameplayTag EventTag, FGameplayEventData EventData);
 
-	
+private:
+
+	const bool bStopWhenAbilityEnds = true;
+
+	FVector Direction = FVector::FVector(1.0f, 0.0f, 0.0f); //It just works
+
+	FTimerHandle TimerHandleDash;
+
+	int CallTrackerRegistry;
+
+	void Dashing();
 };
