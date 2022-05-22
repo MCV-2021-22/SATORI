@@ -5,6 +5,7 @@
 #include "GameplayEffect.h"
 #include "GameplayEffectExtension.h"
 #include "SATORI/SATORICharacter.h"
+#include "Character/SATORI_CharacterBase.h"
 
 USATORI_AttributeSet::USATORI_AttributeSet()
 {
@@ -52,18 +53,18 @@ void USATORI_AttributeSet::PostGameplayEffectExecute(const struct FGameplayEffec
 	// Get the Target actor, which should be our owner
 	AActor* TargetActor = nullptr;
 	AController* TargetController = nullptr;
-	ASATORICharacter* TargetCharacter = nullptr;
+	ACharacter* TargetCharacter = nullptr;
 	if (Data.Target.AbilityActorInfo.IsValid() && Data.Target.AbilityActorInfo->AvatarActor.IsValid())
 	{
 		TargetActor = Data.Target.AbilityActorInfo->AvatarActor.Get();
 		TargetController = Data.Target.AbilityActorInfo->PlayerController.Get();
-		TargetCharacter = Cast<ASATORICharacter>(TargetActor);
+		TargetCharacter = Cast<ACharacter>(TargetActor);
 	}
 
 	// Get the Source actor
 	AActor* SourceActor = nullptr;
 	AController* SourceController = nullptr;
-	ASATORICharacter* SourceCharacter = nullptr;
+	ACharacter* SourceCharacter = nullptr;
 	if (Source && Source->AbilityActorInfo.IsValid() && Source->AbilityActorInfo->AvatarActor.IsValid())
 	{
 		SourceActor = Source->AbilityActorInfo->AvatarActor.Get();
@@ -79,11 +80,11 @@ void USATORI_AttributeSet::PostGameplayEffectExecute(const struct FGameplayEffec
 		// Use the controller to find the source pawn
 		if (SourceController)
 		{
-			SourceCharacter = Cast<ASATORICharacter>(SourceController->GetPawn());
+			SourceCharacter = Cast<ACharacter>(SourceController->GetPawn());
 		}
 		else
 		{
-			SourceCharacter = Cast<ASATORICharacter>(SourceActor);
+			SourceCharacter = Cast<ACharacter>(SourceActor);
 		}
 
 		// Set the causer actor based on context if it's set
