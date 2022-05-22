@@ -11,7 +11,7 @@ ASATORI_MisileActor::ASATORI_MisileActor()
 	PrimaryActorTick.bCanEverTick = true;
 
 	SphereRadius = 128.0f;
-	Speed = 6000.0f;
+	Speed = 3000.0f;
 	TimeToDestroy = 2.5f;
 	
 	SphereComponent = CreateDefaultSubobject<USphereComponent>(TEXT("Sphere"));
@@ -63,8 +63,6 @@ void ASATORI_MisileActor::Tick(float DeltaTime)
 	//Movement
 	FVector Pos = GetActorLocation();
 	SetActorLocation(Pos + GetActorForwardVector() * Speed * DeltaTime);
-
-
 
 }
 

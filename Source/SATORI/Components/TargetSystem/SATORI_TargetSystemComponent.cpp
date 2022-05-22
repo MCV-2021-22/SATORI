@@ -4,6 +4,7 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Engine/Classes/Camera/CameraComponent.h"
 #include "Components/WidgetComponent.h"
+#include "GameplayTagContainer.h"
 
 //Debug
 #include "DrawDebugHelpers.h"
@@ -125,6 +126,9 @@ void USATORI_TargetSystemComponent::TargetLockOff()
 	if (IsValid(TargetLockedOnWidgetComponent)) {
 		TargetLockedOnWidgetComponent->DestroyComponent();
 	}
+
+	OwnerActor->Tags.Remove(FName("State.Targeting"));
+
 	OwnerPlayerController->ResetIgnoreLookInput();
 
 	LockedOnTargetActor = nullptr;
@@ -139,6 +143,8 @@ void USATORI_TargetSystemComponent::TargetLockOn(AActor* TargetToLockOn)
 	}
 
 	bTargetLocked = true;
+
+	OwnerActor->Tags.Add(FName("State.Targeting"));
 
 	OwnerPlayerController->SetIgnoreLookInput(true);
 
