@@ -27,9 +27,6 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, Category = "Missile")
 	USphereComponent* SeekingSphereComponent = nullptr;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Missile")
-	FName TargetActorWithTag;
 	
 	UPROPERTY(BlueprintReadWrite, Meta = (ExposeOnSpawn = true), Category = "Missile")
 	FGameplayEffectSpecHandle DamageEffectSpecHandle;
@@ -57,6 +54,9 @@ public:
 			int32 OtherBodyIndex,
 			bool bFromSweep,
 			const FHitResult& SweepResult);
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Missile|Tags")
+	FName TargetActorWithTag = FName(TEXT("State.Targeted"));
 
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Missile|Tags")
 	FName EnemyTag = FName(TEXT("Enemy"));

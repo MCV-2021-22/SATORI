@@ -47,10 +47,10 @@ public:
 
 protected:
 
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Ability|Misile")
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Ability|Missile")
 	float Speed;
 
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Ability|Misile")
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Ability|Missile")
 	float TimeToDestroy;
 
 	UFUNCTION()

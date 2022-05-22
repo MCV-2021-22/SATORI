@@ -31,8 +31,8 @@ namespace ESATORIAbilityInputID
 		Push			UMETA(DisplayName = "Push"),
 		// Pull
 		Pull			UMETA(DisplayName = "Pull"),
-		// Misile
-		Misile			UMETA(DisplayName = "Misile"),
+		// Missile
+		Missile			UMETA(DisplayName = "Missile"),
 		// BlackHole
 		BlackHole		UMETA(DisplayName = "BlackHole"),
 		// Decoy
