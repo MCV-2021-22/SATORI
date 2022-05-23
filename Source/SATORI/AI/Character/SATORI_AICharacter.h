@@ -6,6 +6,7 @@
 #include "GameFramework/Character.h"
 #include "AbilitySystemInterface.h"
 #include "AbilitySystemComponent.h"
+#include "Character/SATORI_CharacterBase.h"
 #include "GameplayTags.h"
 #include "SATORI_AICharacter.generated.h"
 
@@ -20,18 +21,14 @@ class UPawnSensingComponent;
 
 
 UCLASS()
-class SATORI_API ASATORI_AICharacter : public ACharacter, public IAbilitySystemInterface
+class SATORI_API ASATORI_AICharacter : public ASATORI_CharacterBase
 {
 	GENERATED_BODY()
-
-	
-
 
 public:
 	// Sets default values for this character's properties
 	ASATORI_AICharacter();
 
-	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -50,9 +47,6 @@ protected:
 public:
 	UPROPERTY()
 	USATORI_AttributeSet* AttributeSet;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
-	USATORI_AbilitySystemComponent* AbilitySystemComponent;
 
 	// Character Default Abilities Asset (Contain List of Player Abilities)
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "AI|GAS")

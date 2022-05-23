@@ -8,11 +8,12 @@
 #include "AbilitySystemComponent.h"
 #include "GAS/Attributes/SATORI_AttributeSet.h"
 #include "Character/SATORI_CharacterBase.h"
+#include "Character/SATORI_CharacterBase.h"
 
 float USATORI_BlueprintLibrary::ApplyGameplayEffectDamage(AActor* DamagedActor, float BaseDamage,
 	AActor* DamageCauser, TSubclassOf<UGameplayEffect> DamageEffect)
 {
-	ASATORICharacter* Character = Cast<ASATORICharacter>(DamagedActor);
+	ASATORI_CharacterBase* Character = Cast<ASATORI_CharacterBase>(DamagedActor);
 	if (Character)
 	{
 		UAbilitySystemComponent* AbilitySystemComponent = Character->GetAbilitySystemComponent();

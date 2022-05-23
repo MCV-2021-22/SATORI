@@ -3,6 +3,7 @@
 
 #include "Components/Player/SATORI_ComboSystemComponent.h"
 #include "SATORICharacter.h"
+#include "Components/SphereComponent.h"
 
 // Sets default values for this component's properties
 USATORI_ComboSystemComponent::USATORI_ComboSystemComponent()

@@ -4,6 +4,7 @@
 #include "AnimNotify/State/SATORI_ANS_Combo.h"
 #include "SATORICharacter.h"
 #include "Components/Player/SATORI_ComboSystemComponent.h"
+#include "Components/SphereComponent.h"
 
 void USATORI_ANS_Combo::NotifyBegin(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, float TotalDuration)
 {
@@ -23,6 +24,7 @@ void USATORI_ANS_Combo::NotifyBegin(USkeletalMeshComponent* MeshComp, UAnimSeque
 				ComboSystem->lightAttackCounter += 1;
 			}*/
 			ComboSystem->isLightAttack = false;
+			ComboSystem->AttackingCollision->Activate(true);
 		}
 	}
 	/*
@@ -57,6 +59,7 @@ void USATORI_ANS_Combo::NotifyEnd(USkeletalMeshComponent* MeshComp, UAnimSequenc
 				ComboSystem->lightAttackCounter += 1;
 			}*/
 			ComboSystem->isLightAttack = true;
+			ComboSystem->AttackingCollision->Activate(false);
 		}
 	}
 }
