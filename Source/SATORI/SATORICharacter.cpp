@@ -18,6 +18,7 @@
 #include "Components/Player/SATORI_StatsComponent.h"
 #include "Components/Player/SATORI_ComboSystemComponent.h"
 #include "AnimNotify/State/SATORI_ANS_JumpSection.h"
+#include "Components/Player/SATORI_GameplayAbilityComponent.h"
 
 //////////////////////////////////////////////////////////////////////////
 // ASATORICharacter
@@ -59,6 +60,7 @@ ASATORICharacter::ASATORICharacter()
 	StatsComponent = CreateDefaultSubobject<USATORI_StatsComponent>("StatsComponent");
 	AbilitySystemComponent = CreateDefaultSubobject<USATORI_AbilitySystemComponent>(TEXT("AbilitySystemComponent"));
 	AbilitySystemComponent->SetIsReplicated(true);
+	PlayerGameplayAbilityComponent = CreateDefaultSubobject<USATORI_GameplayAbilityComponent>(TEXT("SATORI_GameplayAbilityComponent"));
 }
 
 void ASATORICharacter::AddGameplayTag(const FGameplayTag& TagToAdd)
@@ -85,7 +87,6 @@ void ASATORICharacter::PossessedBy(AController* NewController)
 
 		AttributeSetBase = PS->GetSatoriAttributeSet();
 
-	
 		GameplayTags.AddTag(FGameplayTag::RequestGameplayTag("PossessedBy.Player"));
 		
 
@@ -122,14 +123,14 @@ UAbilitySystemComponent* ASATORICharacter::GetAbilitySystemComponent() const
 
 void ASATORICharacter::ApplyDefaultAbilities()
 {
-	if (!DefaultAbilities)
+	if (!PlayerGameplayAbilityComponent->DefaultAbilities)
 	{
 		UE_LOG(LogTemp, Error, TEXT("%s() Missing DefaultAbility for %s. Please fill in the character's Blueprint."), *FString(__FUNCTION__), *GetName());
 		return;
 	}
 
 	// Granting a GameplayAbility to an ASC adds it to the ASC's list of ActivatableAbilities allowing it to activate the GameplayAbility
-	for (FSATORIGameplayAbilityInfo Ability : DefaultAbilities->Abilities)
+	for (FSATORIGameplayAbilityInfo Ability : PlayerGameplayAbilityComponent->DefaultAbilities->Abilities)
 	{
 		// GameplayAbilitySpec exists on the ASC after a GameplayAbility is granted and defines the activatable GameplayAbility
 		GrantAbilityToPlayer(FGameplayAbilitySpec(Ability.SATORIAbility, 1, static_cast<uint32>(Ability.AbilityKeys), this));

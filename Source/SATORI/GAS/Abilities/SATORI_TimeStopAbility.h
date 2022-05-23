@@ -4,13 +4,13 @@
 
 #include "CoreMinimal.h"
 #include "Abilities/GameplayAbility.h"
-#include "SATORI_TimeSlowAbility.generated.h"
+#include "SATORI_TimeStopAbility.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class SATORI_API USATORI_TimeSlow : public UGameplayAbility
+class SATORI_API USATORI_TimeStop : public UGameplayAbility
 {
 	GENERATED_BODY()
 
@@ -21,7 +21,11 @@ class SATORI_API USATORI_TimeSlow : public UGameplayAbility
 public:
 	FTimerDelegate TimerDelegate;
 
+	FTimerDelegate TimerD;
+
 	FTimerHandle TimerHandle;
+
+	FTimerHandle TimerH;
 
 protected:
 	UPROPERTY(EditAnywhere)
@@ -30,5 +34,7 @@ protected:
 private:
 	void OnTimerFinished(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo);
 
-	void StartTimeSlow(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo);
+	void StartTimeStop(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo);
+
+	void SetActorVelocity(const FGameplayAbilityActorInfo* ActorInfo);
 };

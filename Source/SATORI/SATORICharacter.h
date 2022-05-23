@@ -49,8 +49,12 @@ public:
 	UPROPERTY()
 	SATORIMaskType MaskType = SATORIMaskType::NONE;
 
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	int AbilityToChoose = 0;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		FGameplayTagContainer GameplayTags;
+
 public:
 
 	UAbilitySystemComponent* GetAbilitySystemComponent() const override;
@@ -125,6 +129,9 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	class USATORI_ComboSystemComponent* ComboSystemComponent;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
+	class USATORI_GameplayAbilityComponent* PlayerGameplayAbilityComponent;
 
 	// Anim Notify Section
 	UPROPERTY()
