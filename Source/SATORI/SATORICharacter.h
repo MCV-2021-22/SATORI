@@ -15,6 +15,7 @@ class USATORI_AttributeSet;
 class USATORI_AbilitySystemComponent;
 class USATORI_AbilityMask;
 class USATORI_ANS_JumpSection;
+class USATORI_GameplayAbility;
 
 UCLASS(config=Game)
 class ASATORICharacter : public ACharacter, public IAbilitySystemInterface
@@ -102,6 +103,9 @@ public:
 
 	bool HasAnyMatchingGameplayTags(const FGameplayTagContainer& TagContainer) const;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
+		class USATORI_GameplayAbilityComponent* PlayerGameplayAbilityComponent;
+
 	// Getters for Components
 	FORCEINLINE class USATORI_StatsComponent* GetStatsComponent() const { return StatsComponent; }
 	class USATORI_ComboSystemComponent* GetComboSystemComponent() const { return ComboSystemComponent; }
@@ -130,8 +134,6 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	class USATORI_ComboSystemComponent* ComboSystemComponent;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
-	class USATORI_GameplayAbilityComponent* PlayerGameplayAbilityComponent;
 
 	// Anim Notify Section
 	UPROPERTY()
