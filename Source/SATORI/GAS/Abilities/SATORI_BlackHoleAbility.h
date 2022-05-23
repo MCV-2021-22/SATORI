@@ -5,7 +5,7 @@
 #include "CoreMinimal.h"
 #include "GAS/SATORI_GameplayAbility.h"
 #include "SATORI/AbilityTask/SATORI_PlayMontageAndWaitEvent.h"
-#include "Actors/BlackHole/SATORI_BlackHoleActor.h"
+#include "Actors/AbilitiesActors/SATORI_BlackHoleActor.h"
 #include "SATORI_BlackHoleAbility.generated.h"
 
 /**

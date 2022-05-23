@@ -5,7 +5,7 @@
 #include "CoreMinimal.h"
 #include "GAS/SATORI_GameplayAbility.h"
 #include "SATORI/AbilityTask/SATORI_PlayMontageAndWaitEvent.h"
-#include "Actors/Missile/SATORI_MissileActor.h"
+#include "Actors/AbilitiesActors/SATORI_MissileActor.h"
 #include "SATORI_MissileAbility.generated.h"
 
 /**

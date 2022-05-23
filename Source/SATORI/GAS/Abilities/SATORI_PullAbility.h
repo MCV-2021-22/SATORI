@@ -5,7 +5,7 @@
 #include "CoreMinimal.h"
 #include "GAS/SATORI_GameplayAbility.h"
 #include "SATORI/AbilityTask/SATORI_PlayMontageAndWaitEvent.h"
-#include "Actors/Pull/SATORI_PullActor.h"
+#include "Actors/AbilitiesActors/SATORI_PullActor.h"
 #include "SATORI_PullAbility.generated.h"
 
 /**
