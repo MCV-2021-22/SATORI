@@ -92,13 +92,13 @@ void USATORI_CloneAbility::EventReceived(FGameplayTag EventTag, FGameplayEventDa
 			SpawnTransform.SetRotation(Character->GetActorRotation().Quaternion());
 		}
 
-		//Clone Actor creation
-		//ASATORI_CloneActor* Clone = GetWorld()->SpawnActorDeferred<ASATORI_CloneActor>(CloneActor, SpawnTransform, GetOwningActorFromActorInfo(),
-		//	Character, ESpawnActorCollisionHandlingMethod::AlwaysSpawn);
-		//Clone->SphereRadiusOfAction = SphereRadiusOfAction;
-		//Clone->TimeToDestroy = TimeToDestroy;
-		//Clone->TagGrantedWhenLured = TagGrantedWhenLured;
-		//Clone->FinishSpawning(SpawnTransform);
+		//Clone creation
+		ASATORI_CloneCharacter* Clone = GetWorld()->SpawnActorDeferred<ASATORI_CloneCharacter>(CloneCharacter, SpawnTransform, GetOwningActorFromActorInfo(),
+			Character, ESpawnActorCollisionHandlingMethod::AlwaysSpawn);
+		Clone->SphereRadiusOfAction = SphereRadiusOfAction;
+		Clone->TimeToDestroy = TimeToDestroy;
+		Clone->TagGrantedWhenLured = TagGrantedWhenLured;
+		Clone->FinishSpawning(SpawnTransform);
 
 	}
 }

@@ -68,6 +68,8 @@ public:
 
 private:
 
+	AActor* Target;
+
 	TArray<AActor*> ArrayLured;
 
 	FTimerHandle TimerHandleDestroy;

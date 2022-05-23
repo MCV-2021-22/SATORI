@@ -5,7 +5,7 @@
 #include "CoreMinimal.h"
 #include "GAS/SATORI_GameplayAbility.h"
 #include "SATORI/AbilityTask/SATORI_PlayMontageAndWaitEvent.h"
-
+#include "SATORI/AI/Character/Clone/Satori_CloneCharacter.h"
 #include "SATORI_CloneAbility.generated.h"
 
 /**
@@ -23,7 +23,8 @@ public:
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Ability")
 	UAnimMontage* AnimMontage;
 
-
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Ability")
+	TSubclassOf<ASATORI_CloneCharacter> CloneCharacter;
 
 	virtual void ActivateAbility(
 		const FGameplayAbilitySpecHandle Handle,

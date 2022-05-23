@@ -45,9 +45,17 @@ void ASATORI_DecoyActor::DestroyMyself()
 	Destroy();
 }
 
+
 void ASATORI_DecoyActor::BeginPlay()
 {
 	Super::BeginPlay();
+
+	TArray<AActor*> Actors;
+	UGameplayStatics::GetAllActorsWithTag(GetWorld(), TargetActorWithTag, Actors);
+	if (Actors.Num() != 0)
+	{
+		Target = Actors.Pop();
+	}
 	
 	//Set max time before auto destruc if not collides
 	GetWorldTimerManager().SetTimer(TimerHandleDestroy, this, &ASATORI_DecoyActor::DestroyMyself, TimeToDestroy, false);
