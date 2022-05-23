@@ -34,6 +34,11 @@ public:
 
 	void ResetAllAttribute();
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Weapon")
+	UStaticMeshComponent* SwordComponent;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon")
+	class USphereComponent* AttackingCollision;
 public:
 	int lightAttackCounter = 0;
 	int HeavyAttackCounter = 0;

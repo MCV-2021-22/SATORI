@@ -39,7 +39,7 @@ void ASATORI_AICharacter::BeginPlay()
 {
 	Super::BeginPlay();
 
-	if (AbilitySystemComponent)
+	if (AbilitySystemComponent.IsValid())
 	{
 		AbilitySystemComponent->InitAbilityActorInfo(this, this);
 
@@ -51,7 +51,7 @@ void ASATORI_AICharacter::BeginPlay()
 
 void ASATORI_AICharacter::InitializeAttributes()
 {
-	if (!AbilitySystemComponent)
+	if (!AbilitySystemComponent.IsValid())
 	{
 		return;
 	}
@@ -69,19 +69,14 @@ void ASATORI_AICharacter::InitializeAttributes()
 	FGameplayEffectSpecHandle NewHandle = AbilitySystemComponent->MakeOutgoingSpec(DefaultAttributes, 1, EffectContext);
 	if (NewHandle.IsValid())
 	{
-		FActiveGameplayEffectHandle ActiveGEHandle = AbilitySystemComponent->ApplyGameplayEffectSpecToTarget(*NewHandle.Data.Get(), AbilitySystemComponent);
+		FActiveGameplayEffectHandle ActiveGEHandle = AbilitySystemComponent->ApplyGameplayEffectSpecToTarget(*NewHandle.Data.Get(), AbilitySystemComponent.Get());
 	}
-}
-
-UAbilitySystemComponent* ASATORI_AICharacter::GetAbilitySystemComponent() const
-{
-	return AbilitySystemComponent;
 }
 
 void ASATORI_AICharacter::AddAICharacterAbilities()
 {
 	// Grant abilities, but only on the server	
-	if (GetLocalRole() != ROLE_Authority || !AbilitySystemComponent)
+	if (GetLocalRole() != ROLE_Authority || !AbilitySystemComponent.IsValid())
 	{
 		return;
 	}
@@ -100,7 +95,7 @@ void ASATORI_AICharacter::AddAICharacterAbilities()
 
 void ASATORI_AICharacter::GrantAbilityToPlayer(FGameplayAbilitySpec Ability)
 {
-	if (!AbilitySystemComponent)
+	if (!AbilitySystemComponent.IsValid())
 	{
 		return;
 	}

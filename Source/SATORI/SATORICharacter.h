@@ -7,6 +7,7 @@
 #include "AbilitySystemInterface.h"
 #include "AbilitySystemComponent.h"
 #include "Character/Mask/SATORI_AbilityMask.h"
+#include "Character/SATORI_CharacterBase.h"
 #include "SATORICharacter.generated.h"
 
 class USATORI_AbilityDataAsset;
@@ -17,7 +18,7 @@ class USATORI_AbilityMask;
 class USATORI_ANS_JumpSection;
 
 UCLASS(config=Game)
-class ASATORICharacter : public ACharacter, public IAbilitySystemInterface
+class ASATORICharacter : public ASATORI_CharacterBase
 {
 	GENERATED_BODY()
 
@@ -34,10 +35,6 @@ public:
 	/** Base look up/down rate, in deg/sec. Other scaling may affect final rate. */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category=Camera)
 	float BaseLookUpRate;
-
-	// Character Default Abilities Asset (Contain List of Player Abilities)
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Player|Data")
-	USATORI_AbilityDataAsset* DefaultAbilities;
 
 	// Default attributes for a character for initializing
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Player|GameplayEffect")
@@ -56,8 +53,6 @@ public:
 		FGameplayTagContainer GameplayTags;
 
 public:
-
-	UAbilitySystemComponent* GetAbilitySystemComponent() const override;
 
 	// Gettes for attributes
 	UFUNCTION(BlueprintCallable, Category = "Player|Attributes")
@@ -118,7 +113,7 @@ protected:
 protected:
 
 	// The core ActorComponent for interfacing with the GameplayAbilities System
-	TWeakObjectPtr<USATORI_AbilitySystemComponent> AbilitySystemComponent;
+	//TWeakObjectPtr<USATORI_AbilitySystemComponent> AbilitySystemComponent;
 	
 	// USATORI_AttributeSet from the PlayerState 
 	TWeakObjectPtr<USATORI_AttributeSet> AttributeSetBase;
