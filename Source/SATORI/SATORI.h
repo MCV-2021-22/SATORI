@@ -24,6 +24,8 @@ namespace ESATORIAbilityInputID
 		// Push
 		Push			UMETA(DisplayName = "Push"),
 		// 4 RMB
+		Ability1		UMETA(DisplayName = "Ability1"),
+		//
 		Ability2		UMETA(DisplayName = "Ability2"),
 		// 5 Q
 		Ability3		UMETA(DisplayName = "Ability3"),
