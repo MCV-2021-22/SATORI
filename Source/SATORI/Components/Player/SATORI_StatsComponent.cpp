@@ -39,7 +39,10 @@ void USATORI_StatsComponent::InitializeHealthAttribute(ASATORI_PlayerState* Play
 		MaxHealth = PlayerAttributes->GetMaxHealth();
 		Health = MaxHealth;
 		PlayerAttributes->InitHealth(Health);
+
 		// Update Health UI 
+		UpdateHealthBarPercent();
+		UpdateHealthBarText();
 	}
 }
 
@@ -62,6 +65,9 @@ void USATORI_StatsComponent::HealthChanged(const FOnAttributeChangeData& Data)
 	float OldValue = Data.OldValue;
 
 	Health = NewValue;
+
+	UpdateHealthBarPercent();
+	UpdateHealthBarText();
 }
 
 void USATORI_StatsComponent::MaxHealthChanged(const FOnAttributeChangeData& Data)
@@ -70,4 +76,17 @@ void USATORI_StatsComponent::MaxHealthChanged(const FOnAttributeChangeData& Data
 	float OldValue = Data.OldValue;
 
 	MaxHealth = NewValue;
+
+	UpdateHealthBarPercent();
+	UpdateHealthBarText();
+}
+
+void USATORI_StatsComponent::UpdateHealthBarPercent()
+{
+	// Controller
+}
+
+void USATORI_StatsComponent::UpdateHealthBarText()
+{
+	// Controller
 }

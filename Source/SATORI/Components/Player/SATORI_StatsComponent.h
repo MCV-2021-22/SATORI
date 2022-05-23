@@ -51,4 +51,8 @@ protected:
 	// Delegates
 	FDelegateHandle HealthChangedDelegateHandle;
 	FDelegateHandle MaxHealthChangedDelegateHandle;
+
+	// Update UI
+	void UpdateHealthBarPercent();
+	void UpdateHealthBarText();
 };
