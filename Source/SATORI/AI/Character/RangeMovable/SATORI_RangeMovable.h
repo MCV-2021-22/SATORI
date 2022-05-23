@@ -19,9 +19,12 @@ class SATORI_API ASATORI_RangeMovable : public ASATORI_AICharacter
 public:
 	
 	ASATORI_RangeMovable();
+	virtual void Tick(float DeltaTime) override;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
-		USATORI_ArcherProjectileSpawnerComponent* ProjectileSpawnerComponent = nullptr;
+	bool moveBackwards = false;
 
+protected:
+
+	float dist_attack = 800.0f;
 
 };
