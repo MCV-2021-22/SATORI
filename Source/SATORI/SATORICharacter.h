@@ -130,6 +130,9 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	class USATORI_ComboSystemComponent* ComboSystemComponent;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
+	class USATORI_GameplayAbilityComponent* PlayerGameplayAbilityComponent;
+
 	// Anim Notify Section
 	UPROPERTY()
 	USATORI_ANS_JumpSection* JumpSectionNS = nullptr;

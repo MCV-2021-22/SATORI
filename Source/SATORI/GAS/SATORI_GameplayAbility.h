@@ -28,4 +28,5 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = Ability)
 	class ASATORICharacter* GetOwningSatoriCharacter() const;
+
 };
