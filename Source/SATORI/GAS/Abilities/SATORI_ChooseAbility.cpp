@@ -12,7 +12,7 @@ void USATORI_ChooseAbility::ActivateAbility(const FGameplayAbilitySpecHandle Han
 	ASATORICharacter* Player = Cast<ASATORICharacter>(ActorInfo->AvatarActor);
 
 	Player->AbilityToChoose++;
-	if (Player->AbilityToChoose >= 2)
+	if (Player->AbilityToChoose >= 5)
 		Player->AbilityToChoose = 0;
 
 	EndAbility(Handle, ActorInfo, ActivationInfo, false, false);
