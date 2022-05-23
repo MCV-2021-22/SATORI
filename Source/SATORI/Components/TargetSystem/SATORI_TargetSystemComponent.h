@@ -33,30 +33,13 @@ public:
 	FName TargetActorsWithTag = FName(TEXT("Enemy"));
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Target System")
+	FName TagApliedTargeting = FName(TEXT("State.Targeting"));
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Target System")
+	FName TagApliedToEnemyTargeted = FName(TEXT("State.Targeted"));
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Target System")
 	TEnumAsByte<ECollisionChannel> TargetableCollisionChannel =  ECollisionChannel::ECC_Pawn;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Target System|Widget")
-	UWidgetComponent* TargetLockedOnWidgetComponent = nullptr;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Target System|Widget")
-	TSubclassOf<UUserWidget> LockedOnWidgetClass;
-
-	// The Widget Draw Size for the Widget class to use when locked on Target.
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Target System|Widget")
-	float LockedOnWidgetDrawSize = 32.0f;
-
-	// The Socket name to attach the LockedOn Widget.
-	//
-	// You should use this to configure the Bone or Socket name the widget should be attached to, and allow
-	// the widget to move with target character's animation (Ex: spine_03)
-	//
-	// Set it to None to attach the Widget Component to the Root Component instead of the Mesh.
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Target System|Widget")
-	FName LockedOnWidgetParentSocket = FName("spine_03");
-
-	// The Relative Location to apply on Target LockedOn Widget when attached to a target.
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Target System|Widget")
-	FVector LockedOnWidgetRelativeLocation = FVector(0.0f, 0.0f, 0.0f);
 
 	UFUNCTION(BlueprintCallable, Category = "Target System")
 	void TargetActor();
@@ -65,7 +48,7 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Target System")
 	void TargetLockOff();
 
-	// Function to call to manually untarget.
+	// Function to call to manually target.
 	UFUNCTION(BlueprintCallable, Category = "Target System")
 	void TargetLockOn(AActor* TargetToLockOn);
 
@@ -81,6 +64,7 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Target System")
 	bool IsLocked();
 
+	//Function to call for switching Targets based on Axis input
 	UFUNCTION(BlueprintCallable, Category = "Target System")
 	void TargetActorWithAxisInput(float AxisValue);
 
@@ -98,6 +82,9 @@ private:
 	UPROPERTY()
 	AActor* LockedOnTargetActor;
 
+	UPROPERTY()
+	TArray<AActor*> LineOfSightIgnoreActors;
+
 	FTimerHandle LineOfSightBreakTimerHandle;
 	FTimerHandle SwitchingTargetTimerHandle;
 
@@ -112,18 +99,19 @@ private:
 	bool LineTraceForActor(AActor* OtherActor);
 	bool LineTraceForActor(AActor* OtherActor, const TArray<AActor*> ActorsToIgnore);
 
-	bool ShouldBreakLineOfSight();
-	void BreakLineOfSight();
-
 	bool IsInViewport(const AActor* TargetActor);
 
 	float GetDistanceFromCharacter(const AActor* OtherActor);
+
+	//~ Break linesight
+
+	bool ShouldBreakLineOfSight();
+	void BreakLineOfSight();
 
 	//~ Actor rotation
 
 	FRotator GetControlRotationOnTarget(const AActor* OtherActor);
 	void SetControlRotationOnTarget(AActor* TargetActor);
-	void ControlRotation(bool ControlRotation);
 
 	float GetAngleUsingCameraRotation(const AActor* ActorToLook);
 	float GetAngleUsingCharacterRotation(const AActor* ActorToLook);
@@ -135,16 +123,8 @@ private:
 	bool ShouldSwitchTargetActor(const float AxisValue);
 	void ResetIsSwitchingTarget();
 
-	//Testing
-	float StartRotatingStack = 0.0f;
-	float AxisMultiplier = 1.0f;
-	float StickyRotationThreshold = 30.0f;
 	bool bDesireToSwitch = false;
 	float StartRotatingThreshold = 0.85f;
-
-	//~ Widget
-
-	void CreateAndAttachTargetLockedOnWidgetComponent(AActor* TargetActor);
 
 protected:
 	
