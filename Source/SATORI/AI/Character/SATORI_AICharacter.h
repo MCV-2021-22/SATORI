@@ -53,7 +53,9 @@ public:
 	USATORI_AbilityDataAsset* DefaultAbilities;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Awareness)
-		UPawnSensingComponent* PawnSensor;
+	UPawnSensingComponent* PawnSensor;
+
+
 
 	
 

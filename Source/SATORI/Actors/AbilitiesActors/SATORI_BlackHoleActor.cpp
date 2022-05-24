@@ -4,6 +4,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "Components/SphereComponent.h"
+#include "SATORI/Character/SATORI_CharacterBase.h"
 
 ASATORI_BlackHoleActor::ASATORI_BlackHoleActor()
 {
@@ -32,11 +33,19 @@ ASATORI_BlackHoleActor::ASATORI_BlackHoleActor()
 //Collision for exploding
 void ASATORI_BlackHoleActor::OnOverlapCollisionSphere(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	if (OtherActor->ActorHasTag(EnemyTag.GetTagName()))
+
+	ASATORI_CharacterBase* Character = Cast<ASATORI_CharacterBase>(OtherActor);
+
+	if (!Character) 
+	{
+		return;
+	}
+
+	if (Character->HasMatchingGameplayTag(EnemyTag))
 	{
 		Explode();
 	}
-	if (!OtherActor->ActorHasTag(PlayerTag.GetTagName()) && !OtherActor->ActorHasTag(EnemyTag.GetTagName()))
+	if (!Character->HasMatchingGameplayTag(PlayerTag) && !Character->HasMatchingGameplayTag(EnemyTag))
 	{
 		Explode();
 	}
@@ -45,8 +54,11 @@ void ASATORI_BlackHoleActor::OnOverlapCollisionSphere(UPrimitiveComponent* Overl
 //Collision when exploding
 void ASATORI_BlackHoleActor::OnOverlapSphereOnExplosion(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
+
+	ASATORI_CharacterBase* Character = Cast<ASATORI_CharacterBase>(OtherActor);
+
 	if (Exploded) {
-		if (OtherActor->ActorHasTag(EnemyTag.GetTagName())) {
+		if (Character->HasMatchingGameplayTag(EnemyTag)) {
 			ArrayTrapped.AddUnique(Cast<UPrimitiveComponent>(OtherActor->GetRootComponent()));
 		}
 	}

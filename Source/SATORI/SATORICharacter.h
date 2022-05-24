@@ -50,9 +50,6 @@ public:
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	int AbilityToChoose = 0;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		FGameplayTagContainer GameplayTags;
-
 public:
 
 	// Gettes for attributes
@@ -85,18 +82,6 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	bool PlayerActiveAbilityWithTag(FGameplayTag TagName);
-
-	void AddGameplayTag(const FGameplayTag& TagToAdd);
-	void RemoveGameplayTag(const FGameplayTag& TagToRemove);
-	void BlockGameplayTag(const FGameplayTagContainer& TagsToBlock);
-	void UnBlockGameplayTag(const FGameplayTagContainer& TagsToBlock);
-
-	void GetOwnedGameplayTags(FGameplayTagContainer& TagContainer) const;
-	bool HasMatchingGameplayTag(FGameplayTag TagToCheck) const;
-
-	bool HasAllMatchingGameplayTags(const FGameplayTagContainer& TagContainer) const;
-
-	bool HasAnyMatchingGameplayTags(const FGameplayTagContainer& TagContainer) const;
 
 	// Getters for Components
 	FORCEINLINE class USATORI_StatsComponent* GetStatsComponent() const { return StatsComponent; }

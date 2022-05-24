@@ -4,6 +4,7 @@
 #include "Components/SphereComponent.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "Kismet/GameplayStatics.h"
+#include "SATORI/Character/SATORI_CharacterBase.h"
 
 ASATORI_DecoyActor::ASATORI_DecoyActor()
 {
@@ -31,9 +32,17 @@ ASATORI_DecoyActor::ASATORI_DecoyActor()
 //Collision for luring
 void ASATORI_DecoyActor::OnOverlapCollisionSphere(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	if (OtherActor->ActorHasTag(EnemyTag.GetTagName()))
+
+	ASATORI_CharacterBase* Character = Cast<ASATORI_CharacterBase>(OtherActor);
+	
+	if (!Character)
 	{
-		OtherActor->Tags.Add(TagGrantedWhenLured.GetTagName());
+		return;
+	}
+
+	if (Character->HasMatchingGameplayTag(EnemyTag))
+	{
+		Character->AddGameplayTag(TagGrantedWhenLured);
 		ArrayLured.AddUnique(OtherActor);
 	}
 }
@@ -42,7 +51,8 @@ void ASATORI_DecoyActor::DestroyMyself()
 {
 	for (AActor* Actor : ArrayLured)
 	{
-		Actor->Tags.Remove(TagGrantedWhenLured.GetTagName());
+		ASATORI_CharacterBase* Character = Cast<ASATORI_CharacterBase>(Actor);
+		Character->RemoveGameplayTag(TagGrantedWhenLured);
 	}
 	Destroy();
 }
@@ -56,7 +66,6 @@ void ASATORI_DecoyActor::BeginPlay()
 	{
 		UE_LOG(LogTemp, Display, TEXT("[%s] ASATORI_DecoyActor: Tag is not valid ... "), *GetName());
 	}
-
 
 	TArray<AActor*> Actors;
 	UGameplayStatics::GetAllActorsWithTag(GetWorld(), TargetActorWithTag.GetTagName(), Actors);

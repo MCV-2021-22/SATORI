@@ -92,6 +92,10 @@ private:
 	bool bTargetLocked = false;
 	float ClosestTargetDistance = 0.0f;
 
+	//Tags
+	ASATORI_CharacterBase* CharacterTargeted;
+	ASATORI_CharacterBase* CharacterTargeting;
+
 	TArray<AActor*> FindTargetsInRange(TArray<AActor*> ActorsToLook, float RangeMin, float RangeMax);
 	AActor* USATORI_TargetSystemComponent::FindNearestTarget(TArray<AActor*> Actors);
 

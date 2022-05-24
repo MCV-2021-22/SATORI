@@ -4,6 +4,7 @@
 #include "Components/SphereComponent.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "Kismet/GameplayStatics.h"
+#include "SATORI/Character/SATORI_CharacterBase.h"
 
 ASATORI_MissileActor::ASATORI_MissileActor()
 {
@@ -40,11 +41,19 @@ ASATORI_MissileActor::ASATORI_MissileActor()
 //Collision for exploding
 void ASATORI_MissileActor::OnOverlapCollisionSphere(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	if (OtherActor->ActorHasTag(EnemyTag.GetTagName()))
+
+	ASATORI_CharacterBase* Character = Cast<ASATORI_CharacterBase>(OtherActor);
+
+	if (!Character)
+	{
+		return;
+	}
+
+	if (Character->HasMatchingGameplayTag(EnemyTag))
 	{
 		DestroyMyself();
 	}
-	if (!OtherActor->ActorHasTag(PlayerTag.GetTagName()) && !OtherActor->ActorHasTag(EnemyTag.GetTagName()))
+	if (!Character->HasMatchingGameplayTag(PlayerTag) && !Character->HasMatchingGameplayTag(EnemyTag))
 	{
 		DestroyMyself();
 	}
@@ -53,7 +62,10 @@ void ASATORI_MissileActor::OnOverlapCollisionSphere(UPrimitiveComponent* Overlap
 //Collision for aiming
 void ASATORI_MissileActor::OnOverlapSeekingSphere(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	if (OtherActor->ActorHasTag(EnemyTag.GetTagName()) && !Target)
+
+	ASATORI_CharacterBase* Character = Cast<ASATORI_CharacterBase>(OtherActor);
+
+	if (Character->HasMatchingGameplayTag(EnemyTag) && !Target)
 	{
 		Target = OtherActor;
 	}

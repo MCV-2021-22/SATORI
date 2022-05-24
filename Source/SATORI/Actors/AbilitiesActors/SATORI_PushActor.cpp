@@ -3,7 +3,7 @@
 #include "Actors/AbilitiesActors/SATORI_PushActor.h"
 #include "Components/SphereComponent.h"
 #include "DrawDebugHelpers.h"
-#include "SATORICharacter.h"
+#include "SATORI/Character/SATORI_CharacterBase.h"
 
 ASATORI_PushActor::ASATORI_PushActor()
 {
@@ -31,11 +31,18 @@ void ASATORI_PushActor::OnOverlapSphere(
 	const FHitResult& SweepResult)
 {
 
-	if (OtherActor->ActorHasTag(EnemyTag.GetTagName())) 
+	ASATORI_CharacterBase* Character = Cast<ASATORI_CharacterBase>(OtherActor);
+
+	if (!Character) 
+	{
+		return;
+	}
+
+	if(Character->HasMatchingGameplayTag(EnemyTag))
 	{
 		ArrayPushed.AddUnique(Cast<UPrimitiveComponent>(OtherActor->GetRootComponent()));
 	}
-	if(!OtherActor->ActorHasTag(PlayerTag.GetTagName()) && !OtherActor->ActorHasTag(EnemyTag.GetTagName()))
+	if(!Character->HasMatchingGameplayTag(PlayerTag) && !Character->HasMatchingGameplayTag(EnemyTag))
 	{
 		Destroy();
 	}

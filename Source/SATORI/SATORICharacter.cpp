@@ -64,16 +64,6 @@ ASATORICharacter::ASATORICharacter()
 	TargetSystemComponent = CreateDefaultSubobject<USATORI_TargetSystemComponent>(TEXT("TargetSystemComponent"));
 }
 
-void ASATORICharacter::AddGameplayTag(const FGameplayTag& TagToAdd)
-{
-	AbilitySystemComponent->AddLooseGameplayTag(TagToAdd);
-}
-
-void ASATORICharacter::RemoveGameplayTag(const FGameplayTag& TagToRemove)
-{
-	AbilitySystemComponent->RemoveLooseGameplayTag(TagToRemove);
-}
-
 void ASATORICharacter::PossessedBy(AController* NewController)
 {
 	Super::PossessedBy(NewController);
@@ -308,25 +298,6 @@ void ASATORICharacter::MoveRight(float Value)
 	}
 }
 
-void ASATORICharacter::GetOwnedGameplayTags(FGameplayTagContainer& TagContainer) const
-{
-	TagContainer = GameplayTags;
-}
-
-bool ASATORICharacter::HasMatchingGameplayTag(FGameplayTag TagToCheck) const
-{
-	return GameplayTags.HasTag(TagToCheck);
-}
-
-bool ASATORICharacter::HasAllMatchingGameplayTags(const FGameplayTagContainer& TagContainer) const
-{
-	return GameplayTags.HasAll(TagContainer);
-}
-
-bool ASATORICharacter::HasAnyMatchingGameplayTags(const FGameplayTagContainer& TagContainer) const
-{
-	return GameplayTags.HasAny(TagContainer);
-}
 void ASATORICharacter::SetComboJumpSection(USATORI_ANS_JumpSection* JumpSection)
 {
 	this->JumpSectionNS = JumpSection;
@@ -372,15 +343,6 @@ bool ASATORICharacter::AttackJumpSectionCombo()
 	AnimInstance->Montage_JumpToSection(NextSectionName, CurrentActiveMontage);
 
 	return true;
-}
-void ASATORICharacter::BlockGameplayTag(const FGameplayTagContainer& TagsToBlock)
-{
-	AbilitySystemComponent->BlockAbilitiesWithTags(TagsToBlock);
-}
-
-void ASATORICharacter::UnBlockGameplayTag(const FGameplayTagContainer& TagsToBlock)
-{
-	AbilitySystemComponent->UnBlockAbilitiesWithTags(TagsToBlock);
 }
 
 bool ASATORICharacter::PlayerActiveAbilityWithTag(FGameplayTag TagName)

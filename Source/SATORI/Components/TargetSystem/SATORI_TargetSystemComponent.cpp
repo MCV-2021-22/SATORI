@@ -4,6 +4,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Engine/Classes/Camera/CameraComponent.h"
+#include "SATORI/Character/SATORI_CharacterBase.h"
 
 //Debug
 #include "DrawDebugHelpers.h"
@@ -34,6 +35,13 @@ void USATORI_TargetSystemComponent::BeginPlay()
 	if (!ensure(OwnerPawn) || !OwnerPawn)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("[%s] USATORI_TargetSystemComponent: Cannot get owner pawn ... "), *GetName());
+		return;
+	}
+
+	CharacterTargeting = Cast<ASATORI_CharacterBase>(OwnerActor);
+	if (!CharacterTargeting)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("[%s] USATORI_TargetSystemComponent: Cannot get owner base character ... "), *GetName());
 		return;
 	}
 	
@@ -119,7 +127,6 @@ void USATORI_TargetSystemComponent::TargetActor()
 		LineOfSightIgnoreActors = Actors;
 		LockedOnTargetActor = FindNearestTarget(Actors);
 		TargetLockOn(LockedOnTargetActor);
-
 	}
 }
 
@@ -128,10 +135,12 @@ void USATORI_TargetSystemComponent::TargetLockOff()
 	bTargetLocked = false;
 
 	//Remove tags
-	OwnerActor->Tags.Remove(TagApliedTargeting.GetTagName());
+	CharacterTargeting->RemoveGameplayTag(TagApliedTargeting);
+
 	if (IsValid(LockedOnTargetActor))
 	{
-		LockedOnTargetActor->Tags.Remove(TagApliedToEnemyTargeted.GetTagName());
+		CharacterTargeted = Cast<ASATORI_CharacterBase>(LockedOnTargetActor);
+		CharacterTargeted->RemoveGameplayTag(TagApliedToEnemyTargeted);
 	}
 
 	LockedOnTargetActor = nullptr;
@@ -152,8 +161,10 @@ void USATORI_TargetSystemComponent::TargetLockOn(AActor* TargetToLockOn)
 	bTargetLocked = true;
 
 	//Add tags
-	OwnerActor->Tags.Add(TagApliedTargeting.GetTagName());
-	TargetToLockOn->Tags.Add(TagApliedToEnemyTargeted.GetTagName());
+	CharacterTargeted = Cast<ASATORI_CharacterBase>(TargetToLockOn);
+	CharacterTargeted->AddGameplayTag(TagApliedToEnemyTargeted);
+	
+	CharacterTargeting->AddGameplayTag(TagApliedTargeting);
 	
 	//Ignore controller input
 	OwnerPlayerController->SetIgnoreLookInput(true);

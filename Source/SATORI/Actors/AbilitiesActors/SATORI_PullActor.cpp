@@ -3,7 +3,7 @@
 #include "Components/SphereComponent.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "Kismet/GameplayStatics.h"
-#include "SATORICharacter.h"
+#include "SATORI/Character/SATORI_CharacterBase.h"
 
 // Sets default values
 ASATORI_PullActor::ASATORI_PullActor()
@@ -42,12 +42,20 @@ ASATORI_PullActor::ASATORI_PullActor()
 //Collision for Grabing
 void ASATORI_PullActor::OnOverlapCollisionSphere(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	if (OtherActor->ActorHasTag(EnemyTag.GetTagName())) 
+
+	ASATORI_CharacterBase* Character = Cast<ASATORI_CharacterBase>(OtherActor);
+
+	if (!Character)
+	{
+		return;
+	}
+
+	if (Character->HasMatchingGameplayTag(EnemyTag))
 	{
 		Pulling = Cast<UPrimitiveComponent>(OtherActor->GetRootComponent());
 		GetWorldTimerManager().ClearTimer(TimerHandleDestroy);
 	}
-	if (!OtherActor->ActorHasTag(PlayerTag.GetTagName()) && !OtherActor->ActorHasTag(EnemyTag.GetTagName()))
+	if (!Character->HasMatchingGameplayTag(PlayerTag) && !Character->HasMatchingGameplayTag(EnemyTag))
 	{
 		DestroySelf();
 	}
@@ -56,7 +64,10 @@ void ASATORI_PullActor::OnOverlapCollisionSphere(UPrimitiveComponent* Overlapped
 //Collision for aiming
 void ASATORI_PullActor::OnOverlapSeekingSphere(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	if (OtherActor->ActorHasTag(EnemyTag.GetTagName()) && !Target)
+
+	ASATORI_CharacterBase* Character = Cast<ASATORI_CharacterBase>(OtherActor);
+
+	if (Character->HasMatchingGameplayTag(EnemyTag) && !Target)
 	{
 		Target = OtherActor;
 	}

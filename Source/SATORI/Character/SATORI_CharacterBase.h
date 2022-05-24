@@ -16,10 +16,42 @@ class SATORI_API ASATORI_CharacterBase : public ACharacter, public IAbilitySyste
 	GENERATED_BODY()
 
 public:
-	// Sets default values for this character's properties
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Tags")
+	FGameplayTagContainer GameplayTags;
+
+public:
+	
 	ASATORI_CharacterBase();
 
 	UAbilitySystemComponent* GetAbilitySystemComponent() const override;
+
+	//Character Tags Utilities
+
+	UFUNCTION(BlueprintCallable, Category = "Tags")
+	void AddGameplayTag(const FGameplayTag& TagToAdd);
+
+	UFUNCTION(BlueprintCallable, Category = "Tags")
+	void RemoveGameplayTag(const FGameplayTag& TagToRemove);
+
+	UFUNCTION(BlueprintCallable, Category = "Tags")
+	void BlockGameplayTag(const FGameplayTagContainer& TagsToBlock);
+
+	UFUNCTION(BlueprintCallable, Category = "Tags")
+	void UnBlockGameplayTag(const FGameplayTagContainer& TagsToBlock);
+
+	UFUNCTION(BlueprintCallable, Category = "Tags")
+	void GetOwnedGameplayTags(FGameplayTagContainer& TagContainer) const;
+
+	UFUNCTION(BlueprintCallable, Category = "Tags")
+	bool HasMatchingGameplayTag(FGameplayTag TagToCheck) const;
+
+	UFUNCTION(BlueprintCallable, Category = "Tags")
+	bool HasAllMatchingGameplayTags(const FGameplayTagContainer& TagContainer) const;
+
+	UFUNCTION(BlueprintCallable, Category = "Tags")
+	bool HasAnyMatchingGameplayTags(const FGameplayTagContainer& TagContainer) const;
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
