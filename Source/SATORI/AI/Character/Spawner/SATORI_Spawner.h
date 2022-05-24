@@ -16,7 +16,19 @@ class SATORI_API ASATORI_Spawner : public ASATORI_AICharacter
 
 public:
 	ASATORI_Spawner();
+	virtual void Tick(float DeltaSeconds) override;
 
+	int GetMaxEnemies() const;
+	void AddNumEnemies(int AddOrSubtract);
+	int GetNumEnemies();
+	float GetCoolDown() const;
+	void ResetSpawnTime();
+	float GetSpawnTime();
 
-	
+protected:
+
+	int MaxNumSpawn = 5;
+	int NumEnemies = 0;
+	float CoolDown = 5.f;
+	float SpawnTime = 5.f;
 };

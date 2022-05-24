@@ -18,17 +18,41 @@ ASATORI_Spawner::ASATORI_Spawner()
 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
-	//AbilitySystemComponent = CreateDefaultSubobject<USATORI_AbilitySystemComponent>(TEXT("AbilitySystemComponent"));
-	//AbilitySystemComponent->SetIsReplicated(true);
-
-	//AttributeSet = CreateDefaultSubobject<USATORI_AttributeSet>(TEXT("AttributeSet"));
-
-
 	bte = TSoftObjectPtr <UBehaviorTree>(FSoftObjectPath(TEXT("/Game/SATORI/AI/Spawner/BT_Spawner.BT_Spawner")));
-
-
-	//bte = TSoftObjectPtr <UBehaviorTree>(FSoftObjectPath(TEXT("/Game/Blueprints/Satori/Player/Enemy/Enemy_BT.Enemy_BT")));
-	//btree = bte.LoadSynchronous();
 
 }
 
+void ASATORI_Spawner::Tick(float DeltaSeconds)
+{
+	SpawnTime += DeltaSeconds;
+}
+
+void ASATORI_Spawner::ResetSpawnTime()
+{
+	SpawnTime = 0.f;
+}
+
+int ASATORI_Spawner::GetMaxEnemies() const
+{
+	return MaxNumSpawn;
+}
+
+void ASATORI_Spawner::AddNumEnemies(int Num)
+{
+	NumEnemies+=Num;
+}
+
+float ASATORI_Spawner::GetCoolDown() const
+{
+	return CoolDown;
+}
+
+int ASATORI_Spawner::GetNumEnemies()
+{
+	return NumEnemies;
+}
+
+float ASATORI_Spawner::GetSpawnTime()
+{
+	return SpawnTime;
+}
