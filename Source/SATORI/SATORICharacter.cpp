@@ -107,19 +107,10 @@ void ASATORICharacter::PossessedBy(AController* NewController)
 	}
 
 	if (Cast<APlayerController>(NewController) != nullptr) {
-		int a = 1;
 		GameplayTags.AddTag(FGameplayTag::RequestGameplayTag("PossessedBy.Player"));
 		//AbilitySystemComponent->AddLooseGameplayTag(FGameplayTag::RequestGameplayTag("PossessedBy.Player"));
 		//AddGameplayTag(FGameplayTag::RequestGameplayTag("PossessedBy.AI"));
-
-
-
 	}
-}
-
-UAbilitySystemComponent* ASATORICharacter::GetAbilitySystemComponent() const
-{
-	return AbilitySystemComponent.Get();
 }
 
 void ASATORICharacter::ApplyDefaultAbilities()
