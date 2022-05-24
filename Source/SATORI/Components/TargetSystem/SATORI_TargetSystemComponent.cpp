@@ -4,8 +4,6 @@
 #include "Kismet/GameplayStatics.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Engine/Classes/Camera/CameraComponent.h"
-#include "Components/WidgetComponent.h"
-#include "GameplayTagContainer.h"
 
 //Debug
 #include "DrawDebugHelpers.h"
@@ -18,6 +16,11 @@ USATORI_TargetSystemComponent::USATORI_TargetSystemComponent()
 void USATORI_TargetSystemComponent::BeginPlay()
 {
 	Super::BeginPlay();
+
+	if (!TargetActorsWithTag.IsValid() || !TagApliedTargeting.IsValid() || !TagApliedToEnemyTargeted.IsValid())
+	{
+		UE_LOG(LogTemp, Display, TEXT("[%s] USATORI_TargetSystemComponent: Tag is not valid ... "), *GetName());
+	}
 
 	//Check if component is on player pawn
 	OwnerActor = GetOwner(); 
@@ -53,7 +56,7 @@ void USATORI_TargetSystemComponent::TickComponent(const float DeltaTime, const E
 	}
 
 	//Actor Locked has targeted tag
-	if (!LockedOnTargetActor->ActorHasTag(TargetActorsWithTag))
+	if (!LockedOnTargetActor->ActorHasTag(TargetActorsWithTag.GetTagName()))
 	{
 		TargetLockOff();
 		return;
@@ -112,7 +115,7 @@ void USATORI_TargetSystemComponent::TargetActor()
 	else 
 	{
 		TArray<AActor*> Actors;
-		UGameplayStatics::GetAllActorsWithTag(GetWorld(), TargetActorsWithTag, Actors);
+		UGameplayStatics::GetAllActorsWithTag(GetWorld(), TargetActorsWithTag.GetTagName(), Actors);
 		LineOfSightIgnoreActors = Actors;
 		LockedOnTargetActor = FindNearestTarget(Actors);
 		TargetLockOn(LockedOnTargetActor);
@@ -125,10 +128,10 @@ void USATORI_TargetSystemComponent::TargetLockOff()
 	bTargetLocked = false;
 
 	//Remove tags
-	OwnerActor->Tags.Remove(TagApliedTargeting);
+	OwnerActor->Tags.Remove(TagApliedTargeting.GetTagName());
 	if (IsValid(LockedOnTargetActor))
 	{
-		LockedOnTargetActor->Tags.Remove(TagApliedToEnemyTargeted);
+		LockedOnTargetActor->Tags.Remove(TagApliedToEnemyTargeted.GetTagName());
 	}
 
 	LockedOnTargetActor = nullptr;
@@ -149,8 +152,8 @@ void USATORI_TargetSystemComponent::TargetLockOn(AActor* TargetToLockOn)
 	bTargetLocked = true;
 
 	//Add tags
-	OwnerActor->Tags.Add(TagApliedTargeting);
-	TargetToLockOn->Tags.Add(TagApliedToEnemyTargeted);
+	OwnerActor->Tags.Add(TagApliedTargeting.GetTagName());
+	TargetToLockOn->Tags.Add(TagApliedToEnemyTargeted.GetTagName());
 	
 	//Ignore controller input
 	OwnerPlayerController->SetIgnoreLookInput(true);
@@ -370,7 +373,7 @@ void USATORI_TargetSystemComponent::TargetActorWithAxisInput(const float AxisVal
 	ClosestTargetDistance = MinimumDistanceToTarget;
 
 	TArray<AActor*> Actors;
-	UGameplayStatics::GetAllActorsWithTag(GetWorld(), TargetActorsWithTag, Actors);
+	UGameplayStatics::GetAllActorsWithTag(GetWorld(), TargetActorsWithTag.GetTagName(), Actors);
 
 	TArray<AActor*> ActorsToLook;
 	TArray<AActor*> ActorsToIgnore;

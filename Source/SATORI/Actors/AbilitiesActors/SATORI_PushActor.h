@@ -46,10 +46,10 @@ public:
 			const FHitResult& SweepResult);
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Push|Tags")
-	FName EnemyTag = FName(TEXT("Enemy"));
+	FGameplayTag  EnemyTag;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Push|Tags")
-	FName PlayerTag = FName(TEXT("Player"));
+	FGameplayTag  PlayerTag;
 
 protected:
 

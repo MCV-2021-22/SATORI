@@ -29,11 +29,11 @@ void ASATORI_PushActor::OnOverlapSphere(
 	const FHitResult& SweepResult)
 {
 
-	if (OtherActor->ActorHasTag(EnemyTag)) 
+	if (OtherActor->ActorHasTag(EnemyTag.GetTagName())) 
 	{
 		ArrayPushed.AddUnique(Cast<UPrimitiveComponent>(OtherActor->GetRootComponent()));
 	}
-	if(!OtherActor->ActorHasTag(PlayerTag) && !OtherActor->ActorHasTag(EnemyTag))
+	if(!OtherActor->ActorHasTag(PlayerTag.GetTagName()) && !OtherActor->ActorHasTag(EnemyTag.GetTagName()))
 	{
 		Destroy();
 	}
@@ -49,7 +49,10 @@ void ASATORI_PushActor::BeginPlay()
 
 	Super::BeginPlay();
 
-	UE_LOG(LogTemp, Display, TEXT("[%s] ASATORI_PushActor: Begin ... "), *GetName());
+	if(!EnemyTag.IsValid() || !PlayerTag.IsValid())
+	{
+		UE_LOG(LogTemp, Display, TEXT("[%s] ASATORI_PushActor: Tag is not valid ... "), *GetName());
+	}
 
 	//Set max time before auto destruc if not collides
 	GetWorldTimerManager().SetTimer(TimerHandleDestroy, this, &ASATORI_PushActor::DestroyMyself, TimeToDestroy, false);

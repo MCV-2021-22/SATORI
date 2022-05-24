@@ -7,6 +7,7 @@
 #include "AbilitySystemInterface.h"
 #include "AbilitySystemComponent.h"
 #include "Character/Mask/SATORI_AbilityMask.h"
+#include "Components/TargetSystem/SATORI_TargetSystemComponent.h"
 #include "SATORICharacter.generated.h"
 
 class USATORI_AbilityDataAsset;
@@ -132,6 +133,9 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
 	class USATORI_GameplayAbilityComponent* PlayerGameplayAbilityComponent;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
+	class USATORI_TargetSystemComponent* TargetSystemComponent;
 
 	// Anim Notify Section
 	UPROPERTY()

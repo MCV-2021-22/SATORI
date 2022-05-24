@@ -5,10 +5,9 @@
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
+#include "GameplayTagContainer.h"
 #include "SATORI_TargetSystemComponent.generated.h"
 
-class UUserWidget;
-class UWidgetComponent;
 class APlayerController;
 
 UCLASS(ClassGroup = (Custom), meta = (BlueprintSpawnableComponent))
@@ -30,13 +29,13 @@ public:
 	float BreakLineOfSightDelay = 5.0f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Target System")
-	FName TargetActorsWithTag = FName(TEXT("Enemy"));
+	FGameplayTag TargetActorsWithTag;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Target System")
-	FName TagApliedTargeting = FName(TEXT("State.Targeting"));
+	FGameplayTag TagApliedTargeting;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Target System")
-	FName TagApliedToEnemyTargeted = FName(TEXT("State.Targeted"));
+	FGameplayTag TagApliedToEnemyTargeted;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Target System")
 	TEnumAsByte<ECollisionChannel> TargetableCollisionChannel =  ECollisionChannel::ECC_Pawn;
