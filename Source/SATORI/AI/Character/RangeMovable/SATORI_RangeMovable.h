@@ -23,6 +23,8 @@ public:
 
 	bool moveBackwards = false;
 
+	float getDistAttack();
+
 protected:
 
 	float dist_attack = 800.0f;

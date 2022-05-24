@@ -13,5 +13,15 @@ UCLASS()
 class SATORI_API UBTDecorator_InRange : public UBTDecorator
 {
 	GENERATED_BODY()
+
+public:
+
 	
+
+	UPROPERTY(EditAnywhere)
+		FBlackboardKeySelector MyBlackboardKey;
+
+
+	virtual bool CalculateRawConditionValue(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory) const override;
+
 };

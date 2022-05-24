@@ -45,3 +45,8 @@ void ASATORI_RangeMovable::Tick(float DeltaTime)
 	}
 
 }
+
+float ASATORI_RangeMovable::getDistAttack()
+{
+	return dist_attack;
+}
