@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
-#include "GameplayEffect.h"
+#include "GameplayTagContainer.h"
 #include "SATORI_DecoyActor.generated.h"
 
 class USphereComponent;
@@ -25,20 +25,14 @@ public:
 	UPROPERTY(EditDefaultsOnly, Category = "Decoy")
 	UStaticMeshComponent* StaticMeshComponent = nullptr;
 
-	UPROPERTY(BlueprintReadWrite, Meta = (ExposeOnSpawn = true), Category = "Decoy")
-	FGameplayEffectSpecHandle DamageEffectSpecHandle;
-
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Meta = (ExposeOnSpawn = true), Category = "Decoy")
 	float Speed;
-
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Meta = (ExposeOnSpawn = true), Category = "Decoy")
-	float SphereRadiusOfAction = 600.0f;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Meta = (ExposeOnSpawn = true), Category = "Decoy")
 	float TimeToDestroy;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Meta = (ExposeOnSpawn = true), Category = "Decoy")
-	FName TagGrantedWhenLured;
+	FGameplayTag TagGrantedWhenLured;
 
 	UFUNCTION(BlueprintCallable, Category = "Missile")
 		void OnOverlapCollisionSphere(
@@ -50,13 +44,13 @@ public:
 			const FHitResult& SweepResult);
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Decoy|Tags")
-	FName TargetActorWithTag = FName(TEXT("State.Targeted"));
+	FGameplayTag  TargetActorWithTag;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Decoy|Tags")
-	FName EnemyTag = FName(TEXT("Enemy"));
+	FGameplayTag  EnemyTag;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Decoy|Tags")
-	FName PlayerTag = FName(TEXT("Player"));
+	FGameplayTag  PlayerTag;
 
 protected:
 	

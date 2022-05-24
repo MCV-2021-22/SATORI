@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
-#include "GameplayEffect.h"
+#include "GameplayTagContainer.h"
 #include "SATORI_PullActor.generated.h"
 
 class USphereComponent;
@@ -27,9 +27,6 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, Category = "Pull")
 	USphereComponent* SeekingSphereComponent = nullptr;
-
-	UPROPERTY(BlueprintReadWrite, Meta = (ExposeOnSpawn = true), Category = "Pull")
-	FGameplayEffectSpecHandle DamageEffectSpecHandle;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Meta = (ExposeOnSpawn = true), Category = "Pull")
 	float SpeedForward;
@@ -59,13 +56,13 @@ public:
 			const FHitResult& SweepResult);
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Pull|Tags")
-	FName TargetActorWithTag = FName(TEXT("State.Targeted"));
+	FGameplayTag  TargetActorWithTag;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Pull|Tags")
-	FName EnemyTag = FName(TEXT("Enemy"));
+	FGameplayTag  EnemyTag;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Pull|Tags")
-	FName PlayerTag = FName(TEXT("Player"));
+	FGameplayTag  PlayerTag;
 
 protected:
 

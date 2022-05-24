@@ -26,9 +26,6 @@ public:
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Ability")
 	TSubclassOf<ASATORI_BlackHoleActor> BlackHoleActor;
 
-	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Ability")
-	TSubclassOf<UGameplayEffect> DamageGameplayEffect;
-
 	virtual void ActivateAbility(
 		const FGameplayAbilitySpecHandle Handle,
 		const FGameplayAbilityActorInfo* ActorInfo,
@@ -37,13 +34,13 @@ public:
 		override;
 
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Ability|Tags")
-	FName TagSpawnAbility = FName(TEXT("Event.Montage.SpawnAbility"));
+	FGameplayTag TagSpawnAbility;
 
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Ability|Tags")
-	FName TagEndAbility = FName(TEXT("Event.Montage.EndAbility"));
+	FGameplayTag TagEndAbility;
 
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Ability|Tags")
-	FName PlayerTargetingTag = FName(TEXT("State.Targeting"));
+	FGameplayTag PlayerTargetingTag;
 
 protected:
 
@@ -51,7 +48,7 @@ protected:
 	float Speed = 1.0f;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (UIMin = "1.0"), Category = "Ability|BlackHole")
-	float SphereRadiusOnExplosion = 1.0f;
+	float SphereRadiusOnExplosion = 600.0f;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (UIMin = "1.0"), Category = "Ability|BlackHole")
 	float TimeToDestroy = 1.0f;

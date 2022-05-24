@@ -30,6 +30,11 @@ void USATORI_DashAbility::ActivateAbility(
 		EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true);
 	}
 
+	if (!TagSpawnAbility.IsValid() || !TagEndAbility.IsValid())
+	{
+		UE_LOG(LogTemp, Display, TEXT("[%s] USATORI_DashAbility: Tag is not valid ... "), *GetName());
+	}
+
 	//Handling of events
 	USATORI_PlayMontageAndWaitEvent* Task = USATORI_PlayMontageAndWaitEvent::PlayMontageAndWaitForEvent(this, NAME_None, AnimMontage, FGameplayTagContainer(), 1.0f, NAME_None, bStopWhenAbilityEnds, 1.0f);
 	Task->OnBlendOut.AddDynamic(this, &USATORI_DashAbility::OnCompleted);
@@ -57,7 +62,7 @@ void USATORI_DashAbility::OnCompleted(FGameplayTag EventTag, FGameplayEventData 
 
 void USATORI_DashAbility::EventReceived(FGameplayTag EventTag, FGameplayEventData EventData) 
 {
-	if (EventTag == FGameplayTag::RequestGameplayTag(TagEndAbility))
+	if (EventTag == TagEndAbility)
 	{
 		ASATORICharacter* Character = Cast<ASATORICharacter>(GetAvatarActorFromActorInfo());
 		Character->GetCharacterMovement()->StopMovementImmediately();
@@ -65,7 +70,7 @@ void USATORI_DashAbility::EventReceived(FGameplayTag EventTag, FGameplayEventDat
 		return;
 	}
 
-	if (EventTag == FGameplayTag::RequestGameplayTag(TagSpawnAbility))
+	if (EventTag == TagSpawnAbility)
 	{
 
 		ASATORICharacter* Character = Cast<ASATORICharacter>(GetAvatarActorFromActorInfo());

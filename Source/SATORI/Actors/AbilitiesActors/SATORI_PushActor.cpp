@@ -9,6 +9,8 @@ ASATORI_PushActor::ASATORI_PushActor()
 {
 	PrimaryActorTick.bCanEverTick = true;
 
+	float SphereRadius = 32.0f;
+
 	CollisionSphereComponent = CreateDefaultSubobject<USphereComponent>(TEXT("Sphere"));
 	CollisionSphereComponent->SetSphereRadius(SphereRadius);
 	CollisionSphereComponent->SetCollisionProfileName(FName(TEXT("IgnoreSelfOverlapsAll")));

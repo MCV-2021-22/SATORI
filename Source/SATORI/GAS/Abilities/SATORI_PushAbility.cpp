@@ -79,7 +79,7 @@ void USATORI_PushAbility::EventReceived(FGameplayTag EventTag, FGameplayEventDat
 			UCameraComponent* CameraComponent = Character->FindComponentByClass<UCameraComponent>();
 			if (!CameraComponent)
 			{
-				UE_LOG(LogTemp, Display, TEXT("[%s] USATORI_MissileAbility: Cannot Cast UCameraComponent ... "), *GetName());
+				UE_LOG(LogTemp, Display, TEXT("[%s] USATORI_PushAbility: Cannot Cast UCameraComponent ... "), *GetName());
 				EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true);
 			}
 
@@ -95,8 +95,6 @@ void USATORI_PushAbility::EventReceived(FGameplayTag EventTag, FGameplayEventDat
 			SpawnTransform.SetLocation(Character->GetActorLocation() + Character->GetActorForwardVector() * 100);
 			SpawnTransform.SetRotation(Character->GetActorRotation().Quaternion());
 		}
-
-		FGameplayEffectSpecHandle DamageEffectSpecHandle = MakeOutgoingGameplayEffectSpec(DamageGameplayEffect, GetAbilityLevel());
 
 		//This calcs are for designing parameters for the ability
 		// 
@@ -118,8 +116,6 @@ void USATORI_PushAbility::EventReceived(FGameplayTag EventTag, FGameplayEventDat
 			Push->Speed = Speed;
 			Push->PushForce = PushForce;
 			Push->TimeToDestroy = TimeToDestroy;
-			Push->SphereRadius = SphereRadius;
-			Push->DamageEffectSpecHandle = DamageEffectSpecHandle;
 			Push->FinishSpawning(SpawnTransform);
 			
 			RotationOfSpawn.Yaw += IncrementAngle;

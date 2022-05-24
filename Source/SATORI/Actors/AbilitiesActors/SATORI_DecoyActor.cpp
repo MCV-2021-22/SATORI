@@ -9,6 +9,8 @@ ASATORI_DecoyActor::ASATORI_DecoyActor()
 {
 	PrimaryActorTick.bCanEverTick = false;
 
+	float SphereRadiusOfAction = 600.0f;
+
 	StaticMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("StaticMesh"));
 	RootComponent = StaticMeshComponent;
 	StaticMeshComponent->SetCollisionProfileName(UCollisionProfile::BlockAll_ProfileName);
@@ -29,9 +31,9 @@ ASATORI_DecoyActor::ASATORI_DecoyActor()
 //Collision for luring
 void ASATORI_DecoyActor::OnOverlapCollisionSphere(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	if (OtherActor->ActorHasTag(EnemyTag))
+	if (OtherActor->ActorHasTag(EnemyTag.GetTagName()))
 	{
-		OtherActor->Tags.Add(TagGrantedWhenLured);
+		OtherActor->Tags.Add(TagGrantedWhenLured.GetTagName());
 		ArrayLured.AddUnique(OtherActor);
 	}
 }
@@ -40,7 +42,7 @@ void ASATORI_DecoyActor::DestroyMyself()
 {
 	for (AActor* Actor : ArrayLured)
 	{
-		Actor->Tags.Remove(TagGrantedWhenLured);
+		Actor->Tags.Remove(TagGrantedWhenLured.GetTagName());
 	}
 	Destroy();
 }
@@ -50,8 +52,14 @@ void ASATORI_DecoyActor::BeginPlay()
 {
 	Super::BeginPlay();
 
+	if (!EnemyTag.IsValid() || !PlayerTag.IsValid() || !TargetActorWithTag.IsValid() || !TagGrantedWhenLured.IsValid())
+	{
+		UE_LOG(LogTemp, Display, TEXT("[%s] ASATORI_DecoyActor: Tag is not valid ... "), *GetName());
+	}
+
+
 	TArray<AActor*> Actors;
-	UGameplayStatics::GetAllActorsWithTag(GetWorld(), TargetActorWithTag, Actors);
+	UGameplayStatics::GetAllActorsWithTag(GetWorld(), TargetActorWithTag.GetTagName(), Actors);
 	if (Actors.Num() != 0)
 	{
 		Target = Actors.Pop();

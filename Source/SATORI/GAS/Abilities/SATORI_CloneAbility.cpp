@@ -29,6 +29,11 @@ void USATORI_CloneAbility::ActivateAbility(
 		EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true);
 	}
 
+	if (!TagSpawnAbility.IsValid() || !TagEndAbility.IsValid() || !PlayerTargetingTag.IsValid())
+	{
+		UE_LOG(LogTemp, Display, TEXT("[%s] USATORI_CloneAbility: Tag is not valid ... "), *GetName());
+	}
+
 	//Handling of events
 	USATORI_PlayMontageAndWaitEvent* Task = USATORI_PlayMontageAndWaitEvent::PlayMontageAndWaitForEvent(this, NAME_None, AnimMontage, FGameplayTagContainer(), 1.0f, NAME_None, bStopWhenAbilityEnds, 1.0f);
 	Task->OnBlendOut.AddDynamic(this, &USATORI_CloneAbility::OnCompleted);
@@ -53,13 +58,13 @@ void USATORI_CloneAbility::OnCompleted(FGameplayTag EventTag, FGameplayEventData
 void USATORI_CloneAbility::EventReceived(FGameplayTag EventTag, FGameplayEventData EventData)
 {
 
-	if (EventTag == FGameplayTag::RequestGameplayTag(TagEndAbility))
+	if (EventTag == TagEndAbility)
 	{
 		EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, false);
 		return;
 	}
 
-	if (EventTag == FGameplayTag::RequestGameplayTag(TagSpawnAbility))
+	if (EventTag == TagSpawnAbility)
 	{
 
 		ASATORICharacter* Character = Cast<ASATORICharacter>(GetAvatarActorFromActorInfo());
@@ -70,7 +75,7 @@ void USATORI_CloneAbility::EventReceived(FGameplayTag EventTag, FGameplayEventDa
 		}
 
 		//Aiming when Targeting Enemy
-		if (Character->ActorHasTag(PlayerTargetingTag))
+		if (Character->ActorHasTag(PlayerTargetingTag.GetTagName()))
 		{
 			UCameraComponent* CameraComponent = Character->FindComponentByClass<UCameraComponent>();
 			if (!CameraComponent)
@@ -97,7 +102,6 @@ void USATORI_CloneAbility::EventReceived(FGameplayTag EventTag, FGameplayEventDa
 			Character, ESpawnActorCollisionHandlingMethod::AlwaysSpawn);
 		Clone->SphereRadiusOfAction = SphereRadiusOfAction;
 		Clone->TimeToDestroy = TimeToDestroy;
-		Clone->TagGrantedWhenLured = TagGrantedWhenLured;
 		Clone->FinishSpawning(SpawnTransform);
 
 	}

@@ -30,6 +30,11 @@ void USATORI_PullAbility::ActivateAbility(
 		EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true);
 	}
 
+	if (!TagSpawnAbility.IsValid() || !TagEndAbility.IsValid() || !PlayerTargetingTag.IsValid())
+	{
+		UE_LOG(LogTemp, Display, TEXT("[%s] USATORI_PullAbility: Tag is not valid ... "), *GetName());
+	}
+
 	//Handling of events
 	USATORI_PlayMontageAndWaitEvent* Task = USATORI_PlayMontageAndWaitEvent::PlayMontageAndWaitForEvent(this, NAME_None, AnimMontage, FGameplayTagContainer(), 1.0f, NAME_None, bStopWhenAbilityEnds, 1.0f);
 	Task->OnBlendOut.AddDynamic(this, &USATORI_PullAbility::OnCompleted);
@@ -54,29 +59,29 @@ void USATORI_PullAbility::OnCompleted(FGameplayTag EventTag, FGameplayEventData 
 void USATORI_PullAbility::EventReceived(FGameplayTag EventTag, FGameplayEventData EventData)
 {
 
-	if (EventTag == FGameplayTag::RequestGameplayTag(TagEndAbility))
+	if (EventTag == TagEndAbility)
 	{
 		EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, false);
 		return;
 	}
 
-	if (EventTag == FGameplayTag::RequestGameplayTag(TagSpawnAbility))
+	if (EventTag == TagSpawnAbility)
 	{
 
 		ASATORICharacter* Character = Cast<ASATORICharacter>(GetAvatarActorFromActorInfo());
 		if (!Character)
 		{
-			UE_LOG(LogTemp, Display, TEXT("[%s] USATORI_MissileAbility: Cannot Cast ASATORICharacter ... "), *GetName());
+			UE_LOG(LogTemp, Display, TEXT("[%s] USATORI_PullAbility: Cannot Cast ASATORICharacter ... "), *GetName());
 			EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true);
 		}
 
 		//Aiming when Targeting Enemy
-		if (Character->ActorHasTag(PlayerTargetingTag))
+		if (Character->ActorHasTag(PlayerTargetingTag.GetTagName()))
 		{
 			UCameraComponent* CameraComponent = Character->FindComponentByClass<UCameraComponent>();
 			if (!CameraComponent)
 			{
-				UE_LOG(LogTemp, Display, TEXT("[%s] USATORI_MissileAbility: Cannot Cast UCameraComponent ... "), *GetName());
+				UE_LOG(LogTemp, Display, TEXT("[%s] USATORI_PullAbility: Cannot Cast UCameraComponent ... "), *GetName());
 				EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true);
 			}
 
@@ -93,15 +98,12 @@ void USATORI_PullAbility::EventReceived(FGameplayTag EventTag, FGameplayEventDat
 			SpawnTransform.SetRotation(Character->GetActorRotation().Quaternion());
 		}
 
-		FGameplayEffectSpecHandle DamageEffectSpecHandle = MakeOutgoingGameplayEffectSpec(DamageGameplayEffect, GetAbilityLevel());
-
 		//Missile Actor creation
 		ASATORI_PullActor* Pull = GetWorld()->SpawnActorDeferred<ASATORI_PullActor>(PullActor, SpawnTransform, GetOwningActorFromActorInfo(),
 			Character, ESpawnActorCollisionHandlingMethod::AlwaysSpawn);
 		Pull->SpeedForward = SpeedForward;
 		Pull->SpeedPulling = SpeedPulling;
 		Pull->TimeToDestroy = TimeToDestroy;
-		Pull->DamageEffectSpecHandle = DamageEffectSpecHandle;
 		Pull->FinishSpawning(SpawnTransform);
 
 	}

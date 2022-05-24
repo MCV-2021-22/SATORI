@@ -32,11 +32,11 @@ ASATORI_BlackHoleActor::ASATORI_BlackHoleActor()
 //Collision for exploding
 void ASATORI_BlackHoleActor::OnOverlapCollisionSphere(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	if (OtherActor->ActorHasTag(EnemyTag))
+	if (OtherActor->ActorHasTag(EnemyTag.GetTagName()))
 	{
 		Explode();
 	}
-	if (!OtherActor->ActorHasTag(PlayerTag) && !OtherActor->ActorHasTag(EnemyTag))
+	if (!OtherActor->ActorHasTag(PlayerTag.GetTagName()) && !OtherActor->ActorHasTag(EnemyTag.GetTagName()))
 	{
 		Explode();
 	}
@@ -46,7 +46,7 @@ void ASATORI_BlackHoleActor::OnOverlapCollisionSphere(UPrimitiveComponent* Overl
 void ASATORI_BlackHoleActor::OnOverlapSphereOnExplosion(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 	if (Exploded) {
-		if (OtherActor->ActorHasTag(FName("Enemy"))) {
+		if (OtherActor->ActorHasTag(EnemyTag.GetTagName())) {
 			ArrayTrapped.AddUnique(Cast<UPrimitiveComponent>(OtherActor->GetRootComponent()));
 		}
 	}
@@ -86,9 +86,15 @@ void ASATORI_BlackHoleActor::BeginPlay()
 		EnableInput(Controller);
 	}
 
+	if (!EnemyTag.IsValid() || !PlayerTag.IsValid() || !TargetActorWithTag.IsValid())
+	{
+		UE_LOG(LogTemp, Display, TEXT("[%s] ASATORI_BlackHoleActor: Tag is not valid ... "), *GetName());
+	}
+
+
 	//Check if Player is currently targeting an enemy
 	TArray<AActor*> Actors;
-	UGameplayStatics::GetAllActorsWithTag(GetWorld(), TargetActorWithTag, Actors);
+	UGameplayStatics::GetAllActorsWithTag(GetWorld(), TargetActorWithTag.GetTagName(), Actors);
 	if (Actors.Num() != 0)
 	{
 		Target = Actors.Pop();

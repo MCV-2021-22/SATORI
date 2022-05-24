@@ -29,6 +29,11 @@ void USATORI_MissileAbility::ActivateAbility(
 		EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true);
 	}
 	
+	if (!TagSpawnAbility.IsValid() || !TagEndAbility.IsValid() || !PlayerTargetingTag.IsValid())
+	{
+		UE_LOG(LogTemp, Display, TEXT("[%s] USATORI_MissileAbility: Tag is not valid ... "), *GetName());
+	}
+
 	//Handling of events
 	USATORI_PlayMontageAndWaitEvent* Task = USATORI_PlayMontageAndWaitEvent::PlayMontageAndWaitForEvent(this, NAME_None, AnimMontage, FGameplayTagContainer(), 1.0f, NAME_None, bStopWhenAbilityEnds, 1.0f);
 	Task->OnBlendOut.AddDynamic(this, &USATORI_MissileAbility::OnCompleted);
@@ -53,13 +58,13 @@ void USATORI_MissileAbility::OnCompleted(FGameplayTag EventTag, FGameplayEventDa
 void USATORI_MissileAbility::EventReceived(FGameplayTag EventTag, FGameplayEventData EventData)
 {
 
-	if (EventTag == FGameplayTag::RequestGameplayTag(TagEndAbility))
+	if (EventTag == TagEndAbility)
 	{
 		EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, false);
 		return;
 	}
 
-	if (EventTag == FGameplayTag::RequestGameplayTag(TagSpawnAbility))
+	if (EventTag == TagSpawnAbility)
 	{
 
 		ASATORICharacter* Character = Cast<ASATORICharacter>(GetAvatarActorFromActorInfo());
@@ -70,7 +75,7 @@ void USATORI_MissileAbility::EventReceived(FGameplayTag EventTag, FGameplayEvent
 		}
 
 		//Aiming when Targeting Enemy
-		if (Character->ActorHasTag(PlayerTargetingTag))
+		if (Character->ActorHasTag(PlayerTargetingTag.GetTagName()))
 		{
 			UCameraComponent* CameraComponent = Character->FindComponentByClass<UCameraComponent>();
 			if (!CameraComponent)
@@ -92,14 +97,11 @@ void USATORI_MissileAbility::EventReceived(FGameplayTag EventTag, FGameplayEvent
 			SpawnTransform.SetRotation(Character->GetActorRotation().Quaternion());
 		}
 
-		FGameplayEffectSpecHandle DamageEffectSpecHandle = MakeOutgoingGameplayEffectSpec(DamageGameplayEffect, GetAbilityLevel());
-
 		//Missile Actor creation
 		ASATORI_MissileActor* Missile = GetWorld()->SpawnActorDeferred<ASATORI_MissileActor>(MissileActor, SpawnTransform, GetOwningActorFromActorInfo(),
 			Character, ESpawnActorCollisionHandlingMethod::AlwaysSpawn);
 		Missile->Speed = Speed;
 		Missile->TimeToDestroy = TimeToDestroy;
-		Missile->DamageEffectSpecHandle = DamageEffectSpecHandle;
 		Missile->FinishSpawning(SpawnTransform);
 
 	}

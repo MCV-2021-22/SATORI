@@ -26,9 +26,6 @@ public:
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Ability")
 	TSubclassOf<ASATORI_PullActor> PullActor;
 
-	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Ability")
-	TSubclassOf<UGameplayEffect> DamageGameplayEffect;
-
 	virtual void ActivateAbility(
 		const FGameplayAbilitySpecHandle Handle,
 		const FGameplayAbilityActorInfo* ActorInfo,
@@ -37,13 +34,13 @@ public:
 		override;
 
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Ability|Tags")
-	FName TagSpawnAbility = FName(TEXT("Event.Montage.SpawnAbility"));
+	FGameplayTag TagSpawnAbility;
 
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Ability|Tags")
-	FName TagEndAbility = FName(TEXT("Event.Montage.EndAbility"));
+	FGameplayTag TagEndAbility;
 
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Ability|Tags")
-	FName PlayerTargetingTag = FName(TEXT("State.Targeting"));
+	FGameplayTag PlayerTargetingTag;
 
 protected:
 

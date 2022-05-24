@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
-#include "GameplayEffect.h"
+#include "GameplayTagContainer.h"
 #include "SATORI_PushActor.generated.h"
 
 class USphereComponent;
@@ -21,9 +21,6 @@ public:
 	UPROPERTY(EditDefaultsOnly, Category = "Push")
 	USphereComponent* CollisionSphereComponent = nullptr;
 
-	UPROPERTY(BlueprintReadWrite, Meta = (ExposeOnSpawn = true), Category = "Push")
-	FGameplayEffectSpecHandle DamageEffectSpecHandle;
-
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Meta = (ExposeOnSpawn = true), Category = "Push")
 	float Speed;
 
@@ -32,9 +29,6 @@ public:
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Meta = (ExposeOnSpawn = true), Category = "Push")
 	float TimeToDestroy;
-	
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Meta = (ExposeOnSpawn = true), Category = "Push")
-	float SphereRadius;
 
 	UFUNCTION(BlueprintCallable, Category = "Push")
 	void OnOverlapSphere(

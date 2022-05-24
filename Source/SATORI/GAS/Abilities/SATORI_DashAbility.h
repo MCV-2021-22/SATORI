@@ -35,10 +35,10 @@ public:
 
 
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Ability|Tags")
-	FName TagSpawnAbility = FName(TEXT("Event.Montage.SpawnAbility"));
+	FGameplayTag TagSpawnAbility;
 
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Ability|Tags")
-	FName TagEndAbility = FName(TEXT("Event.Montage.EndAbility"));
+	FGameplayTag TagEndAbility;
 
 protected:
 

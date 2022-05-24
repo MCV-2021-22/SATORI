@@ -40,11 +40,11 @@ ASATORI_MissileActor::ASATORI_MissileActor()
 //Collision for exploding
 void ASATORI_MissileActor::OnOverlapCollisionSphere(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	if (OtherActor->ActorHasTag(EnemyTag)) 
+	if (OtherActor->ActorHasTag(EnemyTag.GetTagName()))
 	{
 		DestroyMyself();
 	}
-	if (!OtherActor->ActorHasTag(PlayerTag) && !OtherActor->ActorHasTag(EnemyTag)) 
+	if (!OtherActor->ActorHasTag(PlayerTag.GetTagName()) && !OtherActor->ActorHasTag(EnemyTag.GetTagName()))
 	{
 		DestroyMyself();
 	}
@@ -53,7 +53,7 @@ void ASATORI_MissileActor::OnOverlapCollisionSphere(UPrimitiveComponent* Overlap
 //Collision for aiming
 void ASATORI_MissileActor::OnOverlapSeekingSphere(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	if (OtherActor->ActorHasTag(EnemyTag) && !Target) 
+	if (OtherActor->ActorHasTag(EnemyTag.GetTagName()) && !Target)
 	{
 		Target = OtherActor;
 	}
@@ -68,9 +68,15 @@ void ASATORI_MissileActor::BeginPlay()
 {
 	Super::BeginPlay();
 
+	if (!EnemyTag.IsValid() || !PlayerTag.IsValid() || !TargetActorWithTag.IsValid())
+	{
+		UE_LOG(LogTemp, Display, TEXT("[%s] ASATORI_MissileActor: Tag is not valid ... "), *GetName());
+	}
+
+
 	//Check if Player is currently targeting an enemy
 	TArray<AActor*> Actors;
-	UGameplayStatics::GetAllActorsWithTag(GetWorld(), TargetActorWithTag, Actors);
+	UGameplayStatics::GetAllActorsWithTag(GetWorld(), TargetActorWithTag.GetTagName(), Actors);
 	if (Actors.Num() != 0) 
 	{
 		Target = Actors.Pop();

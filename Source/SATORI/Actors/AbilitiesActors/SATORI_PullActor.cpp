@@ -9,6 +9,7 @@
 ASATORI_PullActor::ASATORI_PullActor()
 {
 	PrimaryActorTick.bCanEverTick = true;
+
 	float SphereRadius = 32.0f;
 	float SeekingSphereRadius = 256.0f;
 
@@ -41,12 +42,12 @@ ASATORI_PullActor::ASATORI_PullActor()
 //Collision for Grabing
 void ASATORI_PullActor::OnOverlapCollisionSphere(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	if (OtherActor->ActorHasTag(EnemyTag)) 
+	if (OtherActor->ActorHasTag(EnemyTag.GetTagName())) 
 	{
 		Pulling = Cast<UPrimitiveComponent>(OtherActor->GetRootComponent());
 		GetWorldTimerManager().ClearTimer(TimerHandleDestroy);
 	}
-	if (!OtherActor->ActorHasTag(PlayerTag) && !OtherActor->ActorHasTag(EnemyTag)) 
+	if (!OtherActor->ActorHasTag(PlayerTag.GetTagName()) && !OtherActor->ActorHasTag(EnemyTag.GetTagName()))
 	{
 		DestroySelf();
 	}
@@ -55,7 +56,7 @@ void ASATORI_PullActor::OnOverlapCollisionSphere(UPrimitiveComponent* Overlapped
 //Collision for aiming
 void ASATORI_PullActor::OnOverlapSeekingSphere(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	if (OtherActor->ActorHasTag(EnemyTag) && !Target) 
+	if (OtherActor->ActorHasTag(EnemyTag.GetTagName()) && !Target)
 	{
 		Target = OtherActor;
 	}
@@ -67,9 +68,15 @@ void ASATORI_PullActor::BeginPlay()
 {
 	Super::BeginPlay();
 
+	if (!EnemyTag.IsValid() || !PlayerTag.IsValid() || !TargetActorWithTag.IsValid())
+	{
+		UE_LOG(LogTemp, Display, TEXT("[%s] ASATORI_PullActor: Tag is not valid ... "), *GetName());
+	}
+
+
 	//Check if Player is currently targeting an enemy
 	TArray<AActor*> Actors;
-	UGameplayStatics::GetAllActorsWithTag(GetWorld(), TargetActorWithTag, Actors);
+	UGameplayStatics::GetAllActorsWithTag(GetWorld(), TargetActorWithTag.GetTagName(), Actors);
 	if (Actors.Num() != 0) {
 		Target = Actors.Pop();
 	}
