@@ -57,7 +57,7 @@ void ASATORI_BlackHoleActor::OnOverlapSphereOnExplosion(UPrimitiveComponent* Ove
 
 	ASATORI_CharacterBase* Character = Cast<ASATORI_CharacterBase>(OtherActor);
 
-	if (Exploded) {
+	if (Exploded && Character) {
 		if (Character->HasMatchingGameplayTag(EnemyTag)) {
 			ArrayTrapped.AddUnique(Cast<UPrimitiveComponent>(OtherActor->GetRootComponent()));
 		}
