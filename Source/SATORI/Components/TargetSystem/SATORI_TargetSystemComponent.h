@@ -6,6 +6,7 @@
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
 #include "GameplayTagContainer.h"
+#include "SATORI/Character/SATORI_CharacterBase.h"
 #include "SATORI_TargetSystemComponent.generated.h"
 
 class APlayerController;
@@ -95,6 +96,8 @@ private:
 	//Tags
 	ASATORI_CharacterBase* CharacterTargeted;
 	ASATORI_CharacterBase* CharacterTargeting;
+
+	TArray<AActor*> FilterActorsToTarget(TArray<AActor*> Actors);
 
 	TArray<AActor*> FindTargetsInRange(TArray<AActor*> ActorsToLook, float RangeMin, float RangeMax);
 	AActor* USATORI_TargetSystemComponent::FindNearestTarget(TArray<AActor*> Actors);

@@ -4,7 +4,6 @@
 #include "Kismet/GameplayStatics.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Engine/Classes/Camera/CameraComponent.h"
-#include "SATORI/Character/SATORI_CharacterBase.h"
 
 //Debug
 #include "DrawDebugHelpers.h"
@@ -64,7 +63,7 @@ void USATORI_TargetSystemComponent::TickComponent(const float DeltaTime, const E
 	}
 
 	//Actor Locked has targeted tag
-	if (!LockedOnTargetActor->ActorHasTag(TargetActorsWithTag.GetTagName()))
+	if (!CharacterTargeted->HasMatchingGameplayTag(TargetActorsWithTag))
 	{
 		TargetLockOff();
 		return;
@@ -123,11 +122,33 @@ void USATORI_TargetSystemComponent::TargetActor()
 	else 
 	{
 		TArray<AActor*> Actors;
-		UGameplayStatics::GetAllActorsWithTag(GetWorld(), TargetActorsWithTag.GetTagName(), Actors);
+		UGameplayStatics::GetAllActorsOfClass(GetWorld(), ASATORI_CharacterBase::StaticClass(), Actors);
+		
+		//Actors = FilterActorsToTarget(Actors);
+
 		LineOfSightIgnoreActors = Actors;
 		LockedOnTargetActor = FindNearestTarget(Actors);
 		TargetLockOn(LockedOnTargetActor);
 	}
+}
+
+TArray<AActor*>USATORI_TargetSystemComponent::FilterActorsToTarget(TArray<AActor*> Actors)
+{
+	TArray<AActor*> ActorsToReturn = Actors;
+	TArray<AActor*> ActorsToRemove;
+	for (AActor* Actor : ActorsToReturn) {
+		ASATORI_CharacterBase* Character = Cast<ASATORI_CharacterBase>(Actor);
+		if (!Character->HasMatchingGameplayTag(TargetActorsWithTag))
+		{
+			ActorsToRemove.AddUnique(Actor);
+		}
+	}
+
+	for (AActor* Actor : ActorsToRemove) {
+		ActorsToReturn.Remove(Actor);
+	}
+
+	return ActorsToReturn;
 }
 
 void USATORI_TargetSystemComponent::TargetLockOff()
@@ -137,10 +158,10 @@ void USATORI_TargetSystemComponent::TargetLockOff()
 	//Remove tags
 	CharacterTargeting->RemoveGameplayTag(TagApliedTargeting);
 
-	if (IsValid(LockedOnTargetActor))
+	if (CharacterTargeted)
 	{
-		CharacterTargeted = Cast<ASATORI_CharacterBase>(LockedOnTargetActor);
 		CharacterTargeted->RemoveGameplayTag(TagApliedToEnemyTargeted);
+		CharacterTargeted = nullptr;
 	}
 
 	LockedOnTargetActor = nullptr;
@@ -384,7 +405,7 @@ void USATORI_TargetSystemComponent::TargetActorWithAxisInput(const float AxisVal
 	ClosestTargetDistance = MinimumDistanceToTarget;
 
 	TArray<AActor*> Actors;
-	UGameplayStatics::GetAllActorsWithTag(GetWorld(), TargetActorsWithTag.GetTagName(), Actors);
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(), ASATORI_CharacterBase::StaticClass(), Actors);
 
 	TArray<AActor*> ActorsToLook;
 	TArray<AActor*> ActorsToIgnore;
