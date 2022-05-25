@@ -26,6 +26,9 @@ public:
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Ability")
 	TSubclassOf<ASATORI_DecoyActor> DecoyActor;
 
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Ability")
+	TSubclassOf<UGameplayEffect> DamageGameplayEffect;
+
 	virtual void ActivateAbility(
 		const FGameplayAbilitySpecHandle Handle,
 		const FGameplayAbilityActorInfo* ActorInfo,
@@ -43,6 +46,9 @@ public:
 	FGameplayTag PlayerTargetingTag;
 
 protected:
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (UIMin = "1.0"), Category = "Ability|Decoy")
+	float Damage = 1.0f;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (UIMin = "1.0"), Category = "Ability|Decoy")
 	float Speed = 1.0f;

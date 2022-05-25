@@ -24,6 +24,12 @@ void USATORI_PullAbility::ActivateAbility(
 		return;
 	}
 
+	if (!IsValid(DamageGameplayEffect))
+	{
+		UE_LOG(LogTemp, Warning, TEXT("[%s] USATORI_PullAbility: Cannot get Damage Gameplay Effect Montage ... "), *GetName());
+		return;
+	}
+
 	if (!CommitAbility(Handle, ActorInfo, ActivationInfo))
 	{
 		UE_LOG(LogTemp, Display, TEXT("[%s] USATORI_PullAbility: Cannot Commit Ability ... "), *GetName());
@@ -101,6 +107,8 @@ void USATORI_PullAbility::EventReceived(FGameplayTag EventTag, FGameplayEventDat
 		//Missile Actor creation
 		ASATORI_PullActor* Pull = GetWorld()->SpawnActorDeferred<ASATORI_PullActor>(PullActor, SpawnTransform, GetOwningActorFromActorInfo(),
 			Character, ESpawnActorCollisionHandlingMethod::AlwaysSpawn);
+		Pull->DamageGameplayEffect = DamageGameplayEffect;
+		Pull->Damage = Damage;
 		Pull->SpeedForward = SpeedForward;
 		Pull->SpeedPulling = SpeedPulling;
 		Pull->TimeToDestroy = TimeToDestroy;

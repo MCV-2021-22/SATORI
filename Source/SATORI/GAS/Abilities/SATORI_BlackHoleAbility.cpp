@@ -23,6 +23,12 @@ void USATORI_BlackHoleAbility::ActivateAbility(
 		return;
 	}
 
+	if (!IsValid(DamageGameplayEffect))
+	{
+		UE_LOG(LogTemp, Warning, TEXT("[%s] USATORI_BlackHoleAbility: Cannot get Damage Gameplay Effect Montage ... "), *GetName());
+		return;
+	}
+
 	if (!CommitAbility(Handle, ActorInfo, ActivationInfo))
 	{
 		UE_LOG(LogTemp, Display, TEXT("[%s] USATORI_BlackHoleAbility: Cannot Commit Ability ... "), *GetName());
@@ -100,10 +106,11 @@ void USATORI_BlackHoleAbility::EventReceived(FGameplayTag EventTag, FGameplayEve
 		//BlackHole Actor creation
 		ASATORI_BlackHoleActor* BlackHole = GetWorld()->SpawnActorDeferred<ASATORI_BlackHoleActor>(BlackHoleActor, SpawnTransform, GetOwningActorFromActorInfo(),
 			Character, ESpawnActorCollisionHandlingMethod::AlwaysSpawn);
+		BlackHole->DamageGameplayEffect = DamageGameplayEffect;
+		BlackHole->Damage = Damage;
 		BlackHole->Speed = Speed;
 		BlackHole->TimeToDestroy = TimeToDestroy;
 		BlackHole->SphereRadiusOnExplosion = SphereRadiusOnExplosion;
 		BlackHole->FinishSpawning(SpawnTransform);
-
 	}
 }

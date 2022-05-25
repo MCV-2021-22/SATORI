@@ -28,6 +28,12 @@ void USATORI_MissileAbility::ActivateAbility(
 		UE_LOG(LogTemp, Display, TEXT("[%s] USATORI_MissileAbility: Cannot Commit Ability ... "), *GetName());
 		EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true);
 	}
+
+	if (!IsValid(DamageGameplayEffect))
+	{
+		UE_LOG(LogTemp, Warning, TEXT("[%s] USATORI_MissileAbility: Cannot get Damage Gameplay Effect Montage ... "), *GetName());
+		return;
+	}
 	
 	if (!TagSpawnAbility.IsValid() || !TagEndAbility.IsValid() || !PlayerTargetingTag.IsValid())
 	{
@@ -100,9 +106,10 @@ void USATORI_MissileAbility::EventReceived(FGameplayTag EventTag, FGameplayEvent
 		//Missile Actor creation
 		ASATORI_MissileActor* Missile = GetWorld()->SpawnActorDeferred<ASATORI_MissileActor>(MissileActor, SpawnTransform, GetOwningActorFromActorInfo(),
 			Character, ESpawnActorCollisionHandlingMethod::AlwaysSpawn);
+		Missile->DamageGameplayEffect = DamageGameplayEffect;
+		Missile->Damage = Damage;
 		Missile->Speed = Speed;
 		Missile->TimeToDestroy = TimeToDestroy;
 		Missile->FinishSpawning(SpawnTransform);
-
 	}
 }
