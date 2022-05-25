@@ -29,6 +29,9 @@ public:
 	UFUNCTION(BlueprintCallable, Category = Ability)
 	class ASATORICharacter* GetOwningSatoriCharacter() const;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool bIsActivated = false;
+
 	// Gameplay Effect
 	//virtual void ApplyEffectContainer();
 	//virtual void ApplyEffectContainerSpec();

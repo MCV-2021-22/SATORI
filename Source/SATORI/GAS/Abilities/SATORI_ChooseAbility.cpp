@@ -4,6 +4,7 @@
 #include "GAS/Abilities/SATORI_ChooseAbility.h"
 #include "SATORICharacter.h"
 #include "AbilitySystemComponent.h"
+#include "Components/Player/SATORI_GameplayAbilityComponent.h"
 
 void USATORI_ChooseAbility::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData)
 {
@@ -11,8 +12,10 @@ void USATORI_ChooseAbility::ActivateAbility(const FGameplayAbilitySpecHandle Han
 
 	ASATORICharacter* Player = Cast<ASATORICharacter>(ActorInfo->AvatarActor);
 
+	int NumEnabledAbilities = Player->PlayerGameplayAbilityComponent->EnabledAbilityClasses.Num();
+
 	Player->AbilityToChoose++;
-	if (Player->AbilityToChoose >= 5)
+	if (Player->AbilityToChoose >= NumEnabledAbilities)
 		Player->AbilityToChoose = 0;
 
 	EndAbility(Handle, ActorInfo, ActivationInfo, false, false);

@@ -3,14 +3,14 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Abilities/GameplayAbility.h"
+#include "GAS/SATORI_GameplayAbility.h"
 #include "SATORI_TimeStopAbility.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class SATORI_API USATORI_TimeStop : public UGameplayAbility
+class SATORI_API USATORI_TimeStop : public USATORI_GameplayAbility
 {
 	GENERATED_BODY()
 

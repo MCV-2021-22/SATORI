@@ -17,6 +17,7 @@ class USATORI_AttributeSet;
 class USATORI_AbilitySystemComponent;
 class USATORI_AbilityMask;
 class USATORI_ANS_JumpSection;
+class USATORI_GameplayAbility;
 
 UCLASS(config=Game)
 class ASATORICharacter : public ASATORI_CharacterBase
@@ -49,8 +50,6 @@ public:
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	int AbilityToChoose = 0;
-
-public:
 
 	// Gettes for attributes
 	UFUNCTION(BlueprintCallable, Category = "Player|Attributes")
@@ -111,8 +110,10 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	class USATORI_ComboSystemComponent* ComboSystemComponent;
 
+public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
 	class USATORI_GameplayAbilityComponent* PlayerGameplayAbilityComponent;
+protected:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
 	class USATORI_TargetSystemComponent* TargetSystemComponent;

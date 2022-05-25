@@ -57,7 +57,7 @@ public:
 
 
 
-	
+	float getDistAttack();
 
 protected:
 	// Default attributes for a character for initializing on spawn/respawn.
@@ -75,5 +75,8 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
 	UBehaviorTree* btree;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	float dist_attack = 100.f;
 
 };

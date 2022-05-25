@@ -135,3 +135,8 @@ void ASATORI_AICharacter::PossessedBy(AController* NewController)
 
 
 }
+
+float ASATORI_AICharacter::getDistAttack()
+{
+	return dist_attack;
+}
