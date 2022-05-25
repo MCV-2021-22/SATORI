@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "GameplayTagContainer.h"
+#include "GameplayEffect.h"
 #include "SATORI_PullActor.generated.h"
 
 class USphereComponent;

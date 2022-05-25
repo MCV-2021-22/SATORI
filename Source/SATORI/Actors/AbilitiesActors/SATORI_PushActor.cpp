@@ -2,9 +2,9 @@
 
 #include "Actors/AbilitiesActors/SATORI_PushActor.h"
 #include "Components/SphereComponent.h"
-#include "DrawDebugHelpers.h"
-#include "SATORI/Character/SATORI_CharacterBase.h"
+#include "SATORI/AI/Character/SATORI_AICharacter.h"
 #include "SATORI/FunctionLibrary/SATORI_BlueprintLibrary.h"
+#include "DrawDebugHelpers.h"
 
 ASATORI_PushActor::ASATORI_PushActor()
 {
@@ -32,7 +32,7 @@ void ASATORI_PushActor::OnOverlapSphere(
 	const FHitResult& SweepResult)
 {
 
-	ASATORI_CharacterBase* Character = Cast<ASATORI_CharacterBase>(OtherActor);
+	ASATORI_AICharacter* Character = Cast<ASATORI_AICharacter>(OtherActor);
 
 	if (!Character) 
 	{
