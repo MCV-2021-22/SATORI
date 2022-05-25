@@ -27,21 +27,10 @@ namespace ESATORIAbilityInputID
 		Attack			UMETA(DisplayName = "Attack"),
 		// HeavyAttack
 		HeavyAttack		UMETA(DisplayName = "HeavyAttack"),
-		// Push
-		Push			UMETA(DisplayName = "Push"),
-		// Pull
-		Pull			UMETA(DisplayName = "Pull"),
-		// Missile
-		Missile			UMETA(DisplayName = "Missile"),
-		// BlackHole
-		BlackHole		UMETA(DisplayName = "BlackHole"),
-		// Decoy
-		Decoy			UMETA(DisplayName = "Decoy"),
-		// Clone
-		Clone			UMETA(DisplayName = "Clone"),
-		// TimeSlow
-		TimeSlow		UMETA(DisplayName = "TimeSlow"),
-		// TimeStop
-		TimeStop		UMETA(DisplayName = "TimeStop")
+		// ChooseAbility
+		ChooseAbility	UMETA(DisplayName = "ChooseAbility"),
+		// LaunchAbility
+		LaunchAbility	UMETA(DisplayName = "LaunchAbility")
+		
 	};
 }

@@ -51,8 +51,6 @@ public:
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	int AbilityToChoose = 0;
 
-public:
-
 	// Gettes for attributes
 	UFUNCTION(BlueprintCallable, Category = "Player|Attributes")
 	float GetHealth() const;
@@ -112,6 +110,10 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	class USATORI_ComboSystemComponent* ComboSystemComponent;
 
+public:
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
+	class USATORI_GameplayAbilityComponent* PlayerGameplayAbilityComponent;
+protected:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
 	class USATORI_TargetSystemComponent* TargetSystemComponent;
