@@ -16,7 +16,9 @@ USATORI_GameplayAbilityComponent::USATORI_GameplayAbilityComponent()
 void USATORI_GameplayAbilityComponent::BeginPlay()
 {
 	Super::BeginPlay();
-	if (DefaultAbilities)
+
+
+	/*if (DefaultAbilities)
 	{
 		for (FSATORIGameplayAbilityInfo Ability : DefaultAbilities->Abilities)
 		{
@@ -28,7 +30,7 @@ void USATORI_GameplayAbilityComponent::BeginPlay()
 				PlayerGameplayAbility.Add(LocalAbilityName, Ability.SATORIAbility);
 			}
 		}
-	}
+	}*/
 }
 
 bool USATORI_GameplayAbilityComponent::TryChangeAbility()
@@ -44,4 +46,14 @@ bool USATORI_GameplayAbilityComponent::TryChangeAbility()
 		}
 	}
 	return false;
+}
+
+void USATORI_GameplayAbilityComponent::AddEnabledAbilityClass(TSubclassOf<USATORI_GameplayAbility> ClassToAdd)
+{
+	EnabledAbilityClasses.AddUnique(ClassToAdd);
+}
+
+bool USATORI_GameplayAbilityComponent::IsAbilityClassEnabled(TSubclassOf<USATORI_GameplayAbility> ClassToCheck) const
+{
+	return EnabledAbilityClasses.Find(ClassToCheck) != INDEX_NONE;
 }

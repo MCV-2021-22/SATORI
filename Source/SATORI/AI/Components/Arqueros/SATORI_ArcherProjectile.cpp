@@ -56,10 +56,10 @@ ASATORI_ArcherProjectile::ASATORI_ArcherProjectile()
 	UE_LOG(LogTemp, Display, TEXT("Bala creada 222 "));
 }
 
-void setDirection(FVector newDirection)
+void ASATORI_ArcherProjectile::setDirection(FVector newDirection)
 {
 
-	int a = 1;
+	this->direction = newDirection;
 }
 
 
@@ -68,7 +68,7 @@ void ASATORI_ArcherProjectile::BeginPlay()
 	Super::BeginPlay();
 	const bool bRecursive = true;
 
-	TArray< AActor* > enemigos;
+	/*TArray< AActor* > enemigos;
 	UGameplayStatics::GetAllActorsWithTag(GetWorld(), FName("PossessedBy.Player"), enemigos);
 
 	for (AActor* Actor : enemigos)
@@ -97,7 +97,7 @@ void ASATORI_ArcherProjectile::BeginPlay()
 
 		}
 
-	}
+	}*/
 
 }
 
