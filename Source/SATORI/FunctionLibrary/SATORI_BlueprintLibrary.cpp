@@ -8,16 +8,23 @@
 #include "AbilitySystemComponent.h"
 #include "GAS/Attributes/SATORI_AttributeSet.h"
 #include "Character/SATORI_CharacterBase.h"
-#include "Character/SATORI_CharacterBase.h"
 
 float USATORI_BlueprintLibrary::ApplyGameplayEffectDamage(AActor* DamagedActor, float BaseDamage,
 	AActor* DamageCauser, TSubclassOf<UGameplayEffect> DamageEffect)
 {
 	ASATORI_CharacterBase* Character = Cast<ASATORI_CharacterBase>(DamagedActor);
-	if (Character)
+	if (!Character)
+	{ 
+		UE_LOG(LogTemp, Display, TEXT("USATORI_BlueprintLibrary: Cant Cast DamagedActor to BaseCharacter ... "));
+	} 
+	else
 	{
 		UAbilitySystemComponent* AbilitySystemComponent = Character->GetAbilitySystemComponent();
-		if (AbilitySystemComponent)
+		if (!AbilitySystemComponent)
+		{ 
+			UE_LOG(LogTemp, Display, TEXT("USATORI_BlueprintLibrary: Cant get Ability System Component ... "));
+		}
+		else
 		{
 			FName DamageTag = "Data.Damage";
 			FGameplayEffectContextHandle ContextHandle;

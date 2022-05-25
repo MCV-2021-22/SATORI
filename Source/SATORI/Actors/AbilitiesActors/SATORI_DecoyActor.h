@@ -25,6 +25,15 @@ public:
 	UPROPERTY(EditDefaultsOnly, Category = "Decoy")
 	UStaticMeshComponent* StaticMeshComponent = nullptr;
 
+	UPROPERTY(EditDefaultsOnly, Category = "Decoy")
+	UStaticMeshComponent* StaticMeshComponent = nullptr;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Meta = (ExposeOnSpawn = true), Category = "Decoy")
+	TSubclassOf<UGameplayEffect> DamageGameplayEffect;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Meta = (ExposeOnSpawn = true), Category = "Decoy")
+	float Damage;
+
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Meta = (ExposeOnSpawn = true), Category = "Decoy")
 	float Speed;
 

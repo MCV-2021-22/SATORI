@@ -5,6 +5,7 @@
 #include "Kismet/KismetMathLibrary.h"
 #include "Kismet/GameplayStatics.h"
 #include "SATORI/Character/SATORI_CharacterBase.h"
+#include "SATORI/FunctionLibrary/SATORI_BlueprintLibrary.h"
 
 ASATORI_DecoyActor::ASATORI_DecoyActor()
 {
@@ -42,6 +43,7 @@ void ASATORI_DecoyActor::OnOverlapCollisionSphere(UPrimitiveComponent* Overlappe
 
 	if (Character->HasMatchingGameplayTag(EnemyTag))
 	{
+		USATORI_BlueprintLibrary::ApplyGameplayEffectDamage(OtherActor, Damage, OtherActor, DamageGameplayEffect);
 		Character->AddGameplayTag(TagGrantedWhenLured);
 		ArrayLured.AddUnique(OtherActor);
 	}

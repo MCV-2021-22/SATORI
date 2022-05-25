@@ -4,6 +4,7 @@
 #include "Kismet/KismetMathLibrary.h"
 #include "Kismet/GameplayStatics.h"
 #include "SATORI/Character/SATORI_CharacterBase.h"
+#include "SATORI/FunctionLibrary/SATORI_BlueprintLibrary.h"
 
 // Sets default values
 ASATORI_PullActor::ASATORI_PullActor()
@@ -52,6 +53,7 @@ void ASATORI_PullActor::OnOverlapCollisionSphere(UPrimitiveComponent* Overlapped
 
 	if (Character->HasMatchingGameplayTag(EnemyTag))
 	{
+		USATORI_BlueprintLibrary::ApplyGameplayEffectDamage(OtherActor, Damage, OtherActor, DamageGameplayEffect);
 		Pulling = Cast<UPrimitiveComponent>(OtherActor->GetRootComponent());
 		GetWorldTimerManager().ClearTimer(TimerHandleDestroy);
 	}
