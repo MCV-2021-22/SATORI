@@ -44,7 +44,7 @@ void ASATORI_BlackHoleActor::OnOverlapCollisionSphere(UPrimitiveComponent* Overl
 
 	if (Character->HasMatchingGameplayTag(EnemyTag))
 	{
-		USATORI_BlueprintLibrary::ApplyGameplayEffectDamage(OtherActor, Damage, OtherActor, DamageGameplayEffect);
+		//USATORI_BlueprintLibrary::ApplyGameplayEffectDamage(OtherActor, Damage, OtherActor, DamageGameplayEffect);
 		Explode();
 	}
 	if (!Character->HasMatchingGameplayTag(PlayerTag) && !Character->HasMatchingGameplayTag(EnemyTag))
@@ -58,6 +58,11 @@ void ASATORI_BlackHoleActor::OnOverlapSphereOnExplosion(UPrimitiveComponent* Ove
 {
 
 	ASATORI_CharacterBase* Character = Cast<ASATORI_CharacterBase>(OtherActor);
+
+	if (!Character)
+	{
+		return;
+	}
 
 	if (Exploded) {
 		if (Character->HasMatchingGameplayTag(EnemyTag)) {
