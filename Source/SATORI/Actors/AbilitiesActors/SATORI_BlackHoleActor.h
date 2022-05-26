@@ -6,10 +6,14 @@
 #include "GameFramework/Actor.h"
 #include "GameplayTagContainer.h"
 #include "GameplayEffect.h"
+#include "PhysicsEngine/RadialForceComponent.h"
+#include "SATORI/AI/Character/SATORI_AICharacter.h"
 #include "SATORI_BlackHoleActor.generated.h"
 
 class USphereComponent;
 class UStaticMeshComponent;
+class URadialForceComponent;
+class UProjectileMovementComponent;
 
 UCLASS()
 class SATORI_API ASATORI_BlackHoleActor : public AActor
@@ -26,6 +30,12 @@ public:
 	UPROPERTY(EditDefaultsOnly, Category = "BlackHole")
 	UStaticMeshComponent* StaticMeshComponent = nullptr;
 
+	UPROPERTY(EditDefaultsOnly, Category = "BlackHole")
+	URadialForceComponent* RadialForceComponent = nullptr;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "BlackHole")
+	UProjectileMovementComponent* ProjectileMovementComponent = nullptr;
+
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Meta = (ExposeOnSpawn = true), Category = "BlackHole")
 	TSubclassOf<UGameplayEffect> DamageGameplayEffect;
 
@@ -38,12 +48,6 @@ public:
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Meta = (ExposeOnSpawn = true), Category = "BlackHole")
 	float TimeToDestroy;
 
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Meta = (ExposeOnSpawn = true), Category = "BlackHole")
-	float SphereRadiusOnExplosion;
-
-	UPROPERTY(BlueprintReadWrite, Category = "BlackHole")
-	bool Active = false;
-
 	UFUNCTION(BlueprintCallable, Category = "BlackHole")
 	void OnOverlapCollisionSphere(
 			UPrimitiveComponent* OverlappedComp,
@@ -53,17 +57,8 @@ public:
 			bool bFromSweep,
 			const FHitResult& SweepResult);
 
-	UFUNCTION(BlueprintCallable, Category = "BlackHole")
-	void OnOverlapSphereOnExplosion(
-			UPrimitiveComponent* OverlappedComp,
-			AActor* OtherActor,
-			UPrimitiveComponent* OtherComp,
-			int32 OtherBodyIndex,
-			bool bFromSweep,
-			const FHitResult& SweepResult);
-
-	UFUNCTION(BlueprintCallable, Category = "BlackHole")
-	void Explode();
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "BlackHole|Tags")
+	FGameplayTag  TagToAddWhenTrapped;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "BlackHole|Tags")
 	FGameplayTag  TargetActorWithTag;
@@ -86,11 +81,7 @@ private:
 
 	AActor* Target;
 
-	APlayerController* Controller;
-
-	TArray<UPrimitiveComponent*> ArrayTrapped;
-
-	bool Exploded = false;
+	TArray<ASATORI_AICharacter*> ArrayTrapped;
 
 	FTimerHandle TimerHandleDestroy;
 
