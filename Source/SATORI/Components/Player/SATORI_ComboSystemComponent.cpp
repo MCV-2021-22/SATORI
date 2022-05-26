@@ -3,6 +3,7 @@
 
 #include "Components/Player/SATORI_ComboSystemComponent.h"
 #include "SATORICharacter.h"
+#include "Components/SkeletalMeshComponent.h"
 #include "Components/SphereComponent.h"
 
 // Sets default values for this component's properties
@@ -10,8 +11,36 @@ USATORI_ComboSystemComponent::USATORI_ComboSystemComponent()
 {
 	//isLightAttack = true;
 	//isHeavyAttack = true;
+	// Weapon Component
+	bWantsInitializeComponent = true;
 }
 
+void USATORI_ComboSystemComponent::InitializeComponent()
+{
+	//SwordComponent = NewObject<USkeletalMeshComponent>(GetOwner(), TEXT("Sword"));
+	//AttackingCollision = NewObject<USphereComponent>(GetOwner(), TEXT("Collision"));
+	//
+	///*SwordComponent->SkeletalMesh =  */
+
+	//ASATORICharacter* Character = Cast<ASATORICharacter>(GetOwner());
+	//if (SwordComponent)
+	//{
+	//	FAttachmentTransformRules AttachmentRules = FAttachmentTransformRules(EAttachmentRule::KeepRelative, false);
+	//	SwordComponent->SetupAttachment(Character->GetMesh(), "Sword_1");
+	//	// Sphere Collision
+	//	AttackingCollision->InitSphereRadius(40.0f);
+	//	AttackingCollision->SetCollisionProfileName("Pawn");
+	//	AttackingCollision->SetGenerateOverlapEvents(false);
+	//	AttackingCollision->AttachTo(SwordComponent);
+	//}
+
+	//SwordComponent->CreationMethod = EComponentCreationMethod::Instance;
+	//AttackingCollision->CreationMethod = EComponentCreationMethod::Instance;
+
+	//SwordComponent->RegisterComponent();
+	//AttackingCollision->RegisterComponent();
+
+}
 
 // Called when the game starts
 void USATORI_ComboSystemComponent::BeginPlay()

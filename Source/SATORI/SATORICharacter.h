@@ -18,6 +18,8 @@ class USATORI_AbilitySystemComponent;
 class USATORI_AbilityMask;
 class USATORI_ANS_JumpSection;
 class USATORI_GameplayAbility;
+class USkeletalMeshComponent;
+class USphereComponent;
 
 UCLASS(config=Game)
 class ASATORICharacter : public ASATORI_CharacterBase
@@ -51,6 +53,13 @@ public:
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	int AbilityToChoose = 0;
 
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Weapon")
+	USkeletalMeshComponent* SwordComponent;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon")
+	USphereComponent* AttackingCollision;
+
 	// Gettes for attributes
 	UFUNCTION(BlueprintCallable, Category = "Player|Attributes")
 	float GetHealth() const;
@@ -79,12 +88,17 @@ public:
 	UFUNCTION(BlueprintCallable)
 	bool AttackJumpSectionCombo();
 
+	// Ray Cast
+	UFUNCTION(BlueprintCallable)
+	bool DoRayCast();
+
 	UFUNCTION(BlueprintCallable)
 	bool PlayerActiveAbilityWithTag(FGameplayTag TagName);
 
 	// Getters for Components
 	FORCEINLINE class USATORI_StatsComponent* GetStatsComponent() const { return StatsComponent; }
 	class USATORI_ComboSystemComponent* GetComboSystemComponent() const { return ComboSystemComponent; }
+
 protected:
 
 	// Initialization for player abilities
