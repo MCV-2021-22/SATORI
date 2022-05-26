@@ -54,6 +54,9 @@ protected:
 	float Speed = 1.0f;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (UIMin = "1.0"), Category = "Ability|Missile")
+	float Range = 1.0f;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (UIMin = "1.0"), Category = "Ability|Missile")
 	float TimeToDestroy = 1.0f;
 
 	UFUNCTION()

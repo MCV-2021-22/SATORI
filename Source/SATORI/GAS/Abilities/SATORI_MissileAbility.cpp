@@ -81,7 +81,7 @@ void USATORI_MissileAbility::EventReceived(FGameplayTag EventTag, FGameplayEvent
 		}
 
 		//Aiming when Targeting Enemy
-		if (Character->ActorHasTag(PlayerTargetingTag.GetTagName()))
+		if (Character->HasMatchingGameplayTag(PlayerTargetingTag))
 		{
 			UCameraComponent* CameraComponent = Character->FindComponentByClass<UCameraComponent>();
 			if (!CameraComponent)
@@ -109,6 +109,7 @@ void USATORI_MissileAbility::EventReceived(FGameplayTag EventTag, FGameplayEvent
 		Missile->DamageGameplayEffect = DamageGameplayEffect;
 		Missile->Damage = Damage;
 		Missile->Speed = Speed;
+		Missile->Range = Range;
 		Missile->TimeToDestroy = TimeToDestroy;
 		Missile->FinishSpawning(SpawnTransform);
 	}

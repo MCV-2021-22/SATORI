@@ -14,6 +14,13 @@
 
 class UCharacterMovementComponent;
 
+//FTickableObject
+//Tick
+//IsTickable
+//ISallowedtotick
+//getstatID
+//TSTATID getstatID Delegate
+
 UCLASS()
 class SATORI_API USATORI_DashAbility : public USATORI_GameplayAbility
 {
