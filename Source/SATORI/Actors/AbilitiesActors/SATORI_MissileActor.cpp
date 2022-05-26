@@ -46,11 +46,13 @@ void ASATORI_MissileActor::OnOverlapCollisionSphere(UPrimitiveComponent* Overlap
 	if (Character->HasMatchingGameplayTag(EnemyTag))
 	{
 		USATORI_BlueprintLibrary::ApplyGameplayEffectDamage(OtherActor, Damage, OtherActor, DamageGameplayEffect);
-		DestroyMyself();
+		ProjectileMovementComponent->Velocity = (FVector::ZeroVector);
+		//DestroyMyself();
 	}
 	if (!Character->HasMatchingGameplayTag(PlayerTag) && !Character->HasMatchingGameplayTag(EnemyTag))
 	{
-		DestroyMyself();
+		ProjectileMovementComponent->Velocity = (FVector::ZeroVector);
+		//DestroyMyself();
 	}
 }
 
