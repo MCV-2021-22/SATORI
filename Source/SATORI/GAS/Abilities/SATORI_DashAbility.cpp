@@ -90,7 +90,6 @@ void USATORI_DashAbility::EventReceived(FGameplayTag EventTag, FGameplayEventDat
 
 void USATORI_DashAbility::Dashing() 
 {
-
 	ASATORICharacter* Character = Cast<ASATORICharacter>(GetAvatarActorFromActorInfo());
 	Character->AddActorLocalOffset(Direction * DashDistance);
 

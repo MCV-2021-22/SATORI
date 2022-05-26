@@ -12,7 +12,7 @@ ASATORI_MissileActor::ASATORI_MissileActor()
 	PrimaryActorTick.bCanEverTick = true;
 	
 	float SphereRadius = 32.0f;
-	float SeekingSphereRadius = 256.0f;
+	/*float SeekingSphereRadius = 256.0f;*/
 
 	StaticMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("StaticMesh"));
 	RootComponent = StaticMeshComponent;
@@ -27,16 +27,16 @@ ASATORI_MissileActor::ASATORI_MissileActor()
 	CollisionSphereComponent->OnComponentBeginOverlap.AddDynamic(this, &ASATORI_MissileActor::OnOverlapCollisionSphere);
 
 	//If not targeting will Target first collision with it
-	SeekingSphereComponent = CreateDefaultSubobject<USphereComponent>(TEXT("SeekingSphere"));
-	SeekingSphereComponent->SetSphereRadius(SeekingSphereRadius);
-	SeekingSphereComponent->SetCollisionProfileName(FName(TEXT("IgnoreAllOverlapOnlyPawn")));
-	SeekingSphereComponent->SetupAttachment(RootComponent);
-	SeekingSphereComponent->SetGenerateOverlapEvents(true);
-	SeekingSphereComponent->OnComponentBeginOverlap.AddDynamic(this, &ASATORI_MissileActor::OnOverlapSeekingSphere);
+	//SeekingSphereComponent = CreateDefaultSubobject<USphereComponent>(TEXT("SeekingSphere"));
+	//SeekingSphereComponent->SetSphereRadius(SeekingSphereRadius);
+	//SeekingSphereComponent->SetCollisionProfileName(FName(TEXT("IgnoreAllOverlapOnlyPawn")));
+	//SeekingSphereComponent->SetupAttachment(RootComponent);
+	//SeekingSphereComponent->SetGenerateOverlapEvents(true);
+	//SeekingSphereComponent->OnComponentBeginOverlap.AddDynamic(this, &ASATORI_MissileActor::OnOverlapSeekingSphere);
 
 	//Debug
 	CollisionSphereComponent->bHiddenInGame = false;
-	SeekingSphereComponent->bHiddenInGame = false;
+	//SeekingSphereComponent->bHiddenInGame = false;
 }
 
 //Collision for exploding
@@ -62,16 +62,16 @@ void ASATORI_MissileActor::OnOverlapCollisionSphere(UPrimitiveComponent* Overlap
 }
 
 //Collision for aiming
-void ASATORI_MissileActor::OnOverlapSeekingSphere(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
-{
-
-	ASATORI_AICharacter* Character = Cast<ASATORI_AICharacter>(OtherActor);
-
-	if (Character->HasMatchingGameplayTag(EnemyTag) && !Target)
-	{
-		Target = OtherActor;
-	}
-}
+//void ASATORI_MissileActor::OnOverlapSeekingSphere(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+//{
+//
+//	ASATORI_AICharacter* Character = Cast<ASATORI_AICharacter>(OtherActor);
+//
+//	if (Character->HasMatchingGameplayTag(EnemyTag) && !Target)
+//	{
+//		Target = OtherActor;
+//	}
+//}
 
 void ASATORI_MissileActor::DestroyMyself()
 {
@@ -105,19 +105,19 @@ void ASATORI_MissileActor::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	//Movement
-	FVector ActorPosition = GetActorLocation();
-	//If has Target
-	if(Target)
-	{
-		FVector TargetPosition = Target->GetActorLocation();
-		FVector Direction = UKismetMathLibrary::GetDirectionUnitVector(ActorPosition, TargetPosition);
-		SetActorLocation(ActorPosition + Direction * Speed * DeltaTime);
-	}
-	//If not has Target
-	else
-	{
-		SetActorLocation(ActorPosition + GetActorForwardVector() * Speed * DeltaTime);
-	}
+	////Movement
+	//FVector ActorPosition = GetActorLocation();
+	////If has Target
+	//if(Target)
+	//{
+	//	FVector TargetPosition = Target->GetActorLocation();
+	//	FVector Direction = UKismetMathLibrary::GetDirectionUnitVector(ActorPosition, TargetPosition);
+	//	SetActorLocation(ActorPosition + Direction * Speed * DeltaTime);
+	//}
+	////If not has Target
+	//else
+	//{
+	//	SetActorLocation(ActorPosition + GetActorForwardVector() * Speed * DeltaTime);
+	//}
 }
 
