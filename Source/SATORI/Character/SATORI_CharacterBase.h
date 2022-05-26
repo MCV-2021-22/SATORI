@@ -9,6 +9,8 @@
 #include "SATORI_CharacterBase.generated.h"
 
 class USATORI_AbilitySystemComponent;
+class USATORI_AttributeSet;
+
 
 UCLASS()
 class SATORI_API ASATORI_CharacterBase : public ACharacter, public IAbilitySystemInterface
@@ -27,6 +29,27 @@ public:
 	UAbilitySystemComponent* GetAbilitySystemComponent() const override;
 
 	//Character Tags Utilities
+
+	UFUNCTION(BlueprintCallable, Category = "Player|Attributes")
+		float GetHealth() const;
+
+	UFUNCTION(BlueprintCallable, Category = "Player|Attributes")
+		float GetMaxHealth() const;
+
+	UFUNCTION(BlueprintCallable, Category = "Player|Attributes")
+		float GetDefense() const;
+
+	UFUNCTION(BlueprintCallable, Category = "Player|Attributes")
+		float GetAttack() const;
+
+	UFUNCTION(BlueprintCallable, Category = "Player|Attributes")
+		float GetMoveSpeed() const;
+
+	UFUNCTION(BlueprintCallable, Category = "Player|Attributes")
+		float GetGold() const;
+
+	UFUNCTION(BlueprintCallable, Category = "Player|Attributes")
+		int32 GetCharacterLevel() const;
 
 	UFUNCTION(BlueprintCallable, Category = "Tags")
 	void AddGameplayTag(const FGameplayTag& TagToAdd);
@@ -55,6 +78,10 @@ public:
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
+
+	virtual void SetHealth(float Health);
+
+	TWeakObjectPtr<USATORI_AttributeSet> AttributeSetBase;
 
 	// The core ActorComponent for interfacing with the GameplayAbilities System
 	TWeakObjectPtr<USATORI_AbilitySystemComponent> AbilitySystemComponent;

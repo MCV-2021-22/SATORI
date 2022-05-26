@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "GameplayTagContainer.h"
+#include "GameplayEffect.h"
 #include "SATORI_PushActor.generated.h"
 
 class USphereComponent;
@@ -20,6 +21,12 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, Category = "Push")
 	USphereComponent* CollisionSphereComponent = nullptr;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Meta = (ExposeOnSpawn = true), Category = "Push")
+	TSubclassOf<UGameplayEffect> DamageGameplayEffect;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Meta = (ExposeOnSpawn = true), Category = "Push")
+	float Damage;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Meta = (ExposeOnSpawn = true), Category = "Push")
 	float Speed;

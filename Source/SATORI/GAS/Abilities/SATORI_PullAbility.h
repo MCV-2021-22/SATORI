@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GAS/SATORI_GameplayAbility.h"
+#include "GameplayEffect.h"
 #include "SATORI/AbilityTask/SATORI_PlayMontageAndWaitEvent.h"
 #include "Actors/AbilitiesActors/SATORI_PullActor.h"
 #include "SATORI_PullAbility.generated.h"
@@ -26,6 +27,9 @@ public:
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Ability")
 	TSubclassOf<ASATORI_PullActor> PullActor;
 
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Ability")
+	TSubclassOf<UGameplayEffect> DamageGameplayEffect;
+
 	virtual void ActivateAbility(
 		const FGameplayAbilitySpecHandle Handle,
 		const FGameplayAbilityActorInfo* ActorInfo,
@@ -43,6 +47,9 @@ public:
 	FGameplayTag PlayerTargetingTag;
 
 protected:
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (UIMin = "1.0"), Category = "Ability|Pull")
+	float Damage = 1.0f;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (UIMin = "1.0"), Category = "Ability|Pull")
 	float SpeedForward = 1.0f;

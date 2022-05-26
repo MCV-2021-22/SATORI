@@ -3,7 +3,8 @@
 #include "Components/SphereComponent.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "Kismet/GameplayStatics.h"
-#include "SATORI/Character/SATORI_CharacterBase.h"
+#include "SATORI/AI/Character/SATORI_AICharacter.h"
+#include "SATORI/FunctionLibrary/SATORI_BlueprintLibrary.h"
 
 // Sets default values
 ASATORI_PullActor::ASATORI_PullActor()
@@ -43,7 +44,7 @@ ASATORI_PullActor::ASATORI_PullActor()
 void ASATORI_PullActor::OnOverlapCollisionSphere(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 
-	ASATORI_CharacterBase* Character = Cast<ASATORI_CharacterBase>(OtherActor);
+	ASATORI_AICharacter* Character = Cast<ASATORI_AICharacter>(OtherActor);
 
 	if (!Character)
 	{
@@ -52,6 +53,7 @@ void ASATORI_PullActor::OnOverlapCollisionSphere(UPrimitiveComponent* Overlapped
 
 	if (Character->HasMatchingGameplayTag(EnemyTag))
 	{
+		USATORI_BlueprintLibrary::ApplyGameplayEffectDamage(OtherActor, Damage, OtherActor, DamageGameplayEffect);
 		Pulling = Cast<UPrimitiveComponent>(OtherActor->GetRootComponent());
 		GetWorldTimerManager().ClearTimer(TimerHandleDestroy);
 	}
@@ -65,7 +67,7 @@ void ASATORI_PullActor::OnOverlapCollisionSphere(UPrimitiveComponent* Overlapped
 void ASATORI_PullActor::OnOverlapSeekingSphere(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 
-	ASATORI_CharacterBase* Character = Cast<ASATORI_CharacterBase>(OtherActor);
+	ASATORI_AICharacter* Character = Cast<ASATORI_AICharacter>(OtherActor);
 
 	if (Character->HasMatchingGameplayTag(EnemyTag) && !Target)
 	{

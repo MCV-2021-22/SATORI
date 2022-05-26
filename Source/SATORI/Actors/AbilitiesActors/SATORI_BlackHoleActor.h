@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "GameplayTagContainer.h"
+#include "GameplayEffect.h"
 #include "SATORI_BlackHoleActor.generated.h"
 
 class USphereComponent;
@@ -24,6 +25,12 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, Category = "BlackHole")
 	UStaticMeshComponent* StaticMeshComponent = nullptr;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Meta = (ExposeOnSpawn = true), Category = "BlackHole")
+	TSubclassOf<UGameplayEffect> DamageGameplayEffect;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Meta = (ExposeOnSpawn = true), Category = "BlackHole")
+	float Damage;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Meta = (ExposeOnSpawn = true), Category = "BlackHole")
 	float Speed;

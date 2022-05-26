@@ -4,7 +4,8 @@
 #include "Components/SphereComponent.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "Kismet/GameplayStatics.h"
-#include "SATORI/Character/SATORI_CharacterBase.h"
+#include "SATORI/AI/Character/SATORI_AICharacter.h"
+#include "SATORI/FunctionLibrary/SATORI_BlueprintLibrary.h"
 
 ASATORI_DecoyActor::ASATORI_DecoyActor()
 {
@@ -33,7 +34,7 @@ ASATORI_DecoyActor::ASATORI_DecoyActor()
 void ASATORI_DecoyActor::OnOverlapCollisionSphere(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 
-	ASATORI_CharacterBase* Character = Cast<ASATORI_CharacterBase>(OtherActor);
+	ASATORI_AICharacter* Character = Cast<ASATORI_AICharacter>(OtherActor);
 	
 	if (!Character)
 	{
@@ -42,6 +43,7 @@ void ASATORI_DecoyActor::OnOverlapCollisionSphere(UPrimitiveComponent* Overlappe
 
 	if (Character->HasMatchingGameplayTag(EnemyTag))
 	{
+		USATORI_BlueprintLibrary::ApplyGameplayEffectDamage(OtherActor, Damage, OtherActor, DamageGameplayEffect);
 		Character->AddGameplayTag(TagGrantedWhenLured);
 		ArrayLured.AddUnique(OtherActor);
 	}
@@ -51,7 +53,7 @@ void ASATORI_DecoyActor::DestroyMyself()
 {
 	for (AActor* Actor : ArrayLured)
 	{
-		ASATORI_CharacterBase* Character = Cast<ASATORI_CharacterBase>(Actor);
+		ASATORI_AICharacter* Character = Cast<ASATORI_AICharacter>(Actor);
 		Character->RemoveGameplayTag(TagGrantedWhenLured);
 	}
 	Destroy();

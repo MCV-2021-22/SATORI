@@ -2,6 +2,7 @@
 
 
 #include "Character/SATORI_CharacterBase.h"
+#include "SATORI/GAS/Attributes/SATORI_AttributeSet.h"
 #include "GAS/SATORI_AbilitySystemComponent.h"
 
 // Sets default values
@@ -60,4 +61,65 @@ void ASATORI_CharacterBase::BlockGameplayTag(const FGameplayTagContainer& TagsTo
 void ASATORI_CharacterBase::UnBlockGameplayTag(const FGameplayTagContainer& TagsToBlock)
 {
 	AbilitySystemComponent->UnBlockAbilitiesWithTags(TagsToBlock);
+}
+
+// Getters
+float ASATORI_CharacterBase::GetHealth() const
+{
+	if (AttributeSetBase.IsValid())
+		return AttributeSetBase->GetHealth();
+
+	return 0.0f;
+}
+
+float ASATORI_CharacterBase::GetMaxHealth() const
+{
+	if (AttributeSetBase.IsValid())
+		return AttributeSetBase->GetMaxHealth();
+
+	return 0.0f;
+}
+
+float ASATORI_CharacterBase::GetDefense() const
+{
+	if (AttributeSetBase.IsValid())
+		return AttributeSetBase->GetDefense();
+
+	return 0.0f;
+}
+
+float ASATORI_CharacterBase::GetAttack() const
+{
+	if (AttributeSetBase.IsValid())
+		return AttributeSetBase->GetAttack();
+
+	return 0.0f;
+}
+
+float ASATORI_CharacterBase::GetMoveSpeed() const
+{
+	if (AttributeSetBase.IsValid())
+		return AttributeSetBase->GetMoveSpeed();
+
+	return 0.0f;
+}
+
+float ASATORI_CharacterBase::GetGold() const
+{
+	if (AttributeSetBase.IsValid())
+		return AttributeSetBase->GetGold();
+
+	return 0.0f;
+}
+
+int32 ASATORI_CharacterBase::GetCharacterLevel() const
+{
+	return 1;
+}
+
+// Setters
+void ASATORI_CharacterBase::SetHealth(float Health)
+{
+	if (AttributeSetBase.IsValid())
+		AttributeSetBase->SetHealth(Health);
 }

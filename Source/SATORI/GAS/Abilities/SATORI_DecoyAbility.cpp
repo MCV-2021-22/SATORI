@@ -23,6 +23,12 @@ void USATORI_DecoyAbility::ActivateAbility(
 		return;
 	}
 
+	if (!IsValid(DamageGameplayEffect))
+	{
+		UE_LOG(LogTemp, Warning, TEXT("[%s] USATORI_DecoyAbility: Cannot get Damage Gameplay Effect Montage ... "), *GetName());
+		return;
+	}
+
 	if (!CommitAbility(Handle, ActorInfo, ActivationInfo))
 	{
 		UE_LOG(LogTemp, Display, TEXT("[%s] USATORI_DecoyAbility: Cannot Commit Ability ... "), *GetName());
@@ -100,10 +106,11 @@ void USATORI_DecoyAbility::EventReceived(FGameplayTag EventTag, FGameplayEventDa
 		//Missile Actor creation
 		ASATORI_DecoyActor* Decoy = GetWorld()->SpawnActorDeferred<ASATORI_DecoyActor>(DecoyActor, SpawnTransform, GetOwningActorFromActorInfo(),
 			Character, ESpawnActorCollisionHandlingMethod::AlwaysSpawn);
+		Decoy->DamageGameplayEffect = DamageGameplayEffect;
+		Decoy->Damage = Damage;
 		Decoy->Speed = Speed;
 		Decoy->TimeToDestroy = TimeToDestroy;
 		Decoy->FinishSpawning(SpawnTransform);
-
 	}
 }
 

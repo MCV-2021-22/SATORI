@@ -5,10 +5,12 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "GameplayTagContainer.h"
+#include "GameplayEffect.h"
 #include "SATORI_MissileActor.generated.h"
 
 class USphereComponent;
 class UStaticMeshComponent;
+class UGameplayEffect;
 
 UCLASS()
 class SATORI_API ASATORI_MissileActor : public AActor
@@ -27,6 +29,12 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, Category = "Missile")
 	USphereComponent* SeekingSphereComponent = nullptr;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Meta = (ExposeOnSpawn = true), Category = "Missile")
+	TSubclassOf<UGameplayEffect> DamageGameplayEffect;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Meta = (ExposeOnSpawn = true), Category = "Missile")
+	float Damage;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Meta = (ExposeOnSpawn = true), Category = "Missile")
 	float Speed;

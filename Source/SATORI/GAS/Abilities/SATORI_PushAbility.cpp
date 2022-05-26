@@ -22,6 +22,12 @@ void USATORI_PushAbility::ActivateAbility(
 		return;
 	}
 
+	if (!IsValid(DamageGameplayEffect))
+	{
+		UE_LOG(LogTemp, Warning, TEXT("[%s] USATORI_PushAbility: Cannot get Damage Gameplay Effect Montage ... "), *GetName());
+		return;
+	}
+
 	if (!CommitAbility(Handle, ActorInfo, ActivationInfo))
 	{
 		UE_LOG(LogTemp, Display, TEXT("[%s] USATORI_PushAbility: Cannot Commit Ability ... "), *GetName());
@@ -113,6 +119,8 @@ void USATORI_PushAbility::EventReceived(FGameplayTag EventTag, FGameplayEventDat
 		{
 			ASATORI_PushActor* Push = GetWorld()->SpawnActorDeferred<ASATORI_PushActor>(PushActor, SpawnTransform, GetOwningActorFromActorInfo(),
 				Character, ESpawnActorCollisionHandlingMethod::AlwaysSpawn);
+			Push->DamageGameplayEffect = DamageGameplayEffect;
+			Push->Damage = Damage;
 			Push->Speed = Speed;
 			Push->PushForce = PushForce;
 			Push->TimeToDestroy = TimeToDestroy;
