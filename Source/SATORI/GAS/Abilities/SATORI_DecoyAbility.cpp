@@ -81,7 +81,7 @@ void USATORI_DecoyAbility::EventReceived(FGameplayTag EventTag, FGameplayEventDa
 		}
 
 		//Aiming when Targeting Enemy
-		if (Character->ActorHasTag(PlayerTargetingTag.GetTagName()))
+		if (Character->HasMatchingGameplayTag(PlayerTargetingTag))
 		{
 			UCameraComponent* CameraComponent = Character->FindComponentByClass<UCameraComponent>();
 			if (!CameraComponent)
@@ -108,7 +108,6 @@ void USATORI_DecoyAbility::EventReceived(FGameplayTag EventTag, FGameplayEventDa
 			Character, ESpawnActorCollisionHandlingMethod::AlwaysSpawn);
 		Decoy->DamageGameplayEffect = DamageGameplayEffect;
 		Decoy->Damage = Damage;
-		Decoy->Speed = Speed;
 		Decoy->TimeToDestroy = TimeToDestroy;
 		Decoy->FinishSpawning(SpawnTransform);
 	}

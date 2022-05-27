@@ -3,6 +3,7 @@
 #include "Components/SphereComponent.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "Kismet/GameplayStatics.h"
+#include "GameFramework/ProjectileMovementComponent.h"
 #include "SATORI/AI/Character/SATORI_AICharacter.h"
 #include "SATORI/FunctionLibrary/SATORI_BlueprintLibrary.h"
 
@@ -11,32 +12,22 @@ ASATORI_PullActor::ASATORI_PullActor()
 {
 	PrimaryActorTick.bCanEverTick = true;
 
-	float SphereRadius = 32.0f;
-	float SeekingSphereRadius = 256.0f;
-
 	StaticMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("StaticMesh"));
 	RootComponent = StaticMeshComponent;
 	StaticMeshComponent->SetCollisionProfileName(UCollisionProfile::NoCollision_ProfileName);
 
 	//If collides will grab
 	CollisionSphereComponent = CreateDefaultSubobject<USphereComponent>(TEXT("CollisionSphere"));
-	CollisionSphereComponent->SetSphereRadius(SphereRadius);
 	CollisionSphereComponent->SetCollisionProfileName(FName(TEXT("IgnoreSelfOverlapsAll")));
 	CollisionSphereComponent->SetupAttachment(RootComponent);
 	CollisionSphereComponent->SetGenerateOverlapEvents(true);
 	CollisionSphereComponent->OnComponentBeginOverlap.AddDynamic(this, &ASATORI_PullActor::OnOverlapCollisionSphere);
 
-	//If not targeting will Target first collision with it
-	SeekingSphereComponent = CreateDefaultSubobject<USphereComponent>(TEXT("SeekingSphere"));
-	SeekingSphereComponent->SetSphereRadius(SeekingSphereRadius);
-	SeekingSphereComponent->SetCollisionProfileName(FName(TEXT("IgnoreAllOverlapOnlyPawn")));
-	SeekingSphereComponent->SetupAttachment(RootComponent);
-	SeekingSphereComponent->SetGenerateOverlapEvents(true);
-	SeekingSphereComponent->OnComponentBeginOverlap.AddDynamic(this, &ASATORI_PullActor::OnOverlapSeekingSphere);
+	ProjectileMovementComponent = CreateDefaultSubobject<UProjectileMovementComponent>("ProjectileMovement");
+	ProjectileMovementComponent->bIsHomingProjectile = true;
 
 	//Debug
 	CollisionSphereComponent->bHiddenInGame = false;
-	SeekingSphereComponent->bHiddenInGame = false;
 
 }
 
@@ -44,10 +35,11 @@ ASATORI_PullActor::ASATORI_PullActor()
 void ASATORI_PullActor::OnOverlapCollisionSphere(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 
-	ASATORI_AICharacter* Character = Cast<ASATORI_AICharacter>(OtherActor);
+	ASATORI_CharacterBase* Character = Cast<ASATORI_CharacterBase>(OtherActor);
 
 	if (!Character)
 	{
+		Destroy();
 		return;
 	}
 
@@ -78,23 +70,59 @@ void ASATORI_PullActor::OnOverlapSeekingSphere(UPrimitiveComponent* OverlappedCo
 	}
 }
 
-
 // Called when the game starts or when spawned
 void ASATORI_PullActor::BeginPlay()
 {
 	Super::BeginPlay();
-
+	
 	if (!EnemyTag.IsValid() || !PlayerTag.IsValid() || !TargetActorWithTag.IsValid())
 	{
 		UE_LOG(LogTemp, Display, TEXT("[%s] ASATORI_PullActor: Tag is not valid ... "), *GetName());
 	}
 
-
 	//Check if Player is currently targeting an enemy
+	////
+	//TO DO: 
+	////
+	//Check Nearest Actor in viewport
+	//Improve code if possible
 	TArray<AActor*> Actors;
-	UGameplayStatics::GetAllActorsWithTag(GetWorld(), TargetActorWithTag.GetTagName(), Actors);
-	if (Actors.Num() != 0) {
-		Target = Actors.Pop();
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(), ASATORI_CharacterBase::StaticClass(), Actors);
+	for (AActor* Actor : Actors)
+	{
+		ASATORI_CharacterBase* Character = Cast<ASATORI_CharacterBase>(Actor);
+		if (Character->HasMatchingGameplayTag(TargetActorWithTag))
+		{
+			Target = Actor;
+		}
+		else
+		{
+			if (Character->HasMatchingGameplayTag(PlayerTag))
+			{
+				Player = Actor;
+			}
+			else
+			{
+				const float Distance = GetDistanceTo(Actor);
+				if (Distance < Range)
+				{
+					Range = Distance;
+					TargetNear = Actor;
+				}
+			}
+		}
+	}
+
+	if (Target)
+	{
+		ProjectileMovementComponent->HomingTargetComponent = Target->GetRootComponent();
+	}
+	else
+	{
+		if (TargetNear)
+		{
+			ProjectileMovementComponent->HomingTargetComponent = TargetNear->GetRootComponent();
+		}
 	}
 
 	//Set max time before auto destruc if not collides
@@ -112,33 +140,18 @@ void ASATORI_PullActor::Tick(float DeltaTime)
 	//If has grabbed adn enemy
 	if (Pulling)
 	{
-
-		FVector PlayerPosition = GetWorld()->GetFirstPlayerController()->GetPawn()->GetActorLocation();
-		FVector Direction = UKismetMathLibrary::GetDirectionUnitVector(ActorPosition, PlayerPosition);
-		SetActorLocation(ActorPosition + Direction * SpeedPulling * DeltaTime);
+		////
+		//TO DO: 
+		////
+		//Improve overall behavior
+		ProjectileMovementComponent->HomingTargetComponent = Player->GetRootComponent();
 
 		ActorPosition = GetActorLocation();
 		Pulling->SetWorldLocation(ActorPosition);
 
 		//If has reached the player
-		if (FVector::Dist(PlayerPosition, ActorPosition) < 100) {
+		if (FVector::Dist(Player->GetActorLocation() , ActorPosition) < 250) {
 			DestroySelf();
-		}
-	}
-	//Movement forward
-	else
-	{	
-		//If has target
-		if (Target)
-		{
-			FVector TargetPosition = Target->GetActorLocation();
-			FVector Direction = UKismetMathLibrary::GetDirectionUnitVector(ActorPosition, TargetPosition);
-			SetActorLocation(ActorPosition + Direction * SpeedForward * DeltaTime);
-		}
-		//If not has Target
-		else
-		{
-			SetActorLocation(ActorPosition + GetActorForwardVector() * SpeedForward * DeltaTime);
 		}
 	}
 }

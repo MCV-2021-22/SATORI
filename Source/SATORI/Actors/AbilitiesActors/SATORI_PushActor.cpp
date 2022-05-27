@@ -32,10 +32,11 @@ void ASATORI_PushActor::OnOverlapSphere(
 	const FHitResult& SweepResult)
 {
 
-	ASATORI_AICharacter* Character = Cast<ASATORI_AICharacter>(OtherActor);
+	ASATORI_CharacterBase* Character = Cast<ASATORI_CharacterBase>(OtherActor);
 
 	if (!Character) 
 	{
+		Destroy();
 		return;
 	}
 

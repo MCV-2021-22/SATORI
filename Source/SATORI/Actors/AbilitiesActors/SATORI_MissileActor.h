@@ -11,6 +11,7 @@
 class USphereComponent;
 class UStaticMeshComponent;
 class UGameplayEffect;
+class UProjectileMovementComponent;
 
 UCLASS()
 class SATORI_API ASATORI_MissileActor : public AActor
@@ -27,8 +28,8 @@ public:
 	UPROPERTY(EditDefaultsOnly, Category = "Missile")
 	UStaticMeshComponent* StaticMeshComponent = nullptr;
 
-	UPROPERTY(EditDefaultsOnly, Category = "Missile")
-	USphereComponent* SeekingSphereComponent = nullptr;
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Missile")
+	UProjectileMovementComponent* ProjectileMovementComponent = nullptr;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Meta = (ExposeOnSpawn = true), Category = "Missile")
 	TSubclassOf<UGameplayEffect> DamageGameplayEffect;
@@ -37,22 +38,13 @@ public:
 	float Damage;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Meta = (ExposeOnSpawn = true), Category = "Missile")
-	float Speed;
+	float Range;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Meta = (ExposeOnSpawn = true), Category = "Missile")
 	float TimeToDestroy;
 
 	UFUNCTION(BlueprintCallable, Category = "Missile")
 	void OnOverlapCollisionSphere(
-			UPrimitiveComponent* OverlappedComp,
-			AActor* OtherActor,
-			UPrimitiveComponent* OtherComp,
-			int32 OtherBodyIndex,
-			bool bFromSweep,
-			const FHitResult& SweepResult);
-
-	UFUNCTION(BlueprintCallable, Category = "Missile")
-	void OnOverlapSeekingSphere(
 			UPrimitiveComponent* OverlappedComp,
 			AActor* OtherActor,
 			UPrimitiveComponent* OtherComp,
@@ -81,6 +73,7 @@ public:
 private:
 
 	AActor* Target;
+	AActor* TargetNear;
 
 	FTimerHandle TimerHandleDestroy;
 

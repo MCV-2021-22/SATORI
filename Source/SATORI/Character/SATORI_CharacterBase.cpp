@@ -24,10 +24,20 @@ UAbilitySystemComponent* ASATORI_CharacterBase::GetAbilitySystemComponent() cons
 
 void ASATORI_CharacterBase::AddGameplayTag(const FGameplayTag& TagToAdd)
 {
-	AbilitySystemComponent->AddLooseGameplayTag(TagToAdd);
+	GameplayTags.AddTag(TagToAdd);
 }
 
 void ASATORI_CharacterBase::RemoveGameplayTag(const FGameplayTag& TagToRemove)
+{
+	GameplayTags.RemoveTag(TagToRemove);
+}
+
+void ASATORI_CharacterBase::AddGameplayTagToAbilitySystem(const FGameplayTag& TagToAdd)
+{
+	AbilitySystemComponent->AddLooseGameplayTag(TagToAdd);
+}
+
+void ASATORI_CharacterBase::RemoveGameplayTagFromAbilitySystem(const FGameplayTag& TagToRemove)
 {
 	AbilitySystemComponent->RemoveLooseGameplayTag(TagToRemove);
 }

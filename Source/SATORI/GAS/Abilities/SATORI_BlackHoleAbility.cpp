@@ -25,7 +25,7 @@ void USATORI_BlackHoleAbility::ActivateAbility(
 
 	if (!IsValid(DamageGameplayEffect))
 	{
-		UE_LOG(LogTemp, Warning, TEXT("[%s] USATORI_BlackHoleAbility: Cannot get Damage Gameplay Effect Montage ... "), *GetName());
+		UE_LOG(LogTemp, Warning, TEXT("[%s] USATORI_BlackHoleAbility: Cannot get Gameplay Effects ... "), *GetName());
 		return;
 	}
 
@@ -81,7 +81,7 @@ void USATORI_BlackHoleAbility::EventReceived(FGameplayTag EventTag, FGameplayEve
 		}
 
 		//Aiming when Targeting Enemy
-		if (Character->ActorHasTag(PlayerTargetingTag.GetTagName()))
+		if (Character->HasMatchingGameplayTag(PlayerTargetingTag))
 		{
 			UCameraComponent* CameraComponent = Character->FindComponentByClass<UCameraComponent>();
 			if (!CameraComponent)
@@ -110,7 +110,6 @@ void USATORI_BlackHoleAbility::EventReceived(FGameplayTag EventTag, FGameplayEve
 		BlackHole->Damage = Damage;
 		BlackHole->Speed = Speed;
 		BlackHole->TimeToDestroy = TimeToDestroy;
-		BlackHole->SphereRadiusOnExplosion = SphereRadiusOnExplosion;
 		BlackHole->FinishSpawning(SpawnTransform);
 	}
 }

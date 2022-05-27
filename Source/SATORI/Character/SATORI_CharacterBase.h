@@ -35,6 +35,12 @@ public:
 	void RemoveGameplayTag(const FGameplayTag& TagToRemove);
 
 	UFUNCTION(BlueprintCallable, Category = "Tags")
+	void AddGameplayTagToAbilitySystem(const FGameplayTag& TagToAdd);
+
+	UFUNCTION(BlueprintCallable, Category = "Tags")
+	void RemoveGameplayTagFromAbilitySystem(const FGameplayTag& TagToRemove);
+
+	UFUNCTION(BlueprintCallable, Category = "Tags")
 	void BlockGameplayTag(const FGameplayTagContainer& TagsToBlock);
 
 	UFUNCTION(BlueprintCallable, Category = "Tags")

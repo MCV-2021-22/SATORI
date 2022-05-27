@@ -10,6 +10,8 @@
 
 class USphereComponent;
 class UStaticMeshComponent;
+class UGameplayEffect;
+class UProjectileMovementComponent;
 
 UCLASS()
 class SATORI_API ASATORI_DecoyActor : public AActor
@@ -26,14 +28,14 @@ public:
 	UPROPERTY(EditDefaultsOnly, Category = "Decoy")
 	UStaticMeshComponent* StaticMeshComponent = nullptr;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Decoy")
+	UProjectileMovementComponent* ProjectileMovementComponent = nullptr;
+
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Meta = (ExposeOnSpawn = true), Category = "Decoy")
 	TSubclassOf<UGameplayEffect> DamageGameplayEffect;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Meta = (ExposeOnSpawn = true), Category = "Decoy")
 	float Damage;
-
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Meta = (ExposeOnSpawn = true), Category = "Decoy")
-	float Speed;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Meta = (ExposeOnSpawn = true), Category = "Decoy")
 	float TimeToDestroy;
