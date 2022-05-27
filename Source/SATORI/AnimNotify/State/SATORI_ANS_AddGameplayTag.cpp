@@ -3,6 +3,7 @@
 
 #include "AnimNotify/State/SATORI_ANS_AddGameplayTag.h"
 #include "SATORICharacter.h"
+#include "Character/SATORI_CharacterBase.h"
 
 USATORI_ANS_AddGameplayTag::USATORI_ANS_AddGameplayTag()
 {
@@ -18,8 +19,8 @@ void USATORI_ANS_AddGameplayTag::NotifyBegin(USkeletalMeshComponent* MeshComp, U
 		return;
 	}
 
-	if (ASATORICharacter* Character = MeshComp->GetOwner<ASATORICharacter>()) {
-		Character->AddGameplayTag(TagToAdd);
+	if (ASATORI_CharacterBase* Character = MeshComp->GetOwner<ASATORI_CharacterBase>()) {
+		Character->GetAbilitySystemComponent()->AddLooseGameplayTag(TagToAdd);
 	}
 }
 
@@ -32,8 +33,8 @@ void USATORI_ANS_AddGameplayTag::NotifyEnd(USkeletalMeshComponent* MeshComp, UAn
 		return;
 	}
 
-	if (ASATORICharacter* Character = MeshComp->GetOwner<ASATORICharacter>()) {
-		Character->RemoveGameplayTag(TagToAdd);
+	if (ASATORI_CharacterBase* Character = MeshComp->GetOwner<ASATORI_CharacterBase>()) {
+		Character->GetAbilitySystemComponent()->RemoveLooseGameplayTag(TagToAdd);
 	}
 
 }
