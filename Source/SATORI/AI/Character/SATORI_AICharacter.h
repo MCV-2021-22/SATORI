@@ -33,6 +33,8 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
+	virtual void Tick(float DeltaSeconds) override;;
+
 	// Initialize AI Attributes from GE
 	void InitializeAttributes();
 
@@ -55,7 +57,7 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Awareness)
 	UPawnSensingComponent* PawnSensor;
 
-
+	void sendDamage(float dmg);
 
 	float getDistAttack();
 
@@ -78,5 +80,12 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	float dist_attack = 100.f;
+
+	float dmg_burst = 0.f;
+
+	float time_burst = 5.f;
+
+	bool bursting = false;
+
 
 };

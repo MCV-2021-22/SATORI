@@ -6,16 +6,17 @@
 #include "GAS/SATORI_AbilitySystemComponent.h"
 
 // Sets default values
+
+// Sets default values
 ASATORI_CharacterBase::ASATORI_CharacterBase()
 {
 
 }
 
-// Called when the game starts or when spawned
 void ASATORI_CharacterBase::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
 }
 
 UAbilitySystemComponent* ASATORI_CharacterBase::GetAbilitySystemComponent() const
@@ -25,10 +26,20 @@ UAbilitySystemComponent* ASATORI_CharacterBase::GetAbilitySystemComponent() cons
 
 void ASATORI_CharacterBase::AddGameplayTag(const FGameplayTag& TagToAdd)
 {
-	AbilitySystemComponent->AddLooseGameplayTag(TagToAdd);
+	GameplayTags.AddTag(TagToAdd);
 }
 
 void ASATORI_CharacterBase::RemoveGameplayTag(const FGameplayTag& TagToRemove)
+{
+	GameplayTags.RemoveTag(TagToRemove);
+}
+
+void ASATORI_CharacterBase::AddGameplayTagToAbilitySystem(const FGameplayTag& TagToAdd)
+{
+	AbilitySystemComponent->AddLooseGameplayTag(TagToAdd);
+}
+
+void ASATORI_CharacterBase::RemoveGameplayTagFromAbilitySystem(const FGameplayTag& TagToRemove)
 {
 	AbilitySystemComponent->RemoveLooseGameplayTag(TagToRemove);
 }

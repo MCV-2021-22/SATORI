@@ -82,6 +82,9 @@ void UGA_ArqueroDefensivo::OnTimerFinished(const FGameplayAbilitySpecHandle Hand
 		{
 			//ASATORI_RangeMovable* Character = Cast<ASATORI_RangeMovable>(GetAvatarActorFromActorInfo());
 			Character->moveBackwards = false;
+
+
+			Character->RemoveGameplayTag(FGameplayTag::RequestGameplayTag("State.Burst"));
 		}
 
 		GetWorld()->GetTimerManager().ClearTimer(TimerHandle);

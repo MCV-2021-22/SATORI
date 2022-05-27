@@ -52,28 +52,34 @@ public:
 		int32 GetCharacterLevel() const;
 
 	UFUNCTION(BlueprintCallable, Category = "Tags")
-	void AddGameplayTag(const FGameplayTag& TagToAdd);
+		void AddGameplayTag(const FGameplayTag& TagToAdd);
 
 	UFUNCTION(BlueprintCallable, Category = "Tags")
-	void RemoveGameplayTag(const FGameplayTag& TagToRemove);
+		void RemoveGameplayTag(const FGameplayTag& TagToRemove);
 
 	UFUNCTION(BlueprintCallable, Category = "Tags")
-	void BlockGameplayTag(const FGameplayTagContainer& TagsToBlock);
+		void AddGameplayTagToAbilitySystem(const FGameplayTag& TagToAdd);
 
 	UFUNCTION(BlueprintCallable, Category = "Tags")
-	void UnBlockGameplayTag(const FGameplayTagContainer& TagsToBlock);
+		void RemoveGameplayTagFromAbilitySystem(const FGameplayTag& TagToRemove);
 
 	UFUNCTION(BlueprintCallable, Category = "Tags")
-	void GetOwnedGameplayTags(FGameplayTagContainer& TagContainer) const;
+		void BlockGameplayTag(const FGameplayTagContainer& TagsToBlock);
 
 	UFUNCTION(BlueprintCallable, Category = "Tags")
-	bool HasMatchingGameplayTag(FGameplayTag TagToCheck) const;
+		void UnBlockGameplayTag(const FGameplayTagContainer& TagsToBlock);
 
 	UFUNCTION(BlueprintCallable, Category = "Tags")
-	bool HasAllMatchingGameplayTags(const FGameplayTagContainer& TagContainer) const;
+		void GetOwnedGameplayTags(FGameplayTagContainer& TagContainer) const;
 
 	UFUNCTION(BlueprintCallable, Category = "Tags")
-	bool HasAnyMatchingGameplayTags(const FGameplayTagContainer& TagContainer) const;
+		bool HasMatchingGameplayTag(FGameplayTag TagToCheck) const;
+
+	UFUNCTION(BlueprintCallable, Category = "Tags")
+		bool HasAllMatchingGameplayTags(const FGameplayTagContainer& TagContainer) const;
+
+	UFUNCTION(BlueprintCallable, Category = "Tags")
+		bool HasAnyMatchingGameplayTags(const FGameplayTagContainer& TagContainer) const;
 
 protected:
 	// Called when the game starts or when spawned
@@ -85,4 +91,6 @@ protected:
 
 	// The core ActorComponent for interfacing with the GameplayAbilities System
 	TWeakObjectPtr<USATORI_AbilitySystemComponent> AbilitySystemComponent;
+
+	
 };

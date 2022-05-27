@@ -120,6 +120,7 @@ void ASATORI_AICharacter::PossessedBy(AController* NewController)
 	if (Cast<AAIController>(NewController) != nullptr) {
 		int a = 1;
 		//AddGameplayTag(FGameplayTag::RequestGameplayTag("PossessedBy.AI"));
+		Tags.Add("PossessedBy.AI");
 
 		UE_LOG(LogTemp, Display, TEXT("EJECUTAMOS EL BT"));
 
@@ -139,4 +140,49 @@ void ASATORI_AICharacter::PossessedBy(AController* NewController)
 float ASATORI_AICharacter::getDistAttack()
 {
 	return dist_attack;
+}
+
+void ASATORI_AICharacter::Tick(float DeltaSeconds)
+{
+	if(bursting)
+	{
+		time_burst -= DeltaSeconds;
+		if(time_burst <= 0.f)
+		{
+			bursting = false;
+		}
+	}
+
+
+}
+
+void ASATORI_AICharacter::sendDamage(float dmg)
+{
+	if(!bursting)
+	{
+		time_burst = 5.f;
+		dmg_burst = 0.f;
+		bursting = true;
+
+	}
+
+	dmg_burst += dmg;
+
+
+	float max_health_possible = GetMaxHealth();
+
+	if(dmg_burst>= max_health_possible*0.2f)
+	{
+
+		ASATORI_CharacterBase* pryeba = Cast<ASATORI_CharacterBase>(this);
+		AddGameplayTag(FGameplayTag::RequestGameplayTag("State.Burst"));
+
+		//AbilitySystemComponent->AddLooseGameplayTag(FGameplayTag::RequestGameplayTag("State.Burst"));
+
+		
+	}
+	
+
+
+
 }
