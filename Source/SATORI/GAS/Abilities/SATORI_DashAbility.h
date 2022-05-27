@@ -14,15 +14,8 @@
 
 class UCharacterMovementComponent;
 
-//FTickableObject
-//Tick
-//IsTickable
-//ISallowedtotick
-//getstatID
-//TSTATID getstatID Delegate
-
 UCLASS()
-class SATORI_API USATORI_DashAbility : public USATORI_GameplayAbility
+class SATORI_API USATORI_DashAbility : public USATORI_GameplayAbility, public FTickableGameObject
 {
 	GENERATED_BODY()
 
@@ -49,14 +42,11 @@ public:
 
 protected:
 
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (UIMin = "1.0"), Category = "Ability|Dash")
-	float DashDistance = 25.0f;
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (UIMin = "0.0"), Category = "Ability|Dash")
+	float DashDistance = 250.0f;
 
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (UIMin = "0.001", UIMax = "1.0"), Category = "Ability|Dash")
-	float DashSpeed = 0.01f;
-
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (UIMin = "1"), Category = "Ability|Dash")
-	int CallTracker = 50;
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (UIMin = "0.0"), Category = "Ability|Dash")
+	float DashSpeed = 5.0f;
 
 	UFUNCTION()
 	void OnCancelled(FGameplayTag EventTag, FGameplayEventData EventData);
@@ -69,13 +59,25 @@ protected:
 
 private:
 
-	const bool bStopWhenAbilityEnds = true;
-
 	FVector Direction = FVector::FVector(1.0f, 0.0f, 0.0f); //It just works
 
-	FTimerHandle TimerHandleDash;
+	bool Dashing = false;
 
-	int CallTrackerRegistry;
+//Tick implementation
+private:
 
-	void Dashing();
+	const bool bStopWhenAbilityEnds = true;
+
+	ASATORICharacter* Player;
+
+public:
+
+	bool bIsCreateOnRunning = false;
+
+	virtual void Tick(float DeltaTime) override;
+
+	virtual bool IsTickable() const override;
+	virtual bool IsAllowedToTick() const override;
+	virtual TStatId GetStatId() const override;
+
 };

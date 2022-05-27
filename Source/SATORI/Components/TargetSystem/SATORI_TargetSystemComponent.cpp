@@ -166,6 +166,9 @@ void USATORI_TargetSystemComponent::TargetLockOff()
 
 	LockedOnTargetActor = nullptr;
 	
+	//For strafe anims
+	//ControlRotation(false);
+
 	//Ignore controller input reset
 	OwnerPlayerController->ResetIgnoreLookInput();
 
@@ -187,6 +190,9 @@ void USATORI_TargetSystemComponent::TargetLockOn(AActor* TargetToLockOn)
 	
 	CharacterTargeting->AddGameplayTag(TagApliedTargeting);
 	
+	//For strafe anims
+	//ControlRotation(true);
+
 	//Ignore controller input
 	OwnerPlayerController->SetIgnoreLookInput(true);
 
@@ -508,4 +514,16 @@ bool USATORI_TargetSystemComponent::IsLocked()
 float USATORI_TargetSystemComponent::GetDistanceFromCharacter(const AActor* OtherActor)
 {
 	return OwnerActor->GetDistanceTo(OtherActor);
+}
+
+void USATORI_TargetSystemComponent::ControlRotation(const bool ShouldControlRotation)
+{
+
+	OwnerPawn->bUseControllerRotationYaw = ShouldControlRotation;
+
+	UCharacterMovementComponent* CharacterMovementComponent = OwnerPawn->FindComponentByClass<UCharacterMovementComponent>();
+	if (CharacterMovementComponent)
+	{
+		CharacterMovementComponent->bOrientRotationToMovement = !ShouldControlRotation;
+	}
 }

@@ -7,8 +7,9 @@
 USATORI_DashAbility::USATORI_DashAbility() 
 {
 	InstancingPolicy = EGameplayAbilityInstancingPolicy::InstancedPerActor;
+	
+	bIsCreateOnRunning = GIsRunning;
 
-	CallTrackerRegistry = CallTracker;
 }
 
 void USATORI_DashAbility::ActivateAbility(
@@ -23,6 +24,22 @@ void USATORI_DashAbility::ActivateAbility(
 		UE_LOG(LogTemp, Warning, TEXT("[%s] USATORI_DashAbility: Cannot get Animation Montage ... "), *GetName());
 		return;
 	}
+
+	Player = Cast<ASATORICharacter>(GetAvatarActorFromActorInfo());
+	if (!Player)
+	{
+		UE_LOG(LogTemp, Display, TEXT("[%s] USATORI_DashAbility: Cannot Cast ASATORICharacter ... "), *GetName());
+		EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true);
+	}
+
+	//If is not moving will not Dash
+	/*
+	const FVector Dash = Player->GetCharacterMovement()->GetLastInputVector();
+	if (!Dash.IsZero())
+	{
+		EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true);
+	}
+	*/
 
 	if (!CommitAbility(Handle, ActorInfo, ActivationInfo))
 	{
@@ -48,15 +65,13 @@ void USATORI_DashAbility::ActivateAbility(
 
 void USATORI_DashAbility::OnCancelled(FGameplayTag EventTag, FGameplayEventData EventData) 
 {
-	CallTracker = CallTrackerRegistry;
+	Dashing = false;
 	EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, false);
 }
 
 void USATORI_DashAbility::OnCompleted(FGameplayTag EventTag, FGameplayEventData EventData) 
 {
-	ASATORICharacter* Character = Cast<ASATORICharacter>(GetAvatarActorFromActorInfo());
-	Character->GetCharacterMovement()->StopMovementImmediately();
-	CallTracker = CallTrackerRegistry;
+	Dashing = false;
 	EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, false);
 }
 
@@ -64,38 +79,36 @@ void USATORI_DashAbility::EventReceived(FGameplayTag EventTag, FGameplayEventDat
 {
 	if (EventTag == TagEndAbility)
 	{
-		ASATORICharacter* Character = Cast<ASATORICharacter>(GetAvatarActorFromActorInfo());
-		Character->GetCharacterMovement()->StopMovementImmediately();
+		Dashing = false;
 		EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, false);
 		return;
 	}
 
 	if (EventTag == TagSpawnAbility)
 	{
-
-		ASATORICharacter* Character = Cast<ASATORICharacter>(GetAvatarActorFromActorInfo());
-		if (!Character)
-		{
-			UE_LOG(LogTemp, Display, TEXT("[%s] USATORI_DashAbility: Cannot Cast ASATORICharacter ... "), *GetName());
-			EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true);
-		}
-			
-		const FVector Dash = Character->GetCharacterMovement()->GetLastInputVector();
-
-		FTimerDelegate TimerDelegateDash = FTimerDelegate::CreateUObject(this, &USATORI_DashAbility::Dashing);
-		GetWorld()->GetTimerManager().SetTimer(TimerHandleDash, TimerDelegateDash, DashSpeed, true);
-
+		Dashing = true;
 	}
 }
 
-void USATORI_DashAbility::Dashing() 
+void USATORI_DashAbility::Tick(float DeltaTime)
 {
-	ASATORICharacter* Character = Cast<ASATORICharacter>(GetAvatarActorFromActorInfo());
-	Character->AddActorLocalOffset(Direction * DashDistance);
-
-	CallTracker--;
-	if (CallTracker == 0) {
-		GetWorld()->GetTimerManager().ClearTimer(TimerHandleDash);
-		CallTracker = CallTrackerRegistry;
+	if (Dashing)
+	{
+		Player->AddActorLocalOffset(Direction * DashDistance * DashSpeed * DeltaTime);
 	}
+}
+
+bool USATORI_DashAbility::IsTickable() const
+{
+	return bIsCreateOnRunning;
+}
+
+bool USATORI_DashAbility::IsAllowedToTick() const
+{
+	return true;
+}
+
+TStatId USATORI_DashAbility::GetStatId() const
+{
+	return UObject::GetStatID();
 }

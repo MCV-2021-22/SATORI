@@ -132,6 +132,8 @@ private:
 	bool bDesireToSwitch = false;
 	float StartRotatingThreshold = 0.85f;
 
+	void ControlRotation(const bool ShouldControlRotation);
+
 protected:
 	
 	virtual void BeginPlay() override;
