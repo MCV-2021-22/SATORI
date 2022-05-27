@@ -69,9 +69,12 @@ void ASATORI_PullActor::OnOverlapSeekingSphere(UPrimitiveComponent* OverlappedCo
 
 	ASATORI_AICharacter* Character = Cast<ASATORI_AICharacter>(OtherActor);
 
-	if (Character->HasMatchingGameplayTag(EnemyTag) && !Target)
+	if(Character)
 	{
-		Target = OtherActor;
+		if (Character->HasMatchingGameplayTag(EnemyTag) && !Target)
+		{
+			Target = OtherActor;
+		}
 	}
 }
 
