@@ -6,6 +6,9 @@
 #include "AbilitySystemComponent.h"
 #include "Components/Player/SATORI_GameplayAbilityComponent.h"
 
+/*
+ * Take Player AbilityToChoose and EnabledAbilityClasses array length and increase AbilityToChoose
+ */
 void USATORI_ChooseAbility::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData)
 {
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);

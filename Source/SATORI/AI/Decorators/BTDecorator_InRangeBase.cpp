@@ -7,6 +7,9 @@
 #include "AI/Character/SATORI_AICharacter.h"
 #include "BehaviorTree/BlackboardComponent.h"
 
+/*
+ * Calculate if AI is in range of target
+ */
 bool UBTDecorator_InRangeBase::CalculateRawConditionValue(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory) const
 {
 	bool bSuccess = Super::CalculateRawConditionValue(OwnerComp, NodeMemory);
