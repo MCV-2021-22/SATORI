@@ -82,7 +82,7 @@ void USATORI_PullAbility::EventReceived(FGameplayTag EventTag, FGameplayEventDat
 		}
 
 		//Aiming when Targeting Enemy
-		if (Character->ActorHasTag(PlayerTargetingTag.GetTagName()))
+		if (Character->HasMatchingGameplayTag(PlayerTargetingTag))
 		{
 			UCameraComponent* CameraComponent = Character->FindComponentByClass<UCameraComponent>();
 			if (!CameraComponent)
@@ -109,8 +109,7 @@ void USATORI_PullAbility::EventReceived(FGameplayTag EventTag, FGameplayEventDat
 			Character, ESpawnActorCollisionHandlingMethod::AlwaysSpawn);
 		Pull->DamageGameplayEffect = DamageGameplayEffect;
 		Pull->Damage = Damage;
-		Pull->SpeedForward = SpeedForward;
-		Pull->SpeedPulling = SpeedPulling;
+		Pull->Range = Range;
 		Pull->TimeToDestroy = TimeToDestroy;
 		Pull->FinishSpawning(SpawnTransform);
 

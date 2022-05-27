@@ -108,7 +108,6 @@ void USATORI_MissileAbility::EventReceived(FGameplayTag EventTag, FGameplayEvent
 			Character, ESpawnActorCollisionHandlingMethod::AlwaysSpawn);
 		Missile->DamageGameplayEffect = DamageGameplayEffect;
 		Missile->Damage = Damage;
-		Missile->Speed = Speed;
 		Missile->Range = Range;
 		Missile->TimeToDestroy = TimeToDestroy;
 		Missile->FinishSpawning(SpawnTransform);

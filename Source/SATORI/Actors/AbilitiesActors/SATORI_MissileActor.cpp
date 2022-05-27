@@ -11,8 +11,6 @@
 ASATORI_MissileActor::ASATORI_MissileActor()
 {
 	PrimaryActorTick.bCanEverTick = true;
-	
-	float SphereRadius = 32.0f;
 
 	StaticMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("StaticMesh"));
 	RootComponent = StaticMeshComponent;
@@ -20,7 +18,6 @@ ASATORI_MissileActor::ASATORI_MissileActor()
 	
 	//If collides will explode
 	CollisionSphereComponent = CreateDefaultSubobject<USphereComponent>(TEXT("CollisionSphere"));
-	CollisionSphereComponent->SetSphereRadius(SphereRadius);
 	CollisionSphereComponent->SetCollisionProfileName(FName(TEXT("IgnoreSelfOverlapsAll")));
 	CollisionSphereComponent->SetupAttachment(RootComponent);
 	CollisionSphereComponent->SetGenerateOverlapEvents(true);
@@ -36,10 +33,11 @@ ASATORI_MissileActor::ASATORI_MissileActor()
 //Collision for exploding
 void ASATORI_MissileActor::OnOverlapCollisionSphere(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	ASATORI_AICharacter* Character = Cast<ASATORI_AICharacter>(OtherActor);
+	ASATORI_CharacterBase* Character = Cast<ASATORI_CharacterBase>(OtherActor);
 
 	if (!Character)
 	{
+		DestroyMyself();
 		return;
 	}
 
@@ -47,12 +45,12 @@ void ASATORI_MissileActor::OnOverlapCollisionSphere(UPrimitiveComponent* Overlap
 	{
 		USATORI_BlueprintLibrary::ApplyGameplayEffectDamage(OtherActor, Damage, OtherActor, DamageGameplayEffect);
 		ProjectileMovementComponent->Velocity = (FVector::ZeroVector);
-		//DestroyMyself();
+		DestroyMyself();
 	}
 	if (!Character->HasMatchingGameplayTag(PlayerTag) && !Character->HasMatchingGameplayTag(EnemyTag))
 	{
 		ProjectileMovementComponent->Velocity = (FVector::ZeroVector);
-		//DestroyMyself();
+		DestroyMyself();
 	}
 }
 
@@ -73,6 +71,11 @@ void ASATORI_MissileActor::BeginPlay()
 	ProjectileMovementComponent->HomingTargetComponent = nullptr;
 
 	//Check if Player is currently targeting an enemy
+	////
+	//TO DO: 
+	////
+	//Check Nearest Actor in viewport
+	//Improve code if possible
 	TArray<AActor*> Actors;
 	UGameplayStatics::GetAllActorsOfClass(GetWorld(), ASATORI_AICharacter::StaticClass(), Actors);
 	for (AActor* Actor : Actors) 

@@ -32,10 +32,11 @@ ASATORI_BlackHoleActor::ASATORI_BlackHoleActor()
 
 void ASATORI_BlackHoleActor::OnOverlapCollisionSphere(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	ASATORI_AICharacter* Character = Cast<ASATORI_AICharacter>(OtherActor);
+	ASATORI_CharacterBase* Character = Cast<ASATORI_CharacterBase>(OtherActor);
 
 	if (!Character) 
 	{
+		ProjectileMovementComponent->SetVelocityInLocalSpace(FVector::ZeroVector);
 		return;
 	}
 
@@ -53,7 +54,7 @@ void ASATORI_BlackHoleActor::OnOverlapCollisionSphere(UPrimitiveComponent* Overl
 
 void ASATORI_BlackHoleActor::DestroyMyself()
 {
-	for (ASATORI_AICharacter* Character : ArrayTrapped) {
+	for (ASATORI_CharacterBase* Character : ArrayTrapped) {
 		Character->RemoveGameplayTag(TagToAddWhenTrapped);
 	}
 	Destroy();
@@ -63,17 +64,9 @@ void ASATORI_BlackHoleActor::BeginPlay()
 {
 	Super::BeginPlay();
 
-	if (!EnemyTag.IsValid() || !PlayerTag.IsValid() || !TargetActorWithTag.IsValid() || !TagToAddWhenTrapped.IsValid())
+	if (!EnemyTag.IsValid() || !PlayerTag.IsValid() || !TagToAddWhenTrapped.IsValid())
 	{
 		UE_LOG(LogTemp, Display, TEXT("[%s] ASATORI_BlackHoleActor: Tag is not valid ... "), *GetName());
-	}
-
-	//Check if Player is currently targeting an enemy
-	TArray<AActor*> Actors;
-	UGameplayStatics::GetAllActorsWithTag(GetWorld(), TargetActorWithTag.GetTagName(), Actors);
-	if (Actors.Num() != 0)
-	{
-		Target = Actors.Pop();
 	}
 
 	GetWorldTimerManager().SetTimer(TimerHandleDestroy, this, &ASATORI_BlackHoleActor::DestroyMyself, TimeToDestroy, false);

@@ -61,9 +61,6 @@ public:
 	FGameplayTag  TagToAddWhenTrapped;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "BlackHole|Tags")
-	FGameplayTag  TargetActorWithTag;
-
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "BlackHole|Tags")
 	FGameplayTag  EnemyTag;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "BlackHole|Tags")
@@ -79,9 +76,7 @@ public:
 
 private:
 
-	AActor* Target;
-
-	TArray<ASATORI_AICharacter*> ArrayTrapped;
+	TArray<ASATORI_CharacterBase*> ArrayTrapped;
 
 	FTimerHandle TimerHandleDestroy;
 
