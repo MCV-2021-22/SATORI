@@ -102,7 +102,7 @@ void USATORI_CloneAbility::EventReceived(FGameplayTag EventTag, FGameplayEventDa
 			Character, ESpawnActorCollisionHandlingMethod::AlwaysSpawn);
 		Clone->TimeToDestroy = TimeToDestroy;
 		Clone->FinishSpawning(SpawnTransform);
-
+		Clone->SpawnDefaultController();
 	}
 }
 
