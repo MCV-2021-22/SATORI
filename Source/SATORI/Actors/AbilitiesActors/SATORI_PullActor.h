@@ -61,6 +61,9 @@ public:
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Pull|Tags")
 	FGameplayTag  PlayerTag;
 
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Pull|Tags")
+	FGameplayTag  CloneTag;
+
 protected:
 
 	virtual void BeginPlay() override;

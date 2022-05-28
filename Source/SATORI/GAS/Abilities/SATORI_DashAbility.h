@@ -6,6 +6,7 @@
 #include "GAS/SATORI_GameplayAbility.h"
 #include "SATORI/AbilityTask/SATORI_PlayMontageAndWaitEvent.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "SATORI/Character/SATORI_CharacterBase.h"
 #include "SATORI_DashAbility.generated.h"
 
 /**
@@ -68,7 +69,7 @@ private:
 
 	const bool bStopWhenAbilityEnds = true;
 
-	ASATORICharacter* Player;
+	ASATORI_CharacterBase* Character;
 
 public:
 

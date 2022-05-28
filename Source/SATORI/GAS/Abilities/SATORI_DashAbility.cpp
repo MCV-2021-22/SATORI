@@ -25,8 +25,8 @@ void USATORI_DashAbility::ActivateAbility(
 		return;
 	}
 
-	Player = Cast<ASATORICharacter>(GetAvatarActorFromActorInfo());
-	if (!Player)
+	Character = Cast<ASATORI_CharacterBase>(GetAvatarActorFromActorInfo());
+	if (!Character)
 	{
 		UE_LOG(LogTemp, Display, TEXT("[%s] USATORI_DashAbility: Cannot Cast ASATORICharacter ... "), *GetName());
 		EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true);
@@ -94,7 +94,7 @@ void USATORI_DashAbility::Tick(float DeltaTime)
 {
 	if (Dashing)
 	{
-		Player->AddActorLocalOffset(Direction * DashDistance * DashSpeed * DeltaTime);
+		Character->AddActorLocalOffset(Direction * DashDistance * DashSpeed * DeltaTime);
 	}
 }
 

@@ -88,11 +88,14 @@ void ASATORI_PullActor::BeginPlay()
 			}
 			else
 			{
-				const float Distance = GetDistanceTo(Actor);
-				if (Distance < Range)
+				if (!Character->HasMatchingGameplayTag(CloneTag))
 				{
-					Range = Distance;
-					TargetNear = Actor;
+					const float Distance = GetDistanceTo(Actor);
+					if (Distance < Range)
+					{
+						Range = Distance;
+						TargetNear = Actor;
+					}
 				}
 			}
 		}
