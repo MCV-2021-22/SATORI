@@ -10,7 +10,7 @@
 #include "SATORI_DashAbility.generated.h"
 
 /**
- * 
+ *
  */
 
 class UCharacterMovementComponent;
@@ -25,7 +25,7 @@ public:
 	USATORI_DashAbility();
 
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Ability")
-	UAnimMontage* AnimMontage;
+		UAnimMontage* AnimMontage;
 
 	virtual void ActivateAbility(
 		const FGameplayAbilitySpecHandle Handle,
@@ -39,31 +39,31 @@ public:
 		const FGameplayAbilityActorInfo* ActorInfo, 
 		const FGameplayAbilityActivationInfo ActivationInfo, 
 		bool bReplicateEndAbility, 
-		bool bWasCancelled)
-		override;
+		bool bWasCancelled) override;
+
 
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Ability|Tags")
-	FGameplayTag TagSpawnAbility;
+		FGameplayTag TagSpawnAbility;
 
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Ability|Tags")
-	FGameplayTag TagEndAbility;
+		FGameplayTag TagEndAbility;
 
 protected:
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (UIMin = "0.0"), Category = "Ability|Dash")
-	float DashDistance = 250.0f;
+		float DashDistance = 250.0f;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (UIMin = "0.0"), Category = "Ability|Dash")
-	float DashSpeed = 5.0f;
+		float DashSpeed = 5.0f;
 
 	UFUNCTION()
-	void OnCancelled(FGameplayTag EventTag, FGameplayEventData EventData);
+		void OnCancelled(FGameplayTag EventTag, FGameplayEventData EventData);
 
 	UFUNCTION()
-	void OnCompleted(FGameplayTag EventTag, FGameplayEventData EventData);
+		void OnCompleted(FGameplayTag EventTag, FGameplayEventData EventData);
 
 	UFUNCTION()
-	void EventReceived(FGameplayTag EventTag, FGameplayEventData EventData);
+		void EventReceived(FGameplayTag EventTag, FGameplayEventData EventData);
 
 private:
 
@@ -71,7 +71,7 @@ private:
 
 	bool Dashing = false;
 
-//Tick implementation
+	//Tick implementation
 private:
 
 	const bool bStopWhenAbilityEnds = true;

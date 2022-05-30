@@ -3,13 +3,14 @@
 #include "GAS/Abilities/SATORI_DashAbility.h"
 #include "AbilitySystemComponent.h"
 #include "SATORICharacter.h"
-#include "SATORI/Character/SATORI_PlayerController.h"
+#include "Character/SATORI_PlayerController.h"
 
-USATORI_DashAbility::USATORI_DashAbility() 
+USATORI_DashAbility::USATORI_DashAbility()
 {
 	InstancingPolicy = EGameplayAbilityInstancingPolicy::InstancedPerActor;
 
-	CallTrackerRegistry = CallTracker;
+	bIsCreateOnRunning = GIsRunning;
+
 }
 
 void USATORI_DashAbility::ActivateAbility(
@@ -18,21 +19,23 @@ void USATORI_DashAbility::ActivateAbility(
 	const FGameplayAbilityActivationInfo ActivationInfo,
 	const FGameplayEventData* TriggerEventData)
 {
-	ASATORICharacter* Character = GetOwningSatoriCharacter();
-	
-
-	if(Character)
-	{
-		ASATORI_PlayerController* Controller = Cast<ASATORI_PlayerController>(Character->GetController());
-		Character->DisableInput(Controller);
-
-	}
 
 	if (!IsValid(AnimMontage))
 	{
 		UE_LOG(LogTemp, Warning, TEXT("[%s] USATORI_DashAbility: Cannot get Animation Montage ... "), *GetName());
 		return;
 	}
+
+	Character = Cast<ASATORI_CharacterBase>(GetAvatarActorFromActorInfo());
+	if (!Character)
+	{
+		UE_LOG(LogTemp, Display, TEXT("[%s] USATORI_DashAbility: Cannot Cast ASATORICharacter ... "), *GetName());
+		EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true);
+	}
+
+	ASATORI_PlayerController* Controller = Cast<ASATORI_PlayerController>(Character->GetController());
+	if (Controller)
+		Character->DisableInput(Controller);
 
 	if (!CommitAbility(Handle, ActorInfo, ActivationInfo))
 	{
@@ -56,60 +59,6 @@ void USATORI_DashAbility::ActivateAbility(
 
 }
 
-void USATORI_DashAbility::OnCancelled(FGameplayTag EventTag, FGameplayEventData EventData) 
-{
-	CallTracker = CallTrackerRegistry;
-	EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, false);
-}
-
-void USATORI_DashAbility::OnCompleted(FGameplayTag EventTag, FGameplayEventData EventData) 
-{
-	ASATORICharacter* Character = Cast<ASATORICharacter>(GetAvatarActorFromActorInfo());
-	Character->GetCharacterMovement()->StopMovementImmediately();
-	CallTracker = CallTrackerRegistry;
-	EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, false);
-}
-
-void USATORI_DashAbility::EventReceived(FGameplayTag EventTag, FGameplayEventData EventData) 
-{
-	if (EventTag == TagEndAbility)
-	{
-		ASATORICharacter* Character = Cast<ASATORICharacter>(GetAvatarActorFromActorInfo());
-		Character->GetCharacterMovement()->StopMovementImmediately();
-		EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, false);
-		return;
-	}
-
-	if (EventTag == TagSpawnAbility)
-	{
-
-		ASATORICharacter* Character = Cast<ASATORICharacter>(GetAvatarActorFromActorInfo());
-		if (!Character)
-		{
-			UE_LOG(LogTemp, Display, TEXT("[%s] USATORI_DashAbility: Cannot Cast ASATORICharacter ... "), *GetName());
-			EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true);
-		}
-			
-		const FVector Dash = Character->GetCharacterMovement()->GetLastInputVector();
-
-		FTimerDelegate TimerDelegateDash = FTimerDelegate::CreateUObject(this, &USATORI_DashAbility::Dashing);
-		GetWorld()->GetTimerManager().SetTimer(TimerHandleDash, TimerDelegateDash, DashSpeed, true);
-
-	}
-}
-
-void USATORI_DashAbility::Dashing() 
-{
-	ASATORICharacter* Character = Cast<ASATORICharacter>(GetAvatarActorFromActorInfo());
-	Character->AddActorLocalOffset(Direction * DashDistance);
-
-	CallTracker--;
-	if (CallTracker == 0) {
-		GetWorld()->GetTimerManager().ClearTimer(TimerHandleDash);
-		CallTracker = CallTrackerRegistry;
-	}
-}
-
 void USATORI_DashAbility::EndAbility(
 	const FGameplayAbilitySpecHandle Handle,
 	const FGameplayAbilityActorInfo* ActorInfo,
@@ -117,12 +66,64 @@ void USATORI_DashAbility::EndAbility(
 	bool bReplicateEndAbility,
 	bool bWasCancelled)
 {
-	ASATORICharacter* Character = GetOwningSatoriCharacter();
-	if (Character)
+	Character = Cast<ASATORI_CharacterBase>(GetOwningSatoriCharacter());
+	if(Character)
 	{
 		ASATORI_PlayerController* Controller = Cast<ASATORI_PlayerController>(Character->GetController());
 		if (Controller)
+		{
 			Character->EnableInput(Controller);
+		}
 	}
 	Super::EndAbility(Handle, ActorInfo, ActivationInfo, bReplicateEndAbility, bWasCancelled);
+}
+
+void USATORI_DashAbility::OnCancelled(FGameplayTag EventTag, FGameplayEventData EventData)
+{
+	Dashing = false;
+	EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, false);
+}
+
+void USATORI_DashAbility::OnCompleted(FGameplayTag EventTag, FGameplayEventData EventData)
+{
+	Dashing = false;
+	EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, false);
+}
+
+void USATORI_DashAbility::EventReceived(FGameplayTag EventTag, FGameplayEventData EventData)
+{
+	if (EventTag == TagEndAbility)
+	{
+		Dashing = false;
+		EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, false);
+		return;
+	}
+
+	if (EventTag == TagSpawnAbility)
+	{
+		Dashing = true;
+	}
+}
+
+void USATORI_DashAbility::Tick(float DeltaTime)
+{
+	if (Dashing)
+	{
+		Character->AddActorLocalOffset(Direction * DashDistance * DashSpeed * DeltaTime);
+	}
+}
+
+bool USATORI_DashAbility::IsTickable() const
+{
+	return bIsCreateOnRunning;
+}
+
+bool USATORI_DashAbility::IsAllowedToTick() const
+{
+	return true;
+}
+
+TStatId USATORI_DashAbility::GetStatId() const
+{
+	return UObject::GetStatID();
 }
