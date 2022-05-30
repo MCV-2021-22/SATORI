@@ -98,6 +98,7 @@ void ASATORICharacter::PossessedBy(AController* NewController)
 
 		GameplayTags.AddTag(FGameplayTag::RequestGameplayTag("PossessedBy.Player"));
 		
+		AbilitySystemComponent->AddLooseGameplayTag(FGameplayTag::RequestGameplayTag("PossessedBy.Player"));
 
 		Tags.Add("PossessedBy.Player");
 

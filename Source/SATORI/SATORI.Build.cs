@@ -12,5 +12,6 @@ public class SATORI : ModuleRules
 			"GameplayAbilities", "GameplayTags", "GameplayTasks","AIModule"});
 
 		PublicIncludePaths.Add("SATORI");
+
 	}
 }

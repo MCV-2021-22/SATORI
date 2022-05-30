@@ -59,7 +59,7 @@ public:
 	bool HasAnyMatchingGameplayTags(const FGameplayTagContainer& TagContainer) const;
 
 protected:
-	// Called when the game starts or when spawned
+
 	virtual void BeginPlay() override;
 
 	// The core ActorComponent for interfacing with the GameplayAbilities System
