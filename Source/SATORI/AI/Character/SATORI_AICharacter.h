@@ -19,6 +19,15 @@ class USATORI_AbilityDataAsset;
 class UBehaviorTree;
 class UPawnSensingComponent;
 
+UENUM(BlueprintType)
+enum class SATORIEnemyType : uint8
+{
+	None UMETA(DisplayName = "None"),
+	Melee UMETA(DisplayName = "Melee"),
+	Range UMETA(DisplayName = "Range"),
+	Boss UMETA(DisplayName = "Boss"),
+};
+
 
 UCLASS()
 class SATORI_API ASATORI_AICharacter : public ASATORI_CharacterBase
@@ -29,9 +38,14 @@ public:
 	// Sets default values for this character's properties
 	ASATORI_AICharacter();
 
+	// Ray Cast
+	UFUNCTION(BlueprintCallable)
+	bool CheckPlayerWithRayCast();
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
+
+	virtual void Tick(float DeltaSeconds) override;
 
 	// Initialize AI Attributes from GE
 	void InitializeAttributes();
@@ -42,7 +56,6 @@ protected:
 	void GrantAbilityToPlayer(FGameplayAbilitySpec Ability);
 
 	virtual void PossessedBy(AController* NewController) override;
-
 
 public:
 	UPROPERTY()
@@ -55,10 +68,9 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Awareness)
 	UPawnSensingComponent* PawnSensor;
 
-
-
 	float getDistAttack();
 
+	bool GetIsInFront() const { return isInFrontPlayer; }
 protected:
 	// Default attributes for a character for initializing on spawn/respawn.
 	// This is an instant GE that overrides the values for attributes that get reset on spawn/respawn.
@@ -71,7 +83,7 @@ protected:
 
 	
 	UPROPERTY(EditAnywhere)
-		TSoftObjectPtr <UBehaviorTree> bte;
+	TSoftObjectPtr <UBehaviorTree> bte;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
 	UBehaviorTree* btree;
@@ -79,4 +91,9 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	float dist_attack = 100.f;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	bool isInFrontPlayer = false;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	SATORIEnemyType EnemyType;
 };

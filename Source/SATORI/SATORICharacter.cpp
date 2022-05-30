@@ -170,7 +170,7 @@ bool ASATORICharacter::DoRayCast()
 			Params
 		);
 
-		::DrawDebugLine(World, StartPosition, newEndPos, newHit ? FColor::Green : FColor::Red, false, 1.0f);
+		//::DrawDebugLine(World, StartPosition, newEndPos, newHit ? FColor::Green : FColor::Red, false, 1.0f);
 		if (newHit)
 		{
 			NewActor = HitResult.Actor;
@@ -187,22 +187,26 @@ bool ASATORICharacter::DoRayCast()
 	TWeakObjectPtr<ASATORI_AICharacter> AICharacter = Cast<ASATORI_AICharacter>(HitResult.Actor);
 	if (AICharacter.IsValid())
 	{
-		if (AICharacter->GetAbilitySystemComponent()->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag(FName("State.Lured"))))
+		bool isInFront = AICharacter->CheckPlayerWithRayCast();
+		if (isInFront)
 		{
-			UE_LOG(LogTemp, Warning, TEXT("Enemy"));
-			
-			AICharacter->AddGameplayTag(FGameplayTag::RequestGameplayTag(FName("State.Stunned")));
+			if (AICharacter->GetAbilitySystemComponent()->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag(FName("State.Lured"))))
+			{
+				UE_LOG(LogTemp, Warning, TEXT("Enemy"));
 
-			FGameplayEventData EventData;
-			EventData.EventTag = FGameplayTag::RequestGameplayTag(FName("State.Stunned.Start"));
-			AICharacter->GetAbilitySystemComponent()->HandleGameplayEvent(FGameplayTag::RequestGameplayTag(FName("State.Stunned.Start")), &EventData);
-			
-			return true;
-		}
-		if (AICharacter->GetAbilitySystemComponent()->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag(FName("State.Stunned"))))
-		{
-			return false;
-		}
+				AICharacter->AddGameplayTag(FGameplayTag::RequestGameplayTag(FName("State.Stunned")));
+
+				FGameplayEventData EventData;
+				EventData.EventTag = FGameplayTag::RequestGameplayTag(FName("State.Stunned.Start"));
+				AICharacter->GetAbilitySystemComponent()->HandleGameplayEvent(FGameplayTag::RequestGameplayTag(FName("State.Stunned.Start")), &EventData);
+
+				return true;
+			}
+			if (AICharacter->GetAbilitySystemComponent()->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag(FName("State.Stunned"))))
+			{
+				return false;
+			}
+		}	
 	}
 	return false;
 }
