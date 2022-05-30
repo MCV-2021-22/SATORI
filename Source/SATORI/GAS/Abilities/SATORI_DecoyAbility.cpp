@@ -103,7 +103,7 @@ void USATORI_DecoyAbility::EventReceived(FGameplayTag EventTag, FGameplayEventDa
 			SpawnTransform.SetRotation(Character->GetActorRotation().Quaternion());
 		}
 
-		//Missile Actor creation
+		//Decoy Actor creation
 		ASATORI_DecoyActor* Decoy = GetWorld()->SpawnActorDeferred<ASATORI_DecoyActor>(DecoyActor, SpawnTransform, GetOwningActorFromActorInfo(),
 			Character, ESpawnActorCollisionHandlingMethod::AlwaysSpawn);
 		Decoy->DamageGameplayEffect = DamageGameplayEffect;

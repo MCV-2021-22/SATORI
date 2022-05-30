@@ -61,6 +61,9 @@ public:
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Missile|Tags")
 	FGameplayTag  PlayerTag;
 
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Missile|Tags")
+	FGameplayTag  CloneTag;
+
 
 protected:
 	

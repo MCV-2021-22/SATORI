@@ -12,15 +12,12 @@ ASATORI_DecoyActor::ASATORI_DecoyActor()
 {
 	PrimaryActorTick.bCanEverTick = false;
 
-	float SphereRadiusOfAction = 600.0f;
-
 	StaticMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("StaticMesh"));
 	RootComponent = StaticMeshComponent;
 	StaticMeshComponent->SetCollisionProfileName(UCollisionProfile::BlockAll_ProfileName);
 
 	//If collides will lure enemies
 	CollisionSphereComponent = CreateDefaultSubobject<USphereComponent>(TEXT("CollisionSphere"));
-	CollisionSphereComponent->SetSphereRadius(SphereRadiusOfAction);
 	CollisionSphereComponent->SetCollisionProfileName(FName(TEXT("IgnoreSelfOverlapsAll")));
 	CollisionSphereComponent->SetupAttachment(RootComponent);
 	CollisionSphereComponent->SetGenerateOverlapEvents(true);
