@@ -55,4 +55,6 @@ protected:
 	// Update UI
 	void UpdateHealthBarPercent();
 	void UpdateHealthBarText();
+
+	ASATORICharacter* SatoriCharacter = nullptr;
 };
