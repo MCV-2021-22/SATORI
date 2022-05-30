@@ -170,7 +170,7 @@ bool ASATORICharacter::DoRayCast()
 			Params
 		);
 
-		//::DrawDebugLine(World, StartPosition, newEndPos, newHit ? FColor::Green : FColor::Red, false, 1.0f);
+		::DrawDebugLine(World, StartPosition, newEndPos, newHit ? FColor::Green : FColor::Red, false, 1.0f);
 		if (newHit)
 		{
 			NewActor = HitResult.Actor;

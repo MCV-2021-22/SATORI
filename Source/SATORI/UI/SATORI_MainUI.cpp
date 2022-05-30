@@ -3,6 +3,7 @@
 
 #include "UI/SATORI_MainUI.h"
 #include "Health/SATORI_HealthWidget.h"
+#include "Currency/SATORI_CurrencyWidget.h"
 
 bool USATORI_MainUI::Initialize()
 {
@@ -23,4 +24,10 @@ void USATORI_MainUI::SetHealthTextBlock(float health, float MaxHealth)
 	uint32 HealthInterger = FMath::RoundHalfFromZero(health);
 	uint32 MaxHealthInterger = FMath::RoundHalfFromZero(MaxHealth);
 	PlayerHealth->SetHealthTextBlock(FText::FromString(FString::Printf(TEXT("%i / %i"), HealthInterger, MaxHealthInterger)));
+}
+
+void USATORI_MainUI::SetCurrencyText(float currency)
+{
+	uint32 CurrencyInterger = FMath::RoundHalfFromZero(currency);
+	PlayerCurrency->SetCurrencyText(FText::FromString(FString::Printf(TEXT("%i"), CurrencyInterger)));
 }

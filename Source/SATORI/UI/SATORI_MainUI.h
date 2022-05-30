@@ -7,6 +7,7 @@
 #include "SATORI_MainUI.generated.h"
 
 class USATORI_HealthWidget;
+class USATORI_CurrencyWidget;
 
 /*
 * Player Main UI, contain health bar, coins etc
@@ -22,8 +23,14 @@ public:
 	UPROPERTY(meta = (BindWidget))
 	USATORI_HealthWidget* PlayerHealth;
 
+	// Currency
+	UPROPERTY(meta = (BindWidget))
+	USATORI_CurrencyWidget* PlayerCurrency;
+
 public:
 	// Health helper functions
 	void SetHealthBarPercentage(float value);
 	void SetHealthTextBlock(float health, float MaxHealth);
+
+	void SetCurrencyText(float currency);
 };
