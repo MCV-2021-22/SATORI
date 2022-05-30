@@ -3,6 +3,7 @@
 #include "GAS/Abilities/SATORI_DashAbility.h"
 #include "AbilitySystemComponent.h"
 #include "SATORICharacter.h"
+#include "SATORI/Character/SATORI_PlayerController.h"
 
 USATORI_DashAbility::USATORI_DashAbility() 
 {
@@ -17,6 +18,15 @@ void USATORI_DashAbility::ActivateAbility(
 	const FGameplayAbilityActivationInfo ActivationInfo,
 	const FGameplayEventData* TriggerEventData)
 {
+	ASATORICharacter* Character = GetOwningSatoriCharacter();
+	
+
+	if(Character)
+	{
+		ASATORI_PlayerController* Controller = Cast<ASATORI_PlayerController>(Character->GetController());
+		Character->DisableInput(Controller);
+
+	}
 
 	if (!IsValid(AnimMontage))
 	{
@@ -98,4 +108,21 @@ void USATORI_DashAbility::Dashing()
 		GetWorld()->GetTimerManager().ClearTimer(TimerHandleDash);
 		CallTracker = CallTrackerRegistry;
 	}
+}
+
+void USATORI_DashAbility::EndAbility(
+	const FGameplayAbilitySpecHandle Handle,
+	const FGameplayAbilityActorInfo* ActorInfo,
+	const FGameplayAbilityActivationInfo ActivationInfo,
+	bool bReplicateEndAbility,
+	bool bWasCancelled)
+{
+	ASATORICharacter* Character = GetOwningSatoriCharacter();
+	if (Character)
+	{
+		ASATORI_PlayerController* Controller = Cast<ASATORI_PlayerController>(Character->GetController());
+		if (Controller)
+			Character->EnableInput(Controller);
+	}
+	Super::EndAbility(Handle, ActorInfo, ActivationInfo, bReplicateEndAbility, bWasCancelled);
 }
