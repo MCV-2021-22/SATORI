@@ -52,15 +52,6 @@ void ASATORI_AICharacter::BeginPlay()
 	}
 }
 
-void ASATORI_AICharacter::Tick(float DeltaSeconds)
-{
-	Super::Tick(DeltaSeconds);
-	/*if (EnemyType == SATORIEnemyType::Melee)
-	{
-		CheckPlayerWithRayCast();
-	}*/
-}
-
 void ASATORI_AICharacter::InitializeAttributes()
 {
 	if (!AbilitySystemComponent.IsValid())
@@ -216,6 +207,7 @@ bool ASATORI_AICharacter::CheckPlayerWithRayCast()
 		isInFrontPlayer = false;
 	}
 	return isInFrontPlayer;
+}
 
 void ASATORI_AICharacter::Tick(float DeltaSeconds)
 {
@@ -227,8 +219,7 @@ void ASATORI_AICharacter::Tick(float DeltaSeconds)
 			bursting = false;
 		}
 	}
-
-
+	Super::Tick(DeltaSeconds);
 }
 
 void ASATORI_AICharacter::sendDamage(float dmg)

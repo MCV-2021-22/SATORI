@@ -58,28 +58,6 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon")
 	USphereComponent* AttackingCollision;
 
-	// Gettes for attributes
-	UFUNCTION(BlueprintCallable, Category = "Player|Attributes")
-	float GetHealth() const;
-
-	UFUNCTION(BlueprintCallable, Category = "Player|Attributes")
-	float GetMaxHealth() const;
-
-	UFUNCTION(BlueprintCallable, Category = "Player|Attributes")
-	float GetDefense() const;
-
-	UFUNCTION(BlueprintCallable, Category = "Player|Attributes")
-	float GetAttack() const;
-
-	UFUNCTION(BlueprintCallable, Category = "Player|Attributes")
-	float GetMoveSpeed() const;
-
-	UFUNCTION(BlueprintCallable, Category = "Player|Attributes")
-	float GetGold() const;
-
-	UFUNCTION(BlueprintCallable, Category = "Player|Attributes")
-	int32 GetCharacterLevel() const;
-
 	void SetComboJumpSection(USATORI_ANS_JumpSection* JumpSection);
 
 	// Combos 
