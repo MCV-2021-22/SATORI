@@ -25,7 +25,7 @@ void USATORI_BlackHoleAbility::ActivateAbility(
 
 	if (!IsValid(DamageGameplayEffect))
 	{
-		UE_LOG(LogTemp, Warning, TEXT("[%s] USATORI_BlackHoleAbility: Cannot get Gameplay Effects ... "), *GetName());
+		UE_LOG(LogTemp, Warning, TEXT("[%s] USATORI_BlackHoleAbility: Cannot get Damage Gameplay Effect Montage ... "), *GetName());
 		return;
 	}
 

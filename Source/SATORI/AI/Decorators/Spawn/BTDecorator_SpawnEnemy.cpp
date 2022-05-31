@@ -24,6 +24,7 @@ bool UBTDecorator_SpawnEnemy::CalculateRawConditionValue(UBehaviorTreeComponent&
 
 	float MaxTime = AI->GetCoolDown();
 
+
 	if (NumEnemies < AI->GetMaxEnemies() && Time >= MaxTime)
 	{
 		return true;

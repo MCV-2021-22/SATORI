@@ -13,6 +13,7 @@ class UStaticMeshComponent;
 class UGameplayEffect;
 class UProjectileMovementComponent;
 
+
 UCLASS()
 class SATORI_API ASATORI_MissileActor : public AActor
 {

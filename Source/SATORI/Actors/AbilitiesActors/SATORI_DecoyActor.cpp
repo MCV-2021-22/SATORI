@@ -35,7 +35,7 @@ ASATORI_DecoyActor::ASATORI_DecoyActor()
 void ASATORI_DecoyActor::OnOverlapCollisionSphere(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 
-	ASATORI_CharacterBase* Character = Cast<ASATORI_CharacterBase>(OtherActor);
+	ASATORI_AICharacter* Character = Cast<ASATORI_AICharacter>(OtherActor);
 	
 	if (!Character)
 	{
@@ -44,6 +44,8 @@ void ASATORI_DecoyActor::OnOverlapCollisionSphere(UPrimitiveComponent* Overlappe
 
 	if (Character->HasMatchingGameplayTag(EnemyTag))
 	{
+		float dmg_done = USATORI_BlueprintLibrary::ApplyGameplayEffectDamage(OtherActor, Damage, OtherActor, DamageGameplayEffect);
+		Character->sendDamage(dmg_done);
 		Character->AddGameplayTag(TagGrantedWhenLured);
 		ArrayLured.AddUnique(OtherActor);
 	}

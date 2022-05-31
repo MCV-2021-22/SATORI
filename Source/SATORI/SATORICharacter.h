@@ -13,7 +13,6 @@
 
 class USATORI_AbilityDataAsset;
 class UGameplayEffect;
-class USATORI_AttributeSet;
 class USATORI_AbilitySystemComponent;
 class USATORI_AbilityMask;
 class USATORI_ANS_JumpSection;
@@ -52,7 +51,6 @@ public:
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	int AbilityToChoose = 0;
-
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Weapon")
 	USkeletalMeshComponent* SwordComponent;
@@ -107,15 +105,14 @@ protected:
 	void GrantAbilityToPlayer(FGameplayAbilitySpec Ability);
 	void InitializePassiveAttributes();
 
-	virtual void SetHealth(float Health);
+	
 
 protected:
 
 	// The core ActorComponent for interfacing with the GameplayAbilities System
 	//TWeakObjectPtr<USATORI_AbilitySystemComponent> AbilitySystemComponent;
 	
-	// USATORI_AttributeSet from the PlayerState 
-	TWeakObjectPtr<USATORI_AttributeSet> AttributeSetBase;
+
 
 	// Components
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)

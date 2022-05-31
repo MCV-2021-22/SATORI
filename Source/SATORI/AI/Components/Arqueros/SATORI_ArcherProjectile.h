@@ -5,6 +5,7 @@
 #include "GameplayTagAssetInterface.h"
 #include "SATORI_ArcherProjectile.generated.h"
 
+class UGameplayEffect;
 class UStaticMeshComponent;
 class USphereComponent;
 
@@ -23,16 +24,30 @@ public:
 		UStaticMeshComponent* StaticMeshComponent = nullptr;
 
 
-	UPROPERTY(EditDefaultsOnly)
-	float Damage = 10.0f;
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Meta = (ExposeOnSpawn = true), Category = "Missile")
+	float Damage = 10;
 
-	
+	UFUNCTION()
+		void OnComponentBeginOverlap(
+			UPrimitiveComponent* OverlappedComponent,
+			AActor* OtherActor,
+			UPrimitiveComponent* OtherComp,
+			int32 OtherBodyIndex,
+			bool bFromSweep,
+			const FHitResult& SweepResult);
+
+	UFUNCTION()
+		void OnComponentHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
 
 	virtual void BeginPlay() override;
 
 	virtual void Tick(float DeltaTime) override;
 
 	void setDirection(FVector newDirection);
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Meta = (ExposeOnSpawn = true), Category = "Missile")
+		TSubclassOf<UGameplayEffect> DamageGameplayEffect;
+
 
 
 protected:
@@ -45,6 +60,10 @@ protected:
 	bool IsHostile(const IGameplayTagAssetInterface* InstigatorTagInterface, const IGameplayTagAssetInterface* OtherTagInterface) const;
 
 	FVector direction;
+
+	float inmunity = 1.f;
+
+	float LifeTime = 8.f;
 
 };
 
