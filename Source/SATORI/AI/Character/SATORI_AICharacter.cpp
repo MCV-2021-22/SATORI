@@ -50,6 +50,16 @@ void ASATORI_AICharacter::BeginPlay()
 
 		AddAICharacterAbilities();
 	}
+
+
+	ASATORI_CharacterBase* Character = Cast<ASATORI_CharacterBase>(this);
+	if (Character)
+	{
+		FGameplayTagContainer TagContainer;
+		Character->GetOwnedGameplayTags(TagContainer);
+		AbilitySystemComponent->AddLooseGameplayTags(TagContainer);
+	}
+
 }
 
 void ASATORI_AICharacter::InitializeAttributes()
