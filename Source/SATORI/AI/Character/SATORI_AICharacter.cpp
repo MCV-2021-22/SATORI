@@ -10,7 +10,8 @@
 #include "BehaviorTree/BehaviorTree.h"
 #include "AIController.h"
 #include "Perception/PawnSensingComponent.h"
-
+#include "DrawDebugHelpers.h"
+#include "SATORICharacter.h"
 
 // Sets default values
 ASATORI_AICharacter::ASATORI_AICharacter()
@@ -31,7 +32,7 @@ ASATORI_AICharacter::ASATORI_AICharacter()
 	//bte = TSoftObjectPtr <UBehaviorTree>(FSoftObjectPath(TEXT("/Game/SATORI/AI/Spawner/BT_Spawner.BT_Spawner")));
 	//btree = bte.LoadSynchronous();
 
-	
+	EnemyType = SATORIEnemyType::None;
 }
 
 // Called when the game starts or when spawned
@@ -57,6 +58,15 @@ void ASATORI_AICharacter::BeginPlay()
 		AbilitySystemComponent->AddLooseGameplayTags(TagContainer);
 	}
 
+}
+
+void ASATORI_AICharacter::Tick(float DeltaSeconds)
+{
+	Super::Tick(DeltaSeconds);
+	/*if (EnemyType == SATORIEnemyType::Melee)
+	{
+		CheckPlayerWithRayCast();
+	}*/
 }
 
 void ASATORI_AICharacter::InitializeAttributes()
@@ -149,4 +159,62 @@ void ASATORI_AICharacter::PossessedBy(AController* NewController)
 float ASATORI_AICharacter::getDistAttack()
 {
 	return dist_attack;
+}
+
+bool ASATORI_AICharacter::CheckPlayerWithRayCast()
+{
+	const FVector StartPosition = GetActorLocation();
+	const FRotator StartRotation = GetActorRotation();
+	const FVector EndPosition = StartPosition + (StartRotation.Vector() * 300.0f);
+
+	UWorld* World = GetWorld();
+	FHitResult HitResult;
+	FCollisionQueryParams Params = FCollisionQueryParams(FName("LineTraceSingle"));
+	Params.AddIgnoredActor(RootComponent->GetOwner());
+
+	FVector delta = EndPosition - StartPosition;
+	TWeakObjectPtr<AActor> NewActor;
+
+	bool bHit = false;
+	for (int i = -5; i <= 5; i++)
+	{
+		FVector Axis = FVector::ZAxisVector;
+		float rad = FMath::DegreesToRadians(i * 5);
+		FQuat quaternion = FQuat(Axis, rad);
+		FRotator rotator = FRotator(quaternion);
+		FVector newDelta = rotator.RotateVector(delta);
+
+		FVector newEndPos = newDelta + StartPosition;
+
+		bool newHit = GetWorld()->LineTraceSingleByChannel(
+			HitResult,
+			StartPosition,
+			newEndPos,
+			ECollisionChannel::ECC_Pawn,
+			Params
+		);
+
+		::DrawDebugLine(World, StartPosition, newEndPos, newHit ? FColor::Green : FColor::Red, false, 1.0f);
+		if (newHit)
+		{
+			NewActor = HitResult.Actor;
+			bHit = true;
+			break;
+		}
+	}
+
+	TWeakObjectPtr<ASATORICharacter> PlayerCharacter = Cast<ASATORICharacter>(HitResult.Actor);
+
+	if (bHit)
+	{
+		if (PlayerCharacter.IsValid() && EnemyType == SATORIEnemyType::Melee)
+		{
+			isInFrontPlayer = true;
+		}
+	}
+	else
+	{
+		isInFrontPlayer = false;
+	}
+	return isInFrontPlayer;
 }

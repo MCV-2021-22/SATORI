@@ -149,16 +149,36 @@ bool ASATORICharacter::DoRayCast()
 	FCollisionQueryParams Params = FCollisionQueryParams(FName("LineTraceSingle"));
 	Params.AddIgnoredActor(RootComponent->GetOwner());
 
-	bool bHit = GetWorld()->LineTraceSingleByChannel(
-		HitResult,
-		StartPosition,
-		EndPosition,
-		ECollisionChannel::ECC_Pawn,
-		Params
-	);
-	::DrawDebugLine(World, StartPosition, EndPosition, bHit ? FColor::Green : FColor::Red, false, 1.0f);
+	FVector delta = EndPosition - StartPosition;
+	TWeakObjectPtr<AActor> NewActor;
 
-	TWeakObjectPtr<AActor> NewActor = bHit ? HitResult.Actor : nullptr;
+	bool bHit = false;
+	for (int i = -5; i <= 5; i++)
+	{
+		FVector Axis = FVector::ZAxisVector;
+		float rad = FMath::DegreesToRadians(i * 5);
+		FQuat quaternion = FQuat(Axis, rad);
+		FRotator rotator = FRotator(quaternion);
+		FVector newDelta = rotator.RotateVector(delta);
+
+		FVector newEndPos = newDelta + StartPosition;
+
+		bool newHit = GetWorld()->LineTraceSingleByChannel(
+			HitResult,
+			StartPosition,
+			newEndPos,
+			ECollisionChannel::ECC_Pawn,
+			Params
+		);
+
+		//::DrawDebugLine(World, StartPosition, newEndPos, newHit ? FColor::Green : FColor::Red, false, 1.0f);
+		if (newHit)
+		{
+			NewActor = HitResult.Actor;
+			bHit = true;
+			break;
+		}
+	}
 
 	if (bHit)
 	{
@@ -168,22 +188,26 @@ bool ASATORICharacter::DoRayCast()
 	TWeakObjectPtr<ASATORI_AICharacter> AICharacter = Cast<ASATORI_AICharacter>(HitResult.Actor);
 	if (AICharacter.IsValid())
 	{
-		if (AICharacter->GetAbilitySystemComponent()->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag(FName("State.Lured"))))
+		bool isInFront = AICharacter->CheckPlayerWithRayCast();
+		if (isInFront)
 		{
-			UE_LOG(LogTemp, Warning, TEXT("Enemy"));
-			
-			AICharacter->AddGameplayTag(FGameplayTag::RequestGameplayTag(FName("State.Stunned")));
+			if (AICharacter->GetAbilitySystemComponent()->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag(FName("State.Lured"))))
+			{
+				UE_LOG(LogTemp, Warning, TEXT("Enemy"));
 
-			FGameplayEventData EventData;
-			EventData.EventTag = FGameplayTag::RequestGameplayTag(FName("State.Stunned.Start"));
-			AICharacter->GetAbilitySystemComponent()->HandleGameplayEvent(FGameplayTag::RequestGameplayTag(FName("State.Stunned.Start")), &EventData);
-			
-			return true;
-		}
-		if (AICharacter->GetAbilitySystemComponent()->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag(FName("State.Stunned"))))
-		{
-			return false;
-		}
+				AICharacter->AddGameplayTag(FGameplayTag::RequestGameplayTag(FName("State.Stunned")));
+
+				FGameplayEventData EventData;
+				EventData.EventTag = FGameplayTag::RequestGameplayTag(FName("State.Stunned.Start"));
+				AICharacter->GetAbilitySystemComponent()->HandleGameplayEvent(FGameplayTag::RequestGameplayTag(FName("State.Stunned.Start")), &EventData);
+
+				return true;
+			}
+			if (AICharacter->GetAbilitySystemComponent()->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag(FName("State.Stunned"))))
+			{
+				return false;
+			}
+		}	
 	}
 	return false;
 }

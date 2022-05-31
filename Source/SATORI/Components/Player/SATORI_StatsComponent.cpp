@@ -8,6 +8,8 @@
 #include "GAS/SATORI_AbilitySystemComponent.h"
 #include "AbilitySystemInterface.h"
 #include "AbilitySystemComponent.h"
+#include "UI/SATORI_MainUI.h"
+#include "Character/SATORI_PlayerController.h"
 
 // Sets default values for this component's properties
 USATORI_StatsComponent::USATORI_StatsComponent()
@@ -20,13 +22,13 @@ void USATORI_StatsComponent::BeginPlay()
 {
 	Super::BeginPlay();
 
-	ASATORICharacter* PlayerCharacter = Cast<ASATORICharacter>(GetOwner());
-	ASATORI_PlayerState* PlayerState = PlayerCharacter->GetPlayerState<ASATORI_PlayerState>();
+	SatoriCharacter = Cast<ASATORICharacter>(GetOwner());
+	ASATORI_PlayerState* PlayerState = SatoriCharacter->GetPlayerState<ASATORI_PlayerState>();
 
-	if (PlayerCharacter && PlayerState)
+	if (SatoriCharacter && PlayerState)
 	{
 		InitializeHealthAttribute(PlayerState);
-		BindAttributeChage(PlayerCharacter);
+		BindAttributeChage(SatoriCharacter);
 	}
 }
 
@@ -84,9 +86,27 @@ void USATORI_StatsComponent::MaxHealthChanged(const FOnAttributeChangeData& Data
 void USATORI_StatsComponent::UpdateHealthBarPercent()
 {
 	// Controller
+	ASATORI_PlayerController* PlayerController = Cast<ASATORI_PlayerController>(SatoriCharacter->GetController());
+	if (PlayerController)
+	{
+		USATORI_MainUI* MainUI = PlayerController->GetSatoriMainUI();
+		if (MainUI)
+		{
+			MainUI->SetHealthBarPercentage(Health / MaxHealth);
+		}
+	}
 }
 
 void USATORI_StatsComponent::UpdateHealthBarText()
 {
 	// Controller
+	ASATORI_PlayerController* PlayerController = Cast<ASATORI_PlayerController>(SatoriCharacter->GetController());
+	if (PlayerController)
+	{
+		USATORI_MainUI* MainUI = PlayerController->GetSatoriMainUI();
+		if (MainUI)
+		{
+			MainUI->SetHealthTextBlock(Health, MaxHealth);
+		}
+	}
 }
