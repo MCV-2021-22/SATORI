@@ -23,11 +23,15 @@ void USATORI_SpawnEnemies::ActivateAbility(const FGameplayAbilitySpecHandle Hand
 		ActorInfo->AvatarActor->GetActorLocation() + ActorInfo->AvatarActor->GetActorForwardVector() * 100,
 		RotationOfIA, SpawnParams);
 
+
 	ASATORI_Spawner* Spawner = Cast<ASATORI_Spawner>(ActorInfo->AvatarActor);
 
-	EnemySpawned->SpawnDefaultController();
+	
+	
 
+	EnemySpawned->SpawnDefaultController();
 	EnemySpawned->SetMySpawn(Spawner);
+	
 	Spawner->AddNumEnemies(1);
 
 	Spawner->ResetSpawnTime();

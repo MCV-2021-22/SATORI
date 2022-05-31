@@ -12,7 +12,6 @@
 #include "SATORI/Data/SATORI_AbilityDataAsset.h"
 #include "Abilities/GameplayAbility.h"
 #include "Character/SATORI_PlayerState.h"
-#include "SATORI/GAS/Attributes/SATORI_AttributeSet.h"
 #include "SATORI/GAS/SATORI_AbilitySystemComponent.h"
 #include "Character/Mask/SATORI_AbilityMask.h"
 #include "Components/Player/SATORI_StatsComponent.h"
@@ -249,66 +248,7 @@ void ASATORICharacter::InitializePassiveAttributes()
 	}
 }
 
-// Getters
-float ASATORICharacter::GetHealth() const
-{
-	if (AttributeSetBase.IsValid())
-		return AttributeSetBase->GetHealth();
 
-	return 0.0f;
-}
-
-float ASATORICharacter::GetMaxHealth() const
-{
-	if (AttributeSetBase.IsValid())
-		return AttributeSetBase->GetMaxHealth();
-
-	return 0.0f;
-}
-
-float ASATORICharacter::GetDefense() const
-{
-	if (AttributeSetBase.IsValid())
-		return AttributeSetBase->GetDefense();
-
-	return 0.0f;
-}
-
-float ASATORICharacter::GetAttack() const
-{
-	if (AttributeSetBase.IsValid())
-		return AttributeSetBase->GetAttack();
-
-	return 0.0f;
-}
-
-float ASATORICharacter::GetMoveSpeed() const
-{
-	if (AttributeSetBase.IsValid())
-		return AttributeSetBase->GetMoveSpeed();
-
-	return 0.0f;
-}
-
-float ASATORICharacter::GetGold() const
-{
-	if (AttributeSetBase.IsValid())
-		return AttributeSetBase->GetGold();
-
-	return 0.0f;
-}
-
-int32 ASATORICharacter::GetCharacterLevel() const
-{
-	return 1;
-}
-
-// Setters
-void ASATORICharacter::SetHealth(float Health)
-{
-	if (AttributeSetBase.IsValid())
-		AttributeSetBase->SetHealth(Health);
-}
 
 //////////////////////////////////////////////////////////////////////////
 // Input

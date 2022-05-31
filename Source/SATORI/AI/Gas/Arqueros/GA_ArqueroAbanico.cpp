@@ -29,7 +29,7 @@ void UGA_ArqueroAbanico::ActivateAbility(const FGameplayAbilitySpecHandle Handle
 
 	FVector prueba = FVector(0, 0, 1);
 	FVector RotatePrueba = prueba.RotateAngleAxis(-90.0f, FVector(0, 0, 1));
-	
+
 
 	TArray< AActor* > enemigos;
 	UGameplayStatics::GetAllActorsWithTag(GetWorld(), FName("PossessedBy.Player"), enemigos);
@@ -50,45 +50,45 @@ void UGA_ArqueroAbanico::ActivateAbility(const FGameplayAbilitySpecHandle Handle
 
 			ASATORI_ArcherProjectile* Sphere = GetWorld()->SpawnActor<ASATORI_ArcherProjectile>(ProjectileClass,
 				ActorInfo->AvatarActor->GetActorLocation() + ActorInfo->AvatarActor->GetActorForwardVector() * 200,
-				RotationOfIA);
+				RotationOfIA, SpawnParams);
 
 			FVector newForward = dest - Sphere->GetActorLocation();
 
 			newForward.Normalize();
 
-			Sphere->setDirection(newForward * 2);
+			Sphere->setDirection(newForward * 20);
 
 			// segundo misil
 
 			ASATORI_ArcherProjectile* Sphere1 = GetWorld()->SpawnActor<ASATORI_ArcherProjectile>(ProjectileClass,
 				ActorInfo->AvatarActor->GetActorLocation() + ActorInfo->AvatarActor->GetActorForwardVector() * 150,
-				RotationOfIA);
+				RotationOfIA, SpawnParams);
 
 			FVector newForward1 = dest - Sphere1->GetActorLocation();
 			FVector RotateValue1 = newForward1.RotateAngleAxis(15.0f, FVector(0, 0, 1));
 
 			RotateValue1.Normalize();
 
-		
-			
-			
+
+
+
 			//Sphere1->setDirection(newForward1 * 50);
-			Sphere1->setDirection(RotateValue1 * 2);
+			Sphere1->setDirection(RotateValue1 * 20);
 
 			// tercer misil
 
 			ASATORI_ArcherProjectile* Sphere2 = GetWorld()->SpawnActor<ASATORI_ArcherProjectile>(ProjectileClass,
 				ActorInfo->AvatarActor->GetActorLocation() + ActorInfo->AvatarActor->GetActorForwardVector() * 100,
-				RotationOfIA);
+				RotationOfIA, SpawnParams);
 
 			FVector newForward2 = dest - Sphere2->GetActorLocation();
 			FVector RotateValue2 = newForward2.RotateAngleAxis(-15.0f, FVector(0, 0, 1));
 			RotateValue2.Normalize();
 
-			
 
 
-			Sphere2->setDirection(RotateValue2 * 2);
+
+			Sphere2->setDirection(RotateValue2 * 20);
 
 
 
@@ -97,9 +97,9 @@ void UGA_ArqueroAbanico::ActivateAbility(const FGameplayAbilitySpecHandle Handle
 		}
 
 	}
-	
+
 	EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true);
 
 
-	
+
 }
