@@ -75,7 +75,7 @@ void USATORI_CloneAbility::EventReceived(FGameplayTag EventTag, FGameplayEventDa
 		}
 
 		//Aiming when Targeting Enemy
-		if (Character->ActorHasTag(PlayerTargetingTag.GetTagName()))
+		if (Character->HasMatchingGameplayTag(PlayerTargetingTag))
 		{
 			UCameraComponent* CameraComponent = Character->FindComponentByClass<UCameraComponent>();
 			if (!CameraComponent)
@@ -100,10 +100,9 @@ void USATORI_CloneAbility::EventReceived(FGameplayTag EventTag, FGameplayEventDa
 		//Clone creation
 		ASATORI_CloneCharacter* Clone = GetWorld()->SpawnActorDeferred<ASATORI_CloneCharacter>(CloneCharacter, SpawnTransform, GetOwningActorFromActorInfo(),
 			Character, ESpawnActorCollisionHandlingMethod::AlwaysSpawn);
-		Clone->SphereRadiusOfAction = SphereRadiusOfAction;
 		Clone->TimeToDestroy = TimeToDestroy;
 		Clone->FinishSpawning(SpawnTransform);
-
+		Clone->SpawnDefaultController();
 	}
 }
 

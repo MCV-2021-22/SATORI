@@ -52,10 +52,9 @@ public:
 		int32 GetCharacterLevel() const;
 
 	UFUNCTION(BlueprintCallable, Category = "Tags")
-		void AddGameplayTag(const FGameplayTag& TagToAdd);
+	void AddGameplayTag(const FGameplayTag& TagToAdd);
 
-	UFUNCTION(BlueprintCallable, Category = "Tags")
-		void RemoveGameplayTag(const FGameplayTag& TagToRemove);
+	void RemoveGameplayTag(const FGameplayTag& TagToRemove);
 
 	UFUNCTION(BlueprintCallable, Category = "Tags")
 		void AddGameplayTagToAbilitySystem(const FGameplayTag& TagToAdd);
@@ -82,7 +81,7 @@ public:
 		bool HasAnyMatchingGameplayTags(const FGameplayTagContainer& TagContainer) const;
 
 protected:
-	// Called when the game starts or when spawned
+
 	virtual void BeginPlay() override;
 
 	virtual void SetHealth(float Health);

@@ -15,6 +15,7 @@ void USATORI_ANS_Combo::NotifyBegin(USkeletalMeshComponent* MeshComp, UAnimSeque
 	ASATORICharacter* PlayerCharacter = Cast<ASATORICharacter>(MeshComp->GetOwner());
 	if (PlayerCharacter)
 	{
+		PlayerCharacter->AttackingCollision->SetGenerateOverlapEvents(true);
 		USATORI_ComboSystemComponent* ComboSystem = PlayerCharacter->GetComboSystemComponent();
 		if (ComboSystem)
 		{
@@ -24,7 +25,7 @@ void USATORI_ANS_Combo::NotifyBegin(USkeletalMeshComponent* MeshComp, UAnimSeque
 				ComboSystem->lightAttackCounter += 1;
 			}*/
 			ComboSystem->isLightAttack = false;
-			ComboSystem->AttackingCollision->Activate(true);
+			//ComboSystem->AttackingCollision->Activate(true);
 		}
 	}
 	/*
@@ -50,6 +51,7 @@ void USATORI_ANS_Combo::NotifyEnd(USkeletalMeshComponent* MeshComp, UAnimSequenc
 	ASATORICharacter* PlayerCharacter = Cast<ASATORICharacter>(MeshComp->GetOwner());
 	if (PlayerCharacter)
 	{
+		PlayerCharacter->AttackingCollision->SetGenerateOverlapEvents(false);
 		USATORI_ComboSystemComponent* ComboSystem = PlayerCharacter->GetComboSystemComponent();
 		if (ComboSystem)
 		{
@@ -59,7 +61,7 @@ void USATORI_ANS_Combo::NotifyEnd(USkeletalMeshComponent* MeshComp, UAnimSequenc
 				ComboSystem->lightAttackCounter += 1;
 			}*/
 			ComboSystem->isLightAttack = true;
-			ComboSystem->AttackingCollision->Activate(false);
+			//ComboSystem->AttackingCollision->Activate(false);
 		}
 	}
 }

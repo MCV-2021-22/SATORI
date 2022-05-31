@@ -22,6 +22,7 @@ public:
 
 protected:
 	TArray<FString> DebugOwnedTags;
+
 };
 
 #endif

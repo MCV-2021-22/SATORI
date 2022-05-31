@@ -19,6 +19,15 @@ class USATORI_AbilityDataAsset;
 class UBehaviorTree;
 class UPawnSensingComponent;
 
+UENUM(BlueprintType)
+enum class SATORIEnemyType : uint8
+{
+	None UMETA(DisplayName = "None"),
+	Melee UMETA(DisplayName = "Melee"),
+	Range UMETA(DisplayName = "Range"),
+	Boss UMETA(DisplayName = "Boss"),
+};
+
 
 UCLASS()
 class SATORI_API ASATORI_AICharacter : public ASATORI_CharacterBase
@@ -29,11 +38,14 @@ public:
 	// Sets default values for this character's properties
 	ASATORI_AICharacter();
 
+	// Ray Cast
+	UFUNCTION(BlueprintCallable)
+	bool CheckPlayerWithRayCast();
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-	virtual void Tick(float DeltaSeconds) override;;
+	virtual void Tick(float DeltaSeconds) override;
 
 	// Initialize AI Attributes from GE
 	void InitializeAttributes();
@@ -45,7 +57,6 @@ protected:
 
 	virtual void PossessedBy(AController* NewController) override;
 
-
 public:
 	UPROPERTY()
 	USATORI_AttributeSet* AttributeSet;
@@ -56,6 +67,8 @@ public:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Awareness)
 	UPawnSensingComponent* PawnSensor;
+
+	bool GetIsInFront() const { return isInFrontPlayer; }
 
 	void sendDamage(float dmg);
 
@@ -72,14 +85,13 @@ protected:
 	// This is an instant GE that overrides the values for attributes that get reset on spawn/respawn.
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "AI|GAS")
 	TSubclassOf<UGameplayEffect> DefaultAttributes;
-
 	
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "AI|GAS")
 	TArray<TSubclassOf<USATORI_GameplayAbility>> AICharacterAbilities;
 
 	
 	UPROPERTY(EditAnywhere)
-		TSoftObjectPtr <UBehaviorTree> bte;
+	TSoftObjectPtr <UBehaviorTree> bte;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
 	UBehaviorTree* btree;
@@ -87,11 +99,16 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	float dist_attack = 100.f;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	bool isInFrontPlayer = false;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	SATORIEnemyType EnemyType;
+
 	float dmg_burst = 0.f;
 
 	float time_burst = 5.f;
 
 	bool bursting = false;
-
 
 };

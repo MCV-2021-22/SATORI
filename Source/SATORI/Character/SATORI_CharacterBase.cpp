@@ -1,5 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
+//
 
 #include "Character/SATORI_CharacterBase.h"
 #include "SATORI/GAS/Attributes/SATORI_AttributeSet.h"
@@ -19,19 +18,11 @@ void ASATORI_CharacterBase::BeginPlay()
 
 }
 
+//AbilitySystemComponent
+
 UAbilitySystemComponent* ASATORI_CharacterBase::GetAbilitySystemComponent() const
 {
 	return AbilitySystemComponent.Get();
-}
-
-void ASATORI_CharacterBase::AddGameplayTag(const FGameplayTag& TagToAdd)
-{
-	GameplayTags.AddTag(TagToAdd);
-}
-
-void ASATORI_CharacterBase::RemoveGameplayTag(const FGameplayTag& TagToRemove)
-{
-	GameplayTags.RemoveTag(TagToRemove);
 }
 
 void ASATORI_CharacterBase::AddGameplayTagToAbilitySystem(const FGameplayTag& TagToAdd)
@@ -41,6 +32,30 @@ void ASATORI_CharacterBase::AddGameplayTagToAbilitySystem(const FGameplayTag& Ta
 
 void ASATORI_CharacterBase::RemoveGameplayTagFromAbilitySystem(const FGameplayTag& TagToRemove)
 {
+	AbilitySystemComponent->RemoveLooseGameplayTag(TagToRemove);
+}
+
+void ASATORI_CharacterBase::BlockGameplayTag(const FGameplayTagContainer& TagsToBlock)
+{
+	AbilitySystemComponent->BlockAbilitiesWithTags(TagsToBlock);
+}
+
+void ASATORI_CharacterBase::UnBlockGameplayTag(const FGameplayTagContainer& TagsToBlock)
+{
+	AbilitySystemComponent->UnBlockAbilitiesWithTags(TagsToBlock);
+}
+
+
+//GameplayTags
+void ASATORI_CharacterBase::AddGameplayTag(const FGameplayTag& TagToAdd)
+{
+	GameplayTags.AddTag(TagToAdd);
+	AbilitySystemComponent->AddLooseGameplayTag(TagToAdd);
+}
+
+void ASATORI_CharacterBase::RemoveGameplayTag(const FGameplayTag& TagToRemove)
+{
+	GameplayTags.RemoveTag(TagToRemove);
 	AbilitySystemComponent->RemoveLooseGameplayTag(TagToRemove);
 }
 
@@ -62,16 +77,6 @@ bool ASATORI_CharacterBase::HasAllMatchingGameplayTags(const FGameplayTagContain
 bool ASATORI_CharacterBase::HasAnyMatchingGameplayTags(const FGameplayTagContainer& TagContainer) const
 {
 	return GameplayTags.HasAny(TagContainer);
-}
-
-void ASATORI_CharacterBase::BlockGameplayTag(const FGameplayTagContainer& TagsToBlock)
-{
-	AbilitySystemComponent->BlockAbilitiesWithTags(TagsToBlock);
-}
-
-void ASATORI_CharacterBase::UnBlockGameplayTag(const FGameplayTagContainer& TagsToBlock)
-{
-	AbilitySystemComponent->UnBlockAbilitiesWithTags(TagsToBlock);
 }
 
 // Getters

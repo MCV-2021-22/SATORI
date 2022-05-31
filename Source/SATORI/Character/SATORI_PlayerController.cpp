@@ -2,6 +2,7 @@
 
 
 #include "SATORI_PlayerController.h"
+#include "UI/SATORI_MainUI.h"
 
 ASATORI_PlayerController::ASATORI_PlayerController(const class FObjectInitializer& InitializerObject)
 	: Super(InitializerObject)
@@ -11,5 +12,14 @@ ASATORI_PlayerController::ASATORI_PlayerController(const class FObjectInitialize
 
 void ASATORI_PlayerController::OnPossess(APawn* aPawn)
 {
+	Super::OnPossess(aPawn);
 
+	if (SATORIMainUI)
+	{
+		SATORIMainWidget = CreateWidget<USATORI_MainUI>(GetGameInstance(), SATORIMainUI);
+		if (SATORIMainWidget)
+		{
+			SATORIMainWidget->AddToViewport();
+		}
+	}
 }

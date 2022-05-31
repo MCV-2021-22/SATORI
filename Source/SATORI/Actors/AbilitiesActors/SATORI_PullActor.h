@@ -10,6 +10,8 @@
 
 class USphereComponent;
 class UStaticMeshComponent;
+class UGameplayEffect;
+class UProjectileMovementComponent;
 
 UCLASS()
 class SATORI_API ASATORI_PullActor : public AActor
@@ -26,8 +28,8 @@ public:
 	UPROPERTY(EditDefaultsOnly, Category = "Pull")
 	UStaticMeshComponent* StaticMeshComponent = nullptr;
 
-	UPROPERTY(EditDefaultsOnly, Category = "Pull")
-	USphereComponent* SeekingSphereComponent = nullptr;
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Pull")
+	UProjectileMovementComponent* ProjectileMovementComponent = nullptr;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Meta = (ExposeOnSpawn = true), Category = "Pull")
 	TSubclassOf<UGameplayEffect> DamageGameplayEffect;
@@ -36,25 +38,13 @@ public:
 	float Damage;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Meta = (ExposeOnSpawn = true), Category = "Pull")
-	float SpeedForward;
-
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Meta = (ExposeOnSpawn = true), Category = "Pull")
-	float SpeedPulling;
+	float Range;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Meta = (ExposeOnSpawn = true), Category = "Pull")
 	float TimeToDestroy;
 	
 	UFUNCTION(BlueprintCallable, Category = "Pull")
 	void OnOverlapCollisionSphere(
-			UPrimitiveComponent* OverlappedComp,
-			AActor* OtherActor,
-			UPrimitiveComponent* OtherComp,
-			int32 OtherBodyIndex,
-			bool bFromSweep,
-			const FHitResult& SweepResult);
-
-	UFUNCTION(BlueprintCallable, Category = "Pull")
-	void OnOverlapSeekingSphere(
 			UPrimitiveComponent* OverlappedComp,
 			AActor* OtherActor,
 			UPrimitiveComponent* OtherComp,
@@ -71,6 +61,9 @@ public:
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Pull|Tags")
 	FGameplayTag  PlayerTag;
 
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Pull|Tags")
+	FGameplayTag  CloneTag;
+
 protected:
 
 	virtual void BeginPlay() override;
@@ -82,10 +75,11 @@ public:
 private:
 
 	AActor* Target;
+	AActor* TargetNear;
 
 	FTimerHandle TimerHandleDestroy;
 
-	FVector Start;
+	AActor* Player;
 
 	UPrimitiveComponent* Pulling = nullptr;
 

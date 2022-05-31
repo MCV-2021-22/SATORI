@@ -36,12 +36,12 @@ void ASATORI_PushActor::OnOverlapSphere(
 
 	if (!Character) 
 	{
+		Destroy();
 		return;
 	}
 
 	if(Character->HasMatchingGameplayTag(EnemyTag))
-	{
-		
+	{	
 		float dmg_done = USATORI_BlueprintLibrary::ApplyGameplayEffectDamage(OtherActor, Damage, OtherActor, DamageGameplayEffect);
 		Character->sendDamage(dmg_done);
 		ArrayPushed.AddUnique(Cast<UPrimitiveComponent>(OtherActor->GetRootComponent()));

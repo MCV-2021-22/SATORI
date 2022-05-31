@@ -6,6 +6,8 @@
 #include "Components/ActorComponent.h"
 #include "SATORI_ComboSystemComponent.generated.h"
 
+class USphereComponent;
+class USkeletalMeshComponent;
 
 // UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
 UCLASS(BlueprintType)
@@ -35,10 +37,10 @@ public:
 	void ResetAllAttribute();
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Weapon")
-	UStaticMeshComponent* SwordComponent;
+	USkeletalMeshComponent* SwordComponent;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon")
-	class USphereComponent* AttackingCollision;
+	USphereComponent* AttackingCollision;
 public:
 	int lightAttackCounter = 0;
 	int HeavyAttackCounter = 0;
@@ -48,4 +50,5 @@ public:
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
+	virtual void InitializeComponent() override;
 };

@@ -28,10 +28,9 @@ void SATORIDebug_OwnedTags::CollectData(class APlayerController* OwnerPC, class 
 		UAbilitySystemComponent* AbilityComp = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(DebugActor);
 		if (AbilityComp)
 		{
+			DebugOwnedTags.Reset();
 			static FGameplayTagContainer OwnerTags;
-			OwnerTags.Reset();
 			AbilityComp->GetOwnedGameplayTags(OwnerTags);
-
 			for (const FGameplayTag& Tag : OwnerTags)
 			{
 				DebugOwnedTags.AddUnique(Tag.ToString());
@@ -42,6 +41,7 @@ void SATORIDebug_OwnedTags::CollectData(class APlayerController* OwnerPC, class 
 
 void SATORIDebug_OwnedTags::DrawData(class APlayerController* OwnerPC, class FGameplayDebuggerCanvasContext& CanvasContext)
 {
+
 	if (OwnerPC)
 	{
 		for (FString Tags : DebugOwnedTags)
