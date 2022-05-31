@@ -61,6 +61,12 @@ public:
 
 	float getDistAttack();
 
+	void Die();
+
+	// Default attributes for a character for initializing
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Player|GameplayEffect")
+		TArray<TSubclassOf<UGameplayEffect>> PassiveGameplayEffects;
+
 protected:
 	// Default attributes for a character for initializing on spawn/respawn.
 	// This is an instant GE that overrides the values for attributes that get reset on spawn/respawn.

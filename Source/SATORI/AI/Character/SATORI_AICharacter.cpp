@@ -9,7 +9,9 @@
 #include "Data/SATORI_AbilityDataAsset.h"
 #include "BehaviorTree/BehaviorTree.h"
 #include "AIController.h"
+#include "Character/SATORI_PlayerState.h"
 #include "Perception/PawnSensingComponent.h"
+#include "Spawned/SATORI_Spawned.h"
 
 
 // Sets default values
@@ -71,6 +73,8 @@ void ASATORI_AICharacter::InitializeAttributes()
 	{
 		FActiveGameplayEffectHandle ActiveGEHandle = AbilitySystemComponent->ApplyGameplayEffectSpecToTarget(*NewHandle.Data.Get(), AbilitySystemComponent.Get());
 	}
+
+
 }
 
 void ASATORI_AICharacter::AddAICharacterAbilities()
@@ -117,8 +121,10 @@ void ASATORI_AICharacter::PossessedBy(AController* NewController)
 	UE_LOG(LogTemp, Display, TEXT("LLEGAMOS A VER SI SE LLAMA A ESTA FUNCION PADRE"));
 
 	
+
 	if (Cast<AAIController>(NewController) != nullptr) {
-		int a = 1;
+
+		
 		//AddGameplayTag(FGameplayTag::RequestGameplayTag("PossessedBy.AI"));
 		Tags.Add("PossessedBy.AI");
 
@@ -126,11 +132,13 @@ void ASATORI_AICharacter::PossessedBy(AController* NewController)
 
 		AAIController* controller = Cast<AAIController>(NewController);
 
+		AttributeSetBase = AttributeSet;
 		btree = bte.LoadSynchronous();
 		controller->RunBehaviorTree(btree);
 
+		InitializeAttributes();
 		AddAICharacterAbilities();
-
+		SetHealth(GetMaxHealth());
 
 	}
 
@@ -170,6 +178,7 @@ void ASATORI_AICharacter::sendDamage(float dmg)
 
 
 	float max_health_possible = GetMaxHealth();
+	UE_LOG(LogTemp, Display, TEXT("La max health es: %f"), max_health_possible);
 
 	if(dmg_burst>= max_health_possible*0.2f)
 	{
@@ -178,11 +187,36 @@ void ASATORI_AICharacter::sendDamage(float dmg)
 		AddGameplayTag(FGameplayTag::RequestGameplayTag("State.Burst"));
 
 		//AbilitySystemComponent->AddLooseGameplayTag(FGameplayTag::RequestGameplayTag("State.Burst"));
-
-		
 	}
 	
+	float life = GetHealth();
+
+	if(life <=0.0f)
+	{
+		UE_LOG(LogTemp, Display, TEXT("La vida es: %f"), life);
+		ASATORI_Spawned* Spawned = Cast<ASATORI_Spawned>(this);
+		
+
+		if (Spawned != nullptr)
+		{
+			
+			//Spawned->Spawner->AddNumEnemies(1);
+			float b = Spawned->SpawnedDie();
+
+			
+			Die();
+		}
+		else
+		{
+			Die();
+		}
+		
+	}
 
 
+}
 
+void ASATORI_AICharacter::Die()
+{
+	Destroy();
 }
