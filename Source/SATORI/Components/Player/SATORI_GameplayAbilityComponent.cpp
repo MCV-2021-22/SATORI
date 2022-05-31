@@ -5,6 +5,11 @@
 #include "Abilities/GameplayAbility.h"
 #include "Data/SATORI_AbilityDataAsset.h"
 #include "SATORICharacter.h"
+#include "Character/SATORI_PlayerController.h"
+#include "Engine/DataTable.h"
+#include "Data/SATORI_DT_AbilitiesTypes.h"
+#include "UI/SATORI_MainUI.h"
+#include "UI/Abilities/SATORI_ChangeAbilitiesWidget.h"
 
 // Sets default values for this component's properties
 USATORI_GameplayAbilityComponent::USATORI_GameplayAbilityComponent()
@@ -17,8 +22,7 @@ void USATORI_GameplayAbilityComponent::BeginPlay()
 {
 	Super::BeginPlay();
 
-
-	/*if (DefaultAbilities)
+	if (DefaultAbilities)
 	{
 		for (FSATORIGameplayAbilityInfo Ability : DefaultAbilities->Abilities)
 		{
@@ -27,10 +31,38 @@ void USATORI_GameplayAbilityComponent::BeginPlay()
 
 			if (LocalAbilityName.IsValid() && Ability.SATORIAbility.Get())
 			{
-				PlayerGameplayAbility.Add(LocalAbilityName, Ability.SATORIAbility);
+				FSATORI_AbilitiesDatas abilitiesData;
+				abilitiesData.CurrentAbilities = Ability.SATORIAbility;
+				PlayerGameplayAbility.Add(LocalAbilityName, abilitiesData);
 			}
 		}
-	}*/
+	}
+
+	if (AbilitiesIconDatas)
+	{
+		for (const TPair<FName, FSATORI_AbilitiesDatas>& pair : PlayerGameplayAbility)
+		{
+			const FAbilitesIconDatas* ItemDetails =
+				AbilitiesIconDatas->FindRow<FAbilitesIconDatas>(pair.Key, TEXT("USATORI_GameplayAbilityComponent::BeginPlay"));
+
+			if (ItemDetails)
+			{			
+				ASATORICharacter* Character = Cast<ASATORICharacter>(GetOwner());	
+				if (Character)
+				{
+					ASATORI_PlayerController* PlayerController = Cast<ASATORI_PlayerController>(Character->GetController());
+					if (PlayerController)
+					{
+						USATORI_MainUI* MainUI = PlayerController->GetSatoriMainUI();
+						if (MainUI)
+						{
+							MainUI->SetAbilityIcon(ItemDetails->Icon);
+						}
+					}
+				}
+			}
+		}
+	}
 }
 
 bool USATORI_GameplayAbilityComponent::TryChangeAbility()

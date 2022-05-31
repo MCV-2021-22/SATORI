@@ -4,6 +4,8 @@
 #include "UI/SATORI_MainUI.h"
 #include "Health/SATORI_HealthWidget.h"
 #include "Currency/SATORI_CurrencyWidget.h"
+#include "Abilities/SATORI_ChangeAbilitiesWidget.h"
+#include "Engine/Texture2D.h"
 
 bool USATORI_MainUI::Initialize()
 {
@@ -30,4 +32,9 @@ void USATORI_MainUI::SetCurrencyText(float currency)
 {
 	uint32 CurrencyInterger = FMath::RoundHalfFromZero(currency);
 	PlayerCurrency->SetCurrencyText(FText::FromString(FString::Printf(TEXT("%i"), CurrencyInterger)));
+}
+
+void USATORI_MainUI::SetAbilityIcon(UTexture2D* NewIcons)
+{
+	PlayerAbilitiesWidget->ChangeAbilityIcons(NewIcons);
 }
