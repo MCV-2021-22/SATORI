@@ -46,7 +46,6 @@ void ASATORI_CharacterBase::UnBlockGameplayTag(const FGameplayTagContainer& Tags
 }
 
 
-
 //GameplayTags
 void ASATORI_CharacterBase::AddGameplayTag(const FGameplayTag& TagToAdd)
 {
@@ -78,16 +77,6 @@ bool ASATORI_CharacterBase::HasAllMatchingGameplayTags(const FGameplayTagContain
 bool ASATORI_CharacterBase::HasAnyMatchingGameplayTags(const FGameplayTagContainer& TagContainer) const
 {
 	return GameplayTags.HasAny(TagContainer);
-}
-
-void ASATORI_CharacterBase::BlockGameplayTag(const FGameplayTagContainer& TagsToBlock)
-{
-	AbilitySystemComponent->BlockAbilitiesWithTags(TagsToBlock);
-}
-
-void ASATORI_CharacterBase::UnBlockGameplayTag(const FGameplayTagContainer& TagsToBlock)
-{
-	AbilitySystemComponent->UnBlockAbilitiesWithTags(TagsToBlock);
 }
 
 // Getters
