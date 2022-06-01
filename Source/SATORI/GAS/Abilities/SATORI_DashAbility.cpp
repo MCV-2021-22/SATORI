@@ -19,6 +19,7 @@ void USATORI_DashAbility::ActivateAbility(
 	const FGameplayAbilityActivationInfo ActivationInfo,
 	const FGameplayEventData* TriggerEventData)
 {
+	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
 
 	if (!IsValid(AnimMontage))
 	{
@@ -36,12 +37,6 @@ void USATORI_DashAbility::ActivateAbility(
 	ASATORI_PlayerController* Controller = Cast<ASATORI_PlayerController>(Character->GetController());
 	if (Controller)
 		Character->DisableInput(Controller);
-
-	if (!CommitAbility(Handle, ActorInfo, ActivationInfo))
-	{
-		UE_LOG(LogTemp, Display, TEXT("[%s] USATORI_DashAbility: Cannot Commit Ability ... "), *GetName());
-		EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true);
-	}
 
 	if (!TagSpawnAbility.IsValid() || !TagEndAbility.IsValid())
 	{
@@ -80,13 +75,11 @@ void USATORI_DashAbility::EndAbility(
 
 void USATORI_DashAbility::OnCancelled(FGameplayTag EventTag, FGameplayEventData EventData)
 {
-	Dashing = false;
 	EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, false);
 }
 
 void USATORI_DashAbility::OnCompleted(FGameplayTag EventTag, FGameplayEventData EventData)
 {
-	Dashing = false;
 	EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, false);
 }
 
@@ -98,24 +91,16 @@ void USATORI_DashAbility::EventReceived(FGameplayTag EventTag, FGameplayEventDat
 		EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, false);
 		return;
 	}
-
-	if (EventTag == TagSpawnAbility)
-	{
-		Dashing = true;
-	}
 }
 
 void USATORI_DashAbility::Tick(float DeltaTime)
 {
-	if (Dashing)
-	{
-		Character->AddActorLocalOffset(Direction * DashDistance * DashSpeed * DeltaTime);
-	}
+	Character->AddActorLocalOffset(Direction * DashDistance * DashSpeed * DeltaTime);
 }
 
 bool USATORI_DashAbility::IsTickable() const
 {
-	return bIsCreateOnRunning;
+	return IsActive();
 }
 
 bool USATORI_DashAbility::IsAllowedToTick() const
