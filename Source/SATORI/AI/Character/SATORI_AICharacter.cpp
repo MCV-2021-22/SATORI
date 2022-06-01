@@ -59,6 +59,7 @@ void ASATORI_AICharacter::BeginPlay()
 		Character->GetOwnedGameplayTags(TagContainer);
 		AbilitySystemComponent->AddLooseGameplayTags(TagContainer);
 	}
+	AddGameplayTag(FGameplayTag::RequestGameplayTag("State.Burst"));
 
 }
 
@@ -159,6 +160,11 @@ void ASATORI_AICharacter::PossessedBy(AController* NewController)
 float ASATORI_AICharacter::getDistAttack()
 {
 	return dist_attack;
+}
+
+float ASATORI_AICharacter::getMaxRangeDist()
+{
+	return max_range_dist;
 }
 
 bool ASATORI_AICharacter::CheckPlayerWithRayCast()

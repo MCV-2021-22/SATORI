@@ -74,6 +74,8 @@ public:
 
 	float getDistAttack();
 
+	float getMaxRangeDist();
+
 	void Die();
 
 	// Default attributes for a character for initializing
@@ -98,6 +100,10 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	float dist_attack = 100.f;
+
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	float max_range_dist = 700.f;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	bool isInFrontPlayer = false;
