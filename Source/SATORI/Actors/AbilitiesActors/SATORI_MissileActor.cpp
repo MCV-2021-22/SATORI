@@ -1,6 +1,8 @@
 //
 
 #include "Actors/AbilitiesActors/SATORI_MissileActor.h"
+
+#include "AI/Character/Spawned/SATORI_Spawned.h"
 #include "Components/SphereComponent.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "Kismet/GameplayStatics.h"
@@ -33,7 +35,7 @@ ASATORI_MissileActor::ASATORI_MissileActor()
 //Collision for exploding
 void ASATORI_MissileActor::OnOverlapCollisionSphere(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	ASATORI_CharacterBase* Character = Cast<ASATORI_CharacterBase>(OtherActor);
+	ASATORI_AICharacter* Character = Cast<ASATORI_AICharacter>(OtherActor);
 
 	if (!Character)
 	{
@@ -43,8 +45,12 @@ void ASATORI_MissileActor::OnOverlapCollisionSphere(UPrimitiveComponent* Overlap
 
 	if (Character->HasMatchingGameplayTag(EnemyTag))
 	{
-		USATORI_BlueprintLibrary::ApplyGameplayEffectDamage(OtherActor, Damage, OtherActor, DamageGameplayEffect);
+		float dmg_done = USATORI_BlueprintLibrary::ApplyGameplayEffectDamage(OtherActor, Damage, OtherActor, DamageGameplayEffect);
+		
 		ProjectileMovementComponent->Velocity = (FVector::ZeroVector);
+
+		Character->sendDamage(dmg_done);
+
 		DestroyMyself();
 	}
 	if (!Character->HasMatchingGameplayTag(PlayerTag) && !Character->HasMatchingGameplayTag(EnemyTag))

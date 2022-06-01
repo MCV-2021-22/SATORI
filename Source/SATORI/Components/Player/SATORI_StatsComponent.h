@@ -38,6 +38,7 @@ protected:
 	// Health Functions
 	virtual void HealthChanged(const FOnAttributeChangeData& Data);
 	virtual void MaxHealthChanged(const FOnAttributeChangeData& Data);
+	virtual void PandaCoinChanged(const FOnAttributeChangeData& Data);
 protected:
 	// Attributes 
 	TWeakObjectPtr<USATORI_AttributeSet> PlayerAttributes;
@@ -48,13 +49,17 @@ protected:
 	float MaxHealth = 0.f;
 	float Health = 0.f;
 
+	float PandaCoins = 0.0f;
+
 	// Delegates
 	FDelegateHandle HealthChangedDelegateHandle;
 	FDelegateHandle MaxHealthChangedDelegateHandle;
+	FDelegateHandle PandaCoinChangedDelegateHandle;
 
 	// Update UI
 	void UpdateHealthBarPercent();
 	void UpdateHealthBarText();
+	void UpdatePandaCoinText();
 
 	ASATORICharacter* SatoriCharacter = nullptr;
 };

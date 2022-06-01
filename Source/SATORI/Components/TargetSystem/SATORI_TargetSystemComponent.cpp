@@ -4,6 +4,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Engine/Classes/Camera/CameraComponent.h"
+#include "SATORI/AI/Character/SATORI_AICharacter.h"
 
 //Debug
 #include "DrawDebugHelpers.h"
@@ -156,13 +157,13 @@ void USATORI_TargetSystemComponent::TargetLockOff()
 	bTargetLocked = false;
 
 	//Remove tags
-	CharacterTargeting->RemoveGameplayTag(TagApliedTargeting);
-
 	if (CharacterTargeted)
 	{
 		CharacterTargeted->RemoveGameplayTag(TagApliedToEnemyTargeted);
 		CharacterTargeted = nullptr;
 	}
+
+	CharacterTargeting->RemoveGameplayTag(TagApliedTargeting);
 
 	LockedOnTargetActor = nullptr;
 	
@@ -185,7 +186,7 @@ void USATORI_TargetSystemComponent::TargetLockOn(AActor* TargetToLockOn)
 	bTargetLocked = true;
 
 	//Add tags
-	CharacterTargeted = Cast<ASATORI_CharacterBase>(TargetToLockOn);
+	CharacterTargeted = Cast<ASATORI_AICharacter>(TargetToLockOn);
 	CharacterTargeted->AddGameplayTag(TagApliedToEnemyTargeted);
 	
 	CharacterTargeting->AddGameplayTag(TagApliedTargeting);

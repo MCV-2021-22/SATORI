@@ -40,11 +40,16 @@ void USATORI_StatsComponent::InitializeHealthAttribute(ASATORI_PlayerState* Play
 	{
 		MaxHealth = PlayerAttributes->GetMaxHealth();
 		Health = MaxHealth;
+		PandaCoins = PlayerAttributes->GetGold();
 		PlayerAttributes->InitHealth(Health);
+		PlayerAttributes->InitGold(PandaCoins);
 
 		// Update Health UI 
 		UpdateHealthBarPercent();
 		UpdateHealthBarText();
+
+		// Update Coins
+		UpdatePandaCoinText();
 	}
 }
 
@@ -58,6 +63,9 @@ void USATORI_StatsComponent::BindAttributeChage(ASATORICharacter* PlayerCharacte
 
 		MaxHealthChangedDelegateHandle = AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate
 		(PlayerAttributes->GetMaxHealthAttribute()).AddUObject(this, &USATORI_StatsComponent::MaxHealthChanged);
+
+		PandaCoinChangedDelegateHandle = AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate
+		(PlayerAttributes->GetGoldAttribute()).AddUObject(this, &USATORI_StatsComponent::PandaCoinChanged);
 	}
 }
 
@@ -81,6 +89,16 @@ void USATORI_StatsComponent::MaxHealthChanged(const FOnAttributeChangeData& Data
 
 	UpdateHealthBarPercent();
 	UpdateHealthBarText();
+}
+
+void USATORI_StatsComponent::PandaCoinChanged(const FOnAttributeChangeData& Data)
+{
+	float NewValue = Data.NewValue;
+	float OldValue = Data.OldValue;
+
+	PandaCoins = NewValue;
+
+	UpdatePandaCoinText();
 }
 
 void USATORI_StatsComponent::UpdateHealthBarPercent()
@@ -107,6 +125,20 @@ void USATORI_StatsComponent::UpdateHealthBarText()
 		if (MainUI)
 		{
 			MainUI->SetHealthTextBlock(Health, MaxHealth);
+		}
+	}
+}
+
+void USATORI_StatsComponent::UpdatePandaCoinText()
+{
+	// Controller
+	ASATORI_PlayerController* PlayerController = Cast<ASATORI_PlayerController>(SatoriCharacter->GetController());
+	if (PlayerController)
+	{
+		USATORI_MainUI* MainUI = PlayerController->GetSatoriMainUI();
+		if (MainUI)
+		{
+			MainUI->SetCurrencyText(PandaCoins);
 		}
 	}
 }

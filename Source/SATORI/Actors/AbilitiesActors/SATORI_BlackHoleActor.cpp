@@ -5,6 +5,7 @@
 #include "Kismet/KismetMathLibrary.h"
 #include "Components/SphereComponent.h"
 #include "GameFramework/ProjectileMovementComponent.h"
+#include "SATORI/AI/Character/SATORI_AICharacter.h"
 #include "SATORI/FunctionLibrary/SATORI_BlueprintLibrary.h"
 
 ASATORI_BlackHoleActor::ASATORI_BlackHoleActor()
@@ -45,6 +46,7 @@ void ASATORI_BlackHoleActor::OnOverlapCollisionSphere(UPrimitiveComponent* Overl
 		USATORI_BlueprintLibrary::ApplyGameplayEffectDamage(OtherActor, Damage, OtherActor, DamageGameplayEffect);
 		Character->AddGameplayTag(TagToAddWhenTrapped);
 		ArrayTrapped.AddUnique(Character);
+		//USATORI_BlueprintLibrary::ApplyGameplayEffectDamage(OtherActor, Damage, OtherActor, DamageGameplayEffect);
 	}
 	if (!Character->HasMatchingGameplayTag(PlayerTag) && !Character->HasMatchingGameplayTag(EnemyTag))
 	{
@@ -77,5 +79,3 @@ void ASATORI_BlackHoleActor::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 
 }
-
-

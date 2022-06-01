@@ -32,7 +32,7 @@ void ASATORI_PushActor::OnOverlapSphere(
 	const FHitResult& SweepResult)
 {
 
-	ASATORI_CharacterBase* Character = Cast<ASATORI_CharacterBase>(OtherActor);
+	ASATORI_AICharacter* Character = Cast<ASATORI_AICharacter>(OtherActor);
 
 	if (!Character) 
 	{
@@ -41,8 +41,9 @@ void ASATORI_PushActor::OnOverlapSphere(
 	}
 
 	if(Character->HasMatchingGameplayTag(EnemyTag))
-	{
-		USATORI_BlueprintLibrary::ApplyGameplayEffectDamage(OtherActor, Damage, OtherActor, DamageGameplayEffect);
+	{	
+		float dmg_done = USATORI_BlueprintLibrary::ApplyGameplayEffectDamage(OtherActor, Damage, OtherActor, DamageGameplayEffect);
+		Character->sendDamage(dmg_done);
 		ArrayPushed.AddUnique(Cast<UPrimitiveComponent>(OtherActor->GetRootComponent()));
 	}
 	if(!Character->HasMatchingGameplayTag(PlayerTag) && !Character->HasMatchingGameplayTag(EnemyTag))

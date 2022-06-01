@@ -45,15 +45,15 @@ public:
 		bool Defensive = false;
 
 	UPROPERTY(EditDefaultsOnly)
-		float RemainingSeconds = 5.5;
+		float RemainingSeconds = 2.0f;
 
 private:
 
 	ASATORI_AICharacter* Enemy = nullptr;
-	
-	void MoveBackwards(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo);
 
 	void OnTimerFinished(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo);
 
+	void OnEndAb(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo);
 
+	int iteracion = 0;
 };
