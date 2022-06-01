@@ -35,7 +35,7 @@ ASATORI_PullActor::ASATORI_PullActor()
 void ASATORI_PullActor::OnOverlapCollisionSphere(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 
-	ASATORI_AICharacter* Character = Cast<ASATORI_AICharacter>(OtherActor);
+	ASATORI_CharacterBase* Character = Cast<ASATORI_CharacterBase>(OtherActor);
 
 	if (!Character)
 	{
@@ -45,8 +45,9 @@ void ASATORI_PullActor::OnOverlapCollisionSphere(UPrimitiveComponent* Overlapped
 
 	if (Character->HasMatchingGameplayTag(EnemyTag))
 	{
+		ASATORI_AICharacter* AI = Cast<ASATORI_AICharacter>(Character);
 		float dmg_done = USATORI_BlueprintLibrary::ApplyGameplayEffectDamage(OtherActor, Damage, OtherActor, DamageGameplayEffect);
-		Character->sendDamage(dmg_done);
+		AI->sendDamage(dmg_done);
 		Pulling = Cast<UPrimitiveComponent>(OtherActor->GetRootComponent());
 		GetWorldTimerManager().ClearTimer(TimerHandleDestroy);
 	}

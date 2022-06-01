@@ -35,7 +35,7 @@ ASATORI_MissileActor::ASATORI_MissileActor()
 //Collision for exploding
 void ASATORI_MissileActor::OnOverlapCollisionSphere(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	ASATORI_CharacterBase* Character = Cast<ASATORI_CharacterBase>(OtherActor);
+	ASATORI_AICharacter* Character = Cast<ASATORI_AICharacter>(OtherActor);
 
 	if (!Character)
 	{
