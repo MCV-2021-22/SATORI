@@ -40,7 +40,9 @@ void USATORI_StatsComponent::InitializeStatsAttributes(ASATORI_PlayerState* Play
 	{
 		MaxHealth = PlayerAttributes->GetMaxHealth();
 		Health = MaxHealth;
+		PandaCoins = PlayerAttributes->GetGold();
 		PlayerAttributes->InitHealth(Health);
+		PlayerAttributes->InitGold(PandaCoins);
 
 		MaxMana = PlayerAttributes->GetMaxMana();
 		Mana = MaxMana;
@@ -52,6 +54,9 @@ void USATORI_StatsComponent::InitializeStatsAttributes(ASATORI_PlayerState* Play
 		// Update Health UI 
 		UpdateManaBarPercent();
 		UpdateManaBarText();
+
+		// Update Coins
+		UpdatePandaCoinText();
 	}
 }
 
@@ -71,6 +76,9 @@ void USATORI_StatsComponent::BindAttributeChage(ASATORICharacter* PlayerCharacte
 
 		MaxManaChangedDelegateHandle = AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate
 		(PlayerAttributes->GetMaxManaAttribute()).AddUObject(this, &USATORI_StatsComponent::MaxManaChanged);
+		
+		PandaCoinChangedDelegateHandle = AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate
+		(PlayerAttributes->GetGoldAttribute()).AddUObject(this, &USATORI_StatsComponent::PandaCoinChanged);
 	}
 }
 
@@ -97,10 +105,10 @@ void USATORI_StatsComponent::MaxHealthChanged(const FOnAttributeChangeData& Data
 }
 
 void USATORI_StatsComponent::ManaChanged(const FOnAttributeChangeData& Data)
-{
+{	
 	float NewValue = Data.NewValue;
 	float OldValue = Data.OldValue;
-
+	
 	Mana = NewValue;
 
 	UpdateManaBarPercent();
@@ -116,6 +124,16 @@ void USATORI_StatsComponent::MaxManaChanged(const FOnAttributeChangeData& Data)
 
 	UpdateManaBarPercent();
 	UpdateManaBarText();
+}
+
+void USATORI_StatsComponent::PandaCoinChanged(const FOnAttributeChangeData& Data)
+{
+	float NewValue = Data.NewValue;
+	float OldValue = Data.OldValue;
+	
+	PandaCoins = NewValue;
+
+	UpdatePandaCoinText();
 }
 
 void USATORI_StatsComponent::UpdateHealthBarPercent()
@@ -148,7 +166,6 @@ void USATORI_StatsComponent::UpdateHealthBarText()
 
 void USATORI_StatsComponent::UpdateManaBarPercent()
 {
-	// Controller
 	ASATORI_PlayerController* PlayerController = Cast<ASATORI_PlayerController>(SatoriCharacter->GetController());
 	if (PlayerController)
 	{
@@ -170,6 +187,20 @@ void USATORI_StatsComponent::UpdateManaBarText()
 		if (MainUI)
 		{
 			MainUI->SetManaTextBlock(Mana, MaxMana);
+		}
+	}
+}
+
+void USATORI_StatsComponent::UpdatePandaCoinText()
+{
+	// Controller
+	ASATORI_PlayerController* PlayerController = Cast<ASATORI_PlayerController>(SatoriCharacter->GetController());
+	if (PlayerController)
+	{
+		USATORI_MainUI* MainUI = PlayerController->GetSatoriMainUI();
+		if (MainUI)
+		{
+			MainUI->SetCurrencyText(PandaCoins);
 		}
 	}
 }

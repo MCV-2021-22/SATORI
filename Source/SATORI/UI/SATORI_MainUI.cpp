@@ -4,6 +4,9 @@
 #include "UI/SATORI_MainUI.h"
 #include "Health/SATORI_HealthWidget.h"
 #include "Mana/SATORI_ManaWidget.h"
+#include "Currency/SATORI_CurrencyWidget.h"
+#include "Abilities/SATORI_ChangeAbilitiesWidget.h"
+#include "Engine/Texture2D.h"
 
 bool USATORI_MainUI::Initialize()
 {
@@ -36,4 +39,15 @@ void USATORI_MainUI::SetManaTextBlock(float Mana, float MaxMana)
 	uint32 ManaInterger = FMath::RoundHalfFromZero(Mana);
 	uint32 MaxManaInterger = FMath::RoundHalfFromZero(MaxMana);
 	PlayerMana->SetManaTextBlock(FText::FromString(FString::Printf(TEXT("%i / %i"), ManaInterger, MaxManaInterger)));
+}
+
+void USATORI_MainUI::SetCurrencyText(float currency)
+{
+	uint32 CurrencyInterger = FMath::RoundHalfFromZero(currency);
+	PlayerCurrency->SetCurrencyText(FText::FromString(FString::Printf(TEXT("%i"), CurrencyInterger)));
+}
+
+void USATORI_MainUI::SetAbilityIcon(UTexture2D* NewIcons)
+{
+	PlayerAbilitiesWidget->ChangeAbilityIcons(NewIcons);
 }

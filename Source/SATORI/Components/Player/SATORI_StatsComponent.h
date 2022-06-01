@@ -44,7 +44,11 @@ protected:
 	virtual void ManaChanged(const FOnAttributeChangeData& Data);
 	virtual void MaxManaChanged(const FOnAttributeChangeData& Data);
 
+	//Pandacoins
+	virtual void PandaCoinChanged(const FOnAttributeChangeData& Data);
+	
 protected:
+
 	// Attributes 
 	TWeakObjectPtr<USATORI_AttributeSet> PlayerAttributes;
 	// Ability Component
@@ -57,6 +61,8 @@ protected:
 	float MaxMana = 0.f;
 	float Mana = 0.f;
 
+	float PandaCoins = 0.0f;
+
 	// Delegates
 	FDelegateHandle HealthChangedDelegateHandle;
 	FDelegateHandle MaxHealthChangedDelegateHandle;
@@ -64,6 +70,8 @@ protected:
 	FDelegateHandle ManaChangedDelegateHandle;
 	FDelegateHandle MaxManaChangedDelegateHandle;
 
+	FDelegateHandle PandaCoinChangedDelegateHandle;
+	
 	// Update UI
 	void UpdateHealthBarPercent();
 	void UpdateHealthBarText();
@@ -71,5 +79,7 @@ protected:
 	void UpdateManaBarPercent();
 	void UpdateManaBarText();
 
+	void UpdatePandaCoinText();
+	
 	ASATORICharacter* SatoriCharacter = nullptr;
 };
