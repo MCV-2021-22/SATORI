@@ -39,6 +39,7 @@ int ASATORI_Spawner::GetMaxEnemies() const
 
 void ASATORI_Spawner::AddNumEnemies(int Num)
 {
+
 	NumEnemies+=Num;
 }
 

@@ -81,7 +81,7 @@ void USATORI_DecoyAbility::EventReceived(FGameplayTag EventTag, FGameplayEventDa
 		}
 
 		//Aiming when Targeting Enemy
-		if (Character->ActorHasTag(PlayerTargetingTag.GetTagName()))
+		if (Character->HasMatchingGameplayTag(PlayerTargetingTag))
 		{
 			UCameraComponent* CameraComponent = Character->FindComponentByClass<UCameraComponent>();
 			if (!CameraComponent)
@@ -103,12 +103,11 @@ void USATORI_DecoyAbility::EventReceived(FGameplayTag EventTag, FGameplayEventDa
 			SpawnTransform.SetRotation(Character->GetActorRotation().Quaternion());
 		}
 
-		//Missile Actor creation
+		//Decoy Actor creation
 		ASATORI_DecoyActor* Decoy = GetWorld()->SpawnActorDeferred<ASATORI_DecoyActor>(DecoyActor, SpawnTransform, GetOwningActorFromActorInfo(),
 			Character, ESpawnActorCollisionHandlingMethod::AlwaysSpawn);
 		Decoy->DamageGameplayEffect = DamageGameplayEffect;
 		Decoy->Damage = Damage;
-		Decoy->Speed = Speed;
 		Decoy->TimeToDestroy = TimeToDestroy;
 		Decoy->FinishSpawning(SpawnTransform);
 	}

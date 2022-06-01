@@ -82,7 +82,7 @@ void USATORI_PullAbility::EventReceived(FGameplayTag EventTag, FGameplayEventDat
 		}
 
 		//Aiming when Targeting Enemy
-		if (Character->ActorHasTag(PlayerTargetingTag.GetTagName()))
+		if (Character->HasMatchingGameplayTag(PlayerTargetingTag))
 		{
 			UCameraComponent* CameraComponent = Character->FindComponentByClass<UCameraComponent>();
 			if (!CameraComponent)
@@ -104,13 +104,12 @@ void USATORI_PullAbility::EventReceived(FGameplayTag EventTag, FGameplayEventDat
 			SpawnTransform.SetRotation(Character->GetActorRotation().Quaternion());
 		}
 
-		//Missile Actor creation
+		//Pull Actor creation
 		ASATORI_PullActor* Pull = GetWorld()->SpawnActorDeferred<ASATORI_PullActor>(PullActor, SpawnTransform, GetOwningActorFromActorInfo(),
 			Character, ESpawnActorCollisionHandlingMethod::AlwaysSpawn);
 		Pull->DamageGameplayEffect = DamageGameplayEffect;
 		Pull->Damage = Damage;
-		Pull->SpeedForward = SpeedForward;
-		Pull->SpeedPulling = SpeedPulling;
+		Pull->Range = Range;
 		Pull->TimeToDestroy = TimeToDestroy;
 		Pull->FinishSpawning(SpawnTransform);
 

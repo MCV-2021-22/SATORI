@@ -9,9 +9,11 @@
 #include "Data/SATORI_AbilityDataAsset.h"
 #include "BehaviorTree/BehaviorTree.h"
 #include "AIController.h"
+#include "Character/SATORI_PlayerState.h"
 #include "Perception/PawnSensingComponent.h"
 #include "DrawDebugHelpers.h"
 #include "SATORICharacter.h"
+#include "Spawned/SATORI_Spawned.h"
 
 // Sets default values
 ASATORI_AICharacter::ASATORI_AICharacter()
@@ -48,15 +50,16 @@ void ASATORI_AICharacter::BeginPlay()
 
 		AddAICharacterAbilities();
 	}
-}
 
-void ASATORI_AICharacter::Tick(float DeltaSeconds)
-{
-	Super::Tick(DeltaSeconds);
-	/*if (EnemyType == SATORIEnemyType::Melee)
+
+	ASATORI_CharacterBase* Character = Cast<ASATORI_CharacterBase>(this);
+	if (Character)
 	{
-		CheckPlayerWithRayCast();
-	}*/
+		FGameplayTagContainer TagContainer;
+		Character->GetOwnedGameplayTags(TagContainer);
+		AbilitySystemComponent->AddLooseGameplayTags(TagContainer);
+	}
+
 }
 
 void ASATORI_AICharacter::InitializeAttributes()
@@ -81,6 +84,8 @@ void ASATORI_AICharacter::InitializeAttributes()
 	{
 		FActiveGameplayEffectHandle ActiveGEHandle = AbilitySystemComponent->ApplyGameplayEffectSpecToTarget(*NewHandle.Data.Get(), AbilitySystemComponent.Get());
 	}
+
+
 }
 
 void ASATORI_AICharacter::AddAICharacterAbilities()
@@ -127,19 +132,24 @@ void ASATORI_AICharacter::PossessedBy(AController* NewController)
 	UE_LOG(LogTemp, Display, TEXT("LLEGAMOS A VER SI SE LLAMA A ESTA FUNCION PADRE"));
 
 	
+
 	if (Cast<AAIController>(NewController) != nullptr) {
-		int a = 1;
+
+		
 		//AddGameplayTag(FGameplayTag::RequestGameplayTag("PossessedBy.AI"));
+		Tags.Add("PossessedBy.AI");
 
 		UE_LOG(LogTemp, Display, TEXT("EJECUTAMOS EL BT"));
 
 		AAIController* controller = Cast<AAIController>(NewController);
 
+		AttributeSetBase = AttributeSet;
 		btree = bte.LoadSynchronous();
 		controller->RunBehaviorTree(btree);
 
+		InitializeAttributes();
 		AddAICharacterAbilities();
-
+		SetHealth(GetMaxHealth());
 
 	}
 
@@ -207,4 +217,74 @@ bool ASATORI_AICharacter::CheckPlayerWithRayCast()
 		isInFrontPlayer = false;
 	}
 	return isInFrontPlayer;
+}
+
+void ASATORI_AICharacter::Tick(float DeltaSeconds)
+{
+	if(bursting)
+	{
+		time_burst -= DeltaSeconds;
+		if(time_burst <= 0.f)
+		{
+			bursting = false;
+		}
+	}
+	Super::Tick(DeltaSeconds);
+}
+
+void ASATORI_AICharacter::sendDamage(float dmg)
+{
+	if(!bursting)
+	{
+		time_burst = 5.f;
+		dmg_burst = 0.f;
+		bursting = true;
+
+	}
+
+	dmg_burst += dmg;
+
+
+	float max_health_possible = GetMaxHealth();
+	UE_LOG(LogTemp, Display, TEXT("La max health es: %f"), max_health_possible);
+
+	if(dmg_burst>= max_health_possible*0.2f)
+	{
+
+		ASATORI_CharacterBase* pryeba = Cast<ASATORI_CharacterBase>(this);
+		AddGameplayTag(FGameplayTag::RequestGameplayTag("State.Burst"));
+
+		//AbilitySystemComponent->AddLooseGameplayTag(FGameplayTag::RequestGameplayTag("State.Burst"));
+	}
+	
+	float life = GetHealth();
+
+	if(life <=0.0f)
+	{
+		UE_LOG(LogTemp, Display, TEXT("La vida es: %f"), life);
+		ASATORI_Spawned* Spawned = Cast<ASATORI_Spawned>(this);
+		
+
+		if (Spawned != nullptr)
+		{
+			
+			//Spawned->Spawner->AddNumEnemies(1);
+			float b = Spawned->SpawnedDie();
+
+			
+			Die();
+		}
+		else
+		{
+			Die();
+		}
+		
+	}
+
+
+}
+
+void ASATORI_AICharacter::Die()
+{
+	Destroy();
 }

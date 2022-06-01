@@ -4,6 +4,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Engine/Classes/Camera/CameraComponent.h"
+#include "SATORI/AI/Character/SATORI_AICharacter.h"
 
 //Debug
 #include "DrawDebugHelpers.h"
@@ -156,16 +157,19 @@ void USATORI_TargetSystemComponent::TargetLockOff()
 	bTargetLocked = false;
 
 	//Remove tags
-	CharacterTargeting->RemoveGameplayTag(TagApliedTargeting);
-
 	if (CharacterTargeted)
 	{
 		CharacterTargeted->RemoveGameplayTag(TagApliedToEnemyTargeted);
 		CharacterTargeted = nullptr;
 	}
 
+	CharacterTargeting->RemoveGameplayTag(TagApliedTargeting);
+
 	LockedOnTargetActor = nullptr;
 	
+	//For strafe anims
+	//ControlRotation(false);
+
 	//Ignore controller input reset
 	OwnerPlayerController->ResetIgnoreLookInput();
 
@@ -182,11 +186,14 @@ void USATORI_TargetSystemComponent::TargetLockOn(AActor* TargetToLockOn)
 	bTargetLocked = true;
 
 	//Add tags
-	CharacterTargeted = Cast<ASATORI_CharacterBase>(TargetToLockOn);
+	CharacterTargeted = Cast<ASATORI_AICharacter>(TargetToLockOn);
 	CharacterTargeted->AddGameplayTag(TagApliedToEnemyTargeted);
 	
 	CharacterTargeting->AddGameplayTag(TagApliedTargeting);
 	
+	//For strafe anims
+	//ControlRotation(true);
+
 	//Ignore controller input
 	OwnerPlayerController->SetIgnoreLookInput(true);
 
@@ -508,4 +515,16 @@ bool USATORI_TargetSystemComponent::IsLocked()
 float USATORI_TargetSystemComponent::GetDistanceFromCharacter(const AActor* OtherActor)
 {
 	return OwnerActor->GetDistanceTo(OtherActor);
+}
+
+void USATORI_TargetSystemComponent::ControlRotation(const bool ShouldControlRotation)
+{
+
+	OwnerPawn->bUseControllerRotationYaw = ShouldControlRotation;
+
+	UCharacterMovementComponent* CharacterMovementComponent = OwnerPawn->FindComponentByClass<UCharacterMovementComponent>();
+	if (CharacterMovementComponent)
+	{
+		CharacterMovementComponent->bOrientRotationToMovement = !ShouldControlRotation;
+	}
 }

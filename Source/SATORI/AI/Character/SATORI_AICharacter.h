@@ -68,15 +68,23 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Awareness)
 	UPawnSensingComponent* PawnSensor;
 
+	bool GetIsInFront() const { return isInFrontPlayer; }
+
+	void sendDamage(float dmg);
+
 	float getDistAttack();
 
-	bool GetIsInFront() const { return isInFrontPlayer; }
+	void Die();
+
+	// Default attributes for a character for initializing
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Player|GameplayEffect")
+		TArray<TSubclassOf<UGameplayEffect>> PassiveGameplayEffects;
+
 protected:
 	// Default attributes for a character for initializing on spawn/respawn.
 	// This is an instant GE that overrides the values for attributes that get reset on spawn/respawn.
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "AI|GAS")
 	TSubclassOf<UGameplayEffect> DefaultAttributes;
-
 	
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "AI|GAS")
 	TArray<TSubclassOf<USATORI_GameplayAbility>> AICharacterAbilities;
@@ -96,4 +104,11 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	SATORIEnemyType EnemyType;
+
+	float dmg_burst = 0.f;
+
+	float time_burst = 5.f;
+
+	bool bursting = false;
+
 };

@@ -4,6 +4,7 @@
 #include "Components/SphereComponent.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "Kismet/GameplayStatics.h"
+#include "GameFramework/ProjectileMovementComponent.h"
 #include "SATORI/AI/Character/SATORI_AICharacter.h"
 #include "SATORI/FunctionLibrary/SATORI_BlueprintLibrary.h"
 
@@ -11,19 +12,19 @@ ASATORI_DecoyActor::ASATORI_DecoyActor()
 {
 	PrimaryActorTick.bCanEverTick = false;
 
-	float SphereRadiusOfAction = 600.0f;
-
 	StaticMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("StaticMesh"));
 	RootComponent = StaticMeshComponent;
 	StaticMeshComponent->SetCollisionProfileName(UCollisionProfile::BlockAll_ProfileName);
 
 	//If collides will lure enemies
 	CollisionSphereComponent = CreateDefaultSubobject<USphereComponent>(TEXT("CollisionSphere"));
-	CollisionSphereComponent->SetSphereRadius(SphereRadiusOfAction);
 	CollisionSphereComponent->SetCollisionProfileName(FName(TEXT("IgnoreSelfOverlapsAll")));
 	CollisionSphereComponent->SetupAttachment(RootComponent);
 	CollisionSphereComponent->SetGenerateOverlapEvents(true);
 	CollisionSphereComponent->OnComponentBeginOverlap.AddDynamic(this, &ASATORI_DecoyActor::OnOverlapCollisionSphere);
+
+	ProjectileMovementComponent = CreateDefaultSubobject<UProjectileMovementComponent>("ProjectileMovement");
+	ProjectileMovementComponent->bIsHomingProjectile = true;
 
 	//Debug
 	CollisionSphereComponent->bHiddenInGame = false;
@@ -43,7 +44,8 @@ void ASATORI_DecoyActor::OnOverlapCollisionSphere(UPrimitiveComponent* Overlappe
 
 	if (Character->HasMatchingGameplayTag(EnemyTag))
 	{
-		USATORI_BlueprintLibrary::ApplyGameplayEffectDamage(OtherActor, Damage, OtherActor, DamageGameplayEffect);
+		float dmg_done = USATORI_BlueprintLibrary::ApplyGameplayEffectDamage(OtherActor, Damage, OtherActor, DamageGameplayEffect);
+		Character->sendDamage(dmg_done);
 		Character->AddGameplayTag(TagGrantedWhenLured);
 		ArrayLured.AddUnique(OtherActor);
 	}
@@ -55,11 +57,15 @@ void ASATORI_DecoyActor::DestroyMyself()
 	{
 		ASATORI_AICharacter* Character = Cast<ASATORI_AICharacter>(Actor);
 		Character->RemoveGameplayTag(TagGrantedWhenLured);
+		USATORI_BlueprintLibrary::ApplyGameplayEffectDamage(Actor, Damage, Actor, DamageGameplayEffect);
 	}
 	Destroy();
 }
 
-
+////
+//TO DO: 
+////
+//Improve overall behavior of homing when targeting
 void ASATORI_DecoyActor::BeginPlay()
 {
 	Super::BeginPlay();
@@ -69,13 +75,21 @@ void ASATORI_DecoyActor::BeginPlay()
 		UE_LOG(LogTemp, Display, TEXT("[%s] ASATORI_DecoyActor: Tag is not valid ... "), *GetName());
 	}
 
+	ProjectileMovementComponent->HomingTargetComponent = nullptr;
+
+	//Check if Player is currently targeting an enemy
 	TArray<AActor*> Actors;
-	UGameplayStatics::GetAllActorsWithTag(GetWorld(), TargetActorWithTag.GetTagName(), Actors);
-	if (Actors.Num() != 0)
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(), ASATORI_AICharacter::StaticClass(), Actors);
+	for (AActor* Actor : Actors)
 	{
-		Target = Actors.Pop();
+		ASATORI_CharacterBase* Character = Cast<ASATORI_AICharacter>(Actor);
+		if (Character->HasMatchingGameplayTag(TargetActorWithTag))
+		{
+			Target = Actor;
+			ProjectileMovementComponent->HomingTargetComponent = Target->GetRootComponent();
+		}
 	}
-	
+
 	//Set max time before auto destruc if not collides
 	GetWorldTimerManager().SetTimer(TimerHandleDestroy, this, &ASATORI_DecoyActor::DestroyMyself, TimeToDestroy, false);
 }
