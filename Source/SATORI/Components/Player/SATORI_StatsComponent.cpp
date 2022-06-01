@@ -27,12 +27,12 @@ void USATORI_StatsComponent::BeginPlay()
 
 	if (SatoriCharacter && PlayerState)
 	{
-		InitializeHealthAttribute(PlayerState);
+		InitializeStatsAttributes(PlayerState);
 		BindAttributeChage(SatoriCharacter);
 	}
 }
 
-void USATORI_StatsComponent::InitializeHealthAttribute(ASATORI_PlayerState* PlayerState)
+void USATORI_StatsComponent::InitializeStatsAttributes(ASATORI_PlayerState* PlayerState)
 {
 	// Initialize attributes from player state 
 	PlayerAttributes = PlayerState->GetSatoriAttributeSet();
@@ -42,9 +42,16 @@ void USATORI_StatsComponent::InitializeHealthAttribute(ASATORI_PlayerState* Play
 		Health = MaxHealth;
 		PlayerAttributes->InitHealth(Health);
 
+		MaxMana = PlayerAttributes->GetMaxMana();
+		Mana = MaxMana;
+		PlayerAttributes->InitMana(Mana);
+
 		// Update Health UI 
 		UpdateHealthBarPercent();
 		UpdateHealthBarText();
+		// Update Health UI 
+		UpdateManaBarPercent();
+		UpdateManaBarText();
 	}
 }
 
@@ -58,6 +65,12 @@ void USATORI_StatsComponent::BindAttributeChage(ASATORICharacter* PlayerCharacte
 
 		MaxHealthChangedDelegateHandle = AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate
 		(PlayerAttributes->GetMaxHealthAttribute()).AddUObject(this, &USATORI_StatsComponent::MaxHealthChanged);
+
+		ManaChangedDelegateHandle = AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate
+		(PlayerAttributes->GetManaAttribute()).AddUObject(this, &USATORI_StatsComponent::ManaChanged);
+
+		MaxManaChangedDelegateHandle = AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate
+		(PlayerAttributes->GetMaxManaAttribute()).AddUObject(this, &USATORI_StatsComponent::MaxManaChanged);
 	}
 }
 
@@ -81,6 +94,28 @@ void USATORI_StatsComponent::MaxHealthChanged(const FOnAttributeChangeData& Data
 
 	UpdateHealthBarPercent();
 	UpdateHealthBarText();
+}
+
+void USATORI_StatsComponent::ManaChanged(const FOnAttributeChangeData& Data)
+{
+	float NewValue = Data.NewValue;
+	float OldValue = Data.OldValue;
+
+	Mana = NewValue;
+
+	UpdateManaBarPercent();
+	UpdateManaBarText();
+}
+
+void USATORI_StatsComponent::MaxManaChanged(const FOnAttributeChangeData& Data)
+{
+	float NewValue = Data.NewValue;
+	float OldValue = Data.OldValue;
+
+	MaxMana = NewValue;
+
+	UpdateManaBarPercent();
+	UpdateManaBarText();
 }
 
 void USATORI_StatsComponent::UpdateHealthBarPercent()
@@ -107,6 +142,34 @@ void USATORI_StatsComponent::UpdateHealthBarText()
 		if (MainUI)
 		{
 			MainUI->SetHealthTextBlock(Health, MaxHealth);
+		}
+	}
+}
+
+void USATORI_StatsComponent::UpdateManaBarPercent()
+{
+	// Controller
+	ASATORI_PlayerController* PlayerController = Cast<ASATORI_PlayerController>(SatoriCharacter->GetController());
+	if (PlayerController)
+	{
+		USATORI_MainUI* MainUI = PlayerController->GetSatoriMainUI();
+		if (MainUI)
+		{
+			MainUI->SetManaBarPercentage(Mana / MaxMana);
+		}
+	}
+}
+
+void USATORI_StatsComponent::UpdateManaBarText()
+{
+	// Controller
+	ASATORI_PlayerController* PlayerController = Cast<ASATORI_PlayerController>(SatoriCharacter->GetController());
+	if (PlayerController)
+	{
+		USATORI_MainUI* MainUI = PlayerController->GetSatoriMainUI();
+		if (MainUI)
+		{
+			MainUI->SetManaTextBlock(Mana, MaxMana);
 		}
 	}
 }

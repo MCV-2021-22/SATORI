@@ -42,6 +42,10 @@ void USATORI_AttributeSet::PreAttributeChange(const FGameplayAttribute& Attribut
 	{
 		NewValue = FMath::Clamp<float>(NewValue, 1, 10);
 	}
+	else if (Attribute == GetMaxManaAttribute())
+	{
+		AdjustAttributeForMaxChange(Mana, MaxMana, NewValue, GetManaAttribute());
+	}
 }
 
 void USATORI_AttributeSet::PostGameplayEffectExecute(const struct FGameplayEffectModCallbackData& Data)

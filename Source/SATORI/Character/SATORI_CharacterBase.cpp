@@ -96,6 +96,22 @@ float ASATORI_CharacterBase::GetMaxHealth() const
 	return 0.0f;
 }
 
+float ASATORI_CharacterBase::GetMana() const
+{
+	if (AttributeSetBase.IsValid())
+		return AttributeSetBase->GetMana();
+
+	return 0.0f;
+}
+
+float ASATORI_CharacterBase::GetMaxMana() const
+{
+	if (AttributeSetBase.IsValid())
+		return AttributeSetBase->GetMaxMana();
+
+	return 0.0f;
+}
+
 float ASATORI_CharacterBase::GetDefense() const
 {
 	if (AttributeSetBase.IsValid())
@@ -138,4 +154,10 @@ void ASATORI_CharacterBase::SetHealth(float Health)
 {
 	if (AttributeSetBase.IsValid())
 		AttributeSetBase->SetHealth(Health);
+}
+
+void ASATORI_CharacterBase::SetMana(float Mana)
+{
+	if (AttributeSetBase.IsValid())
+		AttributeSetBase->SetMana(Mana);
 }

@@ -50,6 +50,14 @@ public:
 	ATTRIBUTE_ACCESSORS(USATORI_AttributeSet, MaxHealth);
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "SATORI|Attributes")
+	FGameplayAttributeData Mana;
+	ATTRIBUTE_ACCESSORS(USATORI_AttributeSet, Mana);
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "SATORI|Attributes")
+	FGameplayAttributeData MaxMana;
+	ATTRIBUTE_ACCESSORS(USATORI_AttributeSet, MaxMana);
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "SATORI|Attributes")
 	FGameplayAttributeData MoveSpeed;
 	ATTRIBUTE_ACCESSORS(USATORI_AttributeSet, MoveSpeed);
 
