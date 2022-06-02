@@ -6,9 +6,9 @@
 #include "Abilities/GameplayAbility.h"
 #include "SATORI_GameplayAbility.generated.h"
 
-/**
- * 
- */
+
+class UTexture2D;
+
 UCLASS()
 class SATORI_API USATORI_GameplayAbility : public UGameplayAbility
 {
@@ -35,4 +35,11 @@ public:
 	// Gameplay Effect
 	//virtual void ApplyEffectContainer();
 	//virtual void ApplyEffectContainerSpec();
+
+	// Ability Property
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UTexture2D* AbilityIcon;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FName AbilityName;
 };

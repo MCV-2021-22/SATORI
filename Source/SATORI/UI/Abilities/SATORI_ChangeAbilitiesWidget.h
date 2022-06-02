@@ -4,10 +4,13 @@
 
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
+#include "Data/SATORI_ChooseAbilitiesDatas.h"
+#include "Components/Player/SATORI_GameplayAbilityComponent.h"
 #include "SATORI_ChangeAbilitiesWidget.generated.h"
 
 class UImage;
 class UTexture2D;
+struct FSATORI_AbilitiesDatas;
 
 UCLASS()
 class SATORI_API USATORI_ChangeAbilitiesWidget : public UUserWidget
@@ -17,8 +20,22 @@ class SATORI_API USATORI_ChangeAbilitiesWidget : public UUserWidget
 public:
 	bool Initialize() override;
 
-	UPROPERTY(meta = (BindWidget))
-	UImage* AbilityIcons;
-
 	void ChangeAbilityIcons(UTexture2D* NewIcons);
+
+	virtual void NativeConstruct() override;
+	virtual void NativeDestruct() override;
+
+	/*void NativeConstruct() {
+
+		->GamePlayer->GetComponb->OnAbilityChanged.AddUObject(this, &USATORI_ChangeAbilitiesWidget::OnAbilityChanged)
+	}
+	void NativeDestruct() {
+
+		->GamePlayer->GetComponb->OnAbilityChanged.RemoveO
+	}*/
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void BP_OnData(const FSATORI_AbilitiesDatas& Data);
+
+	
 };
