@@ -145,5 +145,15 @@ protected:
 
 	/** Handler for when a touch input stops. */
 	void TouchStopped(ETouchIndex::Type FingerIndex, FVector Location);
+
+//Cheats
+public:
+
+	UFUNCTION(Exec)
+	void SetGodMode();
+
+	UFUNCTION(Exec)
+	void RestartStats();
+
 };
 
