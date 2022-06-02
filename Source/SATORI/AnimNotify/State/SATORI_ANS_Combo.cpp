@@ -4,7 +4,7 @@
 #include "AnimNotify/State/SATORI_ANS_Combo.h"
 #include "SATORICharacter.h"
 #include "Components/Player/SATORI_ComboSystemComponent.h"
-#include "Components/SphereComponent.h"
+#include "Components/CapsuleComponent.h"
 
 void USATORI_ANS_Combo::NotifyBegin(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, float TotalDuration)
 {
