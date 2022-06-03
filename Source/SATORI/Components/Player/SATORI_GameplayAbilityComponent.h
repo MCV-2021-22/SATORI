@@ -7,17 +7,29 @@
 #include "GAS/SATORI_GameplayAbility.h"
 #include "SATORI_GameplayAbilityComponent.generated.h"
 
+class USATORI_ChooseAbilitiesDatas;
 class USATORI_AbilityDataAsset;
+class USATORI_ChangeAbilitiesWidget;
 class UDataTable;
 
-USTRUCT()
+USTRUCT(BlueprintType)
 struct FSATORI_AbilitiesDatas
 {
 	GENERATED_BODY()
 
-	TSubclassOf<USATORI_GameplayAbility> CurrentAbilities;
-	bool isActive = false;
+	TSubclassOf<USATORI_GameplayAbility> CurrentAbility;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+		UTexture2D* AbilitiyIcon;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+		FText AbilityName;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+		bool isActive = false;
 };
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FSATORIChangeAbilityIcon, const FSATORI_AbilitiesDatas&, AbilityData);
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class SATORI_API USATORI_GameplayAbilityComponent : public UActorComponent
@@ -34,14 +46,40 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Abilities")
 	UDataTable* AbilitiesIconDatas;
 
-	UFUNCTION(BlueprintCallable)
-	bool TryChangeAbility();
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "ChooseAbilities")
+	USATORI_ChooseAbilitiesDatas* ChoosesAbilities;
+
+	/*UFUNCTION(BlueprintCallable)
+	bool TryChangeAbilityIcon();*/
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	TArray<TSubclassOf<USATORI_GameplayAbility>> EnabledAbilityClasses;
 
+	// ----------------- // ----------------------------------------
 	TMap<FName, FSATORI_AbilitiesDatas> PlayerGameplayAbility;
 
+	TArray<FName> PlayerAbilitiesNames;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	int CurrentAbilityValue = 0;
+
+	// Getters
+	TSubclassOf<USATORI_GameplayAbility> GetCurrentAbility();
+
+	UPROPERTY(BlueprintAssignable)
+	FSATORIChangeAbilityIcon AbilityIconChange;
+	
+	void NotifyAbilityChanged();
+	
+public:
+	UFUNCTION(BlueprintCallable)
+	bool TryChangeAbility();
+
+	//FSATORI_AbilitiesDatas* SetNextAbility();
+
+	//void UpdateAbilityIcon();
+	void SetNextAbility();
+	TSubclassOf<USATORI_GameplayAbility> GetCurrentSatoriAbility();
 protected:
 	
 	virtual void BeginPlay() override;
@@ -49,7 +87,7 @@ protected:
 private:
 
 	FName AbilityName;
-	USATORI_GameplayAbility* CurrentGameplayAbility;
+	TSubclassOf<USATORI_GameplayAbility> CurrentGameplayAbility;
 
 public:
 
