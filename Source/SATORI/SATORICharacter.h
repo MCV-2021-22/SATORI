@@ -18,7 +18,7 @@ class USATORI_AbilityMask;
 class USATORI_ANS_JumpSection;
 class USATORI_GameplayAbility;
 class USkeletalMeshComponent;
-class USphereComponent;
+class UCapsuleComponent;
 
 UCLASS(config=Game)
 class ASATORICharacter : public ASATORI_CharacterBase
@@ -30,6 +30,10 @@ public:
 
 	// For player controlled characters where the ASC lives on the Pawn
 	virtual void PossessedBy(AController* NewController) override;
+
+	/** Base turn rate, in deg/sec. Other scaling may affect final turn rate. */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	FName WeaponSocketName;
 
 	/** Base turn rate, in deg/sec. Other scaling may affect final turn rate. */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category=Camera)
@@ -56,7 +60,7 @@ public:
 	USkeletalMeshComponent* SwordComponent;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon")
-	USphereComponent* AttackingCollision;
+	UCapsuleComponent* AttackingCollision;
 
 	void SetComboJumpSection(USATORI_ANS_JumpSection* JumpSection);
 
