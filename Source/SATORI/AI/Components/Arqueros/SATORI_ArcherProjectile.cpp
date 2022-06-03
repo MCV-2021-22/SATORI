@@ -119,13 +119,7 @@ void ASATORI_ArcherProjectile::OnComponentBeginOverlap(
 		if(Player)
 		{
 			float dmg_done= USATORI_BlueprintLibrary::ApplyGameplayEffectDamage(OtherActor, Damage, OtherActor, DamageGameplayEffect);
-
-			
-		
 		}
 		Destroy();
 	}
-		
-
-
 }
