@@ -77,7 +77,7 @@ ASATORICharacter::ASATORICharacter()
 		AttackingCollision->SetCapsuleSize(20.f, 60.f, true);
 		AttackingCollision->SetCollisionProfileName("Pawn");
 		AttackingCollision->SetGenerateOverlapEvents(false);
-		AttackingCollision->AttachToComponent(SwordComponent);
+		AttackingCollision->AttachTo(SwordComponent);
 	}
 }
 
