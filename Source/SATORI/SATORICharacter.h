@@ -155,5 +155,14 @@ public:
 	UFUNCTION(Exec)
 	void RestartStats();
 
+	UFUNCTION(Exec)
+	void GetAllAbilities();
+
+	UFUNCTION(Exec)
+	void RemoveAllAbilities();
+
+	UFUNCTION(Exec)
+	void GetAbility(FText AbilityName);
+
 };
 

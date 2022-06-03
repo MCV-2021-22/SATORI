@@ -77,7 +77,7 @@ ASATORICharacter::ASATORICharacter()
 		AttackingCollision->InitSphereRadius(40.0f);
 		AttackingCollision->SetCollisionProfileName("Pawn");
 		AttackingCollision->SetGenerateOverlapEvents(false);
-		AttackingCollision->AttachTo(SwordComponent);
+		AttackingCollision->AttachToComponent(SwordComponent);
 	}
 }
 
@@ -403,4 +403,28 @@ void ASATORICharacter::RestartStats()
 {
 	SetHealth(GetMaxHealth());
 	SetMana(GetMaxMana());
+}
+
+void ASATORICharacter::GetAllAbilities()
+{
+	for (FSATORIGameplayAbilityInfo Ability : PlayerGameplayAbilityComponent->DefaultAbilities->Abilities)
+	{
+		GrantAbilityToPlayer(FGameplayAbilitySpec(Ability.SATORIAbility, 1, static_cast<uint32>(Ability.AbilityKeys), this));
+	}
+}
+
+void ASATORICharacter::RemoveAllAbilities()
+{
+	AbilitySystemComponent->ClearAllAbilities();
+}
+
+void ASATORICharacter::GetAbility(FText AbilityName)
+{
+	for (FSATORIGameplayAbilityInfo Ability : PlayerGameplayAbilityComponent->DefaultAbilities->Abilities)
+	{
+		if (Ability.AbilityName.ToString() == AbilityName.ToString())
+		{
+			GrantAbilityToPlayer(FGameplayAbilitySpec(Ability.SATORIAbility, 1, static_cast<uint32>(Ability.AbilityKeys), this));
+		}
+	}
 }

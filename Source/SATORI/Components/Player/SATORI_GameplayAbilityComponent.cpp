@@ -85,6 +85,14 @@ void USATORI_GameplayAbilityComponent::AddEnabledAbilityClass(TSubclassOf<USATOR
 	EnabledAbilityClasses.AddUnique(ClassToAdd);
 }
 
+void USATORI_GameplayAbilityComponent::RemoveEnabledAbilityClass(TSubclassOf<USATORI_GameplayAbility> ClassToRemove)
+{
+	if (IsAbilityClassEnabled(ClassToRemove))
+	{
+		EnabledAbilityClasses.Remove(ClassToRemove);
+	}
+}
+
 bool USATORI_GameplayAbilityComponent::IsAbilityClassEnabled(TSubclassOf<USATORI_GameplayAbility> ClassToCheck) const
 {
 	return EnabledAbilityClasses.Find(ClassToCheck) != INDEX_NONE;

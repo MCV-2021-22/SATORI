@@ -25,7 +25,7 @@ class SATORI_API USATORI_GameplayAbilityComponent : public UActorComponent
 	GENERATED_BODY()
 
 public:	
-	// Sets default values for this component's properties
+	
 	USATORI_GameplayAbilityComponent();
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Abilities")
@@ -41,15 +41,21 @@ public:
 	TArray<TSubclassOf<USATORI_GameplayAbility>> EnabledAbilityClasses;
 
 	TMap<FName, FSATORI_AbilitiesDatas> PlayerGameplayAbility;
+
 protected:
-	// Called when the game starts
+	
 	virtual void BeginPlay() override;
 
 private:
+
 	FName AbilityName;
 	USATORI_GameplayAbility* CurrentGameplayAbility;
 
+public:
+
 	void AddEnabledAbilityClass(TSubclassOf<USATORI_GameplayAbility> ClassToAdd);
+
+	void RemoveEnabledAbilityClass(TSubclassOf<USATORI_GameplayAbility> ClassToRemove);
 
 	bool IsAbilityClassEnabled(TSubclassOf<USATORI_GameplayAbility> ClassToCheck) const;
 };
