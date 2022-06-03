@@ -166,7 +166,10 @@ public:
 	void RemoveAllAbilities();
 
 	UFUNCTION(Exec)
-	void GetAbility(FText AbilityName);
+	void GetAbility(FName AbilityName);
+
+	UFUNCTION(Exec)
+	void GetEnabledAbilityName();
 
 };
 

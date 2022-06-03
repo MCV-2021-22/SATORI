@@ -77,7 +77,7 @@ ASATORICharacter::ASATORICharacter()
 		AttackingCollision->SetCapsuleSize(20.f, 60.f, true);
 		AttackingCollision->SetCollisionProfileName("Pawn");
 		AttackingCollision->SetGenerateOverlapEvents(false);
-		AttackingCollision->AttachToComponent(SwordComponent);
+		AttackingCollision->AttachTo(SwordComponent);
 	}
 }
 
@@ -407,24 +407,46 @@ void ASATORICharacter::RestartStats()
 
 void ASATORICharacter::GetAllAbilities()
 {
-	for (FSATORIGameplayAbilityInfo Ability : PlayerGameplayAbilityComponent->DefaultAbilities->Abilities)
+	for (TSubclassOf < USATORI_GameplayAbility > Ability : PlayerGameplayAbilityComponent->DisabledAbilityClasses)
 	{
-		GrantAbilityToPlayer(FGameplayAbilitySpec(Ability.SATORIAbility, 1, static_cast<uint32>(Ability.AbilityKeys), this));
+		PlayerGameplayAbilityComponent->EnabledAbilityClasses.AddUnique(Ability);
 	}
+	PlayerGameplayAbilityComponent->DisabledAbilityClasses.Empty();
 }
 
 void ASATORICharacter::RemoveAllAbilities()
 {
-	AbilitySystemComponent->ClearAllAbilities();
+	for (TSubclassOf < USATORI_GameplayAbility > Ability : PlayerGameplayAbilityComponent->EnabledAbilityClasses)
+	{
+		PlayerGameplayAbilityComponent->DisabledAbilityClasses.AddUnique(Ability);
+	}
+	AbilityToChoose = 0;
+	PlayerGameplayAbilityComponent->EnabledAbilityClasses.Empty();
 }
 
-void ASATORICharacter::GetAbility(FText AbilityName)
+void ASATORICharacter::GetAbility(FName AbilityName)
 {
-	for (FSATORIGameplayAbilityInfo Ability : PlayerGameplayAbilityComponent->DefaultAbilities->Abilities)
+	TSubclassOf < USATORI_GameplayAbility > AbilityToEnable;
+
+	for (TSubclassOf < USATORI_GameplayAbility > Ability : PlayerGameplayAbilityComponent->DisabledAbilityClasses)
 	{
-		if (Ability.AbilityName.ToString() == AbilityName.ToString())
+		FName GetAbilityName = Ability.GetDefaultObject()->GetAbilityName();
+		UE_LOG(LogTemp, Display, TEXT("GetAbilityName: %s"), *GetAbilityName.ToString());
+		UE_LOG(LogTemp, Display, TEXT("AbilityName: %s"), *AbilityName.ToString());
+		if (GetAbilityName.ToString() == AbilityName.ToString())
 		{
-			GrantAbilityToPlayer(FGameplayAbilitySpec(Ability.SATORIAbility, 1, static_cast<uint32>(Ability.AbilityKeys), this));
+			AbilityToEnable = Ability;
+			PlayerGameplayAbilityComponent->EnabledAbilityClasses.AddUnique(AbilityToEnable);
 		}
+	}
+	PlayerGameplayAbilityComponent->DisabledAbilityClasses.Remove(AbilityToEnable);
+}
+
+void ASATORICharacter::GetEnabledAbilityName()
+{
+	for (TSubclassOf < USATORI_GameplayAbility > Ability : PlayerGameplayAbilityComponent->EnabledAbilityClasses)
+	{
+		FName GetAbilityName = Ability.GetDefaultObject()->GetAbilityName();
+		GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, FString::Printf(TEXT("AbilityName: %s"), *GetAbilityName.ToString()));
 	}
 }

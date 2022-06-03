@@ -55,6 +55,9 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	TArray<TSubclassOf<USATORI_GameplayAbility>> EnabledAbilityClasses;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	TArray<TSubclassOf<USATORI_GameplayAbility>> DisabledAbilityClasses;
+
 	// ----------------- // ----------------------------------------
 	TMap<FName, FSATORI_AbilitiesDatas> PlayerGameplayAbility;
 

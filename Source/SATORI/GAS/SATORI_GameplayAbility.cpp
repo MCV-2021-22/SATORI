@@ -34,3 +34,8 @@ ASATORICharacter* USATORI_GameplayAbility::GetOwningSatoriCharacter() const
 	}
 	return nullptr;
 }
+
+FName USATORI_GameplayAbility::GetAbilityName() const
+{
+	return AbilityName;
+}
