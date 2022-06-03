@@ -171,5 +171,8 @@ public:
 	UFUNCTION(Exec)
 	void GetEnabledAbilityName();
 
+	UFUNCTION(Exec)
+	void KillAllEnemies();
+
 };
 

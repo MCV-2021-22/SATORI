@@ -23,6 +23,9 @@
 #include "DrawDebugHelpers.h"
 #include "AI/Character/SATORI_AICharacter.h"
 #include "GAS/Attributes/SATORI_AttributeSet.h"
+//Cheat related include
+#include "Kismet/GameplayStatics.h"
+
 //////////////////////////////////////////////////////////////////////////
 // ASATORICharacter
 
@@ -448,5 +451,15 @@ void ASATORICharacter::GetEnabledAbilityName()
 	{
 		FName GetAbilityName = Ability.GetDefaultObject()->GetAbilityName();
 		GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, FString::Printf(TEXT("AbilityName: %s"), *GetAbilityName.ToString()));
+	}
+}
+
+void ASATORICharacter::KillAllEnemies()
+{
+	TArray<AActor*> Actors;
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(), ASATORI_AICharacter::StaticClass(), Actors);
+	for (AActor* Actor : Actors)
+	{
+		Actor->Destroy();
 	}
 }

@@ -186,14 +186,15 @@ TSubclassOf<USATORI_GameplayAbility> USATORI_GameplayAbilityComponent::GetCurren
 void USATORI_GameplayAbilityComponent::AddEnabledAbilityClass(TSubclassOf<USATORI_GameplayAbility> ClassToAdd)
 {
 	EnabledAbilityClasses.AddUnique(ClassToAdd);
+	//Just Needed for debug cheats
+	DisabledAbilityClasses.Remove(ClassToAdd);
 }
 
 void USATORI_GameplayAbilityComponent::RemoveEnabledAbilityClass(TSubclassOf<USATORI_GameplayAbility> ClassToRemove)
 {
-	if (IsAbilityClassEnabled(ClassToRemove))
-	{
-		EnabledAbilityClasses.Remove(ClassToRemove);
-	}
+	EnabledAbilityClasses.Remove(ClassToRemove);
+	//Just Needed for debug cheats
+	DisabledAbilityClasses.AddUnique(ClassToRemove);
 }
 
 bool USATORI_GameplayAbilityComponent::IsAbilityClassEnabled(TSubclassOf<USATORI_GameplayAbility> ClassToCheck) const
