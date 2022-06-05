@@ -60,6 +60,7 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Tags")
 	void AddGameplayTag(const FGameplayTag& TagToAdd);
 
+	UFUNCTION(BlueprintCallable, Category = "Tags")
 	void RemoveGameplayTag(const FGameplayTag& TagToRemove);
 
 	UFUNCTION(BlueprintCallable, Category = "Tags")

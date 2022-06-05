@@ -26,7 +26,6 @@ public:
 	float GetDistAttack() const;
 
 	float SpawnedDie();
-
 	
 
 protected:

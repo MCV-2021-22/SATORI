@@ -1,13 +1,14 @@
 //
 
-#include "Components/TargetSystem/SATORI_TargetSystemComponent.h"
+#include "SATORI_TargetSystemComponent.h"
+#include "Interfaces/SATORI_TargetSystemInterface.h"
 #include "Kismet/GameplayStatics.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Engine/Classes/Camera/CameraComponent.h"
-#include "SATORI/AI/Character/SATORI_AICharacter.h"
 
 //Debug
 #include "DrawDebugHelpers.h"
+
 
 USATORI_TargetSystemComponent::USATORI_TargetSystemComponent()
 {
@@ -17,11 +18,6 @@ USATORI_TargetSystemComponent::USATORI_TargetSystemComponent()
 void USATORI_TargetSystemComponent::BeginPlay()
 {
 	Super::BeginPlay();
-
-	if (!TargetActorsWithTag.IsValid() || !TagApliedTargeting.IsValid() || !TagApliedToEnemyTargeted.IsValid())
-	{
-		UE_LOG(LogTemp, Display, TEXT("[%s] USATORI_TargetSystemComponent: Tag is not valid ... "), *GetName());
-	}
 
 	//Check if component is on player pawn
 	OwnerActor = GetOwner(); 
@@ -37,20 +33,14 @@ void USATORI_TargetSystemComponent::BeginPlay()
 		UE_LOG(LogTemp, Warning, TEXT("[%s] USATORI_TargetSystemComponent: Cannot get owner pawn ... "), *GetName());
 		return;
 	}
-
-	CharacterTargeting = Cast<ASATORI_CharacterBase>(OwnerActor);
-	if (!CharacterTargeting)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("[%s] USATORI_TargetSystemComponent: Cannot get owner base character ... "), *GetName());
-		return;
-	}
 	
-	OwnerPlayerController = Cast<APlayerController>(OwnerPawn->GetController());
+	OwnerPlayerController = Cast<ASATORI_PlayerController>(OwnerPawn->GetController());
 	if (!OwnerPlayerController)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("[%s] USATORI_TargetSystemComponent: Cannot get owner controller ... "), *GetName());
 		return;
 	}
+
 }
 
 void USATORI_TargetSystemComponent::TickComponent(const float DeltaTime, const ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
@@ -64,7 +54,7 @@ void USATORI_TargetSystemComponent::TickComponent(const float DeltaTime, const E
 	}
 
 	//Actor Locked has targeted tag
-	if (!CharacterTargeted->HasMatchingGameplayTag(TargetActorsWithTag))
+	if (!TargetIsTargetable(LockedOnTargetActor))
 	{
 		TargetLockOff();
 		return;
@@ -74,7 +64,7 @@ void USATORI_TargetSystemComponent::TickComponent(const float DeltaTime, const E
 	SetControlRotationOnTarget(LockedOnTargetActor);
 
 	//Check if player is in range for continue targeting
-	if (GetDistanceFromCharacter(LockedOnTargetActor) > MinimumDistanceToTarget + PlusDistanceToNotLoseTarget)
+	if (GetDistanceFromCharacter(LockedOnTargetActor) > MinimumDistanceToTarget + AddedDistanceToNotLoseTarget)
 	{
 		TargetLockOff();
 	}
@@ -90,30 +80,31 @@ void USATORI_TargetSystemComponent::TickComponent(const float DeltaTime, const E
 		{
 			//Starts a timer, if when the timer ends the LineTrace fails again, will lock off
 			bIsBreakingLineOfSight = true;
-			GetWorld()->GetTimerManager().SetTimer(
-				LineOfSightBreakTimerHandle,
-				this,
-				&USATORI_TargetSystemComponent::BreakLineOfSight,
-				BreakLineOfSightDelay
-			);
+			GetWorld()->GetTimerManager().SetTimer(LineOfSightBreakTimerHandle, this, &USATORI_TargetSystemComponent::BreakLineOfSight, BreakLineOfSightDelay);
 		}
 	}
 
 	//Debug
-	if(IsValid(LockedOnTargetActor))
-	DrawDebugLine(
-	GetWorld(),
-	OwnerActor->GetActorLocation(),
-	LockedOnTargetActor->GetActorLocation(),
-	FColor(0, 255, 0),
-	false, 1.0f, 0,
-	1
-	);
+	if (bShowDebugLine)
+	{
+		DrawDebugLine(GetWorld(), OwnerActor->GetActorLocation(), LockedOnTargetActor->GetActorLocation(), FColor(0, 255, 0), false, 1.0f, 0, 1);
+	}
+}
 
+bool USATORI_TargetSystemComponent::TargetIsTargetable(const AActor* Actor)
+{
+	const bool bIsImplemented = Actor->GetClass()->ImplementsInterface(USATORI_TargetSystemInterface::StaticClass());
+	if (bIsImplemented)
+	{
+		return ISATORI_TargetSystemInterface::Execute_IsTargetable(Actor);
+	}
+
+	return true;
 }
 
 void USATORI_TargetSystemComponent::TargetActor()
 {
+
 	ClosestTargetDistance = MinimumDistanceToTarget;
 
 	if (bTargetLocked)
@@ -122,58 +113,20 @@ void USATORI_TargetSystemComponent::TargetActor()
 	}
 	else 
 	{
-		TArray<AActor*> Actors;
-		UGameplayStatics::GetAllActorsOfClass(GetWorld(), ASATORI_CharacterBase::StaticClass(), Actors);
-		
-		//Actors = FilterActorsToTarget(Actors);
-
-		LineOfSightIgnoreActors = Actors;
-		LockedOnTargetActor = FindNearestTarget(Actors);
+		LockedOnTargetActor = FindNearestTarget(TargetableActors);
 		TargetLockOn(LockedOnTargetActor);
 	}
-}
-
-TArray<AActor*>USATORI_TargetSystemComponent::FilterActorsToTarget(TArray<AActor*> Actors)
-{
-	TArray<AActor*> ActorsToReturn = Actors;
-	TArray<AActor*> ActorsToRemove;
-	for (AActor* Actor : ActorsToReturn) {
-		ASATORI_CharacterBase* Character = Cast<ASATORI_CharacterBase>(Actor);
-		if (!Character->HasMatchingGameplayTag(TargetActorsWithTag))
-		{
-			ActorsToRemove.AddUnique(Actor);
-		}
-	}
-
-	for (AActor* Actor : ActorsToRemove) {
-		ActorsToReturn.Remove(Actor);
-	}
-
-	return ActorsToReturn;
 }
 
 void USATORI_TargetSystemComponent::TargetLockOff()
 {
 	bTargetLocked = false;
-
-	//Remove tags
-	if (CharacterTargeted)
-	{
-		CharacterTargeted->RemoveGameplayTag(TagApliedToEnemyTargeted);
-		CharacterTargeted = nullptr;
-	}
-
-	CharacterTargeting->RemoveGameplayTag(TagApliedTargeting);
-
 	LockedOnTargetActor = nullptr;
-	
-	//For strafe anims
-	//ControlRotation(false);
+
+	LineOfSightIgnoreActors.Empty();
 
 	//Ignore controller input reset
 	OwnerPlayerController->ResetIgnoreLookInput();
-
-	LineOfSightIgnoreActors.Empty();
 }
 
 void USATORI_TargetSystemComponent::TargetLockOn(AActor* TargetToLockOn)
@@ -185,24 +138,17 @@ void USATORI_TargetSystemComponent::TargetLockOn(AActor* TargetToLockOn)
 
 	bTargetLocked = true;
 
-	//Add tags
-	CharacterTargeted = Cast<ASATORI_AICharacter>(TargetToLockOn);
-	CharacterTargeted->AddGameplayTag(TagApliedToEnemyTargeted);
-	
-	CharacterTargeting->AddGameplayTag(TagApliedTargeting);
-	
-	//For strafe anims
-	//ControlRotation(true);
+	//It will not break line of sight with others enemies
+	LineOfSightIgnoreActors = TargetableActors;
+	LineOfSightIgnoreActors.Remove(LockedOnTargetActor);
 
 	//Ignore controller input
 	OwnerPlayerController->SetIgnoreLookInput(true);
-
-	LineOfSightIgnoreActors.Remove(TargetToLockOn);
 }
 
-AActor* USATORI_TargetSystemComponent::FindNearestTarget(TArray<AActor*> Actors)
+AActor* USATORI_TargetSystemComponent::FindNearestTarget(TArray<AActor*> Actors) const
 {
-	//LineTrace for all actors with valid tag
+	//LineTrace for all Targeteable Actors
 	TArray<AActor*> ActorsHit;
 	for (AActor* Actor : Actors)
 	{
@@ -235,7 +181,7 @@ AActor* USATORI_TargetSystemComponent::FindNearestTarget(TArray<AActor*> Actors)
 	return Target;
 }
 
-bool USATORI_TargetSystemComponent::LineTraceForActor(AActor* OtherActor)
+bool USATORI_TargetSystemComponent::LineTraceForActor(AActor* OtherActor) const
 {
 
 	FHitResult HitResult;
@@ -261,7 +207,7 @@ bool USATORI_TargetSystemComponent::LineTraceForActor(AActor* OtherActor)
 	return false;
 }
 
-bool USATORI_TargetSystemComponent::LineTraceForActor(AActor* OtherActor, const TArray<AActor*> ActorsToIgnore)
+bool USATORI_TargetSystemComponent::LineTraceForActor(AActor* OtherActor, const TArray<AActor*> ActorsToIgnore) const
 {
 
 	FHitResult HitResult;
@@ -288,7 +234,7 @@ bool USATORI_TargetSystemComponent::LineTraceForActor(AActor* OtherActor, const 
 	return false;
 }
 
-bool USATORI_TargetSystemComponent::ShouldBreakLineOfSight()
+bool USATORI_TargetSystemComponent::ShouldBreakLineOfSight() const
 {
 	if (!LockedOnTargetActor)
 	{
@@ -296,7 +242,7 @@ bool USATORI_TargetSystemComponent::ShouldBreakLineOfSight()
 	}
 
 	//Check if target actor is on sight
-	if (LineTraceForActor(LockedOnTargetActor, LineOfSightIgnoreActors)) //Should not break line of sight if pawn
+	if (LineTraceForActor(LockedOnTargetActor, LineOfSightIgnoreActors)) //Should not break line of sight if other enemies are in front
 	{
 		return false;
 	}
@@ -312,7 +258,7 @@ void USATORI_TargetSystemComponent::BreakLineOfSight()
 	}
 }
 
-bool USATORI_TargetSystemComponent::IsInViewport(const AActor* TargetActor)
+bool USATORI_TargetSystemComponent::IsInViewport(const AActor* TargetActor) const
 {
 	FVector2D ScreenLocation;
 	OwnerPlayerController->ProjectWorldLocationToScreen(TargetActor->GetActorLocation(), ScreenLocation);
@@ -329,7 +275,7 @@ void USATORI_TargetSystemComponent::SetControlRotationOnTarget(AActor* TargetAct
 	OwnerPlayerController->SetControlRotation(ControlRotation);
 }
 
-FRotator USATORI_TargetSystemComponent::GetControlRotationOnTarget(const AActor* OtherActor)
+FRotator USATORI_TargetSystemComponent::GetControlRotationOnTarget(const AActor* OtherActor) const
 {
 	const FRotator ControlRotation = OwnerPlayerController->GetControlRotation();
 
@@ -345,7 +291,7 @@ FRotator USATORI_TargetSystemComponent::GetControlRotationOnTarget(const AActor*
 	return FMath::RInterpTo(ControlRotation, TargetRotation, GetWorld()->GetDeltaSeconds(), 9.0f);
 }
 
-float USATORI_TargetSystemComponent::GetAngleUsingCameraRotation(const AActor* ActorToLook)
+float USATORI_TargetSystemComponent::GetAngleUsingCameraRotation(const AActor* ActorToLook) const
 {
 	UCameraComponent* CameraComponent = OwnerActor->FindComponentByClass<UCameraComponent>();
 	if (!CameraComponent)
@@ -365,7 +311,7 @@ float USATORI_TargetSystemComponent::GetAngleUsingCameraRotation(const AActor* A
 	return YawAngle;
 }
 
-float USATORI_TargetSystemComponent::GetAngleUsingCharacterRotation(const AActor* ActorToLook)
+float USATORI_TargetSystemComponent::GetAngleUsingCharacterRotation(const AActor* ActorToLook) const
 {
 	const FRotator CharacterRotation = OwnerActor->GetActorRotation();
 	const FRotator LookAtRotation = FindLookAtRotation(OwnerActor->GetActorLocation(), ActorToLook->GetActorLocation());
@@ -411,14 +357,11 @@ void USATORI_TargetSystemComponent::TargetActorWithAxisInput(const float AxisVal
 
 	ClosestTargetDistance = MinimumDistanceToTarget;
 
-	TArray<AActor*> Actors;
-	UGameplayStatics::GetAllActorsOfClass(GetWorld(), ASATORI_CharacterBase::StaticClass(), Actors);
-
 	TArray<AActor*> ActorsToLook;
 	TArray<AActor*> ActorsToIgnore;
 	ActorsToIgnore.Add(CurrentTarget);
 
-	for (AActor* Actor : Actors)
+	for (AActor* Actor : TargetableActors)
 	{
 		const bool bHit = LineTraceForActor(Actor, ActorsToIgnore);
 		if (bHit && IsInViewport(Actor))
@@ -436,7 +379,7 @@ void USATORI_TargetSystemComponent::TargetActorWithAxisInput(const float AxisVal
 	{
 		// and filter out any character too distant from minimum distance to enable
 		const float Distance = GetDistanceFromCharacter(Actor);
-		if (Distance < MinimumDistanceToTarget + PlusDistanceToNotLoseTarget)
+		if (Distance < MinimumDistanceToTarget + AddedDistanceToNotLoseTarget)
 		{
 			const float RelativeActorsDistance = CurrentTarget->GetDistanceTo(Actor);
 			if (RelativeActorsDistance < ClosestTargetDistance)
@@ -472,10 +415,44 @@ void USATORI_TargetSystemComponent::TargetActorWithAxisInput(const float AxisVal
 
 bool USATORI_TargetSystemComponent::ShouldSwitchTargetActor(const float AxisValue)
 {
+	
+	// Sticky feeling computation
+	if (bEnableStickyTarget)
+	{
+		StartRotatingStack += (AxisValue != 0) ? AxisValue * AxisMultiplier : (StartRotatingStack > 0 ? -AxisMultiplier : AxisMultiplier);
+
+		if (AxisValue == 0 && FMath::Abs(StartRotatingStack) <= AxisMultiplier)
+		{
+			StartRotatingStack = 0.0f;
+		}
+
+		// If Axis value does not exceeds configured threshold, do nothing
+		if (FMath::Abs(StartRotatingStack) < StickyRotationThreshold)
+		{
+			bDesireToSwitch = false;
+			return false;
+		}
+
+		//Sticky when switching target.
+		if (StartRotatingStack * AxisValue > 0)
+		{
+			StartRotatingStack = StartRotatingStack > 0 ? StickyRotationThreshold : -StickyRotationThreshold;
+		}
+		else if (StartRotatingStack* AxisValue < 0)
+		{
+			StartRotatingStack = StartRotatingStack * -1.0f;
+		}
+
+		bDesireToSwitch = true;
+
+		return true;
+	}
+
+
 	return FMath::Abs(AxisValue) > StartRotatingThreshold;
 }
 
-TArray<AActor*> USATORI_TargetSystemComponent::FindTargetsInRange(TArray<AActor*> ActorsToLook, const float RangeMin, const float RangeMax)
+TArray<AActor*> USATORI_TargetSystemComponent::FindTargetsInRange(TArray<AActor*> ActorsToLook, const float RangeMin, const float RangeMax) const
 {
 	TArray<AActor*> ActorsInRange;
 
@@ -491,28 +468,7 @@ TArray<AActor*> USATORI_TargetSystemComponent::FindTargetsInRange(TArray<AActor*
 	return ActorsInRange;
 }
 
-void USATORI_TargetSystemComponent::ResetIsSwitchingTarget()
-{
-	bIsSwitchingTarget = false;
-	bDesireToSwitch = false;
-}
-
-bool USATORI_TargetSystemComponent::GetTargetLockedStatus()
-{
-	return bTargetLocked;
-}
-
-AActor* USATORI_TargetSystemComponent::GetLockedOnTargetActor()
-{
-	return LockedOnTargetActor;
-}
-
-bool USATORI_TargetSystemComponent::IsLocked()
-{
-	return bTargetLocked && LockedOnTargetActor;
-}
-
-float USATORI_TargetSystemComponent::GetDistanceFromCharacter(const AActor* OtherActor)
+float USATORI_TargetSystemComponent::GetDistanceFromCharacter(const AActor* OtherActor) const
 {
 	return OwnerActor->GetDistanceTo(OtherActor);
 }
@@ -528,3 +484,40 @@ void USATORI_TargetSystemComponent::ControlRotation(const bool ShouldControlRota
 		CharacterMovementComponent->bOrientRotationToMovement = !ShouldControlRotation;
 	}
 }
+
+void USATORI_TargetSystemComponent::ResetIsSwitchingTarget()
+{
+	bIsSwitchingTarget = false;
+	bDesireToSwitch = false;
+}
+
+bool USATORI_TargetSystemComponent::GetTargetLockedStatus() const
+{
+	return bTargetLocked;
+}
+
+AActor* USATORI_TargetSystemComponent::GetLockedOnTargetActor() const
+{
+	return LockedOnTargetActor;
+}
+
+bool USATORI_TargetSystemComponent::IsLocked() const
+{
+	return bTargetLocked && LockedOnTargetActor;
+}
+
+const TArray<AActor*> USATORI_TargetSystemComponent::GetTargetableActors() const
+{
+	return TargetableActors;
+}
+
+void USATORI_TargetSystemComponent::AddTargetableActor(AActor* ActorToAdd)
+{
+	TargetableActors.Add(ActorToAdd);
+}
+
+void USATORI_TargetSystemComponent::RemoveTargetableActor(AActor* ActorToRemove)
+{
+	TargetableActors.Add(ActorToRemove);
+}
+

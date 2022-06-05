@@ -53,31 +53,13 @@ public:
 			bool bFromSweep,
 			const FHitResult& SweepResult);
 
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Missile|Tags")
-	FGameplayTag  TargetActorWithTag;
-
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Missile|Tags")
-	FGameplayTag  EnemyTag;
-
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Missile|Tags")
-	FGameplayTag  PlayerTag;
-
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Missile|Tags")
-	FGameplayTag  CloneTag;
-
-
 protected:
 	
 	virtual void BeginPlay() override;
 
-public:	
-	
-	virtual void Tick(float DeltaTime) override;
-
 private:
 
 	AActor* Target;
-	AActor* TargetNear;
 
 	FTimerHandle TimerHandleDestroy;
 
