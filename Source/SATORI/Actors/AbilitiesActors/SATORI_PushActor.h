@@ -6,6 +6,7 @@
 #include "GameFramework/Actor.h"
 #include "GameplayTagContainer.h"
 #include "GameplayEffect.h"
+#include "AI/Character/SATORI_AICharacter.h"
 #include "SATORI_PushActor.generated.h"
 
 class USphereComponent;
@@ -37,6 +38,21 @@ public:
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Meta = (ExposeOnSpawn = true), Category = "Push")
 	float TimeToDestroy;
 
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Debug")
+	float TraceDistanceToFloor = 250.0f;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Debug")
+	float HeightChange = 1000.0f;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Debug")
+	float MaxHeight = 50.0f;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Debug")
+	float MinHeight = 30.0f;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Debug")
+	bool bDrawDebug = false;
+
 	UFUNCTION(BlueprintCallable, Category = "Push")
 	void OnOverlapSphere(
 			UPrimitiveComponent* OverlappedComp,
@@ -50,7 +66,7 @@ public:
 	FGameplayTag  EnemyTag;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Push|Tags")
-	FGameplayTag  PlayerTag;
+	FGameplayTag  PushedTag;
 
 protected:
 
@@ -62,9 +78,13 @@ public:
 
 private:
 
-	TArray<UPrimitiveComponent*> ArrayPushed;
+	TArray<AActor*> ArrayPushed;
+	TArray<ASATORI_AICharacter*> ArrayTagPushed;
 
 	FTimerHandle TimerHandleDestroy;
+
+	FHitResult OutHit;
+	FCollisionQueryParams CollisionParams;
 
 	void DestroyMyself();
 

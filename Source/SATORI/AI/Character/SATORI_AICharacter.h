@@ -118,8 +118,11 @@ protected:
 
 	bool bursting = false;
 
-//Target System Interface related
+//Target System Interface related and Tag Abilities related (Nacho)
 public:
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Tag")
+	FGameplayTag  EnemyTag;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Target System")
 	bool bIsTargetable = true;

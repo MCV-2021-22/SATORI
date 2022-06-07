@@ -12,10 +12,12 @@ ASATORI_PushActor::ASATORI_PushActor()
 
 	float SphereRadius = 32.0f;
 
+	RootComponent = CreateDefaultSubobject<USceneComponent>(TEXT("RootComponent"));
+
 	CollisionSphereComponent = CreateDefaultSubobject<USphereComponent>(TEXT("Sphere"));
 	CollisionSphereComponent->SetSphereRadius(SphereRadius);
-	CollisionSphereComponent->SetCollisionProfileName(FName(TEXT("IgnoreSelfOverlapsAll")));
-	RootComponent = CollisionSphereComponent;
+	CollisionSphereComponent->SetCollisionProfileName(FName(TEXT("PlayerAbility")));
+	CollisionSphereComponent->SetupAttachment(RootComponent);
 	CollisionSphereComponent->SetGenerateOverlapEvents(true);
 	CollisionSphereComponent->OnComponentBeginOverlap.AddDynamic(this, &ASATORI_PushActor::OnOverlapSphere);
 
@@ -31,29 +33,39 @@ void ASATORI_PushActor::OnOverlapSphere(
 	bool bFromSweep, 
 	const FHitResult& SweepResult)
 {
+	//Missile possible collisions : 
+	// Enemies
+	// Walls
+	// Enemy Proyectiles?
+	// Objects?
 
 	ASATORI_AICharacter* Character = Cast<ASATORI_AICharacter>(OtherActor);
 
+	//Walls //EnemyProyectiles? //Objects?
 	if (!Character) 
 	{
-		Destroy();
+		DestroyMyself();
 		return;
 	}
 
-	if(Character->HasMatchingGameplayTag(EnemyTag))
+	//Enemies
+	if(Character->HasMatchingGameplayTag(EnemyTag) && !Character->HasMatchingGameplayTag(PushedTag))
 	{	
-		float dmg_done = USATORI_BlueprintLibrary::ApplyGameplayEffectDamage(OtherActor, Damage, OtherActor, DamageGameplayEffect);
-		Character->sendDamage(dmg_done);
-		ArrayPushed.AddUnique(Cast<UPrimitiveComponent>(OtherActor->GetRootComponent()));
-	}
-	if(!Character->HasMatchingGameplayTag(PlayerTag) && !Character->HasMatchingGameplayTag(EnemyTag))
-	{
-		Destroy();
+		float DamageDone = USATORI_BlueprintLibrary::ApplyGameplayEffectDamage(OtherActor, Damage, OtherActor, DamageGameplayEffect);
+		Character->sendDamage(DamageDone);
+		//Array with Actor for move the actor on tick
+		ArrayPushed.AddUnique(OtherActor);
+		//Array with the Character used for the PushedTag
+		Character->AddGameplayTag(PushedTag);
+		ArrayTagPushed.AddUnique(Character);
 	}
 }
 
 void ASATORI_PushActor::DestroyMyself()
 {	
+	for (ASATORI_AICharacter* Character : ArrayTagPushed) {
+		Character->RemoveGameplayTag(PushedTag);
+	}
 	Destroy();
 }
 
@@ -62,7 +74,7 @@ void ASATORI_PushActor::BeginPlay()
 
 	Super::BeginPlay();
 
-	if(!EnemyTag.IsValid() || !PlayerTag.IsValid())
+	if(!EnemyTag.IsValid())
 	{
 		UE_LOG(LogTemp, Display, TEXT("[%s] ASATORI_PushActor: Tag is not valid ... "), *GetName());
 	}
@@ -80,29 +92,27 @@ void ASATORI_PushActor::Tick(float DeltaTime)
 	FVector ActorForward = GetActorForwardVector();
 	SetActorLocation(ActorPosition + ActorForward * Speed * DeltaTime);
 
-	//Weird Things Happen Here
-	for (UPrimitiveComponent* RootComp : ArrayPushed) {
-		RootComp->SetWorldLocation(RootComp->GetComponentLocation() + ActorForward * PushForce);
+	//Pushing
+	for (AActor* Actor : ArrayPushed) {
+		Actor->SetActorLocation(Actor->GetActorLocation() + ActorForward * PushForce * DeltaTime);
 	}
 
-	//Stay grounded calculation (Not the best)
-	FHitResult OutHit;
+	//Stay grounded calculation
+	ActorPosition = GetActorLocation();
 	FVector End = ActorPosition;
-	End.Z -= 250;
-	FCollisionQueryParams CollisionParams;
-	UWorld* World = GetWorld();
-	bool bHitAnything = World->LineTraceSingleByProfile(OutHit, ActorPosition, End, FName("BlockOnlyStatic"), CollisionParams);
-	//bool bHitAnything = World->LineTraceSingleByChannel(OutHit, Start, End, ECC_WorldStatic, CollisionParams);
-	//DrawDebugLine(World, Start, End, bHitAnything ? FColor::Green : FColor::Red, false, 1.0f);
+	End.Z -= TraceDistanceToFloor;
+	bool bHitAnything = GetWorld()->LineTraceSingleByProfile(OutHit, ActorPosition, End, FName("BlockOnlyStatic"), CollisionParams);
+	if (bDrawDebug)
+	{
+		DrawDebugLine(GetWorld(), ActorPosition, End, bHitAnything ? FColor::Green : FColor::Red, false, 1.0f);
+	}
 	if (bHitAnything) {
-	//UPrimitiveComponent* Debug = Cast<UPrimitiveComponent>(OutHit.GetComponent());
-	//UE_LOG(LogTemp, Display, TEXT("Hitting: %s"), *Debug->GetName());
-		if (OutHit.Distance > 50) {
-			ActorPosition.Z -= 10;
+		if (OutHit.Distance > MaxHeight) {
+			ActorPosition.Z -= HeightChange * DeltaTime;
 			SetActorLocation(ActorPosition);
 		}
-		if (OutHit.Distance < 30) {
-			ActorPosition.Z += 10;
+		if (OutHit.Distance < MinHeight) {
+			ActorPosition.Z += HeightChange * DeltaTime;
 			SetActorLocation(ActorPosition);
 		}
 	}

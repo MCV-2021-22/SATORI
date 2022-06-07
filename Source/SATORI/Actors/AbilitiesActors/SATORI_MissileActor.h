@@ -53,6 +53,9 @@ public:
 			bool bFromSweep,
 			const FHitResult& SweepResult);
 
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Missile|Tags")
+	FGameplayTag  EnemyTag;
+
 protected:
 	
 	virtual void BeginPlay() override;

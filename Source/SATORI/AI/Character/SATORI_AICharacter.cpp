@@ -48,12 +48,12 @@ void ASATORI_AICharacter::BeginPlay()
 	if (AbilitySystemComponent.IsValid())
 	{
 		AbilitySystemComponent->InitAbilityActorInfo(this, this);
-
 		InitializeAttributes();
-
 		AddAICharacterAbilities();
-	}
 
+		//Needed for abilities actors (Nacho)
+		AddGameplayTag(EnemyTag);
+	}
 
 	ASATORI_CharacterBase* Character = Cast<ASATORI_CharacterBase>(this);
 	if (Character)
@@ -64,6 +64,7 @@ void ASATORI_AICharacter::BeginPlay()
 	}
 	AddGameplayTag(FGameplayTag::RequestGameplayTag("State.Burst"));
 
+	//Needed for targeting system (Nacho)
 	if (bIsTargetable) {
 		RegisterInTargetableArray();
 	}
@@ -302,6 +303,7 @@ void ASATORI_AICharacter::Die()
 	Destroy();
 }
 
+//Target system (Nacho)
 bool ASATORI_AICharacter::IsTargetable_Implementation() const
 {
 	return bIsTargetable;

@@ -5,6 +5,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Engine/Classes/Camera/CameraComponent.h"
+#include "Components/WidgetComponent.h"
 
 //Debug
 #include "DrawDebugHelpers.h"
@@ -38,6 +39,12 @@ void USATORI_TargetSystemComponent::BeginPlay()
 	if (!OwnerPlayerController)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("[%s] USATORI_TargetSystemComponent: Cannot get owner controller ... "), *GetName());
+		return;
+	}
+
+	if (!LockedOnWidgetClass)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("[%s] USATORI_TargetSystemComponent: Cannot get LockedOnWidgetClass, ensure it is a valid reference ..."), *GetName());
 		return;
 	}
 
@@ -87,7 +94,7 @@ void USATORI_TargetSystemComponent::TickComponent(const float DeltaTime, const E
 	//Debug
 	if (bShowDebugLine)
 	{
-		DrawDebugLine(GetWorld(), OwnerActor->GetActorLocation(), LockedOnTargetActor->GetActorLocation(), FColor(0, 255, 0), false, 1.0f, 0, 1);
+		DrawDebugLine(GetWorld(), OwnerActor->GetActorLocation(), LockedOnTargetActor->GetActorLocation(), FColor(0, 0, 255), false, 1.0f, 0, 1);
 	}
 }
 
@@ -123,6 +130,8 @@ void USATORI_TargetSystemComponent::TargetLockOff()
 	bTargetLocked = false;
 	LockedOnTargetActor = nullptr;
 
+	TargetLockedOnWidgetComponent->DestroyComponent();
+
 	LineOfSightIgnoreActors.Empty();
 
 	//Ignore controller input reset
@@ -137,6 +146,8 @@ void USATORI_TargetSystemComponent::TargetLockOn(AActor* TargetToLockOn)
 	}
 
 	bTargetLocked = true;
+
+	CreateAndAttachTargetLockedOnWidgetComponent(TargetToLockOn);
 
 	//It will not break line of sight with others enemies
 	LineOfSightIgnoreActors = TargetableActors;
@@ -286,7 +297,12 @@ FRotator USATORI_TargetSystemComponent::GetControlRotationOnTarget(const AActor*
 	float Pitch = LookRotation.Pitch;
 	FRotator TargetRotation;
 
-	TargetRotation = FRotator(ControlRotation.Pitch, LookRotation.Yaw, ControlRotation.Roll);
+	const float DistanceToTarget = GetDistanceFromCharacter(OtherActor);
+	const float PitchInRange = (DistanceToTarget * PitchDistanceCoefficient + PitchDistanceOffset) * -1.0f;
+	const float PitchOffset = FMath::Clamp(PitchInRange, PitchMin, PitchMax);
+
+	Pitch = Pitch + PitchOffset;
+	TargetRotation = FRotator(Pitch, LookRotation.Yaw, ControlRotation.Roll);
 
 	return FMath::RInterpTo(ControlRotation, TargetRotation, GetWorld()->GetDeltaSeconds(), 9.0f);
 }
@@ -521,3 +537,22 @@ void USATORI_TargetSystemComponent::RemoveTargetableActor(AActor* ActorToRemove)
 	TargetableActors.Add(ActorToRemove);
 }
 
+void USATORI_TargetSystemComponent::CreateAndAttachTargetLockedOnWidgetComponent(AActor* TargetActor)
+{
+
+	TargetLockedOnWidgetComponent = NewObject<UWidgetComponent>(TargetActor, MakeUniqueObjectName(TargetActor, UWidgetComponent::StaticClass(), FName("TargetLockOn")));
+	TargetLockedOnWidgetComponent->SetWidgetClass(LockedOnWidgetClass);
+
+	UMeshComponent* MeshComponent = TargetActor->FindComponentByClass<UMeshComponent>();
+	USceneComponent* ParentComponent = TargetActor->GetRootComponent();
+
+	if (IsValid(OwnerPlayerController))
+	{
+		TargetLockedOnWidgetComponent->SetOwnerPlayer(OwnerPlayerController->GetLocalPlayer());
+	}
+
+	TargetLockedOnWidgetComponent->SetWidgetSpace(EWidgetSpace::Screen);
+	TargetLockedOnWidgetComponent->SetupAttachment(ParentComponent);
+	TargetLockedOnWidgetComponent->SetVisibility(true);
+	TargetLockedOnWidgetComponent->RegisterComponent();
+}

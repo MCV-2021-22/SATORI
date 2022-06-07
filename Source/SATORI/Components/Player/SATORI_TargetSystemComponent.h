@@ -10,6 +10,7 @@
 #include "SATORI_TargetSystemComponent.generated.h"
 
 class APlayerController;
+class UWidgetComponent;
 
 UCLASS(ClassGroup = (Custom), meta = (BlueprintSpawnableComponent))
 class SATORI_API USATORI_TargetSystemComponent : public UActorComponent
@@ -32,6 +33,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Target System")
 	TEnumAsByte<ECollisionChannel> TargetableCollisionChannel;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Target System|Widget")
+	TSubclassOf<UUserWidget> LockedOnWidgetClass;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Target System")
 	float StartRotatingThreshold = 0.85f;
 	
@@ -43,6 +47,18 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Target System|Sticky Feeling on Target Switch")
 	float StickyRotationThreshold = 30.0f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Target System|Pitch Offset")
+	float PitchDistanceCoefficient = -0.2f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Target System|Pitch Offset")
+	float PitchDistanceOffset = 60.0f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Target System|Pitch Offset")
+	float PitchMin = -50.0f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Target System|Pitch Offset")
+	float PitchMax = -20.0f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Target System|Debug")
 	bool bShowDebugLine = false;
@@ -77,11 +93,6 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Target System")
 	bool IsLocked() const;
 
-	UFUNCTION(BlueprintCallable, Category = "Target System")
-	float GetAngleUsingCameraRotation(const AActor* ActorToLook) const;
-
-	UFUNCTION(BlueprintCallable, Category = "Target System")
-	float GetAngleUsingCharacterRotation(const AActor* ActorToLook) const;
 
 	UFUNCTION(BlueprintCallable, Category = "Target System")
 	bool IsInViewport(const AActor* TargetActor) const;
@@ -102,6 +113,11 @@ private:
 
 	UPROPERTY()
 	AActor* LockedOnTargetActor;
+
+	UPROPERTY()
+	UWidgetComponent* TargetLockedOnWidgetComponent;
+
+	void CreateAndAttachTargetLockedOnWidgetComponent(AActor* TargetActor);
 
 	UPROPERTY()
 	TArray<AActor*> LineOfSightIgnoreActors;
@@ -127,6 +143,8 @@ private:
 	bool LineTraceForActor(AActor* OtherActor) const;
 	bool LineTraceForActor(AActor* OtherActor, const TArray<AActor*> ActorsToIgnore) const;
 
+	float GetAngleUsingCameraRotation(const AActor* ActorToLook) const;
+	float GetAngleUsingCharacterRotation(const AActor* ActorToLook) const;
 
 	float GetDistanceFromCharacter(const AActor* OtherActor) const;
 

@@ -41,8 +41,8 @@ public:
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Clone|Tags")
 	FGameplayTag  TargetActorWithTag;
 
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Clone|Tags")
-	FGameplayTag  EnemyTag;
+	//UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Clone|Tags")
+	//FGameplayTag  EnemyTag;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Clone|Tags")
 	FGameplayTag  PlayerTag;

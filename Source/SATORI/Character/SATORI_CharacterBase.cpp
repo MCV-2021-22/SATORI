@@ -4,9 +4,6 @@
 #include "SATORI/GAS/Attributes/SATORI_AttributeSet.h"
 #include "GAS/SATORI_AbilitySystemComponent.h"
 
-// Sets default values
-
-// Sets default values
 ASATORI_CharacterBase::ASATORI_CharacterBase()
 {
 
@@ -15,22 +12,20 @@ ASATORI_CharacterBase::ASATORI_CharacterBase()
 void ASATORI_CharacterBase::BeginPlay()
 {
 	Super::BeginPlay();
-
 }
 
 //AbilitySystemComponent
-
 UAbilitySystemComponent* ASATORI_CharacterBase::GetAbilitySystemComponent() const
 {
 	return AbilitySystemComponent.Get();
 }
 
-void ASATORI_CharacterBase::AddGameplayTagToAbilitySystem(const FGameplayTag& TagToAdd)
+void ASATORI_CharacterBase::AddGameplayTag(const FGameplayTag& TagToAdd)
 {
 	AbilitySystemComponent->AddLooseGameplayTag(TagToAdd);
 }
 
-void ASATORI_CharacterBase::RemoveGameplayTagFromAbilitySystem(const FGameplayTag& TagToRemove)
+void ASATORI_CharacterBase::RemoveGameplayTag(const FGameplayTag& TagToRemove)
 {
 	AbilitySystemComponent->RemoveLooseGameplayTag(TagToRemove);
 }
@@ -45,38 +40,24 @@ void ASATORI_CharacterBase::UnBlockGameplayTag(const FGameplayTagContainer& Tags
 	AbilitySystemComponent->UnBlockAbilitiesWithTags(TagsToBlock);
 }
 
-
-//GameplayTags
-void ASATORI_CharacterBase::AddGameplayTag(const FGameplayTag& TagToAdd)
-{
-	GameplayTags.AddTag(TagToAdd);
-	AbilitySystemComponent->AddLooseGameplayTag(TagToAdd);
-}
-
-void ASATORI_CharacterBase::RemoveGameplayTag(const FGameplayTag& TagToRemove)
-{
-	GameplayTags.RemoveTag(TagToRemove);
-	AbilitySystemComponent->RemoveLooseGameplayTag(TagToRemove);
-}
-
 void ASATORI_CharacterBase::GetOwnedGameplayTags(FGameplayTagContainer& TagContainer) const
 {
-	TagContainer = GameplayTags;
+	AbilitySystemComponent->GetOwnedGameplayTags(TagContainer);
 }
 
 bool ASATORI_CharacterBase::HasMatchingGameplayTag(FGameplayTag TagToCheck) const
 {
-	return GameplayTags.HasTag(TagToCheck);
+	return AbilitySystemComponent->HasMatchingGameplayTag(TagToCheck);
 }
 
 bool ASATORI_CharacterBase::HasAllMatchingGameplayTags(const FGameplayTagContainer& TagContainer) const
 {
-	return GameplayTags.HasAll(TagContainer);
+	return AbilitySystemComponent->HasAllMatchingGameplayTags(TagContainer);
 }
 
 bool ASATORI_CharacterBase::HasAnyMatchingGameplayTags(const FGameplayTagContainer& TagContainer) const
 {
-	return GameplayTags.HasAny(TagContainer);
+	return AbilitySystemComponent->HasAnyMatchingGameplayTags(TagContainer);
 }
 
 // Getters

@@ -3,7 +3,6 @@
 #include "GAS/Abilities/SATORI_MissileAbility.h"
 #include "AbilitySystemComponent.h"
 #include "SATORICharacter.h"
-#include "Engine/Classes/Camera/CameraComponent.h"
 
 USATORI_MissileAbility::USATORI_MissileAbility() 
 {
@@ -74,20 +73,8 @@ void USATORI_MissileAbility::EventReceived(FGameplayTag EventTag, FGameplayEvent
 			EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true);
 		}
 
-		//Aiming when Targeting Enemy
-		if (Character->GetTargetSystemComponent()->IsLocked())
-		{
-			FRotator Rotation = FRotator(0.0f, Character->GetTargetSystemComponent()->GetAngleUsingCameraRotation(Character->GetTargetSystemComponent()->GetLockedOnTargetActor()), 0.0f);
-			SpawnTransform.SetLocation(Character->GetActorLocation() + Rotation.Quaternion().GetForwardVector() * 10);
-			SpawnTransform.SetRotation(Rotation.Quaternion());
-
-		}
-		//Aiming when not targeting
-		else
-		{
-			SpawnTransform.SetLocation(Character->GetActorLocation() + Character->GetActorForwardVector() * 10);
-			SpawnTransform.SetRotation(Character->GetActorRotation().Quaternion());
-		}
+		//No need to aim it
+		SpawnTransform = Character->HandComponent->GetComponentTransform();
 
 		//Missile Actor creation
 		ASATORI_MissileActor* Missile = GetWorld()->SpawnActorDeferred<ASATORI_MissileActor>(MissileActor, SpawnTransform, GetOwningActorFromActorInfo(),

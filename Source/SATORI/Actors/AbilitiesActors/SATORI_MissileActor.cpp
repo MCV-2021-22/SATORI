@@ -1,10 +1,9 @@
 //
 
 #include "Actors/AbilitiesActors/SATORI_MissileActor.h"
-
-#include "AI/Character/Spawned/SATORI_Spawned.h"
+//#include "AI/Character/Spawned/SATORI_Spawned.h"
 #include "Components/SphereComponent.h"
-#include "Kismet/KismetMathLibrary.h"
+//#include "Kismet/KismetMathLibrary.h"
 #include "Kismet/GameplayStatics.h"
 #include "GameFramework/ProjectileMovementComponent.h"
 #include "SATORI/AI/Character/SATORI_AICharacter.h"
@@ -15,13 +14,15 @@ ASATORI_MissileActor::ASATORI_MissileActor()
 {
 	PrimaryActorTick.bCanEverTick = false;
 
+	RootComponent = CreateDefaultSubobject<USceneComponent>(TEXT("RootComponent"));
+
 	StaticMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("StaticMesh"));
-	RootComponent = StaticMeshComponent;
 	StaticMeshComponent->SetCollisionProfileName(UCollisionProfile::NoCollision_ProfileName);
+	StaticMeshComponent->SetupAttachment(RootComponent);
 	
 	//If collides will explode
 	CollisionSphereComponent = CreateDefaultSubobject<USphereComponent>(TEXT("CollisionSphere"));
-	CollisionSphereComponent->SetCollisionProfileName(FName(TEXT("IgnoreSelfOverlapsAll")));
+	CollisionSphereComponent->SetCollisionProfileName(FName(TEXT("PlayerAbility")));
 	CollisionSphereComponent->SetupAttachment(RootComponent);
 	CollisionSphereComponent->SetGenerateOverlapEvents(true);
 	CollisionSphereComponent->OnComponentBeginOverlap.AddDynamic(this, &ASATORI_MissileActor::OnOverlapCollisionSphere);
@@ -36,27 +37,32 @@ ASATORI_MissileActor::ASATORI_MissileActor()
 //Collision for exploding
 void ASATORI_MissileActor::OnOverlapCollisionSphere(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
+	//Missile possible collisions : 
+	// Enemies
+	// Walls
 
 	ASATORI_AICharacter* Character = Cast<ASATORI_AICharacter>(OtherActor);
 
+	// Walls
 	if (!Character)
 	{
 		DestroyMyself();
 		return;
 	}
 
-	float dmg_done = USATORI_BlueprintLibrary::ApplyGameplayEffectDamage(OtherActor, Damage, OtherActor, DamageGameplayEffect);
-		
-	ProjectileMovementComponent->Velocity = (FVector::ZeroVector);
-
-	//Character->sendDamage(dmg_done);
+	// Enemies
+	if (Character->HasMatchingGameplayTag(EnemyTag))
+	{
+		float DamageDone = USATORI_BlueprintLibrary::ApplyGameplayEffectDamage(OtherActor, Damage, OtherActor, DamageGameplayEffect);
+		Character->sendDamage(DamageDone);
+	}
 
 	DestroyMyself();
-
 }
 
 void ASATORI_MissileActor::DestroyMyself()
 {
+	ProjectileMovementComponent->Velocity = (FVector::ZeroVector);
 	Destroy();
 }
 
