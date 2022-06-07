@@ -39,6 +39,4 @@ public:
 	void SetHealthTextBlock(float health, float MaxHealth);
 
 	void SetCurrencyText(float currency);
-
-	void SetAbilityIcon(UTexture2D* NewIcons);
 };

@@ -20,22 +20,12 @@ class SATORI_API USATORI_ChangeAbilitiesWidget : public UUserWidget
 public:
 	bool Initialize() override;
 
-	void ChangeAbilityIcons(UTexture2D* NewIcons);
-
 	virtual void NativeConstruct() override;
 	virtual void NativeDestruct() override;
-
-	/*void NativeConstruct() {
-
-		->GamePlayer->GetComponb->OnAbilityChanged.AddUObject(this, &USATORI_ChangeAbilitiesWidget::OnAbilityChanged)
-	}
-	void NativeDestruct() {
-
-		->GamePlayer->GetComponb->OnAbilityChanged.RemoveO
-	}*/
 
 	UFUNCTION(BlueprintImplementableEvent)
 	void BP_OnData(const FSATORI_AbilitiesDatas& Data);
 
-	
+	UFUNCTION(BlueprintImplementableEvent)
+	void BP_AllOnData(FSATORI_AbilitiesIconsDatas Data);
 };

@@ -15,11 +15,14 @@ void USATORI_ChooseAbility::ActivateAbility(const FGameplayAbilitySpecHandle Han
 
 	ASATORICharacter* Player = Cast<ASATORICharacter>(ActorInfo->AvatarActor);
 
-	int NumEnabledAbilities = Player->PlayerGameplayAbilityComponent->EnabledAbilityClasses.Num();
-
-	Player->AbilityToChoose++;
-	if (Player->AbilityToChoose >= NumEnabledAbilities)
-		Player->AbilityToChoose = 0;
+	if (Player)
+	{
+		USATORI_GameplayAbilityComponent* CurrentAbilityComponent = Player->PlayerGameplayAbilityComponent;
+		if (CurrentAbilityComponent)
+		{
+			CurrentAbilityComponent->SetNextAbility();			
+		}
+	}
 
 	EndAbility(Handle, ActorInfo, ActivationInfo, false, false);
 

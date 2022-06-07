@@ -155,7 +155,7 @@ TSubclassOf<USATORI_GameplayAbility> USATORI_GameplayAbilityComponent::GetCurren
 		}
 	}
 	
-	FSATORI_AbilitiesDatas* FirstAbilityData = PlayerGameplayAbility.Find(PlayerAbilitiesNames[CurrentAbilityValue]);
+	FSATORI_AbilitiesDatas* FirstAbilityData = PlayerGameplayAbility.Find(PlayerAbilitiesNames[0]);
 	CurrentGameplayAbility = FirstAbilityData->CurrentAbility;
 	return CurrentGameplayAbility;
 }
@@ -163,8 +163,13 @@ TSubclassOf<USATORI_GameplayAbility> USATORI_GameplayAbilityComponent::GetCurren
 void USATORI_GameplayAbilityComponent::SetNextAbility()
 {
 	CurrentAbilityValue++;
-	if (CurrentAbilityValue >= EnabledAbilityClasses.Num())
+	if (CurrentAbilityValue >= PlayerAbilitiesNames.Num())
 		CurrentAbilityValue = 0;
+
+	nextAbilityValue++;
+	if (nextAbilityValue >= PlayerAbilitiesNames.Num())
+		nextAbilityValue = 0;
+
 	NotifyAbilityChanged();
 }
 
@@ -195,9 +200,18 @@ bool USATORI_GameplayAbilityComponent::IsAbilityClassEnabled(TSubclassOf<USATORI
 
 void USATORI_GameplayAbilityComponent::NotifyAbilityChanged()
 {
-	const FSATORI_AbilitiesDatas* AbilityData = PlayerGameplayAbility.Find(PlayerAbilitiesNames[CurrentAbilityValue]);
-	if (!AbilityData)
+	const FSATORI_AbilitiesDatas* CurrentAbilityData = PlayerGameplayAbility.Find(PlayerAbilitiesNames[CurrentAbilityValue]);
+
+	const FSATORI_AbilitiesDatas* NextAbilityData = PlayerGameplayAbility.Find(PlayerAbilitiesNames[nextAbilityValue]);
+
+	if (!CurrentAbilityData && !NextAbilityData)
 		return;
 
-	AbilityIconChange.Broadcast(*AbilityData);
+	FSATORI_AbilitiesIconsDatas AbilityIconToChange;
+	AbilityIconToChange.CurrentAbilitiyIcon = CurrentAbilityData->AbilitiyIcon;
+	AbilityIconToChange.NextAbilitiyIcon = NextAbilityData->AbilitiyIcon;
+
+	//AbilityIconChange.Broadcast(*AbilityData);
+
+	AllAbilityIconChange.Broadcast(AbilityIconToChange);
 }
