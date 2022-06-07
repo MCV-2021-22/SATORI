@@ -31,14 +31,24 @@ protected:
 	virtual void BeginPlay() override;
 
 	// Initialize all Health attributes for local values
-	virtual void InitializeHealthAttribute(ASATORI_PlayerState* PlayerState);
+	virtual void InitializeStatsAttributes(ASATORI_PlayerState* PlayerState);
+
 	// Helper function if we change some value attributes and we capture the changes
 	virtual void BindAttributeChage(ASATORICharacter* PlayerCharacter);
 
 	// Health Functions
 	virtual void HealthChanged(const FOnAttributeChangeData& Data);
 	virtual void MaxHealthChanged(const FOnAttributeChangeData& Data);
+
+	//Mana Functions
+	virtual void ManaChanged(const FOnAttributeChangeData& Data);
+	virtual void MaxManaChanged(const FOnAttributeChangeData& Data);
+
+	//Pandacoins
+	virtual void PandaCoinChanged(const FOnAttributeChangeData& Data);
+	
 protected:
+
 	// Attributes 
 	TWeakObjectPtr<USATORI_AttributeSet> PlayerAttributes;
 	// Ability Component
@@ -48,13 +58,28 @@ protected:
 	float MaxHealth = 0.f;
 	float Health = 0.f;
 
+	float MaxMana = 0.f;
+	float Mana = 0.f;
+
+	float PandaCoins = 0.0f;
+
 	// Delegates
 	FDelegateHandle HealthChangedDelegateHandle;
 	FDelegateHandle MaxHealthChangedDelegateHandle;
 
+	FDelegateHandle ManaChangedDelegateHandle;
+	FDelegateHandle MaxManaChangedDelegateHandle;
+
+	FDelegateHandle PandaCoinChangedDelegateHandle;
+	
 	// Update UI
 	void UpdateHealthBarPercent();
 	void UpdateHealthBarText();
 
+	void UpdateManaBarPercent();
+	void UpdateManaBarText();
+
+	void UpdatePandaCoinText();
+	
 	ASATORICharacter* SatoriCharacter = nullptr;
 };

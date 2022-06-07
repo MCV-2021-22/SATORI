@@ -19,9 +19,12 @@
 #include "AnimNotify/State/SATORI_ANS_JumpSection.h"
 #include "Components/Player/SATORI_GameplayAbilityComponent.h"
 #include "Components/SkeletalMeshComponent.h"
-#include "Components/SphereComponent.h"
+#include "Components/CapsuleComponent.h"
 #include "DrawDebugHelpers.h"
 #include "AI/Character/SATORI_AICharacter.h"
+#include "GAS/Attributes/SATORI_AttributeSet.h"
+//Cheat related include
+#include "Kismet/GameplayStatics.h"
 
 //////////////////////////////////////////////////////////////////////////
 // ASATORICharacter
@@ -68,13 +71,13 @@ ASATORICharacter::ASATORICharacter()
 
 	// Weapon Component
 	SwordComponent = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("Sword"));
-	AttackingCollision = CreateDefaultSubobject<USphereComponent>(TEXT("Sword Collision"));
+	AttackingCollision = CreateDefaultSubobject<UCapsuleComponent>(TEXT("Sword Collision"));
 	if (SwordComponent)
 	{
-		FAttachmentTransformRules AttachmentRules = FAttachmentTransformRules(EAttachmentRule::KeepRelative, false);
-		SwordComponent->AttachToComponent(GetMesh(), AttachmentRules, "Sword_1");
+		const FAttachmentTransformRules AttachmentRules = FAttachmentTransformRules(EAttachmentRule::KeepRelative, false);
+		SwordComponent->AttachToComponent(GetMesh(), AttachmentRules, "BoSocket");
 		// Sphere Collision
-		AttackingCollision->InitSphereRadius(40.0f);
+		AttackingCollision->SetCapsuleSize(20.f, 60.f, true);
 		AttackingCollision->SetCollisionProfileName("Pawn");
 		AttackingCollision->SetGenerateOverlapEvents(false);
 		AttackingCollision->AttachTo(SwordComponent);
@@ -170,7 +173,7 @@ bool ASATORICharacter::DoRayCast()
 			Params
 		);
 
-		//::DrawDebugLine(World, StartPosition, newEndPos, newHit ? FColor::Green : FColor::Red, false, 1.0f);
+		::DrawDebugLine(World, StartPosition, newEndPos, newHit ? FColor::Green : FColor::Red, false, 1.0f);
 		if (newHit)
 		{
 			NewActor = HitResult.Actor;
@@ -390,4 +393,73 @@ bool ASATORICharacter::PlayerActiveAbilityWithTag(FGameplayTag TagName)
 	}
 
 	return true;
+}
+
+//Cheats
+void ASATORICharacter::SetGodMode()
+{
+	SetHealth(10000);
+	SetMana(10000);
+}
+
+void ASATORICharacter::RestartStats()
+{
+	SetHealth(GetMaxHealth());
+	SetMana(GetMaxMana());
+}
+
+void ASATORICharacter::GetAllAbilities()
+{
+	for (TSubclassOf < USATORI_GameplayAbility > Ability : PlayerGameplayAbilityComponent->DisabledAbilityClasses)
+	{
+		PlayerGameplayAbilityComponent->EnabledAbilityClasses.AddUnique(Ability);
+	}
+	PlayerGameplayAbilityComponent->DisabledAbilityClasses.Empty();
+}
+
+void ASATORICharacter::RemoveAllAbilities()
+{
+	for (TSubclassOf < USATORI_GameplayAbility > Ability : PlayerGameplayAbilityComponent->EnabledAbilityClasses)
+	{
+		PlayerGameplayAbilityComponent->DisabledAbilityClasses.AddUnique(Ability);
+	}
+	AbilityToChoose = 0;
+	PlayerGameplayAbilityComponent->EnabledAbilityClasses.Empty();
+}
+
+void ASATORICharacter::GetAbility(FName AbilityName)
+{
+	TSubclassOf < USATORI_GameplayAbility > AbilityToEnable;
+
+	for (TSubclassOf < USATORI_GameplayAbility > Ability : PlayerGameplayAbilityComponent->DisabledAbilityClasses)
+	{
+		FName GetAbilityName = Ability.GetDefaultObject()->GetAbilityName();
+		UE_LOG(LogTemp, Display, TEXT("GetAbilityName: %s"), *GetAbilityName.ToString());
+		UE_LOG(LogTemp, Display, TEXT("AbilityName: %s"), *AbilityName.ToString());
+		if (GetAbilityName.ToString() == AbilityName.ToString())
+		{
+			AbilityToEnable = Ability;
+			PlayerGameplayAbilityComponent->EnabledAbilityClasses.AddUnique(AbilityToEnable);
+		}
+	}
+	PlayerGameplayAbilityComponent->DisabledAbilityClasses.Remove(AbilityToEnable);
+}
+
+void ASATORICharacter::GetEnabledAbilityName()
+{
+	for (TSubclassOf < USATORI_GameplayAbility > Ability : PlayerGameplayAbilityComponent->EnabledAbilityClasses)
+	{
+		FName GetAbilityName = Ability.GetDefaultObject()->GetAbilityName();
+		GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, FString::Printf(TEXT("AbilityName: %s"), *GetAbilityName.ToString()));
+	}
+}
+
+void ASATORICharacter::KillAllEnemies()
+{
+	TArray<AActor*> Actors;
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(), ASATORI_AICharacter::StaticClass(), Actors);
+	for (AActor* Actor : Actors)
+	{
+		Actor->Destroy();
+	}
 }

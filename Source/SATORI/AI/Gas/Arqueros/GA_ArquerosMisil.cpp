@@ -60,6 +60,10 @@ void UGA_ArquerosMisil::ActivateAbility(const FGameplayAbilitySpecHandle Handle,
 				ActorInfo->AvatarActor->GetActorLocation() + ActorInfo->AvatarActor->GetActorForwardVector() * 100,
 				RotationOfIA);
 
+			FVector newForward = dest - Sphere->GetActorLocation();
+			newForward.Normalize();
+			Sphere->setDirection(newForward * 20);
+			break;
 			
 		/*	ASATORI_ArcherProjectile* Sphere = GetWorld()->SpawnActor<ASATORI_ArcherProjectile>(
 
