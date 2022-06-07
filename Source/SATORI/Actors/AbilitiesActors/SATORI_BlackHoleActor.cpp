@@ -12,18 +12,20 @@ ASATORI_BlackHoleActor::ASATORI_BlackHoleActor()
 {
 	PrimaryActorTick.bCanEverTick = true;
 
+	RootComponent = CreateDefaultSubobject<USceneComponent>(TEXT("RootComponent"));
+
 	StaticMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("StaticMesh"));
-	RootComponent = StaticMeshComponent;
+	StaticMeshComponent->SetupAttachment(RootComponent);
 	StaticMeshComponent->SetCollisionProfileName(UCollisionProfile::NoCollision_ProfileName);
 
 	CollisionSphereComponent = CreateDefaultSubobject<USphereComponent>(TEXT("CollisionSphere"));
-	CollisionSphereComponent->SetCollisionProfileName(FName(TEXT("IgnoreSelfOverlapsAll")));
+	CollisionSphereComponent->SetCollisionProfileName(FName(TEXT("PlayerAbility")));
 	CollisionSphereComponent->SetupAttachment(RootComponent);
 	CollisionSphereComponent->SetGenerateOverlapEvents(true);
 	CollisionSphereComponent->OnComponentBeginOverlap.AddDynamic(this, &ASATORI_BlackHoleActor::OnOverlapCollisionSphere);
 
 	RadialForceComponent = CreateDefaultSubobject<URadialForceComponent>(TEXT("RadialForce"));
-	RadialForceComponent->SetupAttachment(CollisionSphereComponent);
+	RadialForceComponent->SetupAttachment(RootComponent);
 
 	ProjectileMovementComponent = CreateDefaultSubobject<UProjectileMovementComponent>("ProjectileMovement");
 
@@ -33,31 +35,28 @@ ASATORI_BlackHoleActor::ASATORI_BlackHoleActor()
 
 void ASATORI_BlackHoleActor::OnOverlapCollisionSphere(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
+	// BlackHole possible collisions : 
+	// Enemies
+	// Objects?
+
 	ASATORI_CharacterBase* Character = Cast<ASATORI_CharacterBase>(OtherActor);
 
 	if (!Character) 
 	{
-		ProjectileMovementComponent->SetVelocityInLocalSpace(FVector::ZeroVector);
 		return;
 	}
 
 	if (Character->HasMatchingGameplayTag(EnemyTag))
 	{
-		USATORI_BlueprintLibrary::ApplyGameplayEffectDamage(OtherActor, Damage, OtherActor, DamageGameplayEffect);
-		Character->AddGameplayTag(TagToAddWhenTrapped);
+		Character->AddGameplayTag(TrappedTag);
 		ArrayTrapped.AddUnique(Character);
-		//USATORI_BlueprintLibrary::ApplyGameplayEffectDamage(OtherActor, Damage, OtherActor, DamageGameplayEffect);
-	}
-	if (!Character->HasMatchingGameplayTag(PlayerTag) && !Character->HasMatchingGameplayTag(EnemyTag))
-	{
-		ProjectileMovementComponent->SetVelocityInLocalSpace(FVector::ZeroVector);
 	}
 }
 
 void ASATORI_BlackHoleActor::DestroyMyself()
 {
 	for (ASATORI_CharacterBase* Character : ArrayTrapped) {
-		Character->RemoveGameplayTag(TagToAddWhenTrapped);
+		Character->RemoveGameplayTag(TrappedTag);
 	}
 	Destroy();
 }
@@ -65,11 +64,6 @@ void ASATORI_BlackHoleActor::DestroyMyself()
 void ASATORI_BlackHoleActor::BeginPlay()
 {
 	Super::BeginPlay();
-
-	if (!EnemyTag.IsValid() || !PlayerTag.IsValid() || !TagToAddWhenTrapped.IsValid())
-	{
-		UE_LOG(LogTemp, Display, TEXT("[%s] ASATORI_BlackHoleActor: Tag is not valid ... "), *GetName());
-	}
 
 	GetWorldTimerManager().SetTimer(TimerHandleDestroy, this, &ASATORI_BlackHoleActor::DestroyMyself, TimeToDestroy, false);
 }

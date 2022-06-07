@@ -6,6 +6,8 @@
 #include "GameFramework/Actor.h"
 #include "GameplayTagContainer.h"
 #include "GameplayEffect.h"
+#include "AI/Character/SATORI_AICharacter.h"
+#include "SATORICharacter.h"
 #include "SATORI_PullActor.generated.h"
 
 class USphereComponent;
@@ -42,6 +44,9 @@ public:
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Meta = (ExposeOnSpawn = true), Category = "Pull")
 	float TimeToDestroy;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Debug")
+	float FinalDistanceToPlayer = 150.0f;
 	
 	UFUNCTION(BlueprintCallable, Category = "Pull")
 	void OnOverlapCollisionSphere(
@@ -51,20 +56,12 @@ public:
 			int32 OtherBodyIndex,
 			bool bFromSweep,
 			const FHitResult& SweepResult);
-	void OnOverlapSeekingSphere(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp,
-	                            int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
-
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Pull|Tags")
-	FGameplayTag  TargetActorWithTag;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Pull|Tags")
 	FGameplayTag  EnemyTag;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Pull|Tags")
-	FGameplayTag  PlayerTag;
-
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Pull|Tags")
-	FGameplayTag  CloneTag;
+	FGameplayTag  PullingTag;
 
 protected:
 
@@ -77,14 +74,12 @@ public:
 private:
 
 	AActor* Target;
-	AActor* TargetNear;
+	ASATORICharacter* Player;
+
+	ASATORI_AICharacter* Pulling = nullptr;
 
 	FTimerHandle TimerHandleDestroy;
 
-	AActor* Player;
-
-	UPrimitiveComponent* Pulling = nullptr;
-
-	void DestroySelf();
+	void DestroyMyself();
 
 };

@@ -51,7 +51,7 @@ void USATORI_MissileAbility::OnCancelled(FGameplayTag EventTag, FGameplayEventDa
 
 void USATORI_MissileAbility::OnCompleted(FGameplayTag EventTag, FGameplayEventData EventData)
 {
-	Super::EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true);
+	Super::EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, false);
 }
 
 void USATORI_MissileAbility::EventReceived(FGameplayTag EventTag, FGameplayEventData EventData)
@@ -59,7 +59,7 @@ void USATORI_MissileAbility::EventReceived(FGameplayTag EventTag, FGameplayEvent
 
 	if (EventTag == TagEndAbility)
 	{
-		Super::EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true);
+		Super::EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, false);
 		return;
 	}
 
@@ -74,7 +74,11 @@ void USATORI_MissileAbility::EventReceived(FGameplayTag EventTag, FGameplayEvent
 		}
 
 		//No need to aim it
-		SpawnTransform = Character->HandComponent->GetComponentTransform();
+		FTransform SpawnTransform = Character->HandComponent->GetComponentTransform();
+		FRotator Rotation = SpawnTransform.GetRotation().Rotator();
+
+		Rotation.Pitch = 0.0f;
+		SpawnTransform.SetRotation(Rotation.Quaternion());
 
 		//Missile Actor creation
 		ASATORI_MissileActor* Missile = GetWorld()->SpawnActorDeferred<ASATORI_MissileActor>(MissileActor, SpawnTransform, GetOwningActorFromActorInfo(),

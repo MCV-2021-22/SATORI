@@ -16,6 +16,7 @@ void USATORI_BlackHoleAbility::ActivateAbility(
 	const FGameplayAbilityActivationInfo ActivationInfo,
 	const FGameplayEventData* TriggerEventData)
 {
+	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
 
 	if (!IsValid(AnimMontage))
 	{
@@ -29,13 +30,7 @@ void USATORI_BlackHoleAbility::ActivateAbility(
 		return;
 	}
 
-	if (!CommitAbility(Handle, ActorInfo, ActivationInfo))
-	{
-		UE_LOG(LogTemp, Display, TEXT("[%s] USATORI_BlackHoleAbility: Cannot Commit Ability ... "), *GetName());
-		EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true);
-	}
-
-	if (!TagSpawnAbility.IsValid() || !TagEndAbility.IsValid() || !PlayerTargetingTag.IsValid())
+	if (!TagSpawnAbility.IsValid() || !TagEndAbility.IsValid())
 	{
 		UE_LOG(LogTemp, Display, TEXT("[%s] USATORI_BlackHoleAbility: Tag is not valid ... "), *GetName());
 	}
@@ -53,12 +48,12 @@ void USATORI_BlackHoleAbility::ActivateAbility(
 
 void USATORI_BlackHoleAbility::OnCancelled(FGameplayTag EventTag, FGameplayEventData EventData)
 {
-	EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true);
+	Super::EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true);
 }
 
 void USATORI_BlackHoleAbility::OnCompleted(FGameplayTag EventTag, FGameplayEventData EventData)
 {
-	EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, false);
+	Super::EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, false);
 }
 
 void USATORI_BlackHoleAbility::EventReceived(FGameplayTag EventTag, FGameplayEventData EventData)
@@ -66,7 +61,7 @@ void USATORI_BlackHoleAbility::EventReceived(FGameplayTag EventTag, FGameplayEve
 
 	if (EventTag == TagEndAbility)
 	{
-		EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, false);
+		Super::EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, false);
 		return;
 	}
 
@@ -76,32 +71,28 @@ void USATORI_BlackHoleAbility::EventReceived(FGameplayTag EventTag, FGameplayEve
 		ASATORICharacter* Character = Cast<ASATORICharacter>(GetAvatarActorFromActorInfo());
 		if (!Character)
 		{
-			UE_LOG(LogTemp, Display, TEXT("[%s] USATORI_BlackHoleAbility: Cannot Cast ASATORICharacter ... "), *GetName());
+			UE_LOG(LogTemp, Display, TEXT("[%s] USATORI_PushAbility: Cannot Cast ASATORICharacter ... "), *GetName());
 			EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true);
 		}
 
+		FTransform SpawnTransform = Character->HandComponent->GetComponentTransform();
+		FRotator Rotation;
+
 		//Aiming when Targeting Enemy
-		if (Character->HasMatchingGameplayTag(PlayerTargetingTag))
+		if (Character->GetTargetSystemComponent()->IsLocked())
 		{
-			UCameraComponent* CameraComponent = Character->FindComponentByClass<UCameraComponent>();
-			if (!CameraComponent)
-			{
-				UE_LOG(LogTemp, Display, TEXT("[%s] USATORI_BlackHoleAbility: Cannot Cast UCameraComponent ... "), *GetName());
-				EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true);
-			}
-
-			FRotator CameraRotation = CameraComponent->GetComponentRotation();
-			CameraRotation.Pitch = 0.0f;
-			SpawnTransform.SetLocation(Character->GetActorLocation() + CameraComponent->GetForwardVector() * 100);
-			SpawnTransform.SetRotation(CameraRotation.Quaternion());
-
+			FVector Target = Character->GetTargetSystemComponent()->GetLockedOnTargetActor()->GetActorLocation();
+			FVector Position = GetAvatarActorFromActorInfo()->GetActorLocation();
+			Rotation = FRotationMatrix::MakeFromX(Target - Position).Rotator();
 		}
 		//Aiming when not targeting
 		else
 		{
-			SpawnTransform.SetLocation(Character->GetActorLocation() + Character->GetActorForwardVector() * 100);
-			SpawnTransform.SetRotation(Character->GetActorRotation().Quaternion());
+			Rotation = Character->GetActorRotation();
 		}
+
+		Rotation.Pitch = 0.0f;
+		SpawnTransform.SetRotation(Rotation.Quaternion());
 
 		//BlackHole Actor creation
 		ASATORI_BlackHoleActor* BlackHole = GetWorld()->SpawnActorDeferred<ASATORI_BlackHoleActor>(BlackHoleActor, SpawnTransform, GetOwningActorFromActorInfo(),

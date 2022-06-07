@@ -16,6 +16,7 @@ void USATORI_CloneAbility::ActivateAbility(
 	const FGameplayAbilityActivationInfo ActivationInfo,
 	const FGameplayEventData* TriggerEventData)
 {
+	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
 
 	if (!IsValid(AnimMontage))
 	{
@@ -23,13 +24,7 @@ void USATORI_CloneAbility::ActivateAbility(
 		return;
 	}
 
-	if (!CommitAbility(Handle, ActorInfo, ActivationInfo))
-	{
-		UE_LOG(LogTemp, Display, TEXT("[%s] USATORI_CloneAbility: Cannot Commit Ability ... "), *GetName());
-		EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true);
-	}
-
-	if (!TagSpawnAbility.IsValid() || !TagEndAbility.IsValid() || !PlayerTargetingTag.IsValid())
+	if (!TagSpawnAbility.IsValid() || !TagEndAbility.IsValid())
 	{
 		UE_LOG(LogTemp, Display, TEXT("[%s] USATORI_CloneAbility: Tag is not valid ... "), *GetName());
 	}
@@ -47,12 +42,12 @@ void USATORI_CloneAbility::ActivateAbility(
 
 void USATORI_CloneAbility::OnCancelled(FGameplayTag EventTag, FGameplayEventData EventData)
 {
-	EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true);
+	Super::EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true);
 }
 
 void USATORI_CloneAbility::OnCompleted(FGameplayTag EventTag, FGameplayEventData EventData)
 {
-	EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, false);
+	Super::EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, false);
 }
 
 void USATORI_CloneAbility::EventReceived(FGameplayTag EventTag, FGameplayEventData EventData)
@@ -60,7 +55,7 @@ void USATORI_CloneAbility::EventReceived(FGameplayTag EventTag, FGameplayEventDa
 
 	if (EventTag == TagEndAbility)
 	{
-		EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, false);
+		Super::EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, false);
 		return;
 	}
 
@@ -74,28 +69,12 @@ void USATORI_CloneAbility::EventReceived(FGameplayTag EventTag, FGameplayEventDa
 			EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true);
 		}
 
-		//Aiming when Targeting Enemy
-		if (Character->HasMatchingGameplayTag(PlayerTargetingTag))
-		{
-			UCameraComponent* CameraComponent = Character->FindComponentByClass<UCameraComponent>();
-			if (!CameraComponent)
-			{
-				UE_LOG(LogTemp, Display, TEXT("[%s] USATORI_CloneAbility: Cannot Cast UCameraComponent ... "), *GetName());
-				EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true);
-			}
+		//No need to aim it
+		FTransform SpawnTransform = Character->HandComponent->GetComponentTransform();
+		FRotator Rotation = SpawnTransform.GetRotation().Rotator();
 
-			FRotator CameraRotation = CameraComponent->GetComponentRotation();
-			CameraRotation.Pitch = 0.0f;
-			SpawnTransform.SetLocation(Character->GetActorLocation() + CameraComponent->GetForwardVector() * 100);
-			SpawnTransform.SetRotation(CameraRotation.Quaternion());
-
-		}
-		//Aiming when not targeting
-		else
-		{
-			SpawnTransform.SetLocation(Character->GetActorLocation() + Character->GetActorForwardVector() * 100);
-			SpawnTransform.SetRotation(Character->GetActorRotation().Quaternion());
-		}
+		Rotation.Pitch = 0.0f;
+		SpawnTransform.SetRotation(Rotation.Quaternion());
 
 		//Clone creation
 		ASATORI_CloneCharacter* Clone = GetWorld()->SpawnActorDeferred<ASATORI_CloneCharacter>(CloneCharacter, SpawnTransform, GetOwningActorFromActorInfo(),

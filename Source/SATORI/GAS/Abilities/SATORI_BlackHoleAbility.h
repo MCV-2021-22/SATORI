@@ -43,19 +43,16 @@ public:
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Ability|Tags")
 	FGameplayTag TagEndAbility;
 
-	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Ability|Tags")
-	FGameplayTag PlayerTargetingTag;
-
 protected:
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (UIMin = "0.0"), Category = "Ability|BlackHole")
 	float Damage = 1.0f;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (UIMin = "0.0"), Category = "Ability|BlackHole")
-	float Speed = 1.0f;
+	float Speed = 1000.0f;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (UIMin = "0.0"), Category = "Ability|BlackHole")
-	float TimeToDestroy = 1.0f;
+	float TimeToDestroy = 3.0f;
 
 	UFUNCTION()
 	void OnCancelled(FGameplayTag EventTag, FGameplayEventData EventData);
@@ -69,7 +66,5 @@ protected:
 private:
 
 	const bool bStopWhenAbilityEnds = true;
-
-	FTransform SpawnTransform;
 	
 };

@@ -39,9 +39,6 @@ public:
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Ability|Tags")
 	FGameplayTag TagEndAbility;
 
-	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Ability|Tags")
-	FGameplayTag PlayerTargetingTag;
-
 protected:
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (UIMin = "0.0"), Category = "Ability|Clone")
@@ -59,7 +56,5 @@ protected:
 private:
 
 	const bool bStopWhenAbilityEnds = true;
-
-	FTransform SpawnTransform;
 
 };

@@ -6,6 +6,7 @@
 #include "GameFramework/Actor.h"
 #include "GameplayTagContainer.h"
 #include "GameplayEffect.h"
+#include "AI/Character/SATORI_AICharacter.h"
 #include "SATORI_DecoyActor.generated.h"
 
 class USphereComponent;
@@ -40,9 +41,6 @@ public:
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Meta = (ExposeOnSpawn = true), Category = "Decoy")
 	float TimeToDestroy;
 
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Meta = (ExposeOnSpawn = true), Category = "Decoy")
-	FGameplayTag TagGrantedWhenLured;
-
 	UFUNCTION(BlueprintCallable, Category = "Missile")
 		void OnOverlapCollisionSphere(
 			UPrimitiveComponent* OverlappedComp,
@@ -53,13 +51,10 @@ public:
 			const FHitResult& SweepResult);
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Decoy|Tags")
-	FGameplayTag  TargetActorWithTag;
-
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Decoy|Tags")
 	FGameplayTag  EnemyTag;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Decoy|Tags")
-	FGameplayTag  PlayerTag;
+	FGameplayTag LuredTag;
 
 protected:
 	
@@ -73,7 +68,7 @@ private:
 
 	AActor* Target;
 
-	TArray<AActor*> ArrayLured;
+	TArray<ASATORI_AICharacter*> ArrayLured;
 
 	FTimerHandle TimerHandleDestroy;
 

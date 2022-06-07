@@ -79,8 +79,4 @@ private:
 
 	const bool bStopWhenAbilityEnds = true;
 
-	FTransform SpawnTransform;
-
-	FRotator Rotation;
-
 };

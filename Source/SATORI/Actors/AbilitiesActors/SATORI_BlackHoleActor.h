@@ -58,13 +58,10 @@ public:
 			const FHitResult& SweepResult);
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "BlackHole|Tags")
-	FGameplayTag  TagToAddWhenTrapped;
+	FGameplayTag  TrappedTag;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "BlackHole|Tags")
 	FGameplayTag  EnemyTag;
-
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "BlackHole|Tags")
-	FGameplayTag  PlayerTag;
 
 protected:
 

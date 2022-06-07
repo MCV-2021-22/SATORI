@@ -66,6 +66,4 @@ private:
 
 	const bool bStopWhenAbilityEnds = true;
 
-	FTransform SpawnTransform;
-
 };

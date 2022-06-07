@@ -52,7 +52,7 @@ void USATORI_PushAbility::OnCancelled(FGameplayTag EventTag, FGameplayEventData 
 
 void USATORI_PushAbility::OnCompleted(FGameplayTag EventTag, FGameplayEventData EventData)
 {
-	Super::EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true);
+	Super::EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, false);
 }
 
 void USATORI_PushAbility::EventReceived(FGameplayTag EventTag, FGameplayEventData EventData)
@@ -60,7 +60,7 @@ void USATORI_PushAbility::EventReceived(FGameplayTag EventTag, FGameplayEventDat
 
 	if (EventTag == TagEndAbility)
 	{
-		Super::EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true);
+		Super::EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, false);
 		return;
 	}
 
@@ -74,7 +74,8 @@ void USATORI_PushAbility::EventReceived(FGameplayTag EventTag, FGameplayEventDat
 			EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true);
 		}
 
-		SpawnTransform = Character->HandComponent->GetComponentTransform();
+		FTransform SpawnTransform = Character->HandComponent->GetComponentTransform();
+		FRotator Rotation;
 
 		//Aiming when Targeting Enemy
 		if (Character->GetTargetSystemComponent()->IsLocked())
@@ -82,7 +83,6 @@ void USATORI_PushAbility::EventReceived(FGameplayTag EventTag, FGameplayEventDat
 			FVector Target = Character->GetTargetSystemComponent()->GetLockedOnTargetActor()->GetActorLocation();
 			FVector Position = GetAvatarActorFromActorInfo()->GetActorLocation();
 			Rotation = FRotationMatrix::MakeFromX(Target - Position).Rotator();
-			Rotation.Pitch = 0.0f;
 		}
 		//Aiming when not targeting
 		else
@@ -90,6 +90,7 @@ void USATORI_PushAbility::EventReceived(FGameplayTag EventTag, FGameplayEventDat
 			Rotation = Character->GetActorRotation();
 		}
 
+		Rotation.Pitch = 0.0f;
 		SpawnTransform.SetRotation(Rotation.Quaternion());
 
 		//This calcs are for designing parameters for the ability
