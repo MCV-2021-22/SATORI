@@ -45,58 +45,9 @@ void USATORI_GameplayAbilityComponent::BeginPlay()
 		}
 	}
 
-	//UpdateAbilityIcon();
-	/*if (AbilitiesIconDatas)
-	{
-		for (const TPair<FName, FSATORI_AbilitiesDatas>& pair : PlayerGameplayAbility)
-		{
-			const FAbilitesIconDatas* ItemDetails =
-				AbilitiesIconDatas->FindRow<FAbilitesIconDatas>(pair.Key, TEXT("USATORI_GameplayAbilityComponent::BeginPlay"));
-
-			if (ItemDetails)
-			{			
-				ASATORICharacter* Character = Cast<ASATORICharacter>(GetOwner());	
-				if (Character)
-				{
-					ASATORI_PlayerController* PlayerController = Cast<ASATORI_PlayerController>(Character->GetController());
-					if (PlayerController)
-					{
-						USATORI_MainUI* MainUI = PlayerController->GetSatoriMainUI();
-						if (MainUI)
-						{
-							MainUI->SetAbilityIcon(ItemDetails->Icon);
-						}
-					}
-				}
-			}
-		}
-	}*/
-
+	PrevAbilityValue = PlayerAbilitiesNames.Num() - 1;
 	
 	NotifyAbilityChanged();
-	
-	//FName CurrentName = PlayerAbilitiesNames[CurrentAbilityValue];
-	//FSATORI_AbilitiesDatas* LocalAbilityData = PlayerGameplayAbility.Find(CurrentName);
-
-	//if (LocalAbilityData)
-	//{
-	//	//AbilityIconChange.Broadcast(LocalAbilityData);
-
-	//	ASATORICharacter* Character = Cast<ASATORICharacter>(GetOwner());
-	//	if (Character)
-	//	{
-	//		ASATORI_PlayerController* PlayerController = Cast<ASATORI_PlayerController>(Character->GetController());
-	//		if (PlayerController)
-	//		{
-
-	//			USATORI_MainUI* MainUI = PlayerController->GetSatoriMainUI();
-	//			if (MainUI)
-	//			{
-	//				MainUI->SetAbilityIcon(LocalAbilityData->AbilitiyIcon);
-	//			}
-	//		}
-	//	}
-	//}
 }
 
 bool USATORI_GameplayAbilityComponent::TryChangeAbility()
@@ -113,34 +64,6 @@ bool USATORI_GameplayAbilityComponent::TryChangeAbility()
 	}
 	return false;
 }
-
-//FSATORI_AbilitiesDatas* USATORI_GameplayAbilityComponent::SetNextAbility()
-//{
-//	FName CurrentAbilityName = PlayerAbilitiesNames[CurrentAbilityValue];
-//	FSATORI_AbilitiesDatas* CurrentAbilitiesDatas = PlayerGameplayAbility.Find(CurrentAbilityName);
-//	if(CurrentAbilitiesDatas)
-//		return CurrentAbilitiesDatas;
-//
-//	return nullptr;
-//}
-
-//void USATORI_GameplayAbilityComponent::UpdateAbilityIcon()
-//{
-//	const USATORI_GameplayAbility* CurrentAbilityInfo = Cast<USATORI_GameplayAbility>(EnabledAbilityClasses[CurrentAbilityValue].Get());
-//	if (CurrentAbilityInfo)
-//	{
-//		ASATORICharacter* Character = Cast<ASATORICharacter>(GetOwner());
-//		ASATORI_PlayerController* PlayerController = Cast<ASATORI_PlayerController>(Character->GetController());
-//		if (PlayerController)
-//		{
-//			USATORI_MainUI* MainUI = PlayerController->GetSatoriMainUI();
-//			if (MainUI)
-//			{
-//				MainUI->SetAbilityIcon(CurrentAbilityInfo->AbilityIcon);
-//			}
-//		}
-//	}
-//}
 
 TSubclassOf<USATORI_GameplayAbility> USATORI_GameplayAbilityComponent::GetCurrentAbility()
 {
@@ -170,6 +93,27 @@ void USATORI_GameplayAbilityComponent::SetNextAbility()
 	if (nextAbilityValue >= PlayerAbilitiesNames.Num())
 		nextAbilityValue = 0;
 
+	PrevAbilityValue++;
+	if (PrevAbilityValue >= PlayerAbilitiesNames.Num())
+		PrevAbilityValue = 0;
+
+	NotifyAbilityChanged();
+}
+
+void USATORI_GameplayAbilityComponent::SetPrevAbility()
+{
+	CurrentAbilityValue--;
+	if (CurrentAbilityValue < 0)
+		CurrentAbilityValue = PlayerAbilitiesNames.Num() - 1;
+
+	nextAbilityValue--;
+	if (nextAbilityValue < 0)
+		nextAbilityValue = PlayerAbilitiesNames.Num() - 1;
+
+	PrevAbilityValue--;
+	if (PrevAbilityValue < 0)
+		PrevAbilityValue = PlayerAbilitiesNames.Num() - 1;
+
 	NotifyAbilityChanged();
 }
 
@@ -188,15 +132,15 @@ TSubclassOf<USATORI_GameplayAbility> USATORI_GameplayAbilityComponent::GetCurren
 	return AbilityData->CurrentAbility;
 }
 
-void USATORI_GameplayAbilityComponent::AddEnabledAbilityClass(TSubclassOf<USATORI_GameplayAbility> ClassToAdd)
-{
-	EnabledAbilityClasses.AddUnique(ClassToAdd);
-}
-
-bool USATORI_GameplayAbilityComponent::IsAbilityClassEnabled(TSubclassOf<USATORI_GameplayAbility> ClassToCheck) const
-{
-	return EnabledAbilityClasses.Find(ClassToCheck) != INDEX_NONE;
-}
+//void USATORI_GameplayAbilityComponent::AddEnabledAbilityClass(TSubclassOf<USATORI_GameplayAbility> ClassToAdd)
+//{
+//	EnabledAbilityClasses.AddUnique(ClassToAdd);
+//}
+//
+//bool USATORI_GameplayAbilityComponent::IsAbilityClassEnabled(TSubclassOf<USATORI_GameplayAbility> ClassToCheck) const
+//{
+//	return EnabledAbilityClasses.Find(ClassToCheck) != INDEX_NONE;
+//}
 
 void USATORI_GameplayAbilityComponent::NotifyAbilityChanged()
 {
@@ -204,14 +148,66 @@ void USATORI_GameplayAbilityComponent::NotifyAbilityChanged()
 
 	const FSATORI_AbilitiesDatas* NextAbilityData = PlayerGameplayAbility.Find(PlayerAbilitiesNames[nextAbilityValue]);
 
-	if (!CurrentAbilityData && !NextAbilityData)
+	const FSATORI_AbilitiesDatas* PrevAbilityData = PlayerGameplayAbility.Find(PlayerAbilitiesNames[PrevAbilityValue]);
+
+	if (!CurrentAbilityData && !NextAbilityData && !PrevAbilityData)
 		return;
 
 	FSATORI_AbilitiesIconsDatas AbilityIconToChange;
 	AbilityIconToChange.CurrentAbilitiyIcon = CurrentAbilityData->AbilitiyIcon;
 	AbilityIconToChange.NextAbilitiyIcon = NextAbilityData->AbilitiyIcon;
+	AbilityIconToChange.PrevAbilitiyIcon = PrevAbilityData->AbilitiyIcon;
 
 	//AbilityIconChange.Broadcast(*AbilityData);
 
 	AllAbilityIconChange.Broadcast(AbilityIconToChange);
 }
+
+/*if (AbilitiesIconDatas)
+	{
+		for (const TPair<FName, FSATORI_AbilitiesDatas>& pair : PlayerGameplayAbility)
+		{
+			const FAbilitesIconDatas* ItemDetails =
+				AbilitiesIconDatas->FindRow<FAbilitesIconDatas>(pair.Key, TEXT("USATORI_GameplayAbilityComponent::BeginPlay"));
+
+			if (ItemDetails)
+			{
+				ASATORICharacter* Character = Cast<ASATORICharacter>(GetOwner());
+				if (Character)
+				{
+					ASATORI_PlayerController* PlayerController = Cast<ASATORI_PlayerController>(Character->GetController());
+					if (PlayerController)
+					{
+						USATORI_MainUI* MainUI = PlayerController->GetSatoriMainUI();
+						if (MainUI)
+						{
+							MainUI->SetAbilityIcon(ItemDetails->Icon);
+						}
+					}
+				}
+			}
+		}
+	}*/
+
+//FName CurrentName = PlayerAbilitiesNames[CurrentAbilityValue];
+//FSATORI_AbilitiesDatas* LocalAbilityData = PlayerGameplayAbility.Find(CurrentName);
+
+//if (LocalAbilityData)
+//{
+//	//AbilityIconChange.Broadcast(LocalAbilityData);
+
+//	ASATORICharacter* Character = Cast<ASATORICharacter>(GetOwner());
+//	if (Character)
+//	{
+//		ASATORI_PlayerController* PlayerController = Cast<ASATORI_PlayerController>(Character->GetController());
+//		if (PlayerController)
+//		{
+
+//			USATORI_MainUI* MainUI = PlayerController->GetSatoriMainUI();
+//			if (MainUI)
+//			{
+//				MainUI->SetAbilityIcon(LocalAbilityData->AbilitiyIcon);
+//			}
+//		}
+//	}
+//}

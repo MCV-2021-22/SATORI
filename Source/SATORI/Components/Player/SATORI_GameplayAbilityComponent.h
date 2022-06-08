@@ -59,17 +59,12 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Abilities")
 	USATORI_AbilityDataAsset* DefaultAbilities;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Abilities")
-	UDataTable* AbilitiesIconDatas;
-
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "ChooseAbilities")
 	USATORI_ChooseAbilitiesDatas* ChoosesAbilities;
 
-	/*UFUNCTION(BlueprintCallable)
-	bool TryChangeAbilityIcon();*/
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
-	TArray<TSubclassOf<USATORI_GameplayAbility>> EnabledAbilityClasses;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Abilities")
+	UDataTable* AbilitiesIconDatas;
 
 	// ----------------- // ----------------------------------------
 	TMap<FName, FSATORI_AbilitiesDatas> PlayerGameplayAbility;
@@ -81,6 +76,9 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	int nextAbilityValue = 1;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	int PrevAbilityValue;
 	// Getters
 	TSubclassOf<USATORI_GameplayAbility> GetCurrentAbility();
 
@@ -96,12 +94,11 @@ public:
 	UFUNCTION(BlueprintCallable)
 	bool TryChangeAbility();
 
-	//FSATORI_AbilitiesDatas* SetNextAbility();
-
-	//void UpdateAbilityIcon();
 	void SetNextAbility();
+	void SetPrevAbility();
 
 	TSubclassOf<USATORI_GameplayAbility> GetCurrentSatoriAbility();
+
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
