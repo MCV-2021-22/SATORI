@@ -31,25 +31,31 @@ public:
 	//Character Tags Utilities
 
 	UFUNCTION(BlueprintCallable, Category = "Player|Attributes")
-		float GetHealth() const;
+	float GetHealth() const;
 
 	UFUNCTION(BlueprintCallable, Category = "Player|Attributes")
-		float GetMaxHealth() const;
+	float GetMaxHealth() const;
 
 	UFUNCTION(BlueprintCallable, Category = "Player|Attributes")
-		float GetDefense() const;
+	float GetMana() const;
 
 	UFUNCTION(BlueprintCallable, Category = "Player|Attributes")
-		float GetAttack() const;
+	float GetMaxMana() const;
 
 	UFUNCTION(BlueprintCallable, Category = "Player|Attributes")
-		float GetMoveSpeed() const;
+	float GetDefense() const;
 
 	UFUNCTION(BlueprintCallable, Category = "Player|Attributes")
-		float GetGold() const;
+	float GetAttack() const;
 
 	UFUNCTION(BlueprintCallable, Category = "Player|Attributes")
-		int32 GetCharacterLevel() const;
+	float GetMoveSpeed() const;
+
+	UFUNCTION(BlueprintCallable, Category = "Player|Attributes")
+	float GetGold() const;
+
+	UFUNCTION(BlueprintCallable, Category = "Player|Attributes")
+	int32 GetCharacterLevel() const;
 
 	UFUNCTION(BlueprintCallable, Category = "Tags")
 	void AddGameplayTag(const FGameplayTag& TagToAdd);
@@ -57,28 +63,28 @@ public:
 	void RemoveGameplayTag(const FGameplayTag& TagToRemove);
 
 	UFUNCTION(BlueprintCallable, Category = "Tags")
-		void AddGameplayTagToAbilitySystem(const FGameplayTag& TagToAdd);
+	void AddGameplayTagToAbilitySystem(const FGameplayTag& TagToAdd);
 
 	UFUNCTION(BlueprintCallable, Category = "Tags")
-		void RemoveGameplayTagFromAbilitySystem(const FGameplayTag& TagToRemove);
+	void RemoveGameplayTagFromAbilitySystem(const FGameplayTag& TagToRemove);
 
 	UFUNCTION(BlueprintCallable, Category = "Tags")
-		void BlockGameplayTag(const FGameplayTagContainer& TagsToBlock);
+	void BlockGameplayTag(const FGameplayTagContainer& TagsToBlock);
 
 	UFUNCTION(BlueprintCallable, Category = "Tags")
-		void UnBlockGameplayTag(const FGameplayTagContainer& TagsToBlock);
+	void UnBlockGameplayTag(const FGameplayTagContainer& TagsToBlock);
 
 	UFUNCTION(BlueprintCallable, Category = "Tags")
-		void GetOwnedGameplayTags(FGameplayTagContainer& TagContainer) const;
+	void GetOwnedGameplayTags(FGameplayTagContainer& TagContainer) const;
 
 	UFUNCTION(BlueprintCallable, Category = "Tags")
-		bool HasMatchingGameplayTag(FGameplayTag TagToCheck) const;
+	bool HasMatchingGameplayTag(FGameplayTag TagToCheck) const;
 
 	UFUNCTION(BlueprintCallable, Category = "Tags")
-		bool HasAllMatchingGameplayTags(const FGameplayTagContainer& TagContainer) const;
+	bool HasAllMatchingGameplayTags(const FGameplayTagContainer& TagContainer) const;
 
 	UFUNCTION(BlueprintCallable, Category = "Tags")
-		bool HasAnyMatchingGameplayTags(const FGameplayTagContainer& TagContainer) const;
+	bool HasAnyMatchingGameplayTags(const FGameplayTagContainer& TagContainer) const;
 
 protected:
 
@@ -86,10 +92,11 @@ protected:
 
 	virtual void SetHealth(float Health);
 
+	virtual void SetMana(float Mana);
+
 	TWeakObjectPtr<USATORI_AttributeSet> AttributeSetBase;
 
 	// The core ActorComponent for interfacing with the GameplayAbilities System
 	TWeakObjectPtr<USATORI_AbilitySystemComponent> AbilitySystemComponent;
 
-	
 };

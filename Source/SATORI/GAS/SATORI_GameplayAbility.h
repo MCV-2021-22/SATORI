@@ -42,4 +42,7 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FName AbilityName;
+
+	UFUNCTION(BlueprintCallable)
+	FName GetAbilityName() const;
 };

@@ -57,6 +57,21 @@ void ASATORI_PullActor::OnOverlapCollisionSphere(UPrimitiveComponent* Overlapped
 	}
 }
 
+//Collision for aiming
+void ASATORI_PullActor::OnOverlapSeekingSphere(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+
+	ASATORI_AICharacter* Character = Cast<ASATORI_AICharacter>(OtherActor);
+
+	if(Character)
+	{
+		if (Character->HasMatchingGameplayTag(EnemyTag) && !Target)
+		{
+			Target = OtherActor;
+		}
+	}
+}
+
 // Called when the game starts or when spawned
 void ASATORI_PullActor::BeginPlay()
 {
@@ -90,14 +105,11 @@ void ASATORI_PullActor::BeginPlay()
 			}
 			else
 			{
-				if (!Character->HasMatchingGameplayTag(CloneTag))
+				const float Distance = GetDistanceTo(Actor);
+				if (Distance < Range)
 				{
-					const float Distance = GetDistanceTo(Actor);
-					if (Distance < Range)
-					{
-						Range = Distance;
-						TargetNear = Actor;
-					}
+					Range = Distance;
+					TargetNear = Actor;
 				}
 			}
 		}
