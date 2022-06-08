@@ -20,28 +20,31 @@ public:
 
 	ASATORI_DashMeleeActor();
 
-	UPROPERTY(EditDefaultsOnly, Category = "Push")
+	UPROPERTY(EditDefaultsOnly, Category = "DashMelee")
 	USphereComponent* CollisionSphereComponent = nullptr;
 
-	UPROPERTY(EditDefaultsOnly, Category = "Missile")
+	UPROPERTY(EditDefaultsOnly, Category = "DashMelee")
+	USphereComponent* MeleeSphereComponent = nullptr;
+
+	UPROPERTY(EditDefaultsOnly, Category = "DashMelee")
 	UStaticMeshComponent* StaticMeshComponent = nullptr;
 
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Meta = (ExposeOnSpawn = true), Category = "Push")
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Meta = (ExposeOnSpawn = true), Category = "DashMelee")
 	TSubclassOf<UGameplayEffect> DamageGameplayEffect;
 
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Meta = (ExposeOnSpawn = true), Category = "Push")
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Meta = (ExposeOnSpawn = true), Category = "DashMelee")
 	float Damage;
 
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Meta = (ExposeOnSpawn = true), Category = "Push")
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Meta = (ExposeOnSpawn = true), Category = "DashMelee")
 	float Speed;
 
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Meta = (ExposeOnSpawn = true), Category = "Push")
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Meta = (ExposeOnSpawn = true), Category = "DashMelee")
 	float PushForce;
 
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Meta = (ExposeOnSpawn = true), Category = "Push")
-	float TimeToDestroy;
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Meta = (ExposeOnSpawn = true), Category = "DashMelee")
+	float TimeToDestroy = 20.f;
 
-	UFUNCTION(BlueprintCallable, Category = "Push")
+	UFUNCTION(BlueprintCallable, Category = "DashMelee")
 	void OnOverlapSphere(
 			UPrimitiveComponent* OverlappedComp,
 			AActor* OtherActor,
@@ -50,26 +53,27 @@ public:
 			bool bFromSweep,
 			const FHitResult& SweepResult);
 
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Push|Tags")
+	UFUNCTION(BlueprintCallable, Category = "DashMelee")
+		void OnOverlapSphereMelee(
+			UPrimitiveComponent* OverlappedComp,
+			AActor* OtherActor,
+			UPrimitiveComponent* OtherComp,
+			int32 OtherBodyIndex,
+			bool bFromSweep,
+			const FHitResult& SweepResult);
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "DashMelee|Tags")
 	FGameplayTag  EnemyTag;
 
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Push|Tags")
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "DashMelee|Tags")
 	FGameplayTag  PlayerTag;
 
-protected:
-
-	virtual void BeginPlay() override;
-
-public:
-	
 	virtual void Tick(float DeltaTime) override;
 
 private:
 
-	TArray<UPrimitiveComponent*> ArrayPushed;
-
-	FTimerHandle TimerHandleDestroy;
-
 	void DestroyMyself();
+
+	float CurrentTime = 0.f;
 
 };

@@ -57,6 +57,7 @@ void USATORI_DashAbilityMelee::EndAbility(
 	bool bReplicateEndAbility,
 	bool bWasCancelled)
 {
+	Melee->RemoveGameplayTag(FGameplayTag::RequestGameplayTag("State.PlayerNonSeen"));
 	Super::EndAbility(Handle, ActorInfo, ActivationInfo, bReplicateEndAbility, bWasCancelled);
 }
 
@@ -79,6 +80,11 @@ void USATORI_DashAbilityMelee::EventReceived(FGameplayTag EventTag, FGameplayEve
 	{
 		EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, false);
 		return;
+	}
+
+	if (EventTag == TagStartDash)
+	{
+		bDashing = true;
 	}
 
 	if (EventTag == TagSpawnAbility)
@@ -106,7 +112,20 @@ void USATORI_DashAbilityMelee::SpawnActor()
 
 void USATORI_DashAbilityMelee::Tick(float DeltaTime)
 {
-	Melee->AddActorLocalOffset(Direction * DashDistance * DashSpeed * DeltaTime);
+	if(bDashing)
+	{
+		FVector Position = Melee->GetActorLocation();
+
+		FVector Forward = Melee->GetActorForwardVector();
+
+		Melee->SetActorLocation(Position + Forward * 5.f);
+	}
+
+	if(Melee->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag("Dash.Stop")))
+	{
+		Melee->RemoveGameplayTag(FGameplayTag::RequestGameplayTag("Dash.Stop"));
+		EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, false);
+	}
 }
 
 bool USATORI_DashAbilityMelee::IsTickable() const

@@ -93,6 +93,8 @@ private:
 
 	FTransform SpawnTransform;
 
+	bool bDashing = false;
+
 public:
 
 	bool bIsCreateOnRunning = false;
