@@ -8,7 +8,7 @@
 #include "GameplayTagAssetInterface.h"
 #include "GAS/SATORI_GameplayAbility.h"
 #include "SATORI/AbilityTask/SATORI_PlayMontageandWaitNotify.h"
-#include "AI/Components/Arqueros/SATORI_ArcherProjectile.h"
+#include "AI/Components/Raijin/SATORI_RaijinRayo.h"
 #include "SATORI_Rayo.generated.h"
 
 
@@ -26,13 +26,21 @@ public:
 
 
 
-	
+	FTimerDelegate TimerDelegate;
+
+	FTimerHandle TimerHandle;
+
 	virtual void ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, 
 		const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData) override;
 
 
 	UPROPERTY(BlueprintReadOnly, EditAnywhere)
-		TSubclassOf<ASATORI_ArcherProjectile> ProjectileClass;
+		TSubclassOf<ASATORI_RaijinRayo> ProjectileClass;
 
+	void OnBucleRayos(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo);
 
+protected:
+
+	int iteracion = 0;
+	int max_iteracion = 4;
 };

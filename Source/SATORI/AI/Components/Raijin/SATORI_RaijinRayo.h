@@ -6,10 +6,13 @@
 #include "Components/DecalComponent.h"
 #include "SATORI_RaijinRayo.generated.h"
 
+class ASATORICharacter;
+class ADecalActor;
 class UGameplayEffect;
 class UStaticMeshComponent;
 class USphereComponent;
 class UCapsuleComponent;
+class UNiagaraSystem;
 
 UCLASS(Blueprintable, Abstract)
 class ASATORI_RaijinRayo : public AActor
@@ -21,6 +24,12 @@ public:
 
 	UPROPERTY(EditDefaultsOnly)
 		USphereComponent* SphereComponent = nullptr;
+
+	UPROPERTY(EditDefaultsOnly)
+		UParticleSystemComponent* PSC = nullptr;
+
+	UPROPERTY(EditDefaultsOnly)
+		UNiagaraSystem* Trueno = nullptr;
 
 	UPROPERTY(EditDefaultsOnly)
 	UCapsuleComponent* CapsuleComponent = nullptr;
@@ -45,6 +54,15 @@ public:
 			int32 OtherBodyIndex,
 			bool bFromSweep,
 			const FHitResult& SweepResult);
+
+	UFUNCTION()
+		void OnComponentEndOverlap(
+			UPrimitiveComponent* OverlappedComponent,
+			AActor* OtherActor,
+			UPrimitiveComponent* OtherComp,
+			int32 OtherBodyIndex
+			);
+
 
 	UFUNCTION()
 		void OnComponentHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
@@ -74,6 +92,18 @@ protected:
 	float inmunity = 1.f;
 
 	float LifeTime = 8.f;
+
+	ADecalActor* my_decal = nullptr;
+
+	float time_to_overlap = 0.5;
+
+	float time_to_destroy = 1.5;
+
+	float time_actual = 0;
+
+	bool player_inside = true;
+
+	ASATORICharacter* Player = nullptr;
 
 };
 
