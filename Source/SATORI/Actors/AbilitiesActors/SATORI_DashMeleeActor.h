@@ -54,6 +54,13 @@ public:
 			const FHitResult& SweepResult);
 
 	UFUNCTION(BlueprintCallable, Category = "DashMelee")
+	void OnOverlapEnd(
+		UPrimitiveComponent* OverlappedComp, 
+		AActor* OtherActor, 
+		UPrimitiveComponent* OtherComp, 
+		int32 OtherBodyIndex);
+
+	UFUNCTION(BlueprintCallable, Category = "DashMelee")
 		void OnOverlapSphereMelee(
 			UPrimitiveComponent* OverlappedComp,
 			AActor* OtherActor,
@@ -70,10 +77,15 @@ public:
 
 	virtual void Tick(float DeltaTime) override;
 
+
 private:
 
 	void DestroyMyself();
 
 	float CurrentTime = 0.f;
+
+	bool DamagePlayer = true;
+
+	bool DestroyObject = false;
 
 };

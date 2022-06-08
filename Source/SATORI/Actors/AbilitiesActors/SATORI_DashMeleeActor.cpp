@@ -7,6 +7,7 @@
 #include "DrawDebugHelpers.h"
 #include "SATORICharacter.h"
 #include "AI/Character/Melee/SATORI_Melee.h"
+#include "Kismet/GameplayStatics.h"
 
 ASATORI_DashMeleeActor::ASATORI_DashMeleeActor()
 {
@@ -23,6 +24,8 @@ ASATORI_DashMeleeActor::ASATORI_DashMeleeActor()
 	CollisionSphereComponent->SetCollisionProfileName(FName(TEXT("IgnoreSelfOverlapsAll")));
 	CollisionSphereComponent->SetGenerateOverlapEvents(true);
 	CollisionSphereComponent->SetupAttachment(RootComponent);
+	CollisionSphereComponent->OnComponentEndOverlap.AddDynamic(this, &ASATORI_DashMeleeActor::OnOverlapEnd);
+	CollisionSphereComponent->OnComponentBeginOverlap.AddDynamic(this, &ASATORI_DashMeleeActor::OnOverlapSphere);
 
 	MeleeSphereComponent = CreateDefaultSubobject<USphereComponent>(TEXT("SphereMelee"));
 	MeleeSphereComponent->SetSphereRadius(SphereRadius);
@@ -49,7 +52,21 @@ void ASATORI_DashMeleeActor::OnOverlapSphere(
 
 	if (Character)
 	{
-		float dmg_done = USATORI_BlueprintLibrary::ApplyGameplayEffectDamage(OtherActor, Damage, OtherActor, DamageGameplayEffect);
+		DamagePlayer = true;
+	}
+}
+
+void ASATORI_DashMeleeActor::OnOverlapEnd(
+	UPrimitiveComponent* OverlappedComp,
+	AActor* OtherActor,
+	UPrimitiveComponent* OtherComp,
+	int32 OtherBodyIndex)
+{
+	ASATORICharacter* Character = Cast<ASATORICharacter>(OtherActor);
+
+	if(Character)
+	{
+		DamagePlayer = false;
 	}
 }
 
@@ -66,8 +83,10 @@ void ASATORI_DashMeleeActor::OnOverlapSphereMelee(
 
 	if(Melee)
 	{
-		CollisionSphereComponent->OnComponentBeginOverlap.AddDynamic(this, &ASATORI_DashMeleeActor::OnOverlapSphere);
 		Melee->AddGameplayTag(FGameplayTag::RequestGameplayTag("Dash.Stop"));
+
+		DestroyObject = true;
+		
 	}
 }
 
@@ -80,12 +99,13 @@ void ASATORI_DashMeleeActor::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	CurrentTime += DeltaTime;
-
-	if(CurrentTime >= 20.f)
+	if(DestroyObject)
 	{
+		ASATORICharacter* Character = Cast<ASATORICharacter>(UGameplayStatics::GetPlayerPawn(GetWorld(), 0));
+		if(Character && DamagePlayer)
+		{
+			float dmg_done = USATORI_BlueprintLibrary::ApplyGameplayEffectDamage(Character, Damage, Character, DamageGameplayEffect);
+		}
 		DestroyMyself();
 	}
-
 }
-
