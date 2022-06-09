@@ -1,4 +1,4 @@
-#include "SATORI_RaijinRayo.h"
+#include "SATORI_RaijinRayoExtensible.h"
 
 #include "SATORICharacter.h"
 #include "Components/CapsuleComponent.h"
@@ -11,7 +11,7 @@
 #include "Runtime/Engine/Classes/Particles/ParticleSystemComponent.h"
 #include "NiagaraFunctionLibrary.h"
 
-ASATORI_RaijinRayo::ASATORI_RaijinRayo()
+ASATORI_RaijinRayoExtensible::ASATORI_RaijinRayoExtensible()
 {
 
 	PrimaryActorTick.bCanEverTick = true;
@@ -21,14 +21,14 @@ ASATORI_RaijinRayo::ASATORI_RaijinRayo()
 
 	//GetCapsuleComponent()->InitCapsuleSize(42.f, 96.0f);
 	CapsuleComponent = CreateDefaultSubobject<UCapsuleComponent>(TEXT("Capsule"));
-	CapsuleComponent->InitCapsuleSize(300.0f, 1000.0f);
+	CapsuleComponent->InitCapsuleSize(decal_size, 1000.0f);
 	CapsuleComponent->SetCollisionProfileName(UCollisionProfile::NoCollision_ProfileName);
-	CapsuleComponent->OnComponentBeginOverlap.AddUniqueDynamic(this, &ASATORI_RaijinRayo::OnComponentBeginOverlap);
-	CapsuleComponent->OnComponentEndOverlap.AddUniqueDynamic(this, &ASATORI_RaijinRayo::OnComponentEndOverlap);
+	CapsuleComponent->OnComponentBeginOverlap.AddUniqueDynamic(this, &ASATORI_RaijinRayoExtensible::OnComponentBeginOverlap);
+	
 
 	//SphereComponent->SetCollisionProfileName(UCollisionProfile::BlockAllDynamic_ProfileName);
 	//SphereComponent->SetCollisionProfileName(FName("Trigger"));
-	//SphereComponent->OnComponentHit.AddUniqueDynamic(this, &ASATORI_ArcherProjectile::OnComponentHit);
+ 	//SphereComponent->OnComponentHit.AddUniqueDynamic(this, &ASATORI_ArcherProjectile::OnComponentHit);
 	//SphereComponent->OnComponentBeginOverlap.AddUniqueDynamic(this, &ASATORI_ArcherProjectile::OnComponentBeginOverlap);
 	//SphereComponent->SetSimulatePhysics(true);
 
@@ -42,7 +42,7 @@ ASATORI_RaijinRayo::ASATORI_RaijinRayo()
 	//Decal = CreateDefaultSubobject<UDecalComponent>(TEXT("Decal"));
 	//Decal->SetupAttachment(RootComponent);
 	//static ConstructorHelpers::FObjectFinder<UParticleSystem> PS(TEXT("ParticleSystem'/Game/StarterContent/Particles/P_Explosion.P_Explosion'"));
-	PSC = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("MyPSC"));
+	
 	//PSC->SetTemplate(PS.Object);
 
 
@@ -53,14 +53,14 @@ ASATORI_RaijinRayo::ASATORI_RaijinRayo()
 	UE_LOG(LogTemp, Display, TEXT("Bala creada 222 "));
 }
 
-void ASATORI_RaijinRayo::setDirection(FVector newDirection)
+void ASATORI_RaijinRayoExtensible::setDirection(FVector newDirection)
 {
 
 	this->direction = newDirection;
 }
 
 
-void ASATORI_RaijinRayo::BeginPlay()
+void ASATORI_RaijinRayoExtensible::BeginPlay()
 {
 	/*
 	
@@ -77,7 +77,7 @@ void ASATORI_RaijinRayo::BeginPlay()
 	{
 		my_decal->SetDecalMaterial(MaterialDecal);
 		my_decal->SetLifeSpan(0);
-		my_decal->GetDecal()->DecalSize = FVector(300.0f, 300.0f, 300.0f);
+		my_decal->GetDecal()->DecalSize = FVector(decal_size, decal_size, decal_size);
 		//decal->SetLifeSpan(8);
 		UE_LOG(LogTemp, Warning, TEXT("Yes decal spawned"));
 		//m_previousActionDecal = decal;
@@ -91,13 +91,13 @@ void ASATORI_RaijinRayo::BeginPlay()
 }
 
 
-void ASATORI_RaijinRayo::Tick(float DeltaTime)
+void ASATORI_RaijinRayoExtensible::Tick(float DeltaTime)
 {
 
 	Super::Tick(DeltaTime);
-	time_actual += DeltaTime;
+	time_to_destroy -= DeltaTime;
 
-	if(time_actual >= time_to_overlap)
+	if(time_to_destroy >= 0)
 	{
 		CapsuleComponent->Activate(true);
 
@@ -107,30 +107,18 @@ void ASATORI_RaijinRayo::Tick(float DeltaTime)
 		{
 			UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), Trueno, RayoLocation);
 		}
-		
-		
-		time_to_overlap = 100.0f;
-		
+
+		decal_size += DeltaTime;
+		CapsuleComponent->SetCapsuleSize(decal_size, 1000.0f);
+		my_decal->GetDecal()->DecalSize = FVector(decal_size, decal_size, decal_size);
 	}
-	else if(time_actual < time_to_destroy)
-	{
-		if(Player)
-		{
-			float dmg_done = USATORI_BlueprintLibrary::ApplyGameplayEffectDamage(Player, Damage, Player, DamageGameplayEffect);
-		}
-		
-	}
-	else if(time_actual >= time_to_destroy)
-	{
-		my_decal->Destroy();
-		Destroy();
-	}
+	
 
 	
 }
 
 
-void ASATORI_RaijinRayo::OnComponentHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
+void ASATORI_RaijinRayoExtensible::OnComponentHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
 {
 	APawn* InstigatorPawn = GetInstigator<APawn>();
 	IGameplayTagAssetInterface* InstigatorTagInterface = Cast<IGameplayTagAssetInterface>(InstigatorPawn);
@@ -147,7 +135,7 @@ void ASATORI_RaijinRayo::OnComponentHit(UPrimitiveComponent* HitComponent, AActo
 
 
 
-bool ASATORI_RaijinRayo::IsHostile(const IGameplayTagAssetInterface* InstigatorTagInterface, const IGameplayTagAssetInterface* OtherTagInterface) const
+bool ASATORI_RaijinRayoExtensible::IsHostile(const IGameplayTagAssetInterface* InstigatorTagInterface, const IGameplayTagAssetInterface* OtherTagInterface) const
 {
 	if (!InstigatorTagInterface || !OtherTagInterface) {
 		return false;
@@ -164,7 +152,7 @@ bool ASATORI_RaijinRayo::IsHostile(const IGameplayTagAssetInterface* InstigatorT
 
 }
 
-void ASATORI_RaijinRayo::OnComponentBeginOverlap(
+void ASATORI_RaijinRayoExtensible::OnComponentBeginOverlap(
 	UPrimitiveComponent* OverlappedComponent,
 	AActor* OtherActor,
 	UPrimitiveComponent* OtherComp,
@@ -172,31 +160,18 @@ void ASATORI_RaijinRayo::OnComponentBeginOverlap(
 	bool bFromSweep,
 	const FHitResult& SweepResult)
 {
-	ASATORICharacter* Player1 = Cast<ASATORICharacter>(OtherActor);
-	if(Player1)
+	ASATORICharacter* Player = Cast<ASATORICharacter>(OtherActor);
+	if(Player)
 	{
-		Player = Player1;
-		player_inside = true;
+
+		float dmg_done = USATORI_BlueprintLibrary::ApplyGameplayEffectDamage(Player, Damage, Player, DamageGameplayEffect);
+
+		my_decal->Destroy();
+		Destroy();
+
 		//float dmg_done = USATORI_BlueprintLibrary::ApplyGameplayEffectDamage(OtherActor, Damage, OtherActor, DamageGameplayEffect);
 
 	}
 
 }
 
-void ASATORI_RaijinRayo::OnComponentEndOverlap(
-	UPrimitiveComponent* OverlappedComponent,
-	AActor* OtherActor,
-	UPrimitiveComponent* OtherComp,
-	int32 OtherBodyIndex
-	)
-{
-	ASATORICharacter* Player1 = Cast<ASATORICharacter>(OtherActor);
-	if (Player1)
-	{
-		//Player = Player1;
-		player_inside = false;
-		
-
-	}
-
-}
