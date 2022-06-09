@@ -172,11 +172,6 @@ void USATORI_GameplayAbilityComponent::NotifyAbilityChanged()
 	//AbilityIconChange.Broadcast(*AbilityData);
 
 	AllAbilityIconChange.Broadcast(AbilityIconToChange);
-
-	// SET NULL
-	CurrentAbilityData = nullptr;
-	NextAbilityData = nullptr;
-	PrevAbilityData = nullptr;
 }
 
 /*if (AbilitiesIconDatas)
