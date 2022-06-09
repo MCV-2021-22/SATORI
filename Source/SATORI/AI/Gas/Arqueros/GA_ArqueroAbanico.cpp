@@ -52,11 +52,15 @@ void UGA_ArqueroAbanico::ActivateAbility(const FGameplayAbilitySpecHandle Handle
 				ActorInfo->AvatarActor->GetActorLocation() + ActorInfo->AvatarActor->GetActorForwardVector() * 200,
 				RotationOfIA, SpawnParams);
 
-			FVector newForward = dest - Sphere->GetActorLocation();
+			if(Sphere)
+			{
+				FVector newForward = dest - Sphere->GetActorLocation();
 
-			newForward.Normalize();
+				newForward.Normalize();
 
-			Sphere->setDirection(newForward * 20);
+				Sphere->setDirection(newForward * 20);
+			}
+			
 
 			// segundo misil
 
@@ -64,32 +68,40 @@ void UGA_ArqueroAbanico::ActivateAbility(const FGameplayAbilitySpecHandle Handle
 				ActorInfo->AvatarActor->GetActorLocation() + ActorInfo->AvatarActor->GetActorForwardVector() * 150,
 				RotationOfIA, SpawnParams);
 
-			FVector newForward1 = dest - Sphere1->GetActorLocation();
-			FVector RotateValue1 = newForward1.RotateAngleAxis(15.0f, FVector(0, 0, 1));
+			if (Sphere1)
+			{
+				FVector newForward1 = dest - Sphere1->GetActorLocation();
+				FVector RotateValue1 = newForward1.RotateAngleAxis(15.0f, FVector(0, 0, 1));
 
-			RotateValue1.Normalize();
+				RotateValue1.Normalize();
 
 
 
 
-			//Sphere1->setDirection(newForward1 * 50);
-			Sphere1->setDirection(RotateValue1 * 20);
+				//Sphere1->setDirection(newForward1 * 50);
+				Sphere1->setDirection(RotateValue1 * 20);
+			}
+		
 
 			// tercer misil
-
 			ASATORI_ArcherProjectile* Sphere2 = GetWorld()->SpawnActor<ASATORI_ArcherProjectile>(ProjectileClass,
 				ActorInfo->AvatarActor->GetActorLocation() + ActorInfo->AvatarActor->GetActorForwardVector() * 100,
 				RotationOfIA, SpawnParams);
+			if (Sphere2)
+			{
+				FVector newForward2 = dest - Sphere2->GetActorLocation();
+				FVector RotateValue2 = newForward2.RotateAngleAxis(-15.0f, FVector(0, 0, 1));
+				RotateValue2.Normalize();
 
-			FVector newForward2 = dest - Sphere2->GetActorLocation();
-			FVector RotateValue2 = newForward2.RotateAngleAxis(-15.0f, FVector(0, 0, 1));
-			RotateValue2.Normalize();
 
 
 
+				Sphere2->setDirection(RotateValue2 * 20);
 
-			Sphere2->setDirection(RotateValue2 * 20);
+			}
+			
 
+			
 
 
 			break;

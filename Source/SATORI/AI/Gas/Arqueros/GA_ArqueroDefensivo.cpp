@@ -65,11 +65,15 @@ void UGA_ArqueroDefensivo::OnTimerFinished(const FGameplayAbilitySpecHandle Hand
 			bool tiene = Player->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag("PossessedBy.Player"));
 
 			FVector dest = Player->GetActorLocation();
+			if(Sphere)
+			{
+				FVector newForward = dest - Sphere->GetActorLocation();
+				newForward.Normalize();
 
-			FVector newForward = dest - Sphere->GetActorLocation();
-			newForward.Normalize();
+				Sphere->setDirection(newForward * 20);
+			}
 
-			Sphere->setDirection(newForward * 20);
+			
 			break;
 
 		}
