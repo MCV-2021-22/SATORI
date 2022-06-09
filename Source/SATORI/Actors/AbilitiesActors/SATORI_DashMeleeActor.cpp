@@ -7,6 +7,7 @@
 #include "DrawDebugHelpers.h"
 #include "SATORICharacter.h"
 #include "AI/Character/Melee/SATORI_Melee.h"
+#include "Components/DecalComponent.h"
 #include "Kismet/GameplayStatics.h"
 
 ASATORI_DashMeleeActor::ASATORI_DashMeleeActor()
@@ -91,8 +92,30 @@ void ASATORI_DashMeleeActor::OnOverlapSphereMelee(
 }
 
 void ASATORI_DashMeleeActor::DestroyMyself()
-{	
+{
+	my_decal->Destroy();
 	Destroy();
+}
+
+void ASATORI_DashMeleeActor::BeginPlay()
+{
+	Super::BeginPlay();
+
+	PrimaryActorTick.bCanEverTick = true;
+
+	ADecalActor* decal = GetWorld()->SpawnActor<ADecalActor>(GetActorLocation(), FRotator());
+
+	my_decal = decal;
+	if (my_decal)
+	{
+		my_decal->SetDecalMaterial(MaterialDecal);
+		my_decal->SetLifeSpan(0);
+		my_decal->GetDecal()->DecalSize = FVector(300.0f, 300.0f, 300.0f);
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("No decal spawned"));
+	}
 }
 
 void ASATORI_DashMeleeActor::Tick(float DeltaTime)

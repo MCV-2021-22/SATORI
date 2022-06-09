@@ -6,10 +6,13 @@
 #include "GameFramework/Actor.h"
 #include "GameplayTagContainer.h"
 #include "GameplayEffect.h"
+#include "Engine/DecalActor.h"
 #include "SATORI_DashMeleeActor.generated.h"
 
 class USphereComponent;
 class UStaticMeshComponent;
+class UMaterialInterface;
+class UDecalComponent;
 
 UCLASS()
 class SATORI_API ASATORI_DashMeleeActor : public AActor
@@ -77,6 +80,13 @@ public:
 
 	virtual void Tick(float DeltaTime) override;
 
+	UPROPERTY(BlueprintReadOnly)
+	UDecalComponent* Decal = nullptr;
+
+	UPROPERTY(BlueprintReadOnly, EditAnywhere)
+	UMaterialInterface* MaterialDecal;
+
+	void BeginPlay() override;
 
 private:
 
@@ -87,5 +97,7 @@ private:
 	bool DamagePlayer = true;
 
 	bool DestroyObject = false;
+
+	ADecalActor* my_decal = nullptr;
 
 };
