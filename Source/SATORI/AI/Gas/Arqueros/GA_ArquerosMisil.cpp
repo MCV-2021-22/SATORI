@@ -10,9 +10,7 @@
 
 UGA_ArquerosMisil::UGA_ArquerosMisil()
 {
-
 	InstancingPolicy = EGameplayAbilityInstancingPolicy::InstancedPerActor;
-
 }
 
 void UGA_ArquerosMisil::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData)
@@ -28,7 +26,6 @@ void UGA_ArquerosMisil::ActivateAbility(const FGameplayAbilitySpecHandle Handle,
 	UGameplayStatics::GetAllActorsWithTag(GetWorld(), FName("PossessedBy.Player"), enemigos);
 
 	UGameplayStatics::GetAllActorsOfClass(GetWorld(), ASATORICharacter::StaticClass(), enemigos2);
-	//UGameplayStatics::GetAllActorsOfClass(GetWorld(), ASATORICharacter::StaticClass(), enemigos);
 
 	int array_dim = enemigos.Num();
 	int array_dim2 = enemigos2.Num();
@@ -39,7 +36,6 @@ void UGA_ArquerosMisil::ActivateAbility(const FGameplayAbilitySpecHandle Handle,
 
 	for (AActor* Actor : enemigos)
 	{
-		//Actor->Tags.Add("PossessedBy.Player");
 		if(Cast<ASATORICharacter>(Actor) != nullptr)
 		{
 			ASATORICharacter* Player = Cast<ASATORICharacter>(Actor);
@@ -58,27 +54,17 @@ void UGA_ArquerosMisil::ActivateAbility(const FGameplayAbilitySpecHandle Handle,
 
 			ASATORI_ArcherProjectile* Sphere = GetWorld()->SpawnActor<ASATORI_ArcherProjectile>(ProjectileClass,
 				ActorInfo->AvatarActor->GetActorLocation() + ActorInfo->AvatarActor->GetActorForwardVector() * 100,
-				RotationOfIA, SpawnParams);
-			if (Sphere) {
+				RotationOfIA);
+
+			if(Sphere)
+			{
 				FVector newForward = dest - Sphere->GetActorLocation();
 				newForward.Normalize();
 				Sphere->setDirection(newForward * 20);
-				break;
 			}
-		/*	ASATORI_ArcherProjectile* Sphere = GetWorld()->SpawnActor<ASATORI_ArcherProjectile>(
-
-				ProjectileClass, 
-				IATransform, 
-				RotationOfIA);*/
-
-
-			UE_LOG(LogTemp, Display, TEXT("Bala creadaa"));
+			break;
 		}
-		
-
-		//ASATORI_ArcherProjectile* NewProjectile = World->SpawnActor<ASATORI_ArcherProjectile>(ProjectileClass, Transform, SpawnParams);
 	}
-
 
 	EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true);
 }
