@@ -18,6 +18,7 @@ class USATORI_GameplayAbility;
 class USATORI_AbilityDataAsset;
 class UBehaviorTree;
 class UPawnSensingComponent;
+class UWidgetComponent;
 
 UENUM(BlueprintType)
 enum class SATORIEnemyType : uint8
@@ -78,9 +79,12 @@ public:
 
 	void Die();
 
+	UFUNCTION(BlueprintCallable)
+	void HealthBarProjection(UWidgetComponent* HealthBar, float ViewDistance, float RangeA, float RangeB);
+
 	// Default attributes for a character for initializing
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Player|GameplayEffect")
-		TArray<TSubclassOf<UGameplayEffect>> PassiveGameplayEffects;
+	TArray<TSubclassOf<UGameplayEffect>> PassiveGameplayEffects;
 
 protected:
 	// Default attributes for a character for initializing on spawn/respawn.
@@ -116,5 +120,4 @@ protected:
 	float time_burst = 5.f;
 
 	bool bursting = false;
-
 };

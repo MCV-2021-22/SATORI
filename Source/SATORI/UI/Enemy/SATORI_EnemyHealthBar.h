@@ -7,6 +7,7 @@
 #include "SATORI_EnemyHealthBar.generated.h"
 
 class UProgressBar;
+class ASATORI_CharacterBase;
 
 UCLASS()
 class SATORI_API USATORI_EnemyHealthBar : public UUserWidget
@@ -20,4 +21,7 @@ public:
 
 	UPROPERTY(meta = (BindWidget))
 	UProgressBar* HealthBar;
+
+	UPROPERTY()
+	ASATORI_CharacterBase* Character;
 };
