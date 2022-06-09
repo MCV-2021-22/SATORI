@@ -64,8 +64,7 @@ void USATORI_DashAbilityClone::OnCancelled(FGameplayTag EventTag, FGameplayEvent
 
 void USATORI_DashAbilityClone::OnCompleted(FGameplayTag EventTag, FGameplayEventData EventData)
 {
-	//Melee->GetCharacterMovement()->StopMovementImmediately();
-	//EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, false);
+	EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, false);
 }
 
 void USATORI_DashAbilityClone::EventReceived(FGameplayTag EventTag, FGameplayEventData EventData)
@@ -76,18 +75,9 @@ void USATORI_DashAbilityClone::EventReceived(FGameplayTag EventTag, FGameplayEve
 		return;
 	}
 
-	if (EventTag == TagStartDash)
-	{
-		bDashing = true;
-	}
-
 	if (EventTag == TagSpawnAbility)
 	{
-		ASATORICharacter* Enemy = Cast<ASATORICharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(),0));
-
-		EnemyPosition = Enemy->GetActorLocation();
-
-
+		bDashing = true;
 	}
 }
 
@@ -99,13 +89,7 @@ void USATORI_DashAbilityClone::Tick(float DeltaTime)
 
 		FVector Forward = Clone->GetActorForwardVector();
 
-		Clone->SetActorLocation(Position + Forward * 5.f);
-	}
-
-	if(Clone->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag("Dash.Stop")))
-	{
-		Clone->RemoveGameplayTag(FGameplayTag::RequestGameplayTag("Dash.Stop"));
-		EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, false);
+		Clone->SetActorLocation(Position + Forward * DashDistance * DeltaTime);
 	}
 }
 

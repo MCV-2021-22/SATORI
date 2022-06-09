@@ -27,9 +27,6 @@ public:
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Ability")
 	UAnimMontage* AnimMontage;
 
-	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Ability")
-	TSubclassOf<ASATORI_DashMeleeActor> DashMeleeActor;
-
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Ability")
 	TSubclassOf<UGameplayEffect> DamageGameplayEffect;
 
@@ -51,24 +48,12 @@ public:
 	FGameplayTag TagSpawnAbility;
 
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Ability|Tags")
-	FGameplayTag TagStartDash;
-
-	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Ability|Tags")
 	FGameplayTag TagEndAbility;
 
 protected:
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (UIMin = "1.0"), Category = "Ability|Dash")
 	float DashDistance = 25.0f;
-
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (UIMin = "0.001", UIMax = "1.0"), Category = "Ability|Dash")
-	float DashSpeed = 0.01f;
-
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (UIMin = "0.0"), Category = "Ability|Missile")
-	float Damage = 1.0f;
-
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (UIMin = "0.0"), Category = "Ability|Missile")
-	float TimeToDestroy = 1.0f;
 
 	UFUNCTION()
 	void OnCancelled(FGameplayTag EventTag, FGameplayEventData EventData);
