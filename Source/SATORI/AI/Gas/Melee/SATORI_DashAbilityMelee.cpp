@@ -46,8 +46,6 @@ void USATORI_DashAbilityMelee::ActivateAbility(
 	Task->OnCancelled.AddDynamic(this, &USATORI_DashAbilityMelee::OnCancelled);
 	Task->EventReceived.AddDynamic(this, &USATORI_DashAbilityMelee::EventReceived);
 	Task->ReadyForActivation();
-
-
 }
 
 void USATORI_DashAbilityMelee::EndAbility(
@@ -60,8 +58,6 @@ void USATORI_DashAbilityMelee::EndAbility(
 	Melee->RemoveGameplayTag(FGameplayTag::RequestGameplayTag("State.PlayerNonSeen"));
 	Super::EndAbility(Handle, ActorInfo, ActivationInfo, bReplicateEndAbility, bWasCancelled);
 }
-
-
 
 void USATORI_DashAbilityMelee::OnCancelled(FGameplayTag EventTag, FGameplayEventData EventData)
 {
