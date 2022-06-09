@@ -4,6 +4,7 @@
 #include "AbilitySystemComponent.h"
 #include "SATORICharacter.h"
 #include "Engine/Classes/Camera/CameraComponent.h"
+#include "TimerManager.h"
 
 USATORI_BlackHoleAbility::USATORI_BlackHoleAbility() 
 {
@@ -35,6 +36,8 @@ void USATORI_BlackHoleAbility::ActivateAbility(
 		UE_LOG(LogTemp, Display, TEXT("[%s] USATORI_BlackHoleAbility: Tag is not valid ... "), *GetName());
 	}
 
+	TimeToEndAbility = TimeToStopGrowing + TimeToStopAttraction;
+
 	//Handling of events
 	USATORI_PlayMontageAndWaitEvent* Task = USATORI_PlayMontageAndWaitEvent::PlayMontageAndWaitForEvent(this, NAME_None, AnimMontage, FGameplayTagContainer(), 1.0f, NAME_None, bStopWhenAbilityEnds, 1.0f);
 	Task->OnBlendOut.AddDynamic(this, &USATORI_BlackHoleAbility::OnCompleted);
@@ -53,6 +56,11 @@ void USATORI_BlackHoleAbility::OnCancelled(FGameplayTag EventTag, FGameplayEvent
 
 void USATORI_BlackHoleAbility::OnCompleted(FGameplayTag EventTag, FGameplayEventData EventData)
 {
+	GetWorld()->GetTimerManager().SetTimer(TimerHandleEndAbility, this, &USATORI_BlackHoleAbility::FinishWaitingForEnd, TimeToEndAbility, false);
+}
+
+void USATORI_BlackHoleAbility::FinishWaitingForEnd()
+{
 	Super::EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, false);
 }
 
@@ -61,7 +69,7 @@ void USATORI_BlackHoleAbility::EventReceived(FGameplayTag EventTag, FGameplayEve
 
 	if (EventTag == TagEndAbility)
 	{
-		Super::EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, false);
+		GetWorld()->GetTimerManager().SetTimer(TimerHandleEndAbility, this, &USATORI_BlackHoleAbility::FinishWaitingForEnd, TimeToEndAbility, false);
 		return;
 	}
 
@@ -91,7 +99,6 @@ void USATORI_BlackHoleAbility::EventReceived(FGameplayTag EventTag, FGameplayEve
 			Rotation = Character->GetActorRotation();
 		}
 
-		Rotation.Pitch = 0.0f;
 		SpawnTransform.SetRotation(Rotation.Quaternion());
 
 		//BlackHole Actor creation
@@ -99,8 +106,8 @@ void USATORI_BlackHoleAbility::EventReceived(FGameplayTag EventTag, FGameplayEve
 			Character, ESpawnActorCollisionHandlingMethod::AlwaysSpawn);
 		BlackHole->DamageGameplayEffect = DamageGameplayEffect;
 		BlackHole->Damage = Damage;
-		BlackHole->Speed = Speed;
-		BlackHole->TimeToDestroy = TimeToDestroy;
+		BlackHole->TimeToStopGrowing = TimeToStopGrowing;
+		BlackHole->TimeToStopAttraction = TimeToStopAttraction;
 		BlackHole->FinishSpawning(SpawnTransform);
 	}
 }

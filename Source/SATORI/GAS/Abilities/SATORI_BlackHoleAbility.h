@@ -37,6 +37,9 @@ public:
 		const FGameplayEventData* TriggerEventData)
 		override;
 
+	UFUNCTION()
+	void FinishWaitingForEnd();
+
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Ability|Tags")
 	FGameplayTag TagSpawnAbility;
 
@@ -46,13 +49,13 @@ public:
 protected:
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (UIMin = "0.0"), Category = "Ability|BlackHole")
-	float Damage = 1.0f;
+	float Damage = 0.1f;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (UIMin = "0.0"), Category = "Ability|BlackHole")
-	float Speed = 1000.0f;
+	float TimeToStopGrowing = 3.0f;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (UIMin = "0.0"), Category = "Ability|BlackHole")
-	float TimeToDestroy = 3.0f;
+	float TimeToStopAttraction = 4.0f;
 
 	UFUNCTION()
 	void OnCancelled(FGameplayTag EventTag, FGameplayEventData EventData);
@@ -66,5 +69,9 @@ protected:
 private:
 
 	const bool bStopWhenAbilityEnds = true;
+
+	FTimerHandle TimerHandleEndAbility;
+
+	float TimeToEndAbility;
 	
 };
