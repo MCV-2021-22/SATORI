@@ -7,7 +7,7 @@ ASATORI_CloneCharacter::ASATORI_CloneCharacter()
 {
 
 	LuringSphereComponent = CreateDefaultSubobject<USphereComponent>(TEXT("CollisionSphere"));
-	LuringSphereComponent->SetCollisionProfileName(FName(TEXT("IgnoreSelfOverlapsAll")));
+	LuringSphereComponent->SetCollisionProfileName(FName(TEXT("PlayerAbility")));
 	LuringSphereComponent->SetupAttachment(RootComponent);
 	LuringSphereComponent->SetGenerateOverlapEvents(true);
 	LuringSphereComponent->OnComponentBeginOverlap.AddDynamic(this, &ASATORI_CloneCharacter::OnOverlapLuringSphere);

@@ -24,9 +24,6 @@ public:
 	USphereComponent* LuringSphereComponent = nullptr;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Meta = (ExposeOnSpawn = true), Category = "Clone")
-	float TimeToDestroy;
-
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Meta = (ExposeOnSpawn = true), Category = "Clone")
 	FGameplayTag TagGrantedWhenLured;
 
 	UFUNCTION(BlueprintCallable, Category = "Clone")
@@ -37,12 +34,6 @@ public:
 			int32 OtherBodyIndex,
 			bool bFromSweep,
 			const FHitResult& SweepResult);
-
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Clone|Tags")
-	FGameplayTag  TargetActorWithTag;
-
-	//UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Clone|Tags")
-	//FGameplayTag  EnemyTag;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Clone|Tags")
 	FGameplayTag  PlayerTag;

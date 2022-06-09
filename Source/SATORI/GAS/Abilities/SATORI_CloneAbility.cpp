@@ -71,15 +71,12 @@ void USATORI_CloneAbility::EventReceived(FGameplayTag EventTag, FGameplayEventDa
 
 		//No need to aim it
 		FTransform SpawnTransform = Character->HandComponent->GetComponentTransform();
-		FRotator Rotation = SpawnTransform.GetRotation().Rotator();
-
-		Rotation.Pitch = 0.0f;
+		FRotator Rotation = Character->GetActorRotation();
 		SpawnTransform.SetRotation(Rotation.Quaternion());
 
 		//Clone creation
 		ASATORI_CloneCharacter* Clone = GetWorld()->SpawnActorDeferred<ASATORI_CloneCharacter>(CloneCharacter, SpawnTransform, GetOwningActorFromActorInfo(),
 			Character, ESpawnActorCollisionHandlingMethod::AlwaysSpawn);
-		Clone->TimeToDestroy = TimeToDestroy;
 		Clone->FinishSpawning(SpawnTransform);
 		Clone->SpawnDefaultController();
 	}

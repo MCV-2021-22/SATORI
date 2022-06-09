@@ -73,10 +73,10 @@ public:
 	float Increment = 1.5f;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Debug")
-	float Decrement = 0.5f;
+	float Decrement = 0.75f;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Debug")
-	float RotationSpeed = 180.0f;
+	float RotationSpeed = 90.0f;
 
 	UFUNCTION(BlueprintCallable, Category = "BlackHole")
 	void OnOverlapCollisionSphere(

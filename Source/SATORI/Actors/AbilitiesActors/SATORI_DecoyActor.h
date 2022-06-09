@@ -27,6 +27,9 @@ public:
 	USphereComponent* CollisionSphereComponent = nullptr;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Decoy")
+	USphereComponent* ExplosionSphereComponent = nullptr;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Decoy")
 	UStaticMeshComponent* StaticMeshComponent = nullptr;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Decoy")
@@ -41,8 +44,42 @@ public:
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Meta = (ExposeOnSpawn = true), Category = "Decoy")
 	float TimeToDestroy;
 
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Debug")
+	float TraceDistanceToFloor = 800.0f;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Debug")
+	float HeightChange = 50.0f;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Debug")
+	float MaxHeight = 300.0f;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Debug")
+	float MinHeight = 200.0f;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Debug")
+	float GravityAscending = -0.3f;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Debug")
+	float GravityDescending = 0.1f;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Debug")
+	float SideDeviation = 30.0f;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Debug")
+	bool bDrawDebug = false;
+
 	UFUNCTION(BlueprintCallable, Category = "Missile")
 		void OnOverlapCollisionSphere(
+			UPrimitiveComponent* OverlappedComp,
+			AActor* OtherActor,
+			UPrimitiveComponent* OtherComp,
+			int32 OtherBodyIndex,
+			bool bFromSweep,
+			const FHitResult& SweepResult);
+
+
+	UFUNCTION(BlueprintCallable, Category = "Missile")
+		void OnOverlapExplosionSphere(
 			UPrimitiveComponent* OverlappedComp,
 			AActor* OtherActor,
 			UPrimitiveComponent* OtherComp,
@@ -66,10 +103,17 @@ public:
 
 private:
 
-	TArray<ASATORI_AICharacter*> ArrayLured;
+	TArray<AActor*> ArrayLured;
 
 	FTimerHandle TimerHandleDestroy;
+	FTimerHandle TimerHandleDestroyWait;
 
+	FHitResult OutHit;
+	FCollisionQueryParams CollisionParams;
+
+	void Explode();
 	void DestroyMyself();
+	void ChangeDirection(bool ChangeDirection);
+	bool bChangedDirection = false;
 
 };
