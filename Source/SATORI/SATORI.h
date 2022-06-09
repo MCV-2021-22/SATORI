@@ -30,7 +30,8 @@ namespace ESATORIAbilityInputID
 		// ChooseAbility
 		ChooseAbility	UMETA(DisplayName = "ChooseAbility"),
 		// LaunchAbility
-		LaunchAbility	UMETA(DisplayName = "LaunchAbility")
-		
+		LaunchAbility	UMETA(DisplayName = "LaunchAbility"),
+		// ChoosePrevAbility
+		ChoosePrevAbility	UMETA(DisplayName = "ChoosePrevAbility")
 	};
 }

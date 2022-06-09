@@ -17,14 +17,6 @@ bool USATORI_ChangeAbilitiesWidget::Initialize()
 	return true;
 }
 
-void USATORI_ChangeAbilitiesWidget::ChangeAbilityIcons(UTexture2D* NewIcons)
-{
-	//if (AbilityIcons)
-	//{
-	//	AbilityIcons->SetBrushFromTexture(NewIcons);
-	//}
-}
-
 void USATORI_ChangeAbilitiesWidget::NativeConstruct()
 {
 	Super::NativeConstruct();
@@ -34,10 +26,9 @@ void USATORI_ChangeAbilitiesWidget::NativeConstruct()
 		USATORI_GameplayAbilityComponent* CurrentAbilityComponent = Character->PlayerGameplayAbilityComponent;
 		if (CurrentAbilityComponent)
 		{
-			CurrentAbilityComponent->AbilityIconChange.AddDynamic(this, &USATORI_ChangeAbilitiesWidget::BP_OnData);
+			CurrentAbilityComponent->AllAbilityIconChange.AddDynamic(this, &USATORI_ChangeAbilitiesWidget::BP_AllOnData);
 		}
 	}
-	//->GamePlayer->GetComponb->OnAbilityChanged.AddUObject(this, &USATORI_ChangeAbilitiesWidget::OnAbilityChanged)
 }
 
 void USATORI_ChangeAbilitiesWidget::NativeDestruct()
@@ -51,7 +42,7 @@ void USATORI_ChangeAbilitiesWidget::NativeDestruct()
 			CurrentAbilityComponent->AbilityIconChange.RemoveAll(this); // , & USATORI_ChangeAbilitiesWidget::BP_OnData);
 		}
 	}
-	//->GamePlayer->GetComponb->OnAbilityChanged.RemoveO
+
 	Super::NativeDestruct();
 }
 

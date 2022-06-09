@@ -412,26 +412,26 @@ void ASATORICharacter::RestartStats()
 
 void ASATORICharacter::GetAllAbilities()
 {
-	for (TSubclassOf < USATORI_GameplayAbility > Ability : PlayerGameplayAbilityComponent->DisabledAbilityClasses)
+	/*for (TSubclassOf < USATORI_GameplayAbility > Ability : PlayerGameplayAbilityComponent->DisabledAbilityClasses)
 	{
 		PlayerGameplayAbilityComponent->EnabledAbilityClasses.AddUnique(Ability);
 	}
-	PlayerGameplayAbilityComponent->DisabledAbilityClasses.Empty();
+	PlayerGameplayAbilityComponent->DisabledAbilityClasses.Empty();*/
 }
 
 void ASATORICharacter::RemoveAllAbilities()
 {
-	for (TSubclassOf < USATORI_GameplayAbility > Ability : PlayerGameplayAbilityComponent->EnabledAbilityClasses)
+	/*for (TSubclassOf < USATORI_GameplayAbility > Ability : PlayerGameplayAbilityComponent->EnabledAbilityClasses)
 	{
 		PlayerGameplayAbilityComponent->DisabledAbilityClasses.AddUnique(Ability);
 	}
 	AbilityToChoose = 0;
-	PlayerGameplayAbilityComponent->EnabledAbilityClasses.Empty();
+	PlayerGameplayAbilityComponent->EnabledAbilityClasses.Empty();*/
 }
 
 void ASATORICharacter::GetAbility(FName AbilityName)
 {
-	TSubclassOf < USATORI_GameplayAbility > AbilityToEnable;
+	/*TSubclassOf < USATORI_GameplayAbility > AbilityToEnable;
 
 	for (TSubclassOf < USATORI_GameplayAbility > Ability : PlayerGameplayAbilityComponent->DisabledAbilityClasses)
 	{
@@ -444,16 +444,16 @@ void ASATORICharacter::GetAbility(FName AbilityName)
 			PlayerGameplayAbilityComponent->EnabledAbilityClasses.AddUnique(AbilityToEnable);
 		}
 	}
-	PlayerGameplayAbilityComponent->DisabledAbilityClasses.Remove(AbilityToEnable);
+	PlayerGameplayAbilityComponent->DisabledAbilityClasses.Remove(AbilityToEnable);*/
 }
 
 void ASATORICharacter::GetEnabledAbilityName()
 {
-	for (TSubclassOf < USATORI_GameplayAbility > Ability : PlayerGameplayAbilityComponent->EnabledAbilityClasses)
+	/*for (TSubclassOf < USATORI_GameplayAbility > Ability : PlayerGameplayAbilityComponent->EnabledAbilityClasses)
 	{
 		FName GetAbilityName = Ability.GetDefaultObject()->GetAbilityName();
 		GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, FString::Printf(TEXT("AbilityName: %s"), *GetAbilityName.ToString()));
-	}
+	}*/
 }
 
 void ASATORICharacter::KillAllEnemies()

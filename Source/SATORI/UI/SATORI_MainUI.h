@@ -47,6 +47,4 @@ public:
 	void SetManaTextBlock(float Mana, float MaxMana);
 
 	void SetCurrencyText(float currency);
-
-	void SetAbilityIcon(UTexture2D* NewIcons);
 };
