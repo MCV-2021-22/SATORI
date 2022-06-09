@@ -66,8 +66,6 @@ public:
 
 private:
 
-	AActor* Target;
-
 	TArray<ASATORI_AICharacter*> ArrayLured;
 
 	FTimerHandle TimerHandleDestroy;

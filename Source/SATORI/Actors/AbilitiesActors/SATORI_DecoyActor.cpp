@@ -25,7 +25,6 @@ ASATORI_DecoyActor::ASATORI_DecoyActor()
 	CollisionSphereComponent->OnComponentBeginOverlap.AddDynamic(this, &ASATORI_DecoyActor::OnOverlapCollisionSphere);
 
 	ProjectileMovementComponent = CreateDefaultSubobject<UProjectileMovementComponent>("ProjectileMovement");
-	ProjectileMovementComponent->bIsHomingProjectile = true;
 
 	//Debug
 	CollisionSphereComponent->bHiddenInGame = false;
@@ -66,16 +65,7 @@ void ASATORI_DecoyActor::BeginPlay()
 {
 	Super::BeginPlay();
 
-	ProjectileMovementComponent->HomingTargetComponent = nullptr;
-
-	ASATORICharacter* Player = Cast<ASATORICharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
-
-	if (Player->GetTargetSystemComponent()->IsLocked())
-	{
-		Target = Player->GetTargetSystemComponent()->GetLockedOnTargetActor();
-	}
-
-	//Set max time before auto destruc if not collides
+	//Set max time before auto destruc
 	GetWorldTimerManager().SetTimer(TimerHandleDestroy, this, &ASATORI_DecoyActor::DestroyMyself, TimeToDestroy, false);
 }
 

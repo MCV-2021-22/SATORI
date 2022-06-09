@@ -59,7 +59,7 @@ void ASATORI_BlackHoleActor::OnOverlapCollisionSphere(UPrimitiveComponent* Overl
 		ArrayActorsTrapped.AddUnique(OtherActor);
 		
 		float DamageDone = USATORI_BlueprintLibrary::ApplyGameplayEffectDamage(OtherActor, Damage, OtherActor, DamageGameplayEffect);
-		//Character->sendDamage(DamageDone);
+		Character->sendDamage(DamageDone);
 	}
 }
 
