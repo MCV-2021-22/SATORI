@@ -18,6 +18,7 @@
 #include "UI/Enemy/SATORI_EnemyHealthBar.h"
 #include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetMathLibrary.h"
+#include "AI/Components/SATORI_EnemyStatComponent.h"
 
 // Sets default values
 ASATORI_AICharacter::ASATORI_AICharacter()
@@ -34,6 +35,9 @@ ASATORI_AICharacter::ASATORI_AICharacter()
 	PawnSensor->SensingInterval = .25f; // 4 times per second
 	PawnSensor->bOnlySensePlayers = false;
 	PawnSensor->SetPeripheralVisionAngle(85.f);
+
+	// Enemy Stats
+	EnemyStatComponent = CreateDefaultSubobject<USATORI_EnemyStatComponent>(TEXT("StatComponent"));
 
 	//bte = TSoftObjectPtr <UBehaviorTree>(FSoftObjectPath(TEXT("/Game/SATORI/AI/Spawner/BT_Spawner.BT_Spawner")));
 	//btree = bte.LoadSynchronous();

@@ -19,6 +19,7 @@ class USATORI_AbilityDataAsset;
 class UBehaviorTree;
 class UPawnSensingComponent;
 class UWidgetComponent;
+class USATORI_EnemyStatComponent;
 
 UENUM(BlueprintType)
 enum class SATORIEnemyType : uint8
@@ -69,6 +70,9 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Awareness)
 	UPawnSensingComponent* PawnSensor;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Stats")
+	USATORI_EnemyStatComponent* EnemyStatComponent;
+
 	bool GetIsInFront() const { return isInFrontPlayer; }
 
 	void sendDamage(float dmg);
@@ -95,7 +99,6 @@ protected:
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "AI|GAS")
 	TArray<TSubclassOf<USATORI_GameplayAbility>> AICharacterAbilities;
 
-	
 	UPROPERTY(EditAnywhere)
 	TSoftObjectPtr <UBehaviorTree> bte;
 
@@ -104,7 +107,6 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	float dist_attack = 100.f;
-
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	float max_range_dist = 700.f;

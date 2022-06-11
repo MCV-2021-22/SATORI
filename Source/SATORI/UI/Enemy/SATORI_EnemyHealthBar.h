@@ -17,7 +17,8 @@ class SATORI_API USATORI_EnemyHealthBar : public UUserWidget
 public:
 	bool Initialize() override;
 
-	void ShowHealthBar();
+	UFUNCTION(BlueprintCallable)
+	void UpdateHealthBar(float health, float maxHealth);
 
 	UPROPERTY(meta = (BindWidget))
 	UProgressBar* HealthBar;

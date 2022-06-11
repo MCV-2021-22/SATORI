@@ -2,12 +2,7 @@
 
 
 #include "UI/Enemy/SATORI_EnemyHealthBar.h"
-#include "SATORICharacter.h"
-#include "Character/SATORI_CharacterBase.h"
-#include "Components/Player/SATORI_GameplayAbilityComponent.h"
-#include "Kismet/GameplayStatics.h"
 #include "Components/ProgressBar.h"
-#include "Kismet/KismetMathLibrary.h"
 
 bool USATORI_EnemyHealthBar::Initialize()
 {
@@ -18,7 +13,11 @@ bool USATORI_EnemyHealthBar::Initialize()
 	return true;
 }
 
-void ShowHealthBar()
+void USATORI_EnemyHealthBar::UpdateHealthBar(float health, float maxHealth)
 {
-	
+	float value = health / maxHealth;
+	if (HealthBar)
+	{
+		HealthBar->SetPercent(value);
+	}
 }
