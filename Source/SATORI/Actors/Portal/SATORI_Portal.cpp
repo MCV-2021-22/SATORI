@@ -9,7 +9,11 @@
 #include "Components/TextRenderComponent.h"
 #include "EnvironmentQuery/EnvQueryManager.h"
 #include "SATORI/Character/SATORI_PlayerState.h"
+#include "UI/WorldActor/SATORI_DoorInteractUI.h"
+#include "UI/SATORI_MainUI.h"
+#include "Data/SATORI_PortalPassiveDataAsset.h"
 #include <algorithm>
+
 // Sets default values
 ASATORI_Portal::ASATORI_Portal()
 {
@@ -27,12 +31,36 @@ ASATORI_Portal::ASATORI_Portal()
 	SphereComponent->SetCollisionProfileName(FName("Trigger"));
 
 	SphereComponent->OnComponentBeginOverlap.AddUniqueDynamic(this, &ASATORI_Portal::OnComponentBeginOverlap);
+
 }
 
 // Called when the game starts or when spawned
 void ASATORI_Portal::BeginPlay()
 {
 	Super::BeginPlay();
+	
+	if (PassiveDataAsset)
+	{
+		for (const FSATORI_DoorPassiveDatas Data : PassiveDataAsset->PassiveRewards)
+		{
+			FString CurrentName = Data.Desciption.ToString();
+			FName LocalAbilityName = FName(*CurrentName);
+
+			if (LocalAbilityName.IsValid() && Data.PassiveEffect)
+			{
+				// Adding datas to map
+				FSATORI_DoorPassiveReward PassiveReward;
+				PassiveReward.PassiveEffect = Data.PassiveEffect;
+				PassiveReward.PassiveIcon = Data.PassiveIcon;
+				PassiveReward.Desciption = Data.Desciption;
+				PortalEffectsToApply.Add(PassiveReward);
+			}
+		}
+	}
+}
+
+void ASATORI_Portal::OnConstruction(const FTransform& Transform)
+{
 	
 }
 
@@ -47,9 +75,23 @@ void ASATORI_Portal::OnComponentBeginOverlap(UPrimitiveComponent* OverlappedComp
 
 		}
 	}*/
-	if(OtherActor)
-		ApplyEffectToPlayer(OtherActor);
+	ASATORICharacter* Character = Cast<ASATORICharacter>(OtherActor);
 
+	if (!Character)
+	{
+		return;
+	}
+
+	if (Character)
+	{
+		DoorInteractUI = CreateWidget<USATORI_DoorInteractUI>(GetGameInstance(), SATORIMainUI);
+		if (DoorInteractUI)
+		{
+			//DoorInteractUI->AddToViewport();
+		}
+		// TODO
+		ApplyEffectToPlayer(Character);
+	}
 }
 
 void ASATORI_Portal::ApplyEffectToPlayer(AActor* PlayerActor)
@@ -82,5 +124,5 @@ TSubclassOf<UGameplayEffect> ASATORI_Portal::SelectRandomEffect()
 	// Change this to no repeatable number
 	const int EffectSize = PortalEffectsToApply.Num() - 1;
 	int number = FMath::RandRange(0, EffectSize);
-	return PortalEffectsToApply[number];
+	return PortalEffectsToApply[number].PassiveEffect;
 }

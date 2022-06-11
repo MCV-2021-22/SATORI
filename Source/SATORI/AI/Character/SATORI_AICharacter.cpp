@@ -19,6 +19,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "AI/Components/SATORI_EnemyStatComponent.h"
+#include "Components/SphereComponent.h"
 
 // Sets default values
 ASATORI_AICharacter::ASATORI_AICharacter()
@@ -30,6 +31,10 @@ ASATORI_AICharacter::ASATORI_AICharacter()
 	AbilitySystemComponent->SetIsReplicated(true);
 
 	AttributeSet = CreateDefaultSubobject<USATORI_AttributeSet>(TEXT("AttributeSet"));
+
+	HealthBarWidgetComponen = CreateDefaultSubobject<UWidgetComponent>(TEXT("HealthBarWidgetComponen"));
+
+	//HeadComponent = CreateDefaultSubobject<USphereComponent>(TEXT("Head Position"));
 
 	PawnSensor = CreateDefaultSubobject<UPawnSensingComponent>(TEXT("Pawn Sensor"));
 	PawnSensor->SensingInterval = .25f; // 4 times per second
@@ -68,6 +73,25 @@ void ASATORI_AICharacter::BeginPlay()
 		AbilitySystemComponent->AddLooseGameplayTags(TagContainer);
 	}
 	AddGameplayTag(FGameplayTag::RequestGameplayTag("State.Burst"));
+
+}
+
+void ASATORI_AICharacter::OnConstruction(const FTransform& Transform)
+{
+	if (HealthBarWidgetComponen )
+	{
+		HealthBarWidgetComponen->RegisterComponent();
+		const FAttachmentTransformRules AttachmentRules = FAttachmentTransformRules(EAttachmentRule::KeepRelative, false);
+		//HealthBarWidgetComponen->AttachToComponent(HeadComponent, AttachmentRules);
+		/*struct ConstructorHelpers::FClassFinder<USATORI_EnemyHealthBar> EnemyUIBar(TEXT("/Game/SATORI/UI/Enemy/"));
+		if (EnemyUIBar.Class != NULL)*/
+		if (HealthBarUI)
+		{
+			HealthBarWidgetComponen->SetWidgetSpace(EWidgetSpace::World);
+			HealthBarWidgetComponen->SetDrawSize(FVector2D(100.f, 20.f));
+			HealthBarWidgetComponen->SetWidgetClass(HealthBarUI);
+		}
+	}
 }
 
 void ASATORI_AICharacter::InitializeAttributes()
@@ -242,6 +266,12 @@ void ASATORI_AICharacter::Tick(float DeltaSeconds)
 			bursting = false;
 		}
 	}
+
+	if (HealthBarUI)
+	{
+		HealthBarProjection(HealthBarWidgetComponen, 1024, 0.5, 0.1);
+	}
+	
 	Super::Tick(DeltaSeconds);
 }
 

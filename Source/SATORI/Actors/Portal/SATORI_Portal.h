@@ -11,6 +11,25 @@ class UGameplayEffect;
 class UStaticMeshComponent;
 class USphereComponent;
 class UTextRenderComponent;
+class USATORI_MainUI;
+class USATORI_DoorInteractUI;
+class USATORI_PortalPassiveDataAsset;
+
+USTRUCT(BlueprintType)
+struct FSATORI_DoorPassiveReward
+{
+	GENERATED_BODY()
+public:
+
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<UGameplayEffect> PassiveEffect;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	UTexture2D* PassiveIcon;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	FText Desciption;
+};
 
 UCLASS()
 class SATORI_API ASATORI_Portal : public AActor
@@ -20,6 +39,11 @@ class SATORI_API ASATORI_Portal : public AActor
 public:	
 	// Sets default values for this actor's properties
 	ASATORI_Portal();
+
+	// Called when the game starts or when spawned
+	virtual void BeginPlay() override;
+
+	virtual void OnConstruction(const FTransform& Transform) override;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
 	UStaticMeshComponent* StaticMeshComponent = nullptr;
@@ -32,10 +56,20 @@ public:
 
 	// Effect apply to player 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "GameplayEffect")
-	TArray<TSubclassOf<UGameplayEffect>> PortalEffectsToApply;
+	TArray<FSATORI_DoorPassiveReward> PortalEffectsToApply;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spawner")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FGameplayTag PlayerTag;
+
+	// Widgets
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "UI")
+	TSubclassOf<USATORI_MainUI> SATORIMainUI;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "UI")
+	USATORI_DoorInteractUI* DoorInteractUI;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "PassiveDataAsset")
+	USATORI_PortalPassiveDataAsset* PassiveDataAsset;
 
 public:
 	UFUNCTION()
@@ -46,9 +80,4 @@ public:
 
 private:
 	TSubclassOf<UGameplayEffect> SelectRandomEffect();
-
-protected:
-	// Called when the game starts or when spawned
-	virtual void BeginPlay() override;
-
 };

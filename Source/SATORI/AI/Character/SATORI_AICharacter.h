@@ -19,6 +19,7 @@ class USATORI_AbilityDataAsset;
 class UBehaviorTree;
 class UPawnSensingComponent;
 class UWidgetComponent;
+class USATORI_EnemyHealthBar;
 class USATORI_EnemyStatComponent;
 
 UENUM(BlueprintType)
@@ -59,6 +60,7 @@ protected:
 
 	virtual void PossessedBy(AController* NewController) override;
 
+	virtual void OnConstruction(const FTransform& Transform) override;
 public:
 	UPROPERTY()
 	USATORI_AttributeSet* AttributeSet;
@@ -90,6 +92,12 @@ public:
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Player|GameplayEffect")
 	TArray<TSubclassOf<UGameplayEffect>> PassiveGameplayEffects;
 
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "UI")
+	UWidgetComponent* HealthBarWidgetComponen = nullptr;
+
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "UI")
+	TSubclassOf<USATORI_EnemyHealthBar> HealthBarUI;
+	
 protected:
 	// Default attributes for a character for initializing on spawn/respawn.
 	// This is an instant GE that overrides the values for attributes that get reset on spawn/respawn.
@@ -122,4 +130,7 @@ protected:
 	float time_burst = 5.f;
 
 	bool bursting = false;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	class USphereComponent* HeadComponent;
 };
