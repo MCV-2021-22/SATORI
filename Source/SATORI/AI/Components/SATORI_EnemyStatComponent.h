@@ -10,6 +10,10 @@
 class ASATORI_AICharacter;
 class USATORI_AttributeSet;
 class UAbilitySystemComponent;
+class USATORI_EnemyStatComponent;
+class UActorComponent;
+
+DECLARE_DYNAMIC_MULTICAST_SPARSE_DELEGATE_TwoParams(FHealthChangedSignature, USATORI_EnemyStatComponent, UpdateHealthBarPercent, float, Health, float, MaxHealth);
 
 UCLASS(ClassGroup = (Custom), meta = (BlueprintSpawnableComponent))
 class SATORI_API USATORI_EnemyStatComponent : public UActorComponent
@@ -27,8 +31,9 @@ public:
 	virtual void HealthChanged(const FOnAttributeChangeData& Data);
 	virtual void MaxHealthChanged(const FOnAttributeChangeData& Data);
 
-	UFUNCTION(BlueprintImplementableEvent, meta = (DisplayName = "HealthChanged"))
-	void UpdateHealthBarPercent(float health, float maxHealth);
+	UPROPERTY(BlueprintAssignable, meta = (DisplayName = "HealthChanged"))
+	FHealthChangedSignature UpdateHealthBarPercent;
+
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;

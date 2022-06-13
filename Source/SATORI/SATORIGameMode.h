@@ -3,11 +3,11 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GameFramework/GameModeBase.h"
+#include "GameFramework/GameMode.h"
 #include "SATORIGameMode.generated.h"
 
 UCLASS(minimalapi)
-class ASATORIGameMode : public AGameModeBase
+class ASATORIGameMode : public AGameMode
 {
 	GENERATED_BODY()
 

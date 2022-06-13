@@ -187,7 +187,7 @@ void ASATORI_AICharacter::PossessedBy(AController* NewController)
 
 		InitializeAttributes();
 		AddAICharacterAbilities();
-		SetHealth(GetMaxHealth());
+		SetHealth(90);
 
 	}
 

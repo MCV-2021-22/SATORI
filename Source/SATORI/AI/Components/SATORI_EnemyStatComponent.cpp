@@ -23,6 +23,8 @@ void USATORI_EnemyStatComponent::BeginPlay()
 		InitializeStatsAttributes(SelfCharacter);
 		BindAttributeChage(SelfCharacter);
 	}
+
+	UpdateHealthBarPercent.Broadcast(Health, MaxHealth);
 }
 
 void USATORI_EnemyStatComponent::InitializeStatsAttributes(ASATORI_AICharacter* Character)
@@ -56,7 +58,7 @@ void USATORI_EnemyStatComponent::HealthChanged(const FOnAttributeChangeData& Dat
 
 	Health = NewValue;
 
-	UpdateHealthBarPercent(Health, MaxHealth);
+	UpdateHealthBarPercent.Broadcast(Health, MaxHealth);
 }
 
 void USATORI_EnemyStatComponent::MaxHealthChanged(const FOnAttributeChangeData& Data)
@@ -66,5 +68,6 @@ void USATORI_EnemyStatComponent::MaxHealthChanged(const FOnAttributeChangeData& 
 
 	MaxHealth = NewValue;
 
-	UpdateHealthBarPercent(Health, MaxHealth);
+	UpdateHealthBarPercent.Broadcast(Health, MaxHealth);
 }
+
