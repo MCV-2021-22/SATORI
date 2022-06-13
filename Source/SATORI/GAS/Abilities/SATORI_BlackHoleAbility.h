@@ -52,6 +52,9 @@ protected:
 	float Damage = 0.1f;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (UIMin = "0.0"), Category = "Ability|BlackHole")
+	float DamageExplosion = 0.1f;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (UIMin = "0.0"), Category = "Ability|BlackHole")
 	float TimeToStopGrowing = 3.0f;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (UIMin = "0.0"), Category = "Ability|BlackHole")

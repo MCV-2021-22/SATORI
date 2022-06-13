@@ -106,6 +106,7 @@ void USATORI_BlackHoleAbility::EventReceived(FGameplayTag EventTag, FGameplayEve
 			Character, ESpawnActorCollisionHandlingMethod::AlwaysSpawn);
 		BlackHole->DamageGameplayEffect = DamageGameplayEffect;
 		BlackHole->Damage = Damage;
+		BlackHole->DamageExplosion = DamageExplosion;
 		BlackHole->TimeToStopGrowing = TimeToStopGrowing;
 		BlackHole->TimeToStopAttraction = TimeToStopAttraction;
 		BlackHole->FinishSpawning(SpawnTransform);

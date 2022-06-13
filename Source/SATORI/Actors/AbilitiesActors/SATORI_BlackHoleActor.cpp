@@ -55,14 +55,8 @@ void ASATORI_BlackHoleActor::OnOverlapCollisionSphere(UPrimitiveComponent* Overl
 
 	if (Character->HasMatchingGameplayTag(EnemyTag))
 	{
-		float DamageDone = USATORI_BlueprintLibrary::ApplyGameplayEffectDamage(OtherActor, Damage, OtherActor, DamageGameplayEffect);
-		Character->sendDamage(DamageDone);
-
-		if (Character->GetHealth() > 0.0f)
-		{
-			Character->AddGameplayTag(TrappedTag);
-			ArrayActorsTrapped.AddUnique(OtherActor);
-		}
+		Character->AddGameplayTag(TrappedTag);
+		ArrayActorsTrapped.AddUnique(OtherActor);
 	}
 }
 
@@ -86,19 +80,25 @@ void ASATORI_BlackHoleActor::StopAttraction()
 
 	for (AActor* Actor : ArrayActorsTrapped) {
 
-		ASATORI_AICharacter* Character = Cast<ASATORI_AICharacter>(Actor);
-		if (Character->GetHealth() > 0.0f)
+		if (IsValid(Actor))
 		{
-			Character->RemoveGameplayTag(TrappedTag);
-		}
-		//Return to normal size
-		Actor->SetActorScale3D(FVector(1.0f, 1.0f, 1.0f));
-		//Sometimes they get stuck together, trying this to fix it
-		FVector PrecautionMeasure = FMath::VRand();
-		PrecautionMeasure.Z = 0.0f;
-		Actor->AddActorLocalOffset(PrecautionMeasure * 200);
-	}
+			//Damage Explosion Calculation
+			ASATORI_AICharacter* Character = Cast<ASATORI_AICharacter>(Actor);
+			float DamageDone = USATORI_BlueprintLibrary::ApplyGameplayEffectDamage(Actor, DamageExplosion, Actor, DamageGameplayEffect);
+			Character->sendDamage(DamageDone);
 
+			//RemoveTagTrapped
+			Character->RemoveGameplayTag(TrappedTag);
+
+			//Return to normal size
+			Actor->SetActorScale3D(FVector(1.0f, 1.0f, 1.0f));
+
+			//Sometimes they get stuck together, trying this to fix it
+			FVector PrecautionMeasure = FMath::VRand();
+			PrecautionMeasure.Z = 0.0f;
+			Actor->AddActorLocalOffset(PrecautionMeasure * 200);
+		}
+	}
 
 	GetWorldTimerManager().SetTimer(TimerHandleDestroy, this, &ASATORI_BlackHoleActor::DestroyMyself, TimeToDestroy, false);
 }
@@ -143,25 +143,33 @@ void ASATORI_BlackHoleActor::Tick(float DeltaTime)
 		//Adding more force to the black hole
 		for (AActor* Actor : ArrayActorsTrapped) 
 		{
-			//This first part sometimes causes problems
-			FVector CenterPosition = GetActorLocation();
-			FVector VectorToCenter = Actor->GetActorLocation() - CenterPosition;
+			if (IsValid(Actor))
+			{
+				//This first part sometimes causes problems
+				FVector CenterPosition = GetActorLocation();
+				FVector VectorToCenter = Actor->GetActorLocation() - CenterPosition;
 
-			FVector Rotation = VectorToCenter.RotateAngleAxis(DeltaTime * RotationSpeed, CenterPosition);
-			Rotation.Normalize();
+				FVector Rotation = VectorToCenter.RotateAngleAxis(DeltaTime * RotationSpeed, CenterPosition);
+				Rotation.Normalize();
 
-			Actor->AddActorWorldOffset(Rotation);
+				Actor->AddActorWorldOffset(Rotation);
 
-			//This part is necesary for correct behavior
-			FVector ActorPosition = Actor->GetActorLocation();
-			VectorToCenter = ActorPosition - GetActorLocation();
-			Actor->SetActorLocation(ActorPosition - (VectorToCenter * DeltaTime * 5)); // 5 Little bit or risk of weird behavior // 10 Not weird behavior, but less random attraction...
-			
-			//Scale down enemies
-			FVector Scale = Actor->GetActorScale3D();
-			FVector NewScale = Scale - (Scale * DeltaTime * Decrement);
+				//This part is necesary for correct behavior
+				FVector ActorPosition = Actor->GetActorLocation();
+				VectorToCenter = ActorPosition - GetActorLocation();
+				Actor->SetActorLocation(ActorPosition - (VectorToCenter * DeltaTime * 5)); // 5 Little bit or risk of weird behavior // 10 Not weird behavior, but less random attraction...
 
-			Actor->SetActorScale3D(NewScale);
+				//Scale down enemies
+				FVector Scale = Actor->GetActorScale3D();
+				FVector NewScale = Scale - (Scale * DeltaTime * Decrement);
+
+				Actor->SetActorScale3D(NewScale);
+
+				//Damage Calculation
+				ASATORI_AICharacter* Character = Cast<ASATORI_AICharacter>(Actor);
+				float DamageDone = USATORI_BlueprintLibrary::ApplyGameplayEffectDamage(Actor, Damage, Actor, DamageGameplayEffect);
+				Character->sendDamage(DamageDone);
+			}
 		}
 	}
 	else

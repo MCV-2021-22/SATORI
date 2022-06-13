@@ -313,6 +313,7 @@ void ASATORI_AICharacter::RegisterInTargetableArray_Implementation()
 {
 	if (bIsTargetable)
 	{
+		//TO DO: Move to GameState
 		ASATORICharacter* Player = Cast<ASATORICharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
 		Player->GetTargetSystemComponent()->AddTargetableActor(this);
 	}
