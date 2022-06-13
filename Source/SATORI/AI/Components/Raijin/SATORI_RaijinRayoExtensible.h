@@ -90,6 +90,8 @@ protected:
 
 	float decal_size = 300.0f;
 
+	float scale = 1.0f;
+
 };
 
 

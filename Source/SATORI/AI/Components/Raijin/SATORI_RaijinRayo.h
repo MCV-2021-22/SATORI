@@ -76,6 +76,9 @@ public:
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Meta = (ExposeOnSpawn = true), Category = "Missile")
 		TSubclassOf<UGameplayEffect> DamageGameplayEffect;
 
+	bool CheckCollision();
+
+	ADecalActor* my_decal = nullptr;
 
 
 protected:
@@ -93,7 +96,7 @@ protected:
 
 	float LifeTime = 8.f;
 
-	ADecalActor* my_decal = nullptr;
+	
 
 	float time_to_overlap = 0.5;
 
