@@ -70,6 +70,7 @@ public:
 
 	bool GetIsInFront() const { return isInFrontPlayer; }
 
+	UFUNCTION(BlueprintCallable)
 	void sendDamage(float dmg);
 
 	float getDistAttack();

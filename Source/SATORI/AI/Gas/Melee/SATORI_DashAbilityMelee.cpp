@@ -14,6 +14,8 @@ USATORI_DashAbilityMelee::USATORI_DashAbilityMelee()
 {
 	InstancingPolicy = EGameplayAbilityInstancingPolicy::InstancedPerActor;
 
+	bDashing = false;
+
 	bIsCreateOnRunning = GIsRunning;
 }
 
@@ -24,6 +26,8 @@ void USATORI_DashAbilityMelee::ActivateAbility(
 	const FGameplayEventData* TriggerEventData)
 {
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
+
+	bDashing = false;
 
 	if (!IsValid(AnimMontage))
 	{
@@ -114,7 +118,7 @@ void USATORI_DashAbilityMelee::Tick(float DeltaTime)
 
 		FVector Forward = Melee->GetActorForwardVector();
 
-		Melee->SetActorLocation(Position + Forward * 5.f);
+		Melee->SetActorLocation(Position + Forward * 25.f);
 	}
 
 	if(Melee->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag("Dash.Stop")))
