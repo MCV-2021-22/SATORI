@@ -69,6 +69,10 @@ ASATORICharacter::ASATORICharacter()
 	PlayerGameplayAbilityComponent = CreateDefaultSubobject<USATORI_GameplayAbilityComponent>(TEXT("SATORI_GameplayAbilityComponent"));
 	TargetSystemComponent = CreateDefaultSubobject<USATORI_TargetSystemComponent>(TEXT("TargetSystemComponent"));
 
+	//Hand Component
+	HandComponent = CreateDefaultSubobject<USceneComponent>(TEXT("Hand"));
+	HandComponent->SetupAttachment(GetMesh(), "Bip001-R-Hand");
+
 	// Weapon Component
 	SwordComponent = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("Sword"));
 	AttackingCollision = CreateDefaultSubobject<UCapsuleComponent>(TEXT("Sword Collision"));
@@ -97,8 +101,6 @@ void ASATORICharacter::PossessedBy(AController* NewController)
 		AbilitySystemComponent->InitAbilityActorInfo(PS, this);
 
 		AttributeSetBase = PS->GetSatoriAttributeSet();
-
-		GameplayTags.AddTag(FGameplayTag::RequestGameplayTag("PossessedBy.Player"));
 		
 		AbilitySystemComponent->AddLooseGameplayTag(FGameplayTag::RequestGameplayTag("PossessedBy.Player"));
 
@@ -118,8 +120,8 @@ void ASATORICharacter::PossessedBy(AController* NewController)
 	}
 
 	if (Cast<APlayerController>(NewController) != nullptr) {
-		GameplayTags.AddTag(FGameplayTag::RequestGameplayTag("PossessedBy.Player"));
-		//AbilitySystemComponent->AddLooseGameplayTag(FGameplayTag::RequestGameplayTag("PossessedBy.Player"));
+		//GameplayTags.AddTag(FGameplayTag::RequestGameplayTag("PossessedBy.Player"));
+		AddGameplayTag(FGameplayTag::RequestGameplayTag("PossessedBy.Player"));
 		//AddGameplayTag(FGameplayTag::RequestGameplayTag("PossessedBy.AI"));
 	}
 }

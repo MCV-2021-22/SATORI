@@ -11,7 +11,7 @@ ASATORI_AbilityPickableActor::ASATORI_AbilityPickableActor()
 
 	RootComponent = CreateDefaultSubobject<USceneComponent>(TEXT("RootComponent"));
 
-	BoxComponent = CreateDefaultSubobject<UBoxComponent>(TEXT("SphereComponent"));
+	BoxComponent = CreateDefaultSubobject<UBoxComponent>(TEXT("BoxComponent"));
 	BoxComponent->SetupAttachment(RootComponent);
 	BoxComponent->SetCollisionProfileName(FName("Trigger"));
 

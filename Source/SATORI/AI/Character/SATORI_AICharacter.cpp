@@ -2,8 +2,8 @@
 
 
 #include "AI/Character/SATORI_AICharacter.h"
-#include "SATORI/GAS/Attributes/SATORI_AttributeSet.h"
-#include "SATORI/GAS/SATORI_AbilitySystemComponent.h"
+#include "GAS/Attributes/SATORI_AttributeSet.h"
+#include "GAS/SATORI_AbilitySystemComponent.h"
 #include "Abilities/GameplayAbility.h"
 #include "GameFramework/Controller.h"
 #include "Data/SATORI_AbilityDataAsset.h"
@@ -20,6 +20,8 @@
 #include "Kismet/KismetMathLibrary.h"
 #include "AI/Components/SATORI_EnemyStatComponent.h"
 #include "Components/SphereComponent.h"
+#include "Components/Player/SATORI_TargetSystemComponent.h"
+#include "Kismet/GameplayStatics.h"
 
 // Sets default values
 ASATORI_AICharacter::ASATORI_AICharacter()
@@ -58,12 +60,12 @@ void ASATORI_AICharacter::BeginPlay()
 	if (AbilitySystemComponent.IsValid())
 	{
 		AbilitySystemComponent->InitAbilityActorInfo(this, this);
-
 		InitializeAttributes();
-
 		AddAICharacterAbilities();
-	}
 
+		//Needed for abilities actors (Nacho)
+		AddGameplayTag(EnemyTag);
+	}
 
 	ASATORI_CharacterBase* Character = Cast<ASATORI_CharacterBase>(this);
 	if (Character)
@@ -74,6 +76,10 @@ void ASATORI_AICharacter::BeginPlay()
 	}
 	AddGameplayTag(FGameplayTag::RequestGameplayTag("State.Burst"));
 
+	//Needed for targeting system (Nacho)
+	if (bIsTargetable) {
+		RegisterInTargetableArray();
+	}
 }
 
 void ASATORI_AICharacter::OnConstruction(const FTransform& Transform)
@@ -184,7 +190,6 @@ void ASATORI_AICharacter::PossessedBy(AController* NewController)
 		SetHealth(GetMaxHealth());
 
 	}
-
 
 }
 
@@ -329,6 +334,8 @@ void ASATORI_AICharacter::sendDamage(float dmg)
 
 void ASATORI_AICharacter::Die()
 {
+	ASATORICharacter* Player = Cast<ASATORICharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
+	Player->GetTargetSystemComponent()->RemoveTargetableActor(this);
 	Destroy();
 }
 
@@ -364,5 +371,20 @@ void ASATORI_AICharacter::HealthBarProjection(UWidgetComponent* HealthBar, float
 			FRotator ResultRotator = UKismetMathLibrary::FindLookAtRotation(WidgetLocation, CameraLocation);
 			HealthBar->SetWorldRotation(ResultRotator);
 		}
+
+	}
+}
+//Target system (Nacho)
+bool ASATORI_AICharacter::IsTargetable_Implementation() const
+{
+	return bIsTargetable;
+}
+
+void ASATORI_AICharacter::RegisterInTargetableArray_Implementation()
+{
+	if (bIsTargetable)
+	{
+		ASATORICharacter* Player = Cast<ASATORICharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
+		Player->GetTargetSystemComponent()->AddTargetableActor(this);
 	}
 }

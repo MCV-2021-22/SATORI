@@ -7,7 +7,7 @@
 #include "AbilitySystemInterface.h"
 #include "AbilitySystemComponent.h"
 #include "Character/Mask/SATORI_AbilityMask.h"
-#include "Components/TargetSystem/SATORI_TargetSystemComponent.h"
+#include "Components/Player/SATORI_TargetSystemComponent.h"
 #include "Character/SATORI_CharacterBase.h"
 #include "SATORICharacter.generated.h"
 
@@ -59,6 +59,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Weapon")
 	USkeletalMeshComponent* SwordComponent;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Weapon")
+	USceneComponent* HandComponent;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon")
 	UCapsuleComponent* AttackingCollision;
 
@@ -78,6 +81,7 @@ public:
 	// Getters for Components
 	FORCEINLINE class USATORI_StatsComponent* GetStatsComponent() const { return StatsComponent; }
 	class USATORI_ComboSystemComponent* GetComboSystemComponent() const { return ComboSystemComponent; }
+	class USATORI_TargetSystemComponent* GetTargetSystemComponent() const { return TargetSystemComponent; }
 
 protected:
 

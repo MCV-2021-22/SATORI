@@ -7,6 +7,8 @@
 #include "SATORI_CloneCharacter.generated.h"
 
 class USphereComponent;
+class USkeletalMeshComponent;
+class UCapsuleComponent;
 
 /**
  * 
@@ -24,10 +26,16 @@ public:
 	USphereComponent* LuringSphereComponent = nullptr;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Meta = (ExposeOnSpawn = true), Category = "Clone")
-	float TimeToDestroy;
-
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Meta = (ExposeOnSpawn = true), Category = "Clone")
 	FGameplayTag TagGrantedWhenLured;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	FName WeaponSocketName;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Weapon")
+	USkeletalMeshComponent* SwordComponent;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon")
+	UCapsuleComponent* AttackingCollision;
 
 	UFUNCTION(BlueprintCallable, Category = "Clone")
 		void OnOverlapLuringSphere(
@@ -37,12 +45,6 @@ public:
 			int32 OtherBodyIndex,
 			bool bFromSweep,
 			const FHitResult& SweepResult);
-
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Clone|Tags")
-	FGameplayTag  TargetActorWithTag;
-
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Clone|Tags")
-	FGameplayTag  EnemyTag;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Clone|Tags")
 	FGameplayTag  PlayerTag;

@@ -2,13 +2,19 @@
 
 #include "AI/Gas/Melee/SATORI_DashAbilityMelee.h"
 #include "AbilitySystemComponent.h"
+#include "SATORICharacter.h"
+#include "Actors/AbilitiesActors/SATORI_DashMeleeActor.h"
 #include "AI/Character/SATORI_AICharacter.h"
+#include "Character/SATORI_PlayerController.h"
+#include "GameFramework/CharacterMovementComponent.h"
+#include "Kismet/GameplayStatics.h"
+
 
 USATORI_DashAbilityMelee::USATORI_DashAbilityMelee()
 {
 	InstancingPolicy = EGameplayAbilityInstancingPolicy::InstancedPerActor;
 
-	CallTrackerRegistry = CallTracker;
+	bIsCreateOnRunning = GIsRunning;
 }
 
 void USATORI_DashAbilityMelee::ActivateAbility(
@@ -17,16 +23,18 @@ void USATORI_DashAbilityMelee::ActivateAbility(
 	const FGameplayAbilityActivationInfo ActivationInfo,
 	const FGameplayEventData* TriggerEventData)
 {
+	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
 
 	if (!IsValid(AnimMontage))
 	{
-		UE_LOG(LogTemp, Warning, TEXT("[%s] USATORI_DashAbility: Cannot get Animation Montage ... "), *GetName());
+		UE_LOG(LogTemp, Warning, TEXT("[%s] USATORI_DashAbilityMelee: Cannot get Animation Montage ... "), *GetName());
 		return;
 	}
 
-	if (!CommitAbility(Handle, ActorInfo, ActivationInfo))
+	Melee = Cast<ASATORI_CharacterBase>(GetAvatarActorFromActorInfo());
+	if (!Melee)
 	{
-		UE_LOG(LogTemp, Display, TEXT("[%s] USATORI_DashAbility: Cannot Commit Ability ... "), *GetName());
+		UE_LOG(LogTemp, Display, TEXT("[%s] USATORI_DashAbilityMelee: Cannot Cast ASATORICharacter ... "), *GetName());
 		EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true);
 	}
 
@@ -36,34 +44,97 @@ void USATORI_DashAbilityMelee::ActivateAbility(
 	Task->OnCompleted.AddDynamic(this, &USATORI_DashAbilityMelee::OnCompleted);
 	Task->OnInterrupted.AddDynamic(this, &USATORI_DashAbilityMelee::OnCancelled);
 	Task->OnCancelled.AddDynamic(this, &USATORI_DashAbilityMelee::OnCancelled);
+	Task->EventReceived.AddDynamic(this, &USATORI_DashAbilityMelee::EventReceived);
 	Task->ReadyForActivation();
+}
 
-	FTimerDelegate TimerDelegateDash = FTimerDelegate::CreateUObject(this, &USATORI_DashAbilityMelee::Dashing);
-	GetWorld()->GetTimerManager().SetTimer(TimerHandleDash, TimerDelegateDash, DashSpeed, true);
+void USATORI_DashAbilityMelee::EndAbility(
+	const FGameplayAbilitySpecHandle Handle,
+	const FGameplayAbilityActorInfo* ActorInfo,
+	const FGameplayAbilityActivationInfo ActivationInfo,
+	bool bReplicateEndAbility,
+	bool bWasCancelled)
+{
+	Melee->RemoveGameplayTag(FGameplayTag::RequestGameplayTag("State.PlayerNonSeen"));
+	Super::EndAbility(Handle, ActorInfo, ActivationInfo, bReplicateEndAbility, bWasCancelled);
 }
 
 void USATORI_DashAbilityMelee::OnCancelled(FGameplayTag EventTag, FGameplayEventData EventData)
 {
-	CallTracker = CallTrackerRegistry;
 	EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, false);
 }
 
 void USATORI_DashAbilityMelee::OnCompleted(FGameplayTag EventTag, FGameplayEventData EventData)
 {
-	ASATORI_AICharacter* Melee = Cast<ASATORI_AICharacter>(GetAvatarActorFromActorInfo());
-	Melee->GetCharacterMovement()->StopMovementImmediately();
-	CallTracker = CallTrackerRegistry;
-	EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, false);
+	//Melee->GetCharacterMovement()->StopMovementImmediately();
+	//EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, false);
 }
 
-void USATORI_DashAbilityMelee::Dashing()
+void USATORI_DashAbilityMelee::EventReceived(FGameplayTag EventTag, FGameplayEventData EventData)
 {
-	ASATORI_AICharacter* Melee = Cast<ASATORI_AICharacter>(GetAvatarActorFromActorInfo());
-	Melee->AddActorLocalOffset(Direction * DashDistance);
-
-	CallTracker--;
-	if (CallTracker == 0) {
-		GetWorld()->GetTimerManager().ClearTimer(TimerHandleDash);
-		CallTracker = CallTrackerRegistry;
+	if (EventTag == TagEndAbility)
+	{
+		EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, false);
+		return;
 	}
+
+	if (EventTag == TagStartDash)
+	{
+		bDashing = true;
+	}
+
+	if (EventTag == TagSpawnAbility)
+	{
+		ASATORICharacter* Enemy = Cast<ASATORICharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(),0));
+
+		EnemyPosition = Enemy->GetActorLocation();
+
+		SpawnActor();
+	}
+}
+
+void USATORI_DashAbilityMelee::SpawnActor()
+{
+	SpawnTransform.SetLocation(EnemyPosition);
+
+	//Missile Actor creation
+	ASATORI_DashMeleeActor* DashActor = GetWorld()->SpawnActorDeferred<ASATORI_DashMeleeActor>(DashMeleeActor, SpawnTransform, GetOwningActorFromActorInfo(),
+		Melee, ESpawnActorCollisionHandlingMethod::AlwaysSpawn);
+	DashActor->DamageGameplayEffect = DamageGameplayEffect;
+	DashActor->Damage = Damage;
+	DashActor->TimeToDestroy = TimeToDestroy;
+	DashActor->FinishSpawning(SpawnTransform);
+}
+
+void USATORI_DashAbilityMelee::Tick(float DeltaTime)
+{
+	if(bDashing)
+	{
+		FVector Position = Melee->GetActorLocation();
+
+		FVector Forward = Melee->GetActorForwardVector();
+
+		Melee->SetActorLocation(Position + Forward * 5.f);
+	}
+
+	if(Melee->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag("Dash.Stop")))
+	{
+		Melee->RemoveGameplayTag(FGameplayTag::RequestGameplayTag("Dash.Stop"));
+		EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, false);
+	}
+}
+
+bool USATORI_DashAbilityMelee::IsTickable() const
+{
+	return IsActive();
+}
+
+bool USATORI_DashAbilityMelee::IsAllowedToTick() const
+{
+	return true;
+}
+
+TStatId USATORI_DashAbilityMelee::GetStatId() const
+{
+	return UObject::GetStatID();
 }

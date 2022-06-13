@@ -31,12 +31,14 @@ void USATORI_DashAbility::ActivateAbility(
 	if (!Character)
 	{
 		UE_LOG(LogTemp, Display, TEXT("[%s] USATORI_DashAbility: Cannot Cast ASATORICharacter ... "), *GetName());
-		EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true);
+		Super::EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true);
 	}
 
 	ASATORI_PlayerController* Controller = Cast<ASATORI_PlayerController>(Character->GetController());
 	if (Controller)
+	{
 		Character->DisableInput(Controller);
+	}
 
 	if (!TagSpawnAbility.IsValid() || !TagEndAbility.IsValid())
 	{
@@ -87,7 +89,6 @@ void USATORI_DashAbility::EventReceived(FGameplayTag EventTag, FGameplayEventDat
 {
 	if (EventTag == TagEndAbility)
 	{
-		Dashing = false;
 		EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, false);
 		return;
 	}

@@ -3,7 +3,6 @@
 #include "GAS/Abilities/SATORI_PushAbility.h"
 #include "AbilitySystemComponent.h"
 #include "SATORICharacter.h"
-#include "Engine/Classes/Camera/CameraComponent.h"
 
 USATORI_PushAbility::USATORI_PushAbility ()
 {
@@ -16,6 +15,8 @@ void USATORI_PushAbility::ActivateAbility(
 	const FGameplayAbilityActivationInfo ActivationInfo,
 	const FGameplayEventData* TriggerEventData)
 {
+		Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
+
 	if (!IsValid(AnimMontage))
 	{
 		UE_LOG(LogTemp, Warning, TEXT("[%s] USATORI_PushAbility: Cannot get Animation Montage ... "), *GetName());
@@ -28,13 +29,7 @@ void USATORI_PushAbility::ActivateAbility(
 		return;
 	}
 
-	if (!CommitAbility(Handle, ActorInfo, ActivationInfo))
-	{
-		UE_LOG(LogTemp, Display, TEXT("[%s] USATORI_PushAbility: Cannot Commit Ability ... "), *GetName());
-		EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true);
-	}
-
-	if(!TagSpawnAbility.IsValid() || !TagEndAbility.IsValid() || !PlayerTargetingTag.IsValid())
+	if(!TagSpawnAbility.IsValid() || !TagEndAbility.IsValid())
 	{
 		UE_LOG(LogTemp, Display, TEXT("[%s] USATORI_PushAbility: Tag is not valid ... "), *GetName());
 	}
@@ -52,12 +47,12 @@ void USATORI_PushAbility::ActivateAbility(
 
 void USATORI_PushAbility::OnCancelled(FGameplayTag EventTag, FGameplayEventData EventData)
 {
-	EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true);
+	Super::EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true);
 }
 
 void USATORI_PushAbility::OnCompleted(FGameplayTag EventTag, FGameplayEventData EventData)
 {
-	EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, false);
+	Super::EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, false);
 }
 
 void USATORI_PushAbility::EventReceived(FGameplayTag EventTag, FGameplayEventData EventData)
@@ -65,7 +60,7 @@ void USATORI_PushAbility::EventReceived(FGameplayTag EventTag, FGameplayEventDat
 
 	if (EventTag == TagEndAbility)
 	{
-		EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, false);
+		Super::EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, false);
 		return;
 	}
 
@@ -79,28 +74,24 @@ void USATORI_PushAbility::EventReceived(FGameplayTag EventTag, FGameplayEventDat
 			EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true);
 		}
 
+		FTransform SpawnTransform = Character->HandComponent->GetComponentTransform();
+		FRotator Rotation;
+
 		//Aiming when Targeting Enemy
-		if (Character->HasMatchingGameplayTag(PlayerTargetingTag))
+		if (Character->GetTargetSystemComponent()->IsLocked())
 		{
-			UCameraComponent* CameraComponent = Character->FindComponentByClass<UCameraComponent>();
-			if (!CameraComponent)
-			{
-				UE_LOG(LogTemp, Display, TEXT("[%s] USATORI_PushAbility: Cannot Cast UCameraComponent ... "), *GetName());
-				EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true);
-			}
-
-			FRotator CameraRotation = CameraComponent->GetComponentRotation();
-			CameraRotation.Pitch = 0.0f;
-			SpawnTransform.SetLocation(Character->GetActorLocation() + CameraComponent->GetForwardVector() * 100);
-			SpawnTransform.SetRotation(CameraRotation.Quaternion());
-
+			FVector Target = Character->GetTargetSystemComponent()->GetLockedOnTargetActor()->GetActorLocation();
+			FVector Position = GetAvatarActorFromActorInfo()->GetActorLocation();
+			Rotation = FRotationMatrix::MakeFromX(Target - Position).Rotator();
 		}
 		//Aiming when not targeting
 		else
 		{
-			SpawnTransform.SetLocation(Character->GetActorLocation() + Character->GetActorForwardVector() * 100);
-			SpawnTransform.SetRotation(Character->GetActorRotation().Quaternion());
+			Rotation = Character->GetActorRotation();
 		}
+
+		Rotation.Pitch = 0.0f;
+		SpawnTransform.SetRotation(Rotation.Quaternion());
 
 		//This calcs are for designing parameters for the ability
 		// 

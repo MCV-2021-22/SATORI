@@ -23,24 +23,11 @@ public:
 	UPROPERTY(EditAnywhere)
 	FBlackboardKeySelector BlackboardKey;
 
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Tags")
-	FGameplayTag  TargetActorWithTag;
-
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Tags")
-	FGameplayTag  EnemyTag;
-
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Tags")
-	FGameplayTag  PlayerTag;
-
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Tags")
-	FGameplayTag  CloneTag;
-
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Clone")
-	float Range;
+	float CloneRange;
 
 private:
 
 	AActor* Target;
-	AActor* TargetNear;
 
 };

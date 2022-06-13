@@ -7,7 +7,7 @@
 #include "GameplayTagContainer.h"
 #include "GameplayEffect.h"
 #include "PhysicsEngine/RadialForceComponent.h"
-#include "SATORI/AI/Character/SATORI_AICharacter.h"
+#include "AI/Character/SATORI_AICharacter.h"
 #include "SATORI_BlackHoleActor.generated.h"
 
 class USphereComponent;
@@ -43,10 +43,40 @@ public:
 	float Damage;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Meta = (ExposeOnSpawn = true), Category = "BlackHole")
-	float Speed;
+	float TimeToStopGrowing;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Meta = (ExposeOnSpawn = true), Category = "BlackHole")
-	float TimeToDestroy;
+	float TimeToStopAttraction;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Debug|DistanceToGround")
+	float TraceDistanceToFloor = 300.0f;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Debug|DistanceToGround")
+	float HeightChange = 100.0f;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Debug|DistanceToGround")
+	float MinHeight = 100.0f;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Debug|DistanceToGround")
+	bool bDrawDebug = false;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Debug")
+	float TimeToDestroy = 0.2f;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Debug")
+	FVector ScaleGrowing = FVector(0.2f, 0.2f, 0.2f);
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Debug")
+	float ExplosionSize = 100;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Debug")
+	float Increment = 1.5f;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Debug")
+	float Decrement = 0.75f;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Debug")
+	float RotationSpeed = 90.0f;
 
 	UFUNCTION(BlueprintCallable, Category = "BlackHole")
 	void OnOverlapCollisionSphere(
@@ -58,13 +88,10 @@ public:
 			const FHitResult& SweepResult);
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "BlackHole|Tags")
-	FGameplayTag  TagToAddWhenTrapped;
+	FGameplayTag  TrappedTag;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "BlackHole|Tags")
 	FGameplayTag  EnemyTag;
-
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "BlackHole|Tags")
-	FGameplayTag  PlayerTag;
 
 protected:
 
@@ -76,10 +103,20 @@ public:
 
 private:
 
-	TArray<ASATORI_CharacterBase*> ArrayTrapped;
+	TArray<AActor*> ArrayActorsTrapped;
 
 	FTimerHandle TimerHandleDestroy;
+	FTimerHandle TimerHandleGrowing;
+	FTimerHandle TimerHandleAttraction;
 
 	void DestroyMyself();
 
+	FHitResult OutHit;
+	FCollisionQueryParams CollisionParams;
+
+	bool bGrowing = true;
+	void StopGrowing();
+
+	bool bShouldAttract = true;
+	void StopAttraction();
 };

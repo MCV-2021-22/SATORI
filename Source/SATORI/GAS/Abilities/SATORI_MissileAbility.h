@@ -24,10 +24,10 @@ public:
 	UAnimMontage* AnimMontage;
 
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Ability")
-	TSubclassOf<ASATORI_MissileActor> MissileActor;
+	TSubclassOf < ASATORI_MissileActor > MissileActor;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Ability")
-	TSubclassOf<UGameplayEffect> DamageGameplayEffect;
+	TSubclassOf < UGameplayEffect > DamageGameplayEffect;
 
 	virtual void ActivateAbility(
 		const FGameplayAbilitySpecHandle Handle,
@@ -42,25 +42,13 @@ public:
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Ability|Tags")
 	FGameplayTag TagEndAbility;
 
-	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Ability|Tags")
-	FGameplayTag PlayerTargetingTag;
-
 protected:
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (UIMin = "0.0"), Category = "Ability|Missile")
-	float Damage = 1.0f;
-
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (UIMin = "0.0"), Category = "Ability|Missile")
-	float Speed = 1.0f;
-
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (UIMin = "0.0"), Category = "Ability|Missile")
-	float MaxSpeed = 1.0f;
-
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (UIMin = "0.0"), Category = "Ability|Missile")
-	float HomingAceleration = 1.0f;
+	float Damage = 20.0f;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (UIMin = "1.0"), Category = "Ability|Missile")
-	float Range = 1.0f;
+	float Range = 2000.0f;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (UIMin = "0.0"), Category = "Ability|Missile")
 	float TimeToDestroy = 1.0f;
@@ -77,7 +65,5 @@ protected:
 private:
 
 	const bool bStopWhenAbilityEnds = true;
-	
-	FTransform SpawnTransform;
 
 };
