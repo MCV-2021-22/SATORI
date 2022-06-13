@@ -24,10 +24,10 @@ public:
 	UAnimMontage* AnimMontage;
 
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Ability")
-	TSubclassOf< ASATORI_MissileActor > MissileActor;
+	TSubclassOf < ASATORI_MissileActor > MissileActor;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Ability")
-	TSubclassOf< UGameplayEffect > DamageGameplayEffect;
+	TSubclassOf < UGameplayEffect > DamageGameplayEffect;
 
 	virtual void ActivateAbility(
 		const FGameplayAbilitySpecHandle Handle,

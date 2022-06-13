@@ -24,7 +24,7 @@ public:
 	FBlackboardKeySelector BlackboardKey;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Clone")
-	float Range;
+	float CloneRange;
 
 private:
 

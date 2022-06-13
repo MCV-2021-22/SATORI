@@ -55,11 +55,14 @@ void ASATORI_BlackHoleActor::OnOverlapCollisionSphere(UPrimitiveComponent* Overl
 
 	if (Character->HasMatchingGameplayTag(EnemyTag))
 	{
-		Character->AddGameplayTag(TrappedTag);
-		ArrayActorsTrapped.AddUnique(OtherActor);
-		
 		float DamageDone = USATORI_BlueprintLibrary::ApplyGameplayEffectDamage(OtherActor, Damage, OtherActor, DamageGameplayEffect);
 		Character->sendDamage(DamageDone);
+
+		if (Character->GetHealth() > 0.0f)
+		{
+			Character->AddGameplayTag(TrappedTag);
+			ArrayActorsTrapped.AddUnique(OtherActor);
+		}
 	}
 }
 

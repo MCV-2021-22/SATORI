@@ -534,7 +534,7 @@ void USATORI_TargetSystemComponent::AddTargetableActor(AActor* ActorToAdd)
 
 void USATORI_TargetSystemComponent::RemoveTargetableActor(AActor* ActorToRemove)
 {
-	TargetableActors.Add(ActorToRemove);
+	TargetableActors.Remove(ActorToRemove);
 }
 
 void USATORI_TargetSystemComponent::CreateAndAttachTargetLockedOnWidgetComponent(AActor* TargetActor)

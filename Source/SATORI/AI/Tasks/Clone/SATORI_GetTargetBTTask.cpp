@@ -19,6 +19,9 @@ EBTNodeResult::Type USATORI_GetTargetBTTask::ExecuteTask(UBehaviorTreeComponent&
 
 	ASATORICharacter* Player = Cast<ASATORICharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
 
+	Target = nullptr;
+	float Range = CloneRange;
+
 	if (Player->GetTargetSystemComponent()->IsLocked())
 	{
 		Target = Player->GetTargetSystemComponent()->GetLockedOnTargetActor();
@@ -28,8 +31,6 @@ EBTNodeResult::Type USATORI_GetTargetBTTask::ExecuteTask(UBehaviorTreeComponent&
 		AAIController* AIController = OwnerComp.GetAIOwner();
 		APawn* Pawn = AIController->GetPawn();
 		FVector ClonePosition = Pawn->GetActorLocation();
-
-		//Range = OwnerComp.GetBlackboardComponent()->GetKeyID("Range");
 
 		TArray<AActor*> Actors = Player->GetTargetSystemComponent()->GetTargetableActors();
 		for (AActor* Actor : Actors)

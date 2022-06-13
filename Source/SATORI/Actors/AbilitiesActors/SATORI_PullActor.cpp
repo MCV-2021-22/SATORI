@@ -4,6 +4,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "GameFramework/ProjectileMovementComponent.h"
 #include "FunctionLibrary/SATORI_BlueprintLibrary.h"
+#include "SATORICharacter.h"
 
 // Sets default values
 ASATORI_PullActor::ASATORI_PullActor()
@@ -74,7 +75,7 @@ void ASATORI_PullActor::BeginPlay()
 	Super::BeginPlay();
 	
 	ProjectileMovementComponent->HomingTargetComponent = nullptr;
-
+	
 	Player = Cast<ASATORICharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
 
 	if (Player->GetTargetSystemComponent()->IsLocked())
