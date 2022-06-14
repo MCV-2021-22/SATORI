@@ -71,6 +71,7 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "PassiveDataAsset")
 	USATORI_PortalPassiveDataAsset* PassiveDataAsset;
 
+	void SetCurrentGameplayEffect(TSubclassOf<UGameplayEffect> CurrentEffect);
 public:
 	UFUNCTION()
 	void OnComponentBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
@@ -78,6 +79,8 @@ public:
 
 	void ApplyEffectToPlayer(AActor* PlayerCharacter);
 
+	TSubclassOf<UGameplayEffect> SelectRandomEffect(int EffectNum);
+
 private:
-	TSubclassOf<UGameplayEffect> SelectRandomEffect();
+	TSubclassOf<UGameplayEffect> CurrentGameplayEffect;
 };

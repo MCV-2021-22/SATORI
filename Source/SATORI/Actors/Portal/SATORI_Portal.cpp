@@ -69,12 +69,6 @@ void ASATORI_Portal::OnComponentBeginOverlap(UPrimitiveComponent* OverlappedComp
 {
 	UE_LOG(LogTemp, Warning, TEXT("On Overlap Beg %s"), *OtherActor->GetName());
 
-	// Need change to this
-	/*if (IGameplayTagAssetInterface* TagInterface = Cast<IGameplayTagAssetInterface>(OtherActor)) {
-		if (TagInterface->HasMatchingGameplayTag(PlayerTag)) {
-
-		}
-	}*/
 	ASATORICharacter* Character = Cast<ASATORICharacter>(OtherActor);
 
 	if (!Character)
@@ -105,9 +99,7 @@ void ASATORI_Portal::ApplyEffectToPlayer(AActor* PlayerActor)
 			FGameplayEffectContextHandle EffectContext = AbilitySystemComponent->MakeEffectContext();
 			EffectContext.AddSourceObject(this);
 
-			TSubclassOf<UGameplayEffect> GameplayEffect = SelectRandomEffect();
-
-			FGameplayEffectSpecHandle NewHandle = AbilitySystemComponent->MakeOutgoingSpec(GameplayEffect,
+			FGameplayEffectSpecHandle NewHandle = AbilitySystemComponent->MakeOutgoingSpec(CurrentGameplayEffect,
 				PlayerCharacter->GetCharacterLevel(), EffectContext);
 
 			if (NewHandle.IsValid())
@@ -119,10 +111,13 @@ void ASATORI_Portal::ApplyEffectToPlayer(AActor* PlayerActor)
 	}
 }
 
-TSubclassOf<UGameplayEffect> ASATORI_Portal::SelectRandomEffect()
+TSubclassOf<UGameplayEffect> ASATORI_Portal::SelectRandomEffect(int EffectNum)
 {
 	// Change this to no repeatable number
-	const int EffectSize = PortalEffectsToApply.Num() - 1;
-	int number = FMath::RandRange(0, EffectSize);
-	return PortalEffectsToApply[number].PassiveEffect;
+	return PortalEffectsToApply[EffectNum].PassiveEffect;
+}
+
+void ASATORI_Portal::SetCurrentGameplayEffect(TSubclassOf<UGameplayEffect> CurrentEffect)
+{
+	CurrentGameplayEffect = CurrentEffect;
 }

@@ -22,4 +22,7 @@ public:
 	virtual void Tick(float DeltaSeconds) override;
 
 	TArray<ASATORI_Portal*> InstancePortals;
+
+private:
+	int GenerateRandomNumberForPortal();
 };

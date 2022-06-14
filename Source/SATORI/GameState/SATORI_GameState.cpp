@@ -27,9 +27,19 @@ void ASATORI_GameState::BeginPlay()
             InstancePortals.Add(Portal);
         }
     }
+
+    for (int i = 0; i < InstancePortals.Num(); i++)
+    {
+        InstancePortals[i]->SelectRandomEffect(GenerateRandomNumberForPortal());
+    }
 }
 
 void ASATORI_GameState::Tick(float DeltaSeconds)
 {
 
+}
+int ASATORI_GameState::GenerateRandomNumberForPortal()
+{
+    const int EffectSize = InstancePortals[0]->PortalEffectsToApply.Num() - 1;
+    int number = FMath::RandRange(0, EffectSize);
 }
