@@ -88,15 +88,21 @@ void ASATORI_AICharacter::OnConstruction(const FTransform& Transform)
 	{
 		HealthBarWidgetComponen->RegisterComponent();
 		const FAttachmentTransformRules AttachmentRules = FAttachmentTransformRules(EAttachmentRule::KeepRelative, false);
+		//const APlayerController* PC = UGameplayStatics::GetPlayerController(GetWorld(), 0);
+		//UUserWidget* HealthWidget = PC ? CreateWidget(PC/*, HealthBarUI*/) : nullptr;
+		//if (HealthWidget)
+		//{
+		//	HealthBarWidgetComponen->SetWidget(HealthWidget);
+		//}
 		//HealthBarWidgetComponen->AttachToComponent(HeadComponent, AttachmentRules);
 		/*struct ConstructorHelpers::FClassFinder<USATORI_EnemyHealthBar> EnemyUIBar(TEXT("/Game/SATORI/UI/Enemy/"));
 		if (EnemyUIBar.Class != NULL)*/
-		if (HealthBarUI)
+		/*if (HealthBarUI)
 		{
 			HealthBarWidgetComponen->SetWidgetSpace(EWidgetSpace::World);
 			HealthBarWidgetComponen->SetDrawSize(FVector2D(100.f, 20.f));
 			HealthBarWidgetComponen->SetWidgetClass(HealthBarUI);
-		}
+		}*/
 	}
 }
 

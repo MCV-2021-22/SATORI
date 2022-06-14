@@ -4,6 +4,8 @@
 #include "GameState/SATORI_GameState.h"
 #include "Actors/Portal/SATORI_Portal.h"
 #include "Kismet/GameplayStatics.h"
+#include "GameplayEffect.h"
+#include "Data/SATORI_PortalPassiveDataAsset.h"
 
 ASATORI_GameState::ASATORI_GameState()
 {
@@ -28,9 +30,35 @@ void ASATORI_GameState::BeginPlay()
         }
     }
 
+    FillPortalGameplayEffectWithData();
+
     for (int i = 0; i < InstancePortals.Num(); i++)
     {
-        InstancePortals[i]->SelectRandomEffect(GenerateRandomNumberForPortal());
+        int RandomNumber = GenerateRandomNumberForPortal();
+        FSATORI_DoorPassiveReward EffectToApply = PortalEffectsToApply[RandomNumber];
+        InstancePortals[i]->SetCurrentGameplayEffectData(EffectToApply);
+    }
+}
+
+void ASATORI_GameState::FillPortalGameplayEffectWithData()
+{
+    if (PassiveDataAsset)
+    {
+        for (const FSATORI_DoorPassiveDatas Data : PassiveDataAsset->PassiveRewards)
+        {
+            FString CurrentName = Data.Desciption.ToString();
+            FName LocalAbilityName = FName(*CurrentName);
+
+            if (LocalAbilityName.IsValid() && Data.PassiveEffect)
+            {
+                // Adding datas to map
+                FSATORI_DoorPassiveReward PassiveReward;
+                PassiveReward.PassiveEffect = Data.PassiveEffect;
+                PassiveReward.PassiveIcon = Data.PassiveIcon;
+                PassiveReward.Desciption = Data.Desciption;
+                PortalEffectsToApply.Add(PassiveReward);
+            }
+        }
     }
 }
 
@@ -40,6 +68,7 @@ void ASATORI_GameState::Tick(float DeltaSeconds)
 }
 int ASATORI_GameState::GenerateRandomNumberForPortal()
 {
-    const int EffectSize = InstancePortals[0]->PortalEffectsToApply.Num() - 1;
+    const int EffectSize = PortalEffectsToApply.Num() - 1;
     int number = FMath::RandRange(0, EffectSize);
+    return number;
 }

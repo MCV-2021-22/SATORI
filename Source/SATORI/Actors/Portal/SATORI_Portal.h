@@ -14,6 +14,7 @@ class UTextRenderComponent;
 class USATORI_MainUI;
 class USATORI_DoorInteractUI;
 class USATORI_PortalPassiveDataAsset;
+class UBillboardComponent;
 
 USTRUCT(BlueprintType)
 struct FSATORI_DoorPassiveReward
@@ -54,9 +55,12 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
 	UTextRenderComponent* TextRenderComponent = nullptr;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
+	UBillboardComponent* PortalIconTexture = nullptr;
+
 	// Effect apply to player 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "GameplayEffect")
-	TArray<FSATORI_DoorPassiveReward> PortalEffectsToApply;
+	FSATORI_DoorPassiveReward PortalEffectsToApply;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FGameplayTag PlayerTag;
@@ -68,10 +72,10 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "UI")
 	USATORI_DoorInteractUI* DoorInteractUI;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "PassiveDataAsset")
-	USATORI_PortalPassiveDataAsset* PassiveDataAsset;
+	/*UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "PassiveDataAsset")
+	USATORI_PortalPassiveDataAsset* PassiveDataAsset;*/
 
-	void SetCurrentGameplayEffect(TSubclassOf<UGameplayEffect> CurrentEffect);
+	void SetCurrentGameplayEffectData(FSATORI_DoorPassiveReward CurrentEffecData);
 public:
 	UFUNCTION()
 	void OnComponentBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
@@ -79,7 +83,7 @@ public:
 
 	void ApplyEffectToPlayer(AActor* PlayerCharacter);
 
-	TSubclassOf<UGameplayEffect> SelectRandomEffect(int EffectNum);
+	TSubclassOf<UGameplayEffect> GetCurrentGameplayEffect();
 
 private:
 	TSubclassOf<UGameplayEffect> CurrentGameplayEffect;
