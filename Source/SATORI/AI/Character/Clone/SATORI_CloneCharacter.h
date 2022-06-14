@@ -31,12 +31,6 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	FName WeaponSocketName;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Weapon")
-	USkeletalMeshComponent* SwordComponent;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon")
-	UCapsuleComponent* AttackingCollision;
-
 	UFUNCTION(BlueprintCallable, Category = "Clone")
 		void OnOverlapLuringSphere(
 			UPrimitiveComponent* OverlappedComp,

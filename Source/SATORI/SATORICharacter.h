@@ -62,9 +62,6 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Weapon")
 	USceneComponent* HandComponent;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon")
-	UCapsuleComponent* AttackingCollision;
-
 	void SetComboJumpSection(USATORI_ANS_JumpSection* JumpSection);
 
 	// Combos 

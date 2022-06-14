@@ -13,6 +13,7 @@
 #include "Perception/PawnSensingComponent.h"
 #include "DrawDebugHelpers.h"
 #include "SATORICharacter.h"
+#include "Components/CapsuleComponent.h"
 #include "Spawned/SATORI_Spawned.h"
 #include "Components/Player/SATORI_TargetSystemComponent.h"
 #include "Kismet/GameplayStatics.h"
@@ -38,6 +39,21 @@ ASATORI_AICharacter::ASATORI_AICharacter()
 	//btree = bte.LoadSynchronous();
 
 	EnemyType = SATORIEnemyType::None;
+
+	// Weapon Component
+	SwordComponent = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("Sword"));
+	AttackingCollision = CreateDefaultSubobject<UCapsuleComponent>(TEXT("Sword Collision"));
+	if (SwordComponent)
+	{
+		const FAttachmentTransformRules AttachmentRules = FAttachmentTransformRules(EAttachmentRule::KeepRelative, false);
+		SwordComponent->AttachToComponent(GetMesh(), AttachmentRules, "WeaponSocket2");
+		// Sphere Collision
+		AttackingCollision->SetCapsuleSize(20.f, 60.f, true);
+		AttackingCollision->SetCollisionProfileName("Pawn");
+		AttackingCollision->SetGenerateOverlapEvents(false);
+		AttackingCollision->AttachTo(SwordComponent);
+	}
+
 }
 
 // Called when the game starts or when spawned

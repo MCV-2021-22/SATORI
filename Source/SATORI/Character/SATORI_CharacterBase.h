@@ -10,6 +10,7 @@
 
 class USATORI_AbilitySystemComponent;
 class USATORI_AttributeSet;
+class UCapsuleComponent;
 
 
 UCLASS()
@@ -86,6 +87,9 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "Tags")
 	bool HasAnyMatchingGameplayTags(const FGameplayTagContainer& TagContainer) const;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon")
+	UCapsuleComponent* AttackingCollision;
 
 protected:
 

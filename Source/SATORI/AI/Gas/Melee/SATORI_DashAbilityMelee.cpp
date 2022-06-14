@@ -8,6 +8,7 @@
 #include "Character/SATORI_PlayerController.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Kismet/GameplayStatics.h"
+#include "Kismet/KismetMathLibrary.h"
 
 
 USATORI_DashAbilityMelee::USATORI_DashAbilityMelee()
@@ -116,9 +117,9 @@ void USATORI_DashAbilityMelee::Tick(float DeltaTime)
 	{
 		FVector Position = Melee->GetActorLocation();
 
-		FVector Forward = Melee->GetActorForwardVector();
+		FVector NextPos = UKismetMathLibrary::VInterpTo(Position, EnemyPosition, DeltaTime, 5.f);
 
-		Melee->SetActorLocation(Position + Forward * 25.f);
+		Melee->SetActorLocation(NextPos);
 	}
 
 	if(Melee->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag("Dash.Stop")))

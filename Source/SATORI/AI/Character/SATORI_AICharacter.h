@@ -4,7 +4,6 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
-#include "AbilitySystemInterface.h"
 #include "Interfaces/SATORI_TargetSystemInterface.h"
 #include "AbilitySystemComponent.h"
 #include "Character/SATORI_CharacterBase.h"
@@ -19,6 +18,7 @@ class USATORI_GameplayAbility;
 class USATORI_AbilityDataAsset;
 class UBehaviorTree;
 class UPawnSensingComponent;
+class USkeletalMeshComponent;
 
 UENUM(BlueprintType)
 enum class SATORIEnemyType : uint8
@@ -69,6 +69,9 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Awareness)
 	UPawnSensingComponent* PawnSensor;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon")
+	UCapsuleComponent* AttackingCollision2;
+
 	bool GetIsInFront() const { return isInFrontPlayer; }
 
 	UFUNCTION(BlueprintCallable)
@@ -93,6 +96,11 @@ protected:
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "AI|GAS")
 	TArray<TSubclassOf<USATORI_GameplayAbility>> AICharacterAbilities;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Weapon")
+	USkeletalMeshComponent* SwordComponent;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Weapon")
+	USkeletalMeshComponent* SwordComponent2;
 	
 	UPROPERTY(EditAnywhere)
 	TSoftObjectPtr <UBehaviorTree> bte;
