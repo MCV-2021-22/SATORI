@@ -62,17 +62,17 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "ChooseAbilities")
 	USATORI_ChooseAbilitiesDatas* ChoosesAbilities;
 
-
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Abilities")
 	UDataTable* AbilitiesIconDatas;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
-	TArray<TSubclassOf<USATORI_GameplayAbility>> DisabledAbilityClasses;
 
 	// ----------------- // ----------------------------------------
 	TMap<FName, FSATORI_AbilitiesDatas> PlayerGameplayAbility;
 
+	TMap<FName, FSATORI_AbilitiesDatas> PlayerGameplayAbilityDissabled;
+
 	TArray<FName> PlayerAbilitiesNames;
+
+	TArray<FName> PlayerAbilitiesNamesDissabled;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	int CurrentAbilityValue = 0;
@@ -113,9 +113,9 @@ private:
 
 public:
 
-	void AddEnabledAbilityClass(TSubclassOf<USATORI_GameplayAbility> ClassToAdd);
+	void AddEnabledAbility();
 
-	void RemoveEnabledAbilityClass(TSubclassOf<USATORI_GameplayAbility> ClassToRemove);
+	void RemoveEnabledAbility();
 
-	bool IsAbilityClassEnabled(TSubclassOf<USATORI_GameplayAbility> ClassToCheck) const;
+	bool IsAbilityEnabled() const;
 };
