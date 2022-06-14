@@ -69,8 +69,6 @@ private:
 
 	FVector Direction = FVector::FVector(1.0f, 0.0f, 0.0f); //It just works
 
-	bool Dashing = false;
-
 	//Tick implementation
 private:
 

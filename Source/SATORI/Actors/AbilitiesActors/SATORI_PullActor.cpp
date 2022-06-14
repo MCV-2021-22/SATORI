@@ -1,24 +1,25 @@
 
 #include "Actors/AbilitiesActors/SATORI_PullActor.h"
 #include "Components/SphereComponent.h"
-#include "Kismet/KismetMathLibrary.h"
 #include "Kismet/GameplayStatics.h"
 #include "GameFramework/ProjectileMovementComponent.h"
-#include "SATORI/AI/Character/SATORI_AICharacter.h"
-#include "SATORI/FunctionLibrary/SATORI_BlueprintLibrary.h"
+#include "FunctionLibrary/SATORI_BlueprintLibrary.h"
+#include "SATORICharacter.h"
 
 // Sets default values
 ASATORI_PullActor::ASATORI_PullActor()
 {
 	PrimaryActorTick.bCanEverTick = true;
 
+	RootComponent = CreateDefaultSubobject<USceneComponent>(TEXT("RootComponent"));
+
 	StaticMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("StaticMesh"));
-	RootComponent = StaticMeshComponent;
 	StaticMeshComponent->SetCollisionProfileName(UCollisionProfile::NoCollision_ProfileName);
+	StaticMeshComponent->SetupAttachment(RootComponent);
 
 	//If collides will grab
 	CollisionSphereComponent = CreateDefaultSubobject<USphereComponent>(TEXT("CollisionSphere"));
-	CollisionSphereComponent->SetCollisionProfileName(FName(TEXT("IgnoreSelfOverlapsAll")));
+	CollisionSphereComponent->SetCollisionProfileName(FName(TEXT("PlayerAbility")));
 	CollisionSphereComponent->SetupAttachment(RootComponent);
 	CollisionSphereComponent->SetGenerateOverlapEvents(true);
 	CollisionSphereComponent->OnComponentBeginOverlap.AddDynamic(this, &ASATORI_PullActor::OnOverlapCollisionSphere);
@@ -34,42 +35,38 @@ ASATORI_PullActor::ASATORI_PullActor()
 //Collision for Grabing
 void ASATORI_PullActor::OnOverlapCollisionSphere(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-
-	ASATORI_CharacterBase* Character = Cast<ASATORI_CharacterBase>(OtherActor);
-
-	if (!Character)
-	{
-		Destroy();
-		return;
-	}
-
-	if (Character->HasMatchingGameplayTag(EnemyTag))
-	{
-		ASATORI_AICharacter* AI = Cast<ASATORI_AICharacter>(Character);
-		float dmg_done = USATORI_BlueprintLibrary::ApplyGameplayEffectDamage(OtherActor, Damage, OtherActor, DamageGameplayEffect);
-		AI->sendDamage(dmg_done);
-		Pulling = Cast<UPrimitiveComponent>(OtherActor->GetRootComponent());
-		GetWorldTimerManager().ClearTimer(TimerHandleDestroy);
-	}
-	if (!Character->HasMatchingGameplayTag(PlayerTag) && !Character->HasMatchingGameplayTag(EnemyTag))
-	{
-		DestroySelf();
-	}
-}
-
-//Collision for aiming
-void ASATORI_PullActor::OnOverlapSeekingSphere(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
-{
+	//Pull possible collisions : 
+	// Enemies
+	// Walls
 
 	ASATORI_AICharacter* Character = Cast<ASATORI_AICharacter>(OtherActor);
 
-	if(Character)
+	// Walls
+	if (!Character)
 	{
-		if (Character->HasMatchingGameplayTag(EnemyTag) && !Target)
-		{
-			Target = OtherActor;
-		}
+		DestroyMyself();
+		return;
 	}
+
+	// Enemies
+	if (Character->HasMatchingGameplayTag(EnemyTag))
+	{
+		float DamageDone = USATORI_BlueprintLibrary::ApplyGameplayEffectDamage(OtherActor, Damage, OtherActor, DamageGameplayEffect);
+		Character->sendDamage(DamageDone);
+		Character->AddGameplayTag(PullingTag);
+		Pulling = Character;
+		ProjectileMovementComponent->HomingTargetComponent = Player->GetRootComponent();
+		GetWorldTimerManager().ClearTimer(TimerHandleDestroy);
+	}
+}
+
+void ASATORI_PullActor::DestroyMyself()
+{
+	if (Pulling)
+	{
+		Pulling->RemoveGameplayTag(PullingTag);
+	}
+	Destroy();
 }
 
 // Called when the game starts or when spawned
@@ -77,40 +74,24 @@ void ASATORI_PullActor::BeginPlay()
 {
 	Super::BeginPlay();
 	
-	if (!EnemyTag.IsValid() || !PlayerTag.IsValid() || !TargetActorWithTag.IsValid())
-	{
-		UE_LOG(LogTemp, Display, TEXT("[%s] ASATORI_PullActor: Tag is not valid ... "), *GetName());
-	}
+	ProjectileMovementComponent->HomingTargetComponent = nullptr;
+	
+	Player = Cast<ASATORICharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
 
-	//Check if Player is currently targeting an enemy
-	////
-	//TO DO: 
-	////
-	//Check Nearest Actor in viewport
-	//Improve code if possible
-	TArray<AActor*> Actors;
-	UGameplayStatics::GetAllActorsOfClass(GetWorld(), ASATORI_CharacterBase::StaticClass(), Actors);
-	for (AActor* Actor : Actors)
+	if (Player->GetTargetSystemComponent()->IsLocked())
 	{
-		ASATORI_CharacterBase* Character = Cast<ASATORI_CharacterBase>(Actor);
-		if (Character->HasMatchingGameplayTag(TargetActorWithTag))
+		Target = Player->GetTargetSystemComponent()->GetLockedOnTargetActor();
+	}
+	else
+	{
+		TArray<AActor*> Actors = Player->GetTargetSystemComponent()->GetTargetableActors();
+		for (AActor* Actor : Actors)
 		{
-			Target = Actor;
-		}
-		else
-		{
-			if (Character->HasMatchingGameplayTag(PlayerTag))
+			const float Distance = GetDistanceTo(Actor);
+			if (Distance < Range && Player->GetTargetSystemComponent()->IsInViewport(Actor))
 			{
-				Player = Actor;
-			}
-			else
-			{
-				const float Distance = GetDistanceTo(Actor);
-				if (Distance < Range)
-				{
-					Range = Distance;
-					TargetNear = Actor;
-				}
+				Range = Distance;
+				Target = Actor;
 			}
 		}
 	}
@@ -119,17 +100,9 @@ void ASATORI_PullActor::BeginPlay()
 	{
 		ProjectileMovementComponent->HomingTargetComponent = Target->GetRootComponent();
 	}
-	else
-	{
-		if (TargetNear)
-		{
-			ProjectileMovementComponent->HomingTargetComponent = TargetNear->GetRootComponent();
-		}
-	}
 
 	//Set max time before auto destruc if not collides
-	GetWorldTimerManager().SetTimer(TimerHandleDestroy, this, &ASATORI_PullActor::DestroySelf, TimeToDestroy, false);
-
+	GetWorldTimerManager().SetTimer(TimerHandleDestroy, this, &ASATORI_PullActor::DestroyMyself, TimeToDestroy, false);
 }
 
 // Called every frame
@@ -139,26 +112,15 @@ void ASATORI_PullActor::Tick(float DeltaTime)
 
 	//Movement
 	FVector ActorPosition = GetActorLocation();
-	//If has grabbed adn enemy
+
+	//If has grabbed an enemy
 	if (Pulling)
 	{
-		////
-		//TO DO: 
-		////
-		//Improve overall behavior
-		ProjectileMovementComponent->HomingTargetComponent = Player->GetRootComponent();
-
-		ActorPosition = GetActorLocation();
-		Pulling->SetWorldLocation(ActorPosition);
+		Pulling->GetRootComponent()->SetWorldLocation(ActorPosition);
 
 		//If has reached the player
-		if (FVector::Dist(Player->GetActorLocation() , ActorPosition) < 250) {
-			DestroySelf();
+		if (FVector::Dist(Player->GetActorLocation(), ActorPosition) < FinalDistanceToPlayer) {
+			DestroyMyself();
 		}
 	}
-}
-
-void ASATORI_PullActor::DestroySelf()
-{
-	Destroy();
 }

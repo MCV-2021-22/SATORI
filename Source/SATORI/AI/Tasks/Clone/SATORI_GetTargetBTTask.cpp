@@ -1,11 +1,12 @@
 //
 
 #include "AI/Tasks/Clone/SATORI_GetTargetBTTask.h"
-#include "SATORI/AI/Character/SATORI_AICharacter.h"
+#include "AI/Character/SATORI_AICharacter.h"
 #include "Kismet/GameplayStatics.h"
 #include "AIController.h"
 #include "BehaviorTree/Blackboard/BlackboardKeyType_Object.h"
 #include "BehaviorTree/BlackboardComponent.h"
+#include "SATORICharacter.h"
 
 USATORI_GetTargetBTTask::USATORI_GetTargetBTTask()
 {
@@ -16,36 +17,31 @@ EBTNodeResult::Type USATORI_GetTargetBTTask::ExecuteTask(UBehaviorTreeComponent&
 {
 	EBTNodeResult::Type Result = EBTNodeResult::Failed;
 
-	AAIController* AIController = OwnerComp.GetAIOwner();
-	APawn* Pawn = AIController->GetPawn();
-	FVector ClonePosition = Pawn->GetActorLocation();
+	ASATORICharacter* Player = Cast<ASATORICharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
 
-	TArray<AActor*> Actors;
-	UGameplayStatics::GetAllActorsOfClass(GetWorld(), ASATORI_AICharacter::StaticClass(), Actors);
-	for (AActor* Actor : Actors)
+	Target = nullptr;
+	float Range = CloneRange;
+
+	if (Player->GetTargetSystemComponent()->IsLocked())
 	{
-		ASATORI_CharacterBase* Character = Cast<ASATORI_AICharacter>(Actor);
-		if (Character->HasMatchingGameplayTag(TargetActorWithTag))
+		Target = Player->GetTargetSystemComponent()->GetLockedOnTargetActor();
+	}
+	else {
+
+		AAIController* AIController = OwnerComp.GetAIOwner();
+		APawn* Pawn = AIController->GetPawn();
+		FVector ClonePosition = Pawn->GetActorLocation();
+
+		TArray<AActor*> Actors = Player->GetTargetSystemComponent()->GetTargetableActors();
+		for (AActor* Actor : Actors)
 		{
-			Target = Actor;
-		}
-		else
-		{
-			if (!Character->HasMatchingGameplayTag(CloneTag))
+			const float Distance = FVector::Distance(ClonePosition, Actor->GetActorLocation());
+			if (Distance < Range)
 			{
-				const float Distance = FVector::Distance(Actor->GetActorLocation(), ClonePosition);
-				if (Distance < Range)
-				{
-					Range = Distance;
-					TargetNear = Actor;
-				}
+				Range = Distance;
+				Target = Actor;
 			}
 		}
-	}
-
-	if (!Target && TargetNear)
-	{
-		Target = TargetNear;
 	}
 
 	if (Target)

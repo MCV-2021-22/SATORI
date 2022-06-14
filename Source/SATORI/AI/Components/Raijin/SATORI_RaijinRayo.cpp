@@ -109,7 +109,6 @@ void ASATORI_RaijinRayo::Tick(float DeltaTime)
 		}
 		
 		
-		PSC->ActivateSystem();
 		time_to_overlap = 100.0f;
 		
 	}

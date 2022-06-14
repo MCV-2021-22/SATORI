@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "AbilitySystemInterface.h"
+#include "Interfaces/SATORI_TargetSystemInterface.h"
 #include "AbilitySystemComponent.h"
 #include "Character/SATORI_CharacterBase.h"
 #include "GameplayTags.h"
@@ -30,7 +31,7 @@ enum class SATORIEnemyType : uint8
 
 
 UCLASS()
-class SATORI_API ASATORI_AICharacter : public ASATORI_CharacterBase
+class SATORI_API ASATORI_AICharacter : public ASATORI_CharacterBase, public ISATORI_TargetSystemInterface
 {
 	GENERATED_BODY()
 
@@ -117,5 +118,20 @@ protected:
 	float time_burst = 5.f;
 
 	bool bursting = false;
+
+//Target System Interface related and Tag Abilities related (Nacho)
+public:
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Tag")
+	FGameplayTag  EnemyTag;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Target System")
+	bool bIsTargetable = true;
+
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "Target System")
+	bool IsTargetable() const;
+
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "Target System")
+	void RegisterInTargetableArray();
 
 };

@@ -18,6 +18,8 @@ void USATORI_PullAbility::ActivateAbility(
 	const FGameplayEventData* TriggerEventData)
 {
 
+	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
+
 	if (!IsValid(AnimMontage))
 	{
 		UE_LOG(LogTemp, Warning, TEXT("[%s] USATORI_PullAbility: Cannot get Animation Montage ... "), *GetName());
@@ -30,13 +32,7 @@ void USATORI_PullAbility::ActivateAbility(
 		return;
 	}
 
-	if (!CommitAbility(Handle, ActorInfo, ActivationInfo))
-	{
-		UE_LOG(LogTemp, Display, TEXT("[%s] USATORI_PullAbility: Cannot Commit Ability ... "), *GetName());
-		EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true);
-	}
-
-	if (!TagSpawnAbility.IsValid() || !TagEndAbility.IsValid() || !PlayerTargetingTag.IsValid())
+	if (!TagSpawnAbility.IsValid() || !TagEndAbility.IsValid())
 	{
 		UE_LOG(LogTemp, Display, TEXT("[%s] USATORI_PullAbility: Tag is not valid ... "), *GetName());
 	}
@@ -54,12 +50,12 @@ void USATORI_PullAbility::ActivateAbility(
 
 void USATORI_PullAbility::OnCancelled(FGameplayTag EventTag, FGameplayEventData EventData)
 {
-	EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true);
+	Super::EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true);
 }
 
 void USATORI_PullAbility::OnCompleted(FGameplayTag EventTag, FGameplayEventData EventData)
 {
-	EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, false);
+	Super::EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, false);
 }
 
 void USATORI_PullAbility::EventReceived(FGameplayTag EventTag, FGameplayEventData EventData)
@@ -67,7 +63,7 @@ void USATORI_PullAbility::EventReceived(FGameplayTag EventTag, FGameplayEventDat
 
 	if (EventTag == TagEndAbility)
 	{
-		EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, false);
+		Super::EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, false);
 		return;
 	}
 
@@ -81,28 +77,12 @@ void USATORI_PullAbility::EventReceived(FGameplayTag EventTag, FGameplayEventDat
 			EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true);
 		}
 
-		//Aiming when Targeting Enemy
-		if (Character->HasMatchingGameplayTag(PlayerTargetingTag))
-		{
-			UCameraComponent* CameraComponent = Character->FindComponentByClass<UCameraComponent>();
-			if (!CameraComponent)
-			{
-				UE_LOG(LogTemp, Display, TEXT("[%s] USATORI_PullAbility: Cannot Cast UCameraComponent ... "), *GetName());
-				EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true);
-			}
+		//No need to aim it
+		FTransform SpawnTransform = Character->HandComponent->GetComponentTransform();
+		FRotator Rotation = SpawnTransform.GetRotation().Rotator();
 
-			FRotator CameraRotation = CameraComponent->GetComponentRotation();
-			CameraRotation.Pitch = 0.0f;
-			SpawnTransform.SetLocation(Character->GetActorLocation() + CameraComponent->GetForwardVector() * 100);
-			SpawnTransform.SetRotation(CameraRotation.Quaternion());
-
-		}
-		//Aiming when not targeting
-		else
-		{
-			SpawnTransform.SetLocation(Character->GetActorLocation() + Character->GetActorForwardVector() * 100);
-			SpawnTransform.SetRotation(Character->GetActorRotation().Quaternion());
-		}
+		Rotation.Pitch = 0.0f;
+		SpawnTransform.SetRotation(Rotation.Quaternion());
 
 		//Pull Actor creation
 		ASATORI_PullActor* Pull = GetWorld()->SpawnActorDeferred<ASATORI_PullActor>(PullActor, SpawnTransform, GetOwningActorFromActorInfo(),

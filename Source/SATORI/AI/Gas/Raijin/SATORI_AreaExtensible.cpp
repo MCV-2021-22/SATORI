@@ -21,21 +21,12 @@ void USATORI_AreaExtensible::ActivateAbility(const FGameplayAbilitySpecHandle Ha
 	FVector IA_POS = ActorInfo->AvatarActor->GetActorLocation();    
 
 	TArray< AActor* > enemigos;
-	TArray< AActor* > enemigos2;
 
 	FName tag = "PossessedBy.Player";
 
 	UGameplayStatics::GetAllActorsWithTag(GetWorld(), FName("PossessedBy.Player"), enemigos);
 
-	UGameplayStatics::GetAllActorsOfClass(GetWorld(), ASATORICharacter::StaticClass(), enemigos2);
 	//UGameplayStatics::GetAllActorsOfClass(GetWorld(), ASATORICharacter::StaticClass(), enemigos);
-
-	int array_dim = enemigos.Num();
-	int array_dim2 = enemigos2.Num();
-
-	UE_LOG(LogTemp, Display, TEXT("Number of actors with that tag: %d"), array_dim);
-
-	UE_LOG(LogTemp, Display, TEXT("Number of actors2 with that tag: %d"), array_dim2);
 
 	for (AActor* Actor : enemigos)
 	{
@@ -45,24 +36,15 @@ void USATORI_AreaExtensible::ActivateAbility(const FGameplayAbilitySpecHandle Ha
 			ASATORICharacter* Player = Cast<ASATORICharacter>(Actor);
 			bool tiene = Player->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag("PossessedBy.Player"));
 
-			UE_LOG(LogTemp, Display, TEXT("Number of actors with that tag: %d"), tiene);
-
-			FVector dest = Player->GetActorLocation();
-
 			FRotator RotationOfIA = ActorInfo->AvatarActor->GetActorRotation();
 			FActorSpawnParameters SpawnParams;
 			SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 			
-			FTransform IATransform = ActorInfo->AvatarActor->GetTransform();
-
-
-			ASATORI_ArcherProjectile* Sphere = GetWorld()->SpawnActor<ASATORI_ArcherProjectile>(ProjectileClass,
-				ActorInfo->AvatarActor->GetActorLocation() + ActorInfo->AvatarActor->GetActorForwardVector() * 100,
+		
+			ASATORI_RaijinRayoExtensible* Rayo = GetWorld()->SpawnActor<ASATORI_RaijinRayoExtensible>(ProjectileClass,
+				IA_POS,
 				RotationOfIA);
 
-			FVector newForward = dest - Sphere->GetActorLocation();
-			newForward.Normalize();
-			Sphere->setDirection(newForward * 20);
 			break;
 			
 		/*	ASATORI_ArcherProjectile* Sphere = GetWorld()->SpawnActor<ASATORI_ArcherProjectile>(

@@ -19,8 +19,8 @@ class SATORI_API ASATORI_CharacterBase : public ACharacter, public IAbilitySyste
 
 public:
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Tags")
-	FGameplayTagContainer GameplayTags;
+	//UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Tags")
+	//FGameplayTagContainer GameplayTags;
 
 public:
 	
@@ -60,13 +60,14 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Tags")
 	void AddGameplayTag(const FGameplayTag& TagToAdd);
 
+	UFUNCTION(BlueprintCallable, Category = "Tags")
 	void RemoveGameplayTag(const FGameplayTag& TagToRemove);
 
-	UFUNCTION(BlueprintCallable, Category = "Tags")
-	void AddGameplayTagToAbilitySystem(const FGameplayTag& TagToAdd);
+	//UFUNCTION(BlueprintCallable, Category = "Tags")
+	//void AddGameplayTagToAbilitySystem(const FGameplayTag& TagToAdd);
 
-	UFUNCTION(BlueprintCallable, Category = "Tags")
-	void RemoveGameplayTagFromAbilitySystem(const FGameplayTag& TagToRemove);
+	//UFUNCTION(BlueprintCallable, Category = "Tags")
+	//void RemoveGameplayTagFromAbilitySystem(const FGameplayTag& TagToRemove);
 
 	UFUNCTION(BlueprintCallable, Category = "Tags")
 	void BlockGameplayTag(const FGameplayTagContainer& TagsToBlock);

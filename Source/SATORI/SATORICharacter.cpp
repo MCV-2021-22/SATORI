@@ -69,6 +69,10 @@ ASATORICharacter::ASATORICharacter()
 	PlayerGameplayAbilityComponent = CreateDefaultSubobject<USATORI_GameplayAbilityComponent>(TEXT("SATORI_GameplayAbilityComponent"));
 	TargetSystemComponent = CreateDefaultSubobject<USATORI_TargetSystemComponent>(TEXT("TargetSystemComponent"));
 
+	//Hand Component
+	HandComponent = CreateDefaultSubobject<USceneComponent>(TEXT("Hand"));
+	HandComponent->SetupAttachment(GetMesh(), "Bip001-R-Hand");
+
 	// Weapon Component
 	SwordComponent = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("Sword"));
 	AttackingCollision = CreateDefaultSubobject<UCapsuleComponent>(TEXT("Sword Collision"));
@@ -97,8 +101,6 @@ void ASATORICharacter::PossessedBy(AController* NewController)
 		AbilitySystemComponent->InitAbilityActorInfo(PS, this);
 
 		AttributeSetBase = PS->GetSatoriAttributeSet();
-
-		GameplayTags.AddTag(FGameplayTag::RequestGameplayTag("PossessedBy.Player"));
 		
 		AbilitySystemComponent->AddLooseGameplayTag(FGameplayTag::RequestGameplayTag("PossessedBy.Player"));
 
@@ -118,8 +120,8 @@ void ASATORICharacter::PossessedBy(AController* NewController)
 	}
 
 	if (Cast<APlayerController>(NewController) != nullptr) {
-		GameplayTags.AddTag(FGameplayTag::RequestGameplayTag("PossessedBy.Player"));
-		//AbilitySystemComponent->AddLooseGameplayTag(FGameplayTag::RequestGameplayTag("PossessedBy.Player"));
+		//GameplayTags.AddTag(FGameplayTag::RequestGameplayTag("PossessedBy.Player"));
+		AddGameplayTag(FGameplayTag::RequestGameplayTag("PossessedBy.Player"));
 		//AddGameplayTag(FGameplayTag::RequestGameplayTag("PossessedBy.AI"));
 	}
 }
@@ -410,26 +412,26 @@ void ASATORICharacter::RestartStats()
 
 void ASATORICharacter::GetAllAbilities()
 {
-	for (TSubclassOf < USATORI_GameplayAbility > Ability : PlayerGameplayAbilityComponent->DisabledAbilityClasses)
+	/*for (TSubclassOf < USATORI_GameplayAbility > Ability : PlayerGameplayAbilityComponent->DisabledAbilityClasses)
 	{
 		PlayerGameplayAbilityComponent->EnabledAbilityClasses.AddUnique(Ability);
 	}
-	PlayerGameplayAbilityComponent->DisabledAbilityClasses.Empty();
+	PlayerGameplayAbilityComponent->DisabledAbilityClasses.Empty();*/
 }
 
 void ASATORICharacter::RemoveAllAbilities()
 {
-	for (TSubclassOf < USATORI_GameplayAbility > Ability : PlayerGameplayAbilityComponent->EnabledAbilityClasses)
+	/*for (TSubclassOf < USATORI_GameplayAbility > Ability : PlayerGameplayAbilityComponent->EnabledAbilityClasses)
 	{
 		PlayerGameplayAbilityComponent->DisabledAbilityClasses.AddUnique(Ability);
 	}
 	AbilityToChoose = 0;
-	PlayerGameplayAbilityComponent->EnabledAbilityClasses.Empty();
+	PlayerGameplayAbilityComponent->EnabledAbilityClasses.Empty();*/
 }
 
 void ASATORICharacter::GetAbility(FName AbilityName)
 {
-	TSubclassOf < USATORI_GameplayAbility > AbilityToEnable;
+	/*TSubclassOf < USATORI_GameplayAbility > AbilityToEnable;
 
 	for (TSubclassOf < USATORI_GameplayAbility > Ability : PlayerGameplayAbilityComponent->DisabledAbilityClasses)
 	{
@@ -442,16 +444,16 @@ void ASATORICharacter::GetAbility(FName AbilityName)
 			PlayerGameplayAbilityComponent->EnabledAbilityClasses.AddUnique(AbilityToEnable);
 		}
 	}
-	PlayerGameplayAbilityComponent->DisabledAbilityClasses.Remove(AbilityToEnable);
+	PlayerGameplayAbilityComponent->DisabledAbilityClasses.Remove(AbilityToEnable);*/
 }
 
 void ASATORICharacter::GetEnabledAbilityName()
 {
-	for (TSubclassOf < USATORI_GameplayAbility > Ability : PlayerGameplayAbilityComponent->EnabledAbilityClasses)
+	/*for (TSubclassOf < USATORI_GameplayAbility > Ability : PlayerGameplayAbilityComponent->EnabledAbilityClasses)
 	{
 		FName GetAbilityName = Ability.GetDefaultObject()->GetAbilityName();
 		GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, FString::Printf(TEXT("AbilityName: %s"), *GetAbilityName.ToString()));
-	}
+	}*/
 }
 
 void ASATORICharacter::KillAllEnemies()

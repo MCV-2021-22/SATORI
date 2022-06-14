@@ -16,6 +16,7 @@ void USATORI_DecoyAbility::ActivateAbility(
 	const FGameplayAbilityActivationInfo ActivationInfo,
 	const FGameplayEventData* TriggerEventData)
 {
+	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
 
 	if (!IsValid(AnimMontage))
 	{
@@ -29,13 +30,7 @@ void USATORI_DecoyAbility::ActivateAbility(
 		return;
 	}
 
-	if (!CommitAbility(Handle, ActorInfo, ActivationInfo))
-	{
-		UE_LOG(LogTemp, Display, TEXT("[%s] USATORI_DecoyAbility: Cannot Commit Ability ... "), *GetName());
-		EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true);
-	}
-
-	if (!TagSpawnAbility.IsValid() || !TagEndAbility.IsValid() || !PlayerTargetingTag.IsValid())
+	if (!TagSpawnAbility.IsValid() || !TagEndAbility.IsValid())
 	{
 		UE_LOG(LogTemp, Display, TEXT("[%s] USATORI_DecoyAbility: Tag is not valid ... "), *GetName());
 	}
@@ -53,12 +48,12 @@ void USATORI_DecoyAbility::ActivateAbility(
 
 void USATORI_DecoyAbility::OnCancelled(FGameplayTag EventTag, FGameplayEventData EventData)
 {
-	EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true);
+	Super::EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true);
 }
 
 void USATORI_DecoyAbility::OnCompleted(FGameplayTag EventTag, FGameplayEventData EventData)
 {
-	EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, false);
+	Super::EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, false);
 }
 
 void USATORI_DecoyAbility::EventReceived(FGameplayTag EventTag, FGameplayEventData EventData)
@@ -66,7 +61,7 @@ void USATORI_DecoyAbility::EventReceived(FGameplayTag EventTag, FGameplayEventDa
 
 	if (EventTag == TagEndAbility)
 	{
-		EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, false);
+		Super::EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, false);
 		return;
 	}
 
@@ -80,28 +75,24 @@ void USATORI_DecoyAbility::EventReceived(FGameplayTag EventTag, FGameplayEventDa
 			EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true);
 		}
 
+		FTransform SpawnTransform = Character->HandComponent->GetComponentTransform();
+		FRotator Rotation;
+
 		//Aiming when Targeting Enemy
-		if (Character->HasMatchingGameplayTag(PlayerTargetingTag))
+		if (Character->GetTargetSystemComponent()->IsLocked())
 		{
-			UCameraComponent* CameraComponent = Character->FindComponentByClass<UCameraComponent>();
-			if (!CameraComponent)
-			{
-				UE_LOG(LogTemp, Display, TEXT("[%s] USATORI_DecoyAbility: Cannot Cast UCameraComponent ... "), *GetName());
-				EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true);
-			}
-
-			FRotator CameraRotation = CameraComponent->GetComponentRotation();
-			CameraRotation.Pitch = 0.0f;
-			SpawnTransform.SetLocation(Character->GetActorLocation() + CameraComponent->GetForwardVector() * 100);
-			SpawnTransform.SetRotation(CameraRotation.Quaternion());
-
+			FVector Target = Character->GetTargetSystemComponent()->GetLockedOnTargetActor()->GetActorLocation();
+			FVector Position = GetAvatarActorFromActorInfo()->GetActorLocation();
+			Rotation = FRotationMatrix::MakeFromX(Target - Position).Rotator();
 		}
 		//Aiming when not targeting
 		else
 		{
-			SpawnTransform.SetLocation(Character->GetActorLocation() + Character->GetActorForwardVector() * 100);
-			SpawnTransform.SetRotation(Character->GetActorRotation().Quaternion());
+			Rotation = Character->GetActorRotation();
 		}
+
+		Rotation.Pitch = 0.0f;
+		SpawnTransform.SetRotation(Rotation.Quaternion());
 
 		//Decoy Actor creation
 		ASATORI_DecoyActor* Decoy = GetWorld()->SpawnActorDeferred<ASATORI_DecoyActor>(DecoyActor, SpawnTransform, GetOwningActorFromActorInfo(),

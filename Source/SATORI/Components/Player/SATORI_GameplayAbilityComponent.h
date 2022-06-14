@@ -20,16 +20,32 @@ struct FSATORI_AbilitiesDatas
 	TSubclassOf<USATORI_GameplayAbility> CurrentAbility;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-		UTexture2D* AbilitiyIcon;
+	UTexture2D* AbilitiyIcon;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-		FText AbilityName;
+	FText AbilityName;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-		bool isActive = false;
+	bool isActive = false;
+};
+
+USTRUCT(BlueprintType)
+struct FSATORI_AbilitiesIconsDatas
+{
+	GENERATED_BODY()
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	UTexture2D* CurrentAbilitiyIcon;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	UTexture2D* NextAbilitiyIcon;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	UTexture2D* PrevAbilitiyIcon;
 };
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FSATORIChangeAbilityIcon, const FSATORI_AbilitiesDatas&, AbilityData);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FSATORIChangeAllAbilityIcon, FSATORI_AbilitiesIconsDatas, AbilityData);
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class SATORI_API USATORI_GameplayAbilityComponent : public UActorComponent
@@ -43,17 +59,12 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Abilities")
 	USATORI_AbilityDataAsset* DefaultAbilities;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Abilities")
-	UDataTable* AbilitiesIconDatas;
-
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "ChooseAbilities")
 	USATORI_ChooseAbilitiesDatas* ChoosesAbilities;
 
-	/*UFUNCTION(BlueprintCallable)
-	bool TryChangeAbilityIcon();*/
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
-	TArray<TSubclassOf<USATORI_GameplayAbility>> EnabledAbilityClasses;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Abilities")
+	UDataTable* AbilitiesIconDatas;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	TArray<TSubclassOf<USATORI_GameplayAbility>> DisabledAbilityClasses;
@@ -66,11 +77,19 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	int CurrentAbilityValue = 0;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	int nextAbilityValue = 1;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	int PrevAbilityValue;
 	// Getters
 	TSubclassOf<USATORI_GameplayAbility> GetCurrentAbility();
 
 	UPROPERTY(BlueprintAssignable)
 	FSATORIChangeAbilityIcon AbilityIconChange;
+
+	UPROPERTY(BlueprintAssignable)
+	FSATORIChangeAllAbilityIcon AllAbilityIconChange;
 	
 	void NotifyAbilityChanged();
 	
@@ -78,11 +97,11 @@ public:
 	UFUNCTION(BlueprintCallable)
 	bool TryChangeAbility();
 
-	//FSATORI_AbilitiesDatas* SetNextAbility();
-
-	//void UpdateAbilityIcon();
 	void SetNextAbility();
+	void SetPrevAbility();
+
 	TSubclassOf<USATORI_GameplayAbility> GetCurrentSatoriAbility();
+
 protected:
 	
 	virtual void BeginPlay() override;

@@ -43,28 +43,25 @@ public:
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Ability|Tags")
 	FGameplayTag TagEndAbility;
 
-	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Ability|Tags")
-	FGameplayTag PlayerTargetingTag;
-
 protected:
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (UIMin = "0.0"), Category = "Ability|Push")
-	float Damage = 1.0f;
+	float Damage = 5.0f;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (UIMin = "0.0"), Category = "Ability|Push")
-	float Speed = 1.0f;
+	float Speed = 4000.0f;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (UIMin = "0.0"), Category = "Ability|Push")
-	float PushForce = 1.0f;
+	float PushForce = 2500.0f;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (UIMin = "0.0"), Category = "Ability|Push")
-	float TimeToDestroy = 1.0f;
+	float TimeToDestroy = 0.5f;
 
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, meta = (UIMin = "100.0", UIMax = "10000.0"), Category = "Ability|Push")
-	float Range = 100.0f;
+	float Range = 1000.0f;
 
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, meta = (UIMin = "5.0", UIMax = "85.0"), Category = "Ability|Push")
-	float AngleRange = 5.0f;
+	float AngleRange = 40.0f;
 
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, meta = (UIMin = "16.0", UIMax = "128.0"), Category = "Ability|Push")
 	float SphereRadius = 32.0f;
@@ -81,7 +78,5 @@ protected:
 private:
 
 	const bool bStopWhenAbilityEnds = true;
-
-	FTransform SpawnTransform;
 
 };
