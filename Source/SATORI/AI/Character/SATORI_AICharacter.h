@@ -19,6 +19,9 @@ class USATORI_GameplayAbility;
 class USATORI_AbilityDataAsset;
 class UBehaviorTree;
 class UPawnSensingComponent;
+class UWidgetComponent;
+class USATORI_EnemyHealthBar;
+class USATORI_EnemyStatComponent;
 
 UENUM(BlueprintType)
 enum class SATORIEnemyType : uint8
@@ -58,6 +61,7 @@ protected:
 
 	virtual void PossessedBy(AController* NewController) override;
 
+	virtual void OnConstruction(const FTransform& Transform) override;
 public:
 	UPROPERTY()
 	USATORI_AttributeSet* AttributeSet;
@@ -69,6 +73,9 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Awareness)
 	UPawnSensingComponent* PawnSensor;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Stats")
+	USATORI_EnemyStatComponent* EnemyStatComponent;
+
 	bool GetIsInFront() const { return isInFrontPlayer; }
 
 	void sendDamage(float dmg);
@@ -79,10 +86,19 @@ public:
 
 	void Die();
 
+	UFUNCTION(BlueprintCallable)
+	void HealthBarProjection(UWidgetComponent* HealthBar, float ViewDistance, float RangeA, float RangeB);
+
 	// Default attributes for a character for initializing
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Player|GameplayEffect")
-		TArray<TSubclassOf<UGameplayEffect>> PassiveGameplayEffects;
+	TArray<TSubclassOf<UGameplayEffect>> PassiveGameplayEffects;
 
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "UI")
+	UWidgetComponent* HealthBarWidgetComponen = nullptr;
+
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "UI")
+	TSubclassOf<USATORI_EnemyHealthBar> HealthBarUI;
+	
 protected:
 	// Default attributes for a character for initializing on spawn/respawn.
 	// This is an instant GE that overrides the values for attributes that get reset on spawn/respawn.
@@ -92,7 +108,6 @@ protected:
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "AI|GAS")
 	TArray<TSubclassOf<USATORI_GameplayAbility>> AICharacterAbilities;
 
-	
 	UPROPERTY(EditAnywhere)
 	TSoftObjectPtr <UBehaviorTree> bte;
 
@@ -101,7 +116,6 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	float dist_attack = 100.f;
-
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	float max_range_dist = 700.f;
@@ -118,7 +132,9 @@ protected:
 
 	bool bursting = false;
 
-//Target System Interface related and Tag Abilities related (Nacho)
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	class USphereComponent* HeadComponent;
+	//Target System Interface related and Tag Abilities related (Nacho)
 public:
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Tag")
@@ -132,5 +148,4 @@ public:
 
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "Target System")
 	void RegisterInTargetableArray();
-
 };

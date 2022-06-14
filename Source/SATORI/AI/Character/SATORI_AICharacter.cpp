@@ -14,9 +14,14 @@
 #include "DrawDebugHelpers.h"
 #include "SATORICharacter.h"
 #include "Spawned/SATORI_Spawned.h"
+#include "Components/WidgetComponent.h"
+#include "UI/Enemy/SATORI_EnemyHealthBar.h"
+#include "Kismet/GameplayStatics.h"
+#include "Kismet/KismetMathLibrary.h"
+#include "AI/Components/SATORI_EnemyStatComponent.h"
+#include "Components/SphereComponent.h"
 #include "Components/Player/SATORI_TargetSystemComponent.h"
 #include "Kismet/GameplayStatics.h"
-
 
 // Sets default values
 ASATORI_AICharacter::ASATORI_AICharacter()
@@ -29,10 +34,17 @@ ASATORI_AICharacter::ASATORI_AICharacter()
 
 	AttributeSet = CreateDefaultSubobject<USATORI_AttributeSet>(TEXT("AttributeSet"));
 
+	HealthBarWidgetComponen = CreateDefaultSubobject<UWidgetComponent>(TEXT("HealthBarWidgetComponen"));
+
+	//HeadComponent = CreateDefaultSubobject<USphereComponent>(TEXT("Head Position"));
+
 	PawnSensor = CreateDefaultSubobject<UPawnSensingComponent>(TEXT("Pawn Sensor"));
 	PawnSensor->SensingInterval = .25f; // 4 times per second
 	PawnSensor->bOnlySensePlayers = false;
 	PawnSensor->SetPeripheralVisionAngle(85.f);
+
+	// Enemy Stats
+	EnemyStatComponent = CreateDefaultSubobject<USATORI_EnemyStatComponent>(TEXT("StatComponent"));
 
 	//bte = TSoftObjectPtr <UBehaviorTree>(FSoftObjectPath(TEXT("/Game/SATORI/AI/Spawner/BT_Spawner.BT_Spawner")));
 	//btree = bte.LoadSynchronous();
@@ -67,6 +79,30 @@ void ASATORI_AICharacter::BeginPlay()
 	//Needed for targeting system (Nacho)
 	if (bIsTargetable) {
 		RegisterInTargetableArray();
+	}
+}
+
+void ASATORI_AICharacter::OnConstruction(const FTransform& Transform)
+{
+	if (HealthBarWidgetComponen )
+	{
+		HealthBarWidgetComponen->RegisterComponent();
+		const FAttachmentTransformRules AttachmentRules = FAttachmentTransformRules(EAttachmentRule::KeepRelative, false);
+		//const APlayerController* PC = UGameplayStatics::GetPlayerController(GetWorld(), 0);
+		//UUserWidget* HealthWidget = PC ? CreateWidget(PC/*, HealthBarUI*/) : nullptr;
+		//if (HealthWidget)
+		//{
+		//	HealthBarWidgetComponen->SetWidget(HealthWidget);
+		//}
+		//HealthBarWidgetComponen->AttachToComponent(HeadComponent, AttachmentRules);
+		/*struct ConstructorHelpers::FClassFinder<USATORI_EnemyHealthBar> EnemyUIBar(TEXT("/Game/SATORI/UI/Enemy/"));
+		if (EnemyUIBar.Class != NULL)*/
+		/*if (HealthBarUI)
+		{
+			HealthBarWidgetComponen->SetWidgetSpace(EWidgetSpace::World);
+			HealthBarWidgetComponen->SetDrawSize(FVector2D(100.f, 20.f));
+			HealthBarWidgetComponen->SetWidgetClass(HealthBarUI);
+		}*/
 	}
 }
 
@@ -157,7 +193,7 @@ void ASATORI_AICharacter::PossessedBy(AController* NewController)
 
 		InitializeAttributes();
 		AddAICharacterAbilities();
-		SetHealth(GetMaxHealth());
+		SetHealth(90);
 
 	}
 
@@ -241,6 +277,12 @@ void ASATORI_AICharacter::Tick(float DeltaSeconds)
 			bursting = false;
 		}
 	}
+
+	if (HealthBarUI)
+	{
+		HealthBarProjection(HealthBarWidgetComponen, 1024, 0.5, 0.1);
+	}
+	
 	Super::Tick(DeltaSeconds);
 }
 
@@ -303,6 +345,41 @@ void ASATORI_AICharacter::Die()
 	Destroy();
 }
 
+void ASATORI_AICharacter::HealthBarProjection(UWidgetComponent* HealthBar, float ViewDistance, float RangeA, float RangeB)
+{
+	ASATORICharacter* EnemyCharacter = Cast<ASATORICharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
+	FVector PlayerLocation = FVector(0.0f);
+	FVector SelfLocation = FVector(0.0f);
+	FVector WidgetLocation = FVector(0.0f);
+
+	if (EnemyCharacter)
+	{
+		// Widget Size
+		PlayerLocation = EnemyCharacter->GetActorLocation();
+		SelfLocation = GetActorLocation();
+		FVector ResultVector = PlayerLocation - SelfLocation;
+		float vectorLength = ResultVector.Size();
+		float result = UKismetMathLibrary::MapRangeClamped(vectorLength, 0, ViewDistance, RangeB, RangeA);
+
+		FVector ScaleVector(result);
+		HealthBar->SetWorldScale3D(ScaleVector);
+	}
+
+	if (GetWorld())
+	{
+		// Widget Rotation
+		WidgetLocation = HealthBar->GetComponentLocation();
+		APlayerCameraManager* CameraManager = UGameplayStatics::GetPlayerCameraManager(GetWorld(), 0);
+		if (CameraManager)
+		{
+			USceneComponent* LocalTransform = CameraManager->GetTransformComponent();
+			FVector CameraLocation = LocalTransform->GetComponentLocation();
+			FRotator ResultRotator = UKismetMathLibrary::FindLookAtRotation(WidgetLocation, CameraLocation);
+			HealthBar->SetWorldRotation(ResultRotator);
+		}
+
+	}
+}
 //Target system (Nacho)
 bool ASATORI_AICharacter::IsTargetable_Implementation() const
 {
