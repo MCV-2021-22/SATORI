@@ -1,7 +1,7 @@
 #pragma once
 
 //Thanks to Mickael Daniel 
-//Simplified Target System based on his on https://github.com/mklabs/ue4-targetsystemplugin 
+//Modified Target System based on his on https://github.com/mklabs/ue4-targetsystemplugin 
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
@@ -36,6 +36,15 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Target System|Widget")
 	TSubclassOf<UUserWidget> LockedOnWidgetClass;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Target System|Widget")
+	FName LockedOnWidgetParentSocket = FName("spine_03");
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Target System|Widget")
+	FVector LockedOnWidgetRelativeLocation = FVector(0.0f, 0.0f, 0.0f);
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Target System|Widget")
+	float LockedOnWidgetDrawSize = 32.0f;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Target System")
 	float StartRotatingThreshold = 0.85f;
 	
@@ -52,7 +61,7 @@ public:
 	float PitchDistanceCoefficient = -0.2f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Target System|Pitch Offset")
-	float PitchDistanceOffset = 60.0f;
+	float PitchDistanceOffset = 30.0f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Target System|Pitch Offset")
 	float PitchMin = -50.0f;
@@ -92,7 +101,6 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "Target System")
 	bool IsLocked() const;
-
 
 	UFUNCTION(BlueprintCallable, Category = "Target System")
 	bool IsInViewport(const AActor* TargetActor) const;

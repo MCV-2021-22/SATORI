@@ -544,7 +544,7 @@ void USATORI_TargetSystemComponent::CreateAndAttachTargetLockedOnWidgetComponent
 	TargetLockedOnWidgetComponent->SetWidgetClass(LockedOnWidgetClass);
 
 	UMeshComponent* MeshComponent = TargetActor->FindComponentByClass<UMeshComponent>();
-	USceneComponent* ParentComponent = TargetActor->GetRootComponent();
+	USceneComponent* ParentComponent = MeshComponent && LockedOnWidgetParentSocket != NAME_None ? MeshComponent : TargetActor->GetRootComponent();
 
 	if (IsValid(OwnerPlayerController))
 	{
@@ -552,7 +552,9 @@ void USATORI_TargetSystemComponent::CreateAndAttachTargetLockedOnWidgetComponent
 	}
 
 	TargetLockedOnWidgetComponent->SetWidgetSpace(EWidgetSpace::Screen);
-	TargetLockedOnWidgetComponent->SetupAttachment(ParentComponent);
+	TargetLockedOnWidgetComponent->SetupAttachment(ParentComponent, LockedOnWidgetParentSocket);
+	TargetLockedOnWidgetComponent->SetRelativeLocation(LockedOnWidgetRelativeLocation);
+	TargetLockedOnWidgetComponent->SetDrawSize(FVector2D(LockedOnWidgetDrawSize, LockedOnWidgetDrawSize));
 	TargetLockedOnWidgetComponent->SetVisibility(true);
 	TargetLockedOnWidgetComponent->RegisterComponent();
 }
