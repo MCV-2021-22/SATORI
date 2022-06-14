@@ -100,9 +100,6 @@ void USATORI_TargetSystemComponent::TickComponent(const float DeltaTime, const E
 		DrawDebugLine(GetWorld(), OwnerActor->GetActorLocation(), LockedOnTargetActor->GetActorLocation(), FColor(0, 0, 255), false, 1.0f, 0, 1);
 	}
 
-	ASATORI_GameState* const GameState = GetWorld() != NULL ? GetWorld()->GetGameState<ASATORI_GameState>() : NULL;
-	TargetableActors = GameState->GetEnemyActors();
-
 }
 
 bool USATORI_TargetSystemComponent::TargetIsTargetable(const AActor* Actor)
@@ -127,6 +124,10 @@ void USATORI_TargetSystemComponent::TargetActor()
 	}
 	else 
 	{
+		//Temporary
+		ASATORI_GameState* const GameState = GetWorld() != NULL ? GetWorld()->GetGameState<ASATORI_GameState>() : NULL;
+		TargetableActors = GameState->GetEnemyActors();
+
 		LockedOnTargetActor = FindNearestTarget(TargetableActors);
 		TargetLockOn(LockedOnTargetActor);
 	}
@@ -383,6 +384,9 @@ void USATORI_TargetSystemComponent::TargetActorWithAxisInput(const float AxisVal
 	TArray<AActor*> ActorsToLook;
 	TArray<AActor*> ActorsToIgnore;
 	ActorsToIgnore.Add(CurrentTarget);
+
+	ASATORI_GameState* const GameState = GetWorld() != NULL ? GetWorld()->GetGameState<ASATORI_GameState>() : NULL;
+	TargetableActors = GameState->GetEnemyActors();
 
 	for (AActor* Actor : TargetableActors)
 	{

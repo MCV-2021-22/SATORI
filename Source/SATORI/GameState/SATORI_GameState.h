@@ -34,7 +34,7 @@ public:
 
 	//EnemyActors
 	UFUNCTION()
-	const TArray < AActor* > GetEnemyActors();
+	TArray < AActor* > GetEnemyActors();
 
 	UFUNCTION()
 	void AddEnemyActor(AActor* Enemy);

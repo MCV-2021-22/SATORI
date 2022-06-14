@@ -55,7 +55,7 @@ void ASATORI_GameState::FillPortalGameplayEffectWithData()
                 FSATORI_DoorPassiveReward PassiveReward;
                 PassiveReward.PassiveEffect = Data.PassiveEffect;
                 PassiveReward.PassiveIcon = Data.PassiveIcon;
-                PassiveReward.Desciption = Data.Description;
+                PassiveReward.Description = Data.Description;
                 PortalEffectsToApply.Add(PassiveReward);
             }
         }
@@ -74,7 +74,7 @@ int ASATORI_GameState::GenerateRandomNumberForPortal()
     return number;
 }
 
-const TArray<AActor*> ASATORI_GameState::GetEnemyActors()
+TArray<AActor*> ASATORI_GameState::GetEnemyActors()
 {
     return EnemyActors;
 }
