@@ -46,7 +46,7 @@ void ASATORI_GameState::FillPortalGameplayEffectWithData()
     {
         for (const FSATORI_DoorPassiveDatas Data : PassiveDataAsset->PassiveRewards)
         {
-            FString CurrentName = Data.Desciption.ToString();
+            FString CurrentName = Data.Description.ToString();
             FName LocalAbilityName = FName(*CurrentName);
 
             if (LocalAbilityName.IsValid() && Data.PassiveEffect)
@@ -55,7 +55,7 @@ void ASATORI_GameState::FillPortalGameplayEffectWithData()
                 FSATORI_DoorPassiveReward PassiveReward;
                 PassiveReward.PassiveEffect = Data.PassiveEffect;
                 PassiveReward.PassiveIcon = Data.PassiveIcon;
-                PassiveReward.Desciption = Data.Desciption;
+                PassiveReward.Desciption = Data.Description;
                 PortalEffectsToApply.Add(PassiveReward);
             }
         }
@@ -66,9 +66,30 @@ void ASATORI_GameState::Tick(float DeltaSeconds)
 {
 
 }
+
 int ASATORI_GameState::GenerateRandomNumberForPortal()
 {
     const int EffectSize = PortalEffectsToApply.Num() - 1;
     int number = FMath::RandRange(0, EffectSize);
     return number;
+}
+
+const TArray<AActor*> ASATORI_GameState::GetEnemyActors()
+{
+    return EnemyActors;
+}
+
+void ASATORI_GameState::AddEnemyActor(AActor* Enemy)
+{
+    EnemyActors.Add(Enemy);
+}
+
+void ASATORI_GameState::RemoveEnemyActor(AActor* Enemy)
+{
+    EnemyActors.Remove(Enemy);
+}
+
+bool ASATORI_GameState::IsEmptyEnemyActors()
+{
+    return EnemyActors.Num() == 0 ? true : false;
 }

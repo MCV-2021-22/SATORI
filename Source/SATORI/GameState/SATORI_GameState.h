@@ -31,7 +31,24 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Portal")
 	TArray<FSATORI_DoorPassiveReward> PortalEffectsToApply;
+
+	//EnemyActors
+	UFUNCTION()
+	const TArray < AActor* > GetEnemyActors();
+
+	UFUNCTION()
+	void AddEnemyActor(AActor* Enemy);
+
+	UFUNCTION()
+	void RemoveEnemyActor(AActor* Enemy);
+
+	UFUNCTION()
+	bool IsEmptyEnemyActors();
+
 private:
+
+	TArray < AActor* > EnemyActors;
+
 	int GenerateRandomNumberForPortal();
 
 	void FillPortalGameplayEffectWithData();

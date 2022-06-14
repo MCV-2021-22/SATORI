@@ -21,7 +21,7 @@ struct FSATORI_DoorPassiveDatas
 	UTexture2D* PassiveIcon;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	FText Desciption;
+	FText Description;
 };
 
 UCLASS()

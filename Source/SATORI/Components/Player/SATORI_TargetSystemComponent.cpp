@@ -2,11 +2,14 @@
 
 #include "SATORI_TargetSystemComponent.h"
 #include "Interfaces/SATORI_TargetSystemInterface.h"
+//Nedded for calculations
 #include "Kismet/GameplayStatics.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Engine/Classes/Camera/CameraComponent.h"
+//Needed for widget
 #include "Components/WidgetComponent.h"
-
+//Used for adding the Ai to the GameInstance
+#include "GameState/SATORI_GameState.h"
 //Debug
 #include "DrawDebugHelpers.h"
 
@@ -96,6 +99,10 @@ void USATORI_TargetSystemComponent::TickComponent(const float DeltaTime, const E
 	{
 		DrawDebugLine(GetWorld(), OwnerActor->GetActorLocation(), LockedOnTargetActor->GetActorLocation(), FColor(0, 0, 255), false, 1.0f, 0, 1);
 	}
+
+	ASATORI_GameState* const GameState = GetWorld() != NULL ? GetWorld()->GetGameState<ASATORI_GameState>() : NULL;
+	TargetableActors = GameState->GetEnemyActors();
+
 }
 
 bool USATORI_TargetSystemComponent::TargetIsTargetable(const AActor* Actor)
