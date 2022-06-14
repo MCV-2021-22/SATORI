@@ -53,7 +53,9 @@ void ASATORI_PullActor::OnOverlapCollisionSphere(UPrimitiveComponent* Overlapped
 	{
 		float DamageDone = USATORI_BlueprintLibrary::ApplyGameplayEffectDamage(OtherActor, Damage, OtherActor, DamageGameplayEffect);
 		Character->sendDamage(DamageDone);
+
 		Character->AddGameplayTag(PullingTag);
+
 		Pulling = Character;
 		ProjectileMovementComponent->HomingTargetComponent = Player->GetRootComponent();
 		GetWorldTimerManager().ClearTimer(TimerHandleDestroy);

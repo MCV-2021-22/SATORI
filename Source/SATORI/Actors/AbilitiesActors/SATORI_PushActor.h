@@ -79,7 +79,6 @@ public:
 private:
 
 	TArray<AActor*> ArrayPushed;
-	TArray<ASATORI_AICharacter*> ArrayTagPushed;
 
 	FTimerHandle TimerHandleDestroy;
 
