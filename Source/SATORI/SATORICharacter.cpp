@@ -279,8 +279,6 @@ void ASATORICharacter::CharacterDeath()
 	{
 		PlayAnimMontage(DeathMontage);
 	}
-
-
 }
 
 void ASATORICharacter::RemoveCharacterAbilities()
