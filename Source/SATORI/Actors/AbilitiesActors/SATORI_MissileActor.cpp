@@ -7,6 +7,7 @@
 #include "SATORI/AI/Character/SATORI_AICharacter.h"
 #include "SATORI/FunctionLibrary/SATORI_BlueprintLibrary.h"
 #include "SATORICharacter.h"
+#include "SATORIGameMode.h"
 
 ASATORI_MissileActor::ASATORI_MissileActor()
 {
@@ -78,7 +79,7 @@ void ASATORI_MissileActor::BeginPlay()
 	}
 	else
 	{
-		TArray<AActor*> Actors = Player->GetTargetSystemComponent()->GetTargetableActors();
+		TArray<AActor*> Actors = GetWorld()->GetAuthGameMode<ASATORIGameMode>()->GetEnemyActors();
 		for (AActor* Actor : Actors)
 		{
 			const float Distance = GetDistanceTo(Actor);

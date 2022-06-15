@@ -52,9 +52,7 @@ void ASATORI_PushActor::OnOverlapSphere(
 	//Enemies
 	if(Character->HasMatchingGameplayTag(EnemyTag) && !Character->HasMatchingGameplayTag(PushedTag))
 	{	
-		//Array with Actor for move the actor on tick
 		ArrayPushed.AddUnique(OtherActor);
-		//Array with the Character used for the PushedTag
 		Character->AddGameplayTag(PushedTag);
 	}
 }

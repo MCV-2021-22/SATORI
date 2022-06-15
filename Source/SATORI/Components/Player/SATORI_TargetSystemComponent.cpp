@@ -2,14 +2,12 @@
 
 #include "SATORI_TargetSystemComponent.h"
 #include "Interfaces/SATORI_TargetSystemInterface.h"
-//Nedded for calculations
 #include "Kismet/GameplayStatics.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Engine/Classes/Camera/CameraComponent.h"
-//Needed for widget
 #include "Components/WidgetComponent.h"
-//Used for adding the Ai to the GameInstance
-#include "GameState/SATORI_GameState.h"
+//#include "GameState/SATORI_GameState.h"
+#include "SATORIGameMode.h"
 //Debug
 #include "DrawDebugHelpers.h"
 
@@ -125,9 +123,7 @@ void USATORI_TargetSystemComponent::TargetActor()
 	else 
 	{
 		//Temporary
-		ASATORI_GameState* const GameState = GetWorld() != NULL ? GetWorld()->GetGameState<ASATORI_GameState>() : NULL;
-		TargetableActors = GameState->GetEnemyActors();
-
+		TargetableActors = GetWorld()->GetAuthGameMode<ASATORIGameMode>()->GetEnemyActors();
 		LockedOnTargetActor = FindNearestTarget(TargetableActors);
 		TargetLockOn(LockedOnTargetActor);
 	}
@@ -385,8 +381,7 @@ void USATORI_TargetSystemComponent::TargetActorWithAxisInput(const float AxisVal
 	TArray<AActor*> ActorsToIgnore;
 	ActorsToIgnore.Add(CurrentTarget);
 
-	ASATORI_GameState* const GameState = GetWorld() != NULL ? GetWorld()->GetGameState<ASATORI_GameState>() : NULL;
-	TargetableActors = GameState->GetEnemyActors();
+	TargetableActors = GetWorld()->GetAuthGameMode<ASATORIGameMode>()->GetEnemyActors();
 
 	for (AActor* Actor : TargetableActors)
 	{

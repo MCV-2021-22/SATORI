@@ -21,8 +21,9 @@
 #include "AI/Components/SATORI_EnemyStatComponent.h"
 #include "Components/SphereComponent.h"
 #include "Kismet/GameplayStatics.h"
-//Used for adding the Ai to the GameInstance
-#include "GameState/SATORI_GameState.h"
+//#include "GameState/SATORI_GameState.h"
+#include "SATORIGameMode.h"
+
 
 // Sets default values
 ASATORI_AICharacter::ASATORI_AICharacter()
@@ -341,8 +342,10 @@ void ASATORI_AICharacter::sendDamage(float dmg)
 
 void ASATORI_AICharacter::Die()
 {
-	ASATORI_GameState* const GameState = GetWorld() != NULL ? GetWorld()->GetGameState<ASATORI_GameState>() : NULL;
-	GameState->RemoveEnemyActor(this);
+	GetWorld()->GetAuthGameMode<ASATORIGameMode>()->RemoveEnemyActor(this);
+
+	//ASATORI_GameState* const GameState = GetWorld() != NULL ? GetWorld()->GetGameState<ASATORI_GameState>() : NULL;
+	//GameState->RemoveEnemyActor(this);
 	//ASATORICharacter* Player = Cast<ASATORICharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
 	//Player->GetTargetSystemComponent()->RemoveTargetableActor(this);
 	Destroy();
@@ -393,9 +396,8 @@ void ASATORI_AICharacter::RegisterInTargetableArray_Implementation()
 {
 	if (bIsTargetable)
 	{
-		//TO DO: Move to GameState
-		ASATORI_GameState* const GameState = GetWorld() != NULL ? GetWorld()->GetGameState<ASATORI_GameState>() : NULL;
-		GameState->AddEnemyActor(this);
+		 GetWorld()->GetAuthGameMode<ASATORIGameMode>()->AddEnemyActor(this);
+		//GetWorld()->GetGameState<ASATORI_GameState>()->AddEnemyActor(this);
 		//ASATORICharacter* Player = Cast<ASATORICharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
 		//Player->GetTargetSystemComponent()->AddTargetableActor(this);
 	}
