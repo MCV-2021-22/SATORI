@@ -84,7 +84,7 @@ void ASATORI_AICharacter::BeginPlay()
 
 void ASATORI_AICharacter::OnConstruction(const FTransform& Transform)
 {
-	if (HealthBarWidgetComponen )
+	if (HealthBarWidgetComponen)
 	{
 		HealthBarWidgetComponen->RegisterComponent();
 		const FAttachmentTransformRules AttachmentRules = FAttachmentTransformRules(EAttachmentRule::KeepRelative, false);
@@ -97,12 +97,16 @@ void ASATORI_AICharacter::OnConstruction(const FTransform& Transform)
 		//HealthBarWidgetComponen->AttachToComponent(HeadComponent, AttachmentRules);
 		/*struct ConstructorHelpers::FClassFinder<USATORI_EnemyHealthBar> EnemyUIBar(TEXT("/Game/SATORI/UI/Enemy/"));
 		if (EnemyUIBar.Class != NULL)*/
-		/*if (HealthBarUI)
+		if (HealthBarUI)
 		{
 			HealthBarWidgetComponen->SetWidgetSpace(EWidgetSpace::World);
-			HealthBarWidgetComponen->SetDrawSize(FVector2D(100.f, 20.f));
+			HealthBarWidgetComponen->SetDrawSize(FVector2D(200.f, 20.f));
 			HealthBarWidgetComponen->SetWidgetClass(HealthBarUI);
-		}*/
+			FVector2D LocalDrawSize = FVector2D(100.0f, 20.0f);
+			HealthBarWidgetComponen->SetDrawSize(LocalDrawSize);
+			FVector2D LocalPivot = FVector2D(0.5f, 0.5f);
+			HealthBarWidgetComponen->SetPivot(LocalPivot);
+		}
 	}
 }
 
@@ -311,7 +315,7 @@ void ASATORI_AICharacter::Tick(float DeltaSeconds)
 
 	if (HealthBarUI)
 	{
-		HealthBarProjection(HealthBarWidgetComponen, 1024, 0.5, 0.1);
+		HealthBarProjection(HealthBarWidgetComponen, 1024, 0.1, 0.5);
 	}
 	
 	Super::Tick(DeltaSeconds);
