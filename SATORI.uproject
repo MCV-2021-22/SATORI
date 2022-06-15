@@ -11,7 +11,8 @@
 			"AdditionalDependencies": [
 				"GameplayAbilities",
 				"Engine",
-				"UMG"
+				"UMG",
+				"AIModule"
 			]
 		},
 		{
@@ -23,6 +24,10 @@
 	"Plugins": [
 		{
 			"Name": "GameplayAbilities",
+			"Enabled": true
+		},
+		{
+			"Name": "Volumetrics",
 			"Enabled": true
 		}
 	]

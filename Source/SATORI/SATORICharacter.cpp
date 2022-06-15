@@ -12,11 +12,19 @@
 #include "SATORI/Data/SATORI_AbilityDataAsset.h"
 #include "Abilities/GameplayAbility.h"
 #include "Character/SATORI_PlayerState.h"
-#include "SATORI/GAS/Attributes/SATORI_AttributeSet.h"
 #include "SATORI/GAS/SATORI_AbilitySystemComponent.h"
 #include "Character/Mask/SATORI_AbilityMask.h"
 #include "Components/Player/SATORI_StatsComponent.h"
+#include "Components/Player/SATORI_ComboSystemComponent.h"
 #include "AnimNotify/State/SATORI_ANS_JumpSection.h"
+#include "Components/Player/SATORI_GameplayAbilityComponent.h"
+#include "Components/SkeletalMeshComponent.h"
+#include "Components/CapsuleComponent.h"
+#include "DrawDebugHelpers.h"
+#include "AI/Character/SATORI_AICharacter.h"
+#include "GAS/Attributes/SATORI_AttributeSet.h"
+//Cheat related include
+#include "Kismet/GameplayStatics.h"
 
 //////////////////////////////////////////////////////////////////////////
 // ASATORICharacter
@@ -53,10 +61,31 @@ ASATORICharacter::ASATORICharacter()
 	FollowCamera->bUsePawnControlRotation = false; // Camera does not rotate relative to arm
 
 	// Components
+	ComboSystemComponent = CreateDefaultSubobject<USATORI_ComboSystemComponent>("ComboSystemComponent");
 	SATORIAbilityMaskComponent = CreateDefaultSubobject<USATORI_AbilityMask>("MaskComponent");
 	StatsComponent = CreateDefaultSubobject<USATORI_StatsComponent>("StatsComponent");
-	/*AbilitySystemComponent = CreateDefaultSubobject<USATORI_AbilitySystemComponent>(TEXT("AbilitySystemComponent"));
-	AbilitySystemComponent->SetIsReplicated(true);*/
+	AbilitySystemComponent = CreateDefaultSubobject<USATORI_AbilitySystemComponent>(TEXT("AbilitySystemComponent"));
+	AbilitySystemComponent->SetIsReplicated(true);
+	PlayerGameplayAbilityComponent = CreateDefaultSubobject<USATORI_GameplayAbilityComponent>(TEXT("SATORI_GameplayAbilityComponent"));
+	TargetSystemComponent = CreateDefaultSubobject<USATORI_TargetSystemComponent>(TEXT("TargetSystemComponent"));
+
+	//Hand Component
+	HandComponent = CreateDefaultSubobject<USceneComponent>(TEXT("Hand"));
+	HandComponent->SetupAttachment(GetMesh(), "Bip001-R-Hand");
+
+	// Weapon Component
+	SwordComponent = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("Sword"));
+	AttackingCollision = CreateDefaultSubobject<UCapsuleComponent>(TEXT("Sword Collision"));
+	if (SwordComponent)
+	{
+		const FAttachmentTransformRules AttachmentRules = FAttachmentTransformRules(EAttachmentRule::KeepRelative, false);
+		SwordComponent->AttachToComponent(GetMesh(), AttachmentRules, "BoSocket");
+		// Sphere Collision
+		AttackingCollision->SetCapsuleSize(20.f, 60.f, true);
+		AttackingCollision->SetCollisionProfileName("Pawn");
+		AttackingCollision->SetGenerateOverlapEvents(false);
+		AttackingCollision->AttachTo(SwordComponent);
+	}
 }
 
 void ASATORICharacter::PossessedBy(AController* NewController)
@@ -72,6 +101,11 @@ void ASATORICharacter::PossessedBy(AController* NewController)
 		AbilitySystemComponent->InitAbilityActorInfo(PS, this);
 
 		AttributeSetBase = PS->GetSatoriAttributeSet();
+		
+		AbilitySystemComponent->AddLooseGameplayTag(FGameplayTag::RequestGameplayTag("PossessedBy.Player"));
+
+		Tags.Add("PossessedBy.Player");
+
 
 		InitializePassiveAttributes();
 		ApplyDefaultAbilities();
@@ -83,28 +117,103 @@ void ASATORICharacter::PossessedBy(AController* NewController)
 
 		// Set Health to Max Health Value
 		SetHealth(GetMaxHealth());
-	}		
-}
+	}
 
-UAbilitySystemComponent* ASATORICharacter::GetAbilitySystemComponent() const
-{
-	return AbilitySystemComponent.Get();
+	if (Cast<APlayerController>(NewController) != nullptr) {
+		//GameplayTags.AddTag(FGameplayTag::RequestGameplayTag("PossessedBy.Player"));
+		AddGameplayTag(FGameplayTag::RequestGameplayTag("PossessedBy.Player"));
+		//AddGameplayTag(FGameplayTag::RequestGameplayTag("PossessedBy.AI"));
+	}
 }
 
 void ASATORICharacter::ApplyDefaultAbilities()
 {
-	if (!DefaultAbilities)
+	if (!PlayerGameplayAbilityComponent->DefaultAbilities)
 	{
 		UE_LOG(LogTemp, Error, TEXT("%s() Missing DefaultAbility for %s. Please fill in the character's Blueprint."), *FString(__FUNCTION__), *GetName());
 		return;
 	}
 
 	// Granting a GameplayAbility to an ASC adds it to the ASC's list of ActivatableAbilities allowing it to activate the GameplayAbility
-	for (FSATORIGameplayAbilityInfo Ability : DefaultAbilities->Abilities)
+	for (FSATORIGameplayAbilityInfo Ability : PlayerGameplayAbilityComponent->DefaultAbilities->Abilities)
 	{
 		// GameplayAbilitySpec exists on the ASC after a GameplayAbility is granted and defines the activatable GameplayAbility
 		GrantAbilityToPlayer(FGameplayAbilitySpec(Ability.SATORIAbility, 1, static_cast<uint32>(Ability.AbilityKeys), this));
 	}
+}
+
+bool ASATORICharacter::DoRayCast()
+{
+	const FVector StartPosition = GetActorLocation();
+	const FRotator StartRotation = GetActorRotation();
+	const FVector EndPosition = StartPosition + (StartRotation.Vector() * 300.0f);
+
+	UWorld* World = GetWorld();
+	FHitResult HitResult;
+	FCollisionQueryParams Params = FCollisionQueryParams(FName("LineTraceSingle"));
+	Params.AddIgnoredActor(RootComponent->GetOwner());
+
+	FVector delta = EndPosition - StartPosition;
+	TWeakObjectPtr<AActor> NewActor;
+
+	bool bHit = false;
+	for (int i = -5; i <= 5; i++)
+	{
+		FVector Axis = FVector::ZAxisVector;
+		float rad = FMath::DegreesToRadians(i * 5);
+		FQuat quaternion = FQuat(Axis, rad);
+		FRotator rotator = FRotator(quaternion);
+		FVector newDelta = rotator.RotateVector(delta);
+
+		FVector newEndPos = newDelta + StartPosition;
+
+		bool newHit = GetWorld()->LineTraceSingleByChannel(
+			HitResult,
+			StartPosition,
+			newEndPos,
+			ECollisionChannel::ECC_Pawn,
+			Params
+		);
+
+		::DrawDebugLine(World, StartPosition, newEndPos, newHit ? FColor::Green : FColor::Red, false, 1.0f);
+		if (newHit)
+		{
+			NewActor = HitResult.Actor;
+			bHit = true;
+			break;
+		}
+	}
+
+	if (bHit)
+	{
+		//GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Red, HitResult.GetActor()->GetFName().ToString());
+	}
+
+	TWeakObjectPtr<ASATORI_AICharacter> AICharacter = Cast<ASATORI_AICharacter>(HitResult.Actor);
+	if (AICharacter.IsValid())
+	{
+		bool isInFront = AICharacter->CheckPlayerWithRayCast();
+		if (isInFront)
+		{
+			if (AICharacter->GetAbilitySystemComponent()->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag(FName("State.Lured"))))
+			{
+				UE_LOG(LogTemp, Warning, TEXT("Enemy"));
+
+				AICharacter->AddGameplayTag(FGameplayTag::RequestGameplayTag(FName("State.Stunned")));
+
+				FGameplayEventData EventData;
+				EventData.EventTag = FGameplayTag::RequestGameplayTag(FName("State.Stunned.Start"));
+				AICharacter->GetAbilitySystemComponent()->HandleGameplayEvent(FGameplayTag::RequestGameplayTag(FName("State.Stunned.Start")), &EventData);
+
+				return true;
+			}
+			if (AICharacter->GetAbilitySystemComponent()->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag(FName("State.Stunned"))))
+			{
+				return false;
+			}
+		}	
+	}
+	return false;
 }
 
 void ASATORICharacter::GrantAbilityToPlayer(FGameplayAbilitySpec Ability)
@@ -145,126 +254,36 @@ void ASATORICharacter::InitializePassiveAttributes()
 	}
 }
 
-// Getters
-float ASATORICharacter::GetHealth() const
+
+void ASATORICharacter::CharacterDeath()
 {
-	if (AttributeSetBase.IsValid())
-		return AttributeSetBase->GetHealth();
+	// Only runs on Server
+	RemoveCharacterAbilities();
 
-	return 0.0f;
-}
+	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	GetCharacterMovement()->GravityScale = 0;
+	GetCharacterMovement()->Velocity = FVector(0);
 
-float ASATORICharacter::GetMaxHealth() const
-{
-	if (AttributeSetBase.IsValid())
-		return AttributeSetBase->GetMaxHealth();
-
-	return 0.0f;
-}
-
-float ASATORICharacter::GetDefense() const
-{
-	if (AttributeSetBase.IsValid())
-		return AttributeSetBase->GetDefense();
-
-	return 0.0f;
-}
-
-float ASATORICharacter::GetAttack() const
-{
-	if (AttributeSetBase.IsValid())
-		return AttributeSetBase->GetAttack();
-
-	return 0.0f;
-}
-
-float ASATORICharacter::GetMoveSpeed() const
-{
-	if (AttributeSetBase.IsValid())
-		return AttributeSetBase->GetMoveSpeed();
-
-	return 0.0f;
-}
-
-float ASATORICharacter::GetGold() const
-{
-	if (AttributeSetBase.IsValid())
-		return AttributeSetBase->GetGold();
-
-	return 0.0f;
-}
-
-int32 ASATORICharacter::GetCharacterLevel() const
-{
-	return 1;
-}
-
-// Setters
-void ASATORICharacter::SetHealth(float Health)
-{
-	if (AttributeSetBase.IsValid())
-		AttributeSetBase->SetHealth(Health);
-}
-
-void ASATORICharacter::SetComboJumpSection(USATORI_ANS_JumpSection* JumpSection)
-{
-	this->JumpSectionNS = JumpSection;
-
-	if (this->JumpSectionNS != nullptr)
+	if (AbilitySystemComponent.IsValid())
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Set jump section %s"), *JumpSection->NextMontageNames[0].ToString());
+		AbilitySystemComponent->CancelAllAbilities();
+
+		FGameplayTagContainer EffectTagsToRemove;
+		EffectTagsToRemove.AddTag(EffectRemoveOnDeathTag);
+		int32 NumEffectsRemoved = AbilitySystemComponent->RemoveActiveEffectsWithTags(EffectTagsToRemove);
+
+		AbilitySystemComponent->AddLooseGameplayTag(DeadTag);
+	}
+
+	if (DeathMontage)
+	{
+		PlayAnimMontage(DeathMontage);
 	}
 }
 
-bool ASATORICharacter::AttackJumpSectionCombo()
+void ASATORICharacter::RemoveCharacterAbilities()
 {
-	if (this->JumpSectionNS == nullptr)
-	{
-		UE_LOG(LogTemp, Display, TEXT("JumpSection failed : No JumpSectioNS!"));
-		return false;
-	}
 
-	if (!GetMesh())
-	{
-		return false;
-	}
-
-	UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
-	if(!AnimInstance)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("TriggerJumpSection failed: no anim instance!"));
-		return false;
-	}
-
-	UAnimMontage* CurrentActiveMontage = AnimInstance->GetCurrentActiveMontage();
-	if (!CurrentActiveMontage)
-	{
-		UE_LOG(LogTemp, Display, TEXT("TriggerJumpSection failed: no current montage!"));
-		return false;
-	}
-
-	const FName CurrentSectionName = AnimInstance->Montage_GetCurrentSection(CurrentActiveMontage);
-
-	const int RandInt = FMath::RandRange(0, this->JumpSectionNS->NextMontageNames.Num() - 1);
-	const FName NextSectionName = JumpSectionNS->NextMontageNames[RandInt];
-
-	AnimInstance->Montage_JumpToSection(NextSectionName, CurrentActiveMontage);
-
-	return true;
-}
-
-bool ASATORICharacter::PlayerActiveAbilityWithTag(FGameplayTag TagName)
-{
-	FGameplayTagContainer TagContainer;
-	TagContainer.AddTag(TagName);
-
-	if (!AbilitySystemComponent->TryActivateAbilitiesByTag(TagContainer))
-	{
-		UE_LOG(LogTemp, Warning, TEXT("TryActivateAbilitiesByTag failed "));
-		return false;
-	}
-
-	return true;
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -344,5 +363,137 @@ void ASATORICharacter::MoveRight(float Value)
 		const FVector Direction = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y);
 		// add movement in that direction
 		AddMovementInput(Direction, Value);
+	}
+}
+
+void ASATORICharacter::SetComboJumpSection(USATORI_ANS_JumpSection* JumpSection)
+{
+	this->JumpSectionNS = JumpSection;
+
+	if (this->JumpSectionNS != nullptr)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Set jump section %s"), *JumpSection->NextMontageNames[0].ToString());
+	}
+}
+
+bool ASATORICharacter::AttackJumpSectionCombo()
+{
+	if (this->JumpSectionNS == nullptr)
+	{
+		UE_LOG(LogTemp, Display, TEXT("JumpSection failed : No JumpSectioNS!"));
+		return false;
+	}
+
+	if (!GetMesh())
+	{
+		return false;
+	}
+
+	UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
+	if (!AnimInstance)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("TriggerJumpSection failed: no anim instance!"));
+		return false;
+	}
+
+	UAnimMontage* CurrentActiveMontage = AnimInstance->GetCurrentActiveMontage();
+	if (!CurrentActiveMontage)
+	{
+		UE_LOG(LogTemp, Display, TEXT("TriggerJumpSection failed: no current montage!"));
+		return false;
+	}
+
+	const FName CurrentSectionName = AnimInstance->Montage_GetCurrentSection(CurrentActiveMontage);
+
+	const int RandInt = FMath::RandRange(0, this->JumpSectionNS->NextMontageNames.Num() - 1);
+	const FName NextSectionName = JumpSectionNS->NextMontageNames[RandInt];
+
+	AnimInstance->Montage_JumpToSection(NextSectionName, CurrentActiveMontage);
+
+	return true;
+}
+
+bool ASATORICharacter::PlayerActiveAbilityWithTag(FGameplayTag TagName)
+{
+	FGameplayTagContainer TagContainer;
+	TagContainer.AddTag(TagName);
+
+	if (!AbilitySystemComponent->TryActivateAbilitiesByTag(TagContainer))
+	{
+		UE_LOG(LogTemp, Warning, TEXT("TryActivateAbilitiesByTag failed "));
+		return false;
+	}
+
+	return true;
+}
+
+//Cheats
+void ASATORICharacter::SetGodMode()
+{
+	SetHealth(10000);
+	SetMana(10000);
+}
+
+void ASATORICharacter::RestartStats()
+{
+	SetHealth(GetMaxHealth());
+	SetMana(GetMaxMana());
+}
+
+void ASATORICharacter::GetAllAbilities()
+{
+	/*for (TSubclassOf < USATORI_GameplayAbility > Ability : PlayerGameplayAbilityComponent->DisabledAbilityClasses)
+	{
+		PlayerGameplayAbilityComponent->EnabledAbilityClasses.AddUnique(Ability);
+	}
+	PlayerGameplayAbilityComponent->DisabledAbilityClasses.Empty();*/
+}
+
+void ASATORICharacter::RemoveAllAbilities()
+{
+	for (const TPair<FName, FSATORI_AbilitiesDatas>& pair : PlayerGameplayAbilityComponent->PlayerGameplayAbility)
+	{
+		PlayerGameplayAbilityComponent->PlayerGameplayAbilityDissabled.Add(pair);
+		PlayerGameplayAbilityComponent->PlayerAbilitiesNamesDissabled.Add(pair.Key);
+	}
+	PlayerGameplayAbilityComponent->PlayerGameplayAbility.Empty();
+	PlayerGameplayAbilityComponent->PlayerAbilitiesNames.Empty();
+	PlayerGameplayAbilityComponent->CurrentAbilityValue = 0;
+}
+
+void ASATORICharacter::GetAbility(FName AbilityName)
+{
+	/*TSubclassOf < USATORI_GameplayAbility > AbilityToEnable;
+
+	for (TSubclassOf < USATORI_GameplayAbility > Ability : PlayerGameplayAbilityComponent->DisabledAbilityClasses)
+	{
+		FName GetAbilityName = Ability.GetDefaultObject()->GetAbilityName();
+		UE_LOG(LogTemp, Display, TEXT("GetAbilityName: %s"), *GetAbilityName.ToString());
+		UE_LOG(LogTemp, Display, TEXT("AbilityName: %s"), *AbilityName.ToString());
+		if (GetAbilityName.ToString() == AbilityName.ToString())
+		{
+			AbilityToEnable = Ability;
+			PlayerGameplayAbilityComponent->EnabledAbilityClasses.AddUnique(AbilityToEnable);
+		}
+	}
+	PlayerGameplayAbilityComponent->DisabledAbilityClasses.Remove(AbilityToEnable);*/
+}
+
+void ASATORICharacter::GetEnabledAbilityName()
+{
+	/*for (TSubclassOf < USATORI_GameplayAbility > Ability : PlayerGameplayAbilityComponent->EnabledAbilityClasses)
+	{
+		FName GetAbilityName = Ability.GetDefaultObject()->GetAbilityName();
+		GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, FString::Printf(TEXT("AbilityName: %s"), *GetAbilityName.ToString()));
+	}*/
+}
+
+void ASATORICharacter::KillAllEnemies()
+{
+	TArray<AActor*> Actors;
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(), ASATORI_AICharacter::StaticClass(), Actors);
+	for (AActor* Actor : Actors)
+	{
+		Actor->Destroy();
 	}
 }

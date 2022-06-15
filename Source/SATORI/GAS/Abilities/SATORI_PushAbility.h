@@ -1,17 +1,17 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+//
 
 #pragma once
 
 #include "CoreMinimal.h"
 #include "GAS/SATORI_GameplayAbility.h"
-#include "SATORI/AbilityTask/SATORI_PlayMontageandWaitNotify.h"
-#include "Actors/PushSphere/SATORI_PushSphere.h"
+#include "GameplayEffect.h"
+#include "SATORI/AbilityTask/SATORI_PlayMontageAndWaitEvent.h"
+#include "Actors/AbilitiesActors/SATORI_PushActor.h"
 #include "SATORI_PushAbility.generated.h"
 
 /**
  * 
  */
-
 UCLASS()
 class SATORI_API USATORI_PushAbility : public USATORI_GameplayAbility
 {
@@ -21,36 +21,50 @@ public:
 
 	USATORI_PushAbility();
 
-	UPROPERTY(BlueprintReadOnly, EditAnywhere)
-	UAnimMontage* PushAnimMontage;
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Ability")
+	UAnimMontage* AnimMontage;
+
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Ability")
+	TSubclassOf<ASATORI_PushActor> PushActor;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Ability")
+	TSubclassOf<UGameplayEffect> DamageGameplayEffect;
 
 	virtual void ActivateAbility(
-		const FGameplayAbilitySpecHandle Handle, 
-		const FGameplayAbilityActorInfo* ActorInfo, 
-		const FGameplayAbilityActivationInfo ActivationInfo, 
-		const FGameplayEventData* TriggerEventData) 
+		const FGameplayAbilitySpecHandle Handle,
+		const FGameplayAbilityActorInfo* ActorInfo,
+		const FGameplayAbilityActivationInfo ActivationInfo,
+		const FGameplayEventData* TriggerEventData)
 		override;
 
-	UPROPERTY(BlueprintReadOnly, EditAnywhere)
-	TSubclassOf<ASATORI_PushSphere> PushSphereClass;
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Ability|Tags")
+	FGameplayTag TagSpawnAbility;
 
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Ability|Tags")
+	FGameplayTag TagEndAbility;
 
 protected:
 
-	UPROPERTY(BlueprintReadOnly, EditAnywhere)
-	float CastDelay;
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (UIMin = "0.0"), Category = "Ability|Push")
+	float Damage = 5.0f;
 
-	UPROPERTY(BlueprintReadOnly, EditAnywhere, meta = (UIMin = "50.0"))
-	float Speed;
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (UIMin = "0.0"), Category = "Ability|Push")
+	float Speed = 4000.0f;
 
-	UPROPERTY(BlueprintReadOnly, EditAnywhere, meta = (UIMin = "100.0", UIMax = "10000.0"))
-	float Range;
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (UIMin = "0.0"), Category = "Ability|Push")
+	float PushForce = 2500.0f;
 
-	UPROPERTY(BlueprintReadOnly, EditAnywhere, meta = (UIMin = "5.0", UIMax = "85.0"))
-	float AngleRange;
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (UIMin = "0.0"), Category = "Ability|Push")
+	float TimeToDestroy = 0.5f;
 
-	UPROPERTY(BlueprintReadOnly, EditAnywhere, meta = (UIMin = "8.0", UIMax = "128.0"))
-	float SphereRadius;
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, meta = (UIMin = "100.0", UIMax = "10000.0"), Category = "Ability|Push")
+	float Range = 1000.0f;
+
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, meta = (UIMin = "5.0", UIMax = "85.0"), Category = "Ability|Push")
+	float AngleRange = 40.0f;
+
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, meta = (UIMin = "16.0", UIMax = "128.0"), Category = "Ability|Push")
+	float SphereRadius = 32.0f;
 
 	UFUNCTION()
 	void OnCancelled(FGameplayTag EventTag, FGameplayEventData EventData);
@@ -61,4 +75,8 @@ protected:
 	UFUNCTION()
 	void EventReceived(FGameplayTag EventTag, FGameplayEventData EventData);
 	
+private:
+
+	const bool bStopWhenAbilityEnds = true;
+
 };

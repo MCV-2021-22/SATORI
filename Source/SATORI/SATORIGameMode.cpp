@@ -45,3 +45,23 @@ void ASATORIGameMode::OpenLevel()
 //		}
 //	}
 //}
+
+TArray<AActor*> ASATORIGameMode::GetEnemyActors()
+{
+	return EnemyActors;
+}
+
+void ASATORIGameMode::AddEnemyActor(AActor* Enemy)
+{
+	EnemyActors.Add(Enemy);
+}
+
+void ASATORIGameMode::RemoveEnemyActor(AActor* Enemy)
+{
+	EnemyActors.Remove(Enemy);
+}
+
+bool ASATORIGameMode::IsEmptyEnemyActors()
+{
+	return EnemyActors.Num() == 0 ? true : false;
+}

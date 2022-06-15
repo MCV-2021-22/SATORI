@@ -9,7 +9,12 @@
 #include "Components/TextRenderComponent.h"
 #include "EnvironmentQuery/EnvQueryManager.h"
 #include "SATORI/Character/SATORI_PlayerState.h"
+#include "UI/WorldActor/SATORI_DoorInteractUI.h"
+#include "UI/SATORI_MainUI.h"
+#include "Data/SATORI_PortalPassiveDataAsset.h"
+#include "Components/BillboardComponent.h"
 #include <algorithm>
+
 // Sets default values
 ASATORI_Portal::ASATORI_Portal()
 {
@@ -21,12 +26,16 @@ ASATORI_Portal::ASATORI_Portal()
 	TextRenderComponent = CreateDefaultSubobject<UTextRenderComponent>(TEXT("TextRenderComponent"));
 	TextRenderComponent->SetupAttachment(RootComponent);
 
+	PortalIconTexture = CreateDefaultSubobject<UBillboardComponent>(TEXT("BillboardComponent"));
+	PortalIconTexture->SetupAttachment(RootComponent);
+
 	SphereComponent = CreateDefaultSubobject<USphereComponent>(TEXT("SphereComponent"));
 	SphereComponent->SetupAttachment(RootComponent);
 	SphereComponent->SetSphereRadius(120.0f);
 	SphereComponent->SetCollisionProfileName(FName("Trigger"));
 
 	SphereComponent->OnComponentBeginOverlap.AddUniqueDynamic(this, &ASATORI_Portal::OnComponentBeginOverlap);
+
 }
 
 // Called when the game starts or when spawned
@@ -34,6 +43,28 @@ void ASATORI_Portal::BeginPlay()
 {
 	Super::BeginPlay();
 	
+	//if (PassiveDataAsset)
+	//{
+	//	for (const FSATORI_DoorPassiveDatas Data : PassiveDataAsset->PassiveRewards)
+	//	{
+	//		FString CurrentName = Data.Desciption.ToString();
+	//		FName LocalAbilityName = FName(*CurrentName);
+
+	//		if (LocalAbilityName.IsValid() && Data.PassiveEffect)
+	//		{
+	//			// Adding datas to map
+	//			FSATORI_DoorPassiveReward PassiveReward;
+	//			PassiveReward.PassiveEffect = Data.PassiveEffect;
+	//			PassiveReward.PassiveIcon = Data.PassiveIcon;
+	//			PassiveReward.Desciption = Data.Desciption;
+	//			PortalEffectsToApply.Add(PassiveReward);
+	//		}
+	//	}
+	//}
+}
+
+void ASATORI_Portal::OnConstruction(const FTransform& Transform)
+{
 }
 
 void ASATORI_Portal::OnComponentBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
@@ -41,15 +72,27 @@ void ASATORI_Portal::OnComponentBeginOverlap(UPrimitiveComponent* OverlappedComp
 {
 	UE_LOG(LogTemp, Warning, TEXT("On Overlap Beg %s"), *OtherActor->GetName());
 
-	// Need change to this
-	/*if (IGameplayTagAssetInterface* TagInterface = Cast<IGameplayTagAssetInterface>(OtherActor)) {
-		if (TagInterface->HasMatchingGameplayTag(PlayerTag)) {
+	ASATORICharacter* Character = Cast<ASATORICharacter>(OtherActor);
 
-		}
-	}*/
-	if(OtherActor)
-		ApplyEffectToPlayer(OtherActor);
+	if (!Character)
+	{
+		return;
+	}
 
+	if (Character)
+	{
+		//DoorInteractUI = CreateWidget<USATORI_DoorInteractUI>(GetGameInstance(), SATORIMainUI);
+		//if (DoorInteractUI)
+		//{
+		//	//DoorInteractUI->AddToViewport();
+		//}
+		
+		// TODO
+
+		PortalIconTexture->SetSprite(PortalEffectsToApply.PassiveIcon);
+
+		ApplyEffectToPlayer(Character);
+	}
 }
 
 void ASATORI_Portal::ApplyEffectToPlayer(AActor* PlayerActor)
@@ -58,14 +101,12 @@ void ASATORI_Portal::ApplyEffectToPlayer(AActor* PlayerActor)
 	if (PlayerCharacter)
 	{
 		UAbilitySystemComponent* AbilitySystemComponent = PlayerCharacter->GetAbilitySystemComponent();
-		if (AbilitySystemComponent && PortalEffectsToApply.Num() > 0)
+		if (AbilitySystemComponent)
 		{
 			FGameplayEffectContextHandle EffectContext = AbilitySystemComponent->MakeEffectContext();
 			EffectContext.AddSourceObject(this);
 
-			TSubclassOf<UGameplayEffect> GameplayEffect = SelectRandomEffect();
-
-			FGameplayEffectSpecHandle NewHandle = AbilitySystemComponent->MakeOutgoingSpec(GameplayEffect,
+			FGameplayEffectSpecHandle NewHandle = AbilitySystemComponent->MakeOutgoingSpec(CurrentGameplayEffect,
 				PlayerCharacter->GetCharacterLevel(), EffectContext);
 
 			if (NewHandle.IsValid())
@@ -77,10 +118,13 @@ void ASATORI_Portal::ApplyEffectToPlayer(AActor* PlayerActor)
 	}
 }
 
-TSubclassOf<UGameplayEffect> ASATORI_Portal::SelectRandomEffect()
+TSubclassOf<UGameplayEffect> ASATORI_Portal::GetCurrentGameplayEffect()
 {
-	// Change this to no repeatable number
-	const int EffectSize = PortalEffectsToApply.Num() - 1;
-	int number = FMath::RandRange(0, EffectSize);
-	return PortalEffectsToApply[number];
+	return PortalEffectsToApply.PassiveEffect;
+}
+
+void ASATORI_Portal::SetCurrentGameplayEffectData(FSATORI_DoorPassiveReward CurrentEffectData)
+{
+	PortalEffectsToApply = CurrentEffectData;
+	CurrentGameplayEffect = PortalEffectsToApply.PassiveEffect;
 }

@@ -9,8 +9,9 @@ public class SATORI : ModuleRules
 		PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
 
 		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "HeadMountedDisplay",
-			"GameplayAbilities", "GameplayTags", "GameplayTasks",});
+			"GameplayAbilities", "GameplayTags", "GameplayTasks","AIModule","Niagara"});
 
 		PublicIncludePaths.Add("SATORI");
+
 	}
 }

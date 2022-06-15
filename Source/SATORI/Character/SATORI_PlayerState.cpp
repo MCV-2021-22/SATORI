@@ -34,6 +34,16 @@ float ASATORI_PlayerState::GetMaxHealth() const
 	return AttributeSetBase->GetMaxHealth();
 }
 
+float ASATORI_PlayerState::GetMana() const
+{
+	return AttributeSetBase->GetMana();
+}
+
+float ASATORI_PlayerState::GetMaxMana() const
+{
+	return AttributeSetBase->GetMaxMana();
+}
+
 float ASATORI_PlayerState::GetDefense() const
 {
 	return AttributeSetBase->GetDefense();

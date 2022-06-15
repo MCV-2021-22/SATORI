@@ -21,23 +21,17 @@ namespace ESATORIAbilityInputID
 		Confirm			UMETA(DisplayName = "Confirm"),
 		// 2 Cancel
 		Cancel			UMETA(DisplayName = "Cancel"),
-		// Push
-		Push			UMETA(DisplayName = "Push"),
-		// 4 RMB
-		Ability2		UMETA(DisplayName = "Ability2"),
-		// 5 Q
-		Ability3		UMETA(DisplayName = "Ability3"),
-		// 6 E
-		Ability4		UMETA(DisplayName = "Ability4"),
-		// 7 R
-		Ability5		UMETA(DisplayName = "Ability5"),
-		// 8 Sprint
-		Sprint			UMETA(DisplayName = "Sprint"),
-		// 9 Jump
-		Jump			UMETA(DisplayName = "Jump"),
+		// Dash
+		Dash			UMETA(DisplayName = "Dash"),
 		// Attack
 		Attack			UMETA(DisplayName = "Attack"),
 		// HeavyAttack
-		HeavyAttack			UMETA(DisplayName = "HeavyAttack")
+		HeavyAttack		UMETA(DisplayName = "HeavyAttack"),
+		// ChooseAbility
+		ChooseAbility	UMETA(DisplayName = "ChooseAbility"),
+		// LaunchAbility
+		LaunchAbility	UMETA(DisplayName = "LaunchAbility"),
+		// ChoosePrevAbility
+		ChoosePrevAbility	UMETA(DisplayName = "ChoosePrevAbility")
 	};
 }
