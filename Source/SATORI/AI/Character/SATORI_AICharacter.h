@@ -79,6 +79,10 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Stats")
 	USATORI_EnemyStatComponent* EnemyStatComponent;
 
+	// Death Animation
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Death|Animation")
+	UAnimMontage* DeathMontage;
+
 	bool GetIsInFront() const { return isInFrontPlayer; }
 
 	UFUNCTION(BlueprintCallable)
@@ -89,6 +93,10 @@ public:
 	float getMaxRangeDist();
 
 	void Die();
+
+	virtual void CharacterDeath() override;
+
+	virtual void RemoveCharacterAbilities() override;
 
 	UFUNCTION(BlueprintCallable)
 	void HealthBarProjection(UWidgetComponent* HealthBar, float ViewDistance, float RangeA, float RangeB);

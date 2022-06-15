@@ -211,9 +211,40 @@ void ASATORI_AICharacter::PossessedBy(AController* NewController)
 
 		InitializeAttributes();
 		AddAICharacterAbilities();
-		SetHealth(90);
+		SetHealth(GetMaxHealth());
 
 	}
+
+}
+
+void ASATORI_AICharacter::CharacterDeath()
+{
+	// Only runs on Server
+	RemoveCharacterAbilities();
+
+	/*GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	GetCharacterMovement()->GravityScale = 0;
+	GetCharacterMovement()->Velocity = FVector(0);*/
+
+	if (AbilitySystemComponent.IsValid())
+	{
+		AbilitySystemComponent->CancelAllAbilities();
+
+		FGameplayTagContainer EffectTagsToRemove;
+		EffectTagsToRemove.AddTag(EffectRemoveOnDeathTag);
+		int32 NumEffectsRemoved = AbilitySystemComponent->RemoveActiveEffectsWithTags(EffectTagsToRemove);
+
+		AbilitySystemComponent->AddLooseGameplayTag(DeadTag);
+	}
+
+	if (DeathMontage)
+	{
+		PlayAnimMontage(DeathMontage);
+	}
+}
+
+void ASATORI_AICharacter::RemoveCharacterAbilities()
+{
 
 }
 
