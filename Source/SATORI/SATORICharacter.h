@@ -50,6 +50,10 @@ public:
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Player|Component")
 	USATORI_AbilityMask* SATORIAbilityMaskComponent;
 
+	// Death Animation
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Death|Animation")
+	UAnimMontage* DeathMontage;
+
 	UPROPERTY()
 	SATORIMaskType MaskType = SATORIMaskType::NONE;
 
@@ -76,7 +80,12 @@ public:
 	bool DoRayCast();
 
 	UFUNCTION(BlueprintCallable)
+	
 	bool PlayerActiveAbilityWithTag(FGameplayTag TagName);
+
+	virtual void CharacterDeath() override;
+	
+	virtual void RemoveCharacterAbilities() override;
 
 	// Getters for Components
 	FORCEINLINE class USATORI_StatsComponent* GetStatsComponent() const { return StatsComponent; }
@@ -91,15 +100,11 @@ protected:
 	void GrantAbilityToPlayer(FGameplayAbilitySpec Ability);
 	void InitializePassiveAttributes();
 
-	
-
 protected:
 
 	// The core ActorComponent for interfacing with the GameplayAbilities System
 	//TWeakObjectPtr<USATORI_AbilitySystemComponent> AbilitySystemComponent;
 	
-
-
 	// Components
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	class USATORI_StatsComponent* StatsComponent;
