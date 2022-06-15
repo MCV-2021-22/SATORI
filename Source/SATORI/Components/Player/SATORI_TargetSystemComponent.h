@@ -85,15 +85,6 @@ public:
 	void TargetLockOn(AActor* TargetToLockOn);
 
 	UFUNCTION(BlueprintCallable, Category = "Target System")
-	const TArray<AActor*> GetTargetableActors() const;
-
-	UFUNCTION(BlueprintCallable, Category = "Target System")
-	void AddTargetableActor(AActor* ActorToAdd);
-
-	UFUNCTION(BlueprintCallable, Category = "Target System")
-	void RemoveTargetableActor(AActor* ActorToRemove);
-
-	UFUNCTION(BlueprintCallable, Category = "Target System")
 	bool GetTargetLockedStatus() const;
 
 	UFUNCTION(BlueprintCallable, Category = "Target System")
@@ -115,9 +106,6 @@ private:
 
 	UPROPERTY()
 	ASATORI_PlayerController* OwnerPlayerController;
-
-	UPROPERTY()
-	TArray < AActor* > TargetableActors;
 
 	UPROPERTY()
 	AActor* LockedOnTargetActor;

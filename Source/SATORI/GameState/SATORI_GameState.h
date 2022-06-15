@@ -33,21 +33,22 @@ public:
 	TArray<FSATORI_DoorPassiveReward> PortalEffectsToApply;
 
 	//EnemyActors
-	//UFUNCTION()
-	//TArray < AActor* > GetEnemyActors();
 
-	//UFUNCTION()
-	//void AddEnemyActor(AActor* Enemy);
+	TArray < AActor* >& GetEnemyActorsRef() { return EnemyActors; };
 
-	//UFUNCTION()
-	//void RemoveEnemyActor(AActor* Enemy);
+	UFUNCTION()
+	void AddEnemyActor(AActor* Enemy);
 
-	//UFUNCTION()
-	//bool IsEmptyEnemyActors();
+	UFUNCTION()
+	void RemoveEnemyActor(AActor* Enemy);
+
+	UFUNCTION()
+	bool IsEmptyEnemyActors();
 
 private:
 
-	//TArray < AActor* > EnemyActors;
+	UPROPERTY()
+	TArray < AActor* > EnemyActors;
 
 	int GenerateRandomNumberForPortal();
 

@@ -8,6 +8,7 @@
 #include "SATORI/FunctionLibrary/SATORI_BlueprintLibrary.h"
 #include "SATORICharacter.h"
 #include "SATORIGameMode.h"
+#include "GameState/SATORI_GameState.h"
 
 ASATORI_MissileActor::ASATORI_MissileActor()
 {
@@ -79,8 +80,9 @@ void ASATORI_MissileActor::BeginPlay()
 	}
 	else
 	{
-		TArray<AActor*> Actors = GetWorld()->GetAuthGameMode<ASATORIGameMode>()->GetEnemyActors();
-		for (AActor* Actor : Actors)
+		TArray < AActor* >& AllEnemies = GetWorld()->GetGameState<ASATORI_GameState>()->GetEnemyActorsRef();
+
+		for (AActor* Actor : AllEnemies)
 		{
 			const float Distance = GetDistanceTo(Actor);
 			if (Distance < Range && Player->GetTargetSystemComponent()->IsInViewport(Actor))

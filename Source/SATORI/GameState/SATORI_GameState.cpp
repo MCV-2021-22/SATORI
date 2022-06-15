@@ -74,22 +74,18 @@ int ASATORI_GameState::GenerateRandomNumberForPortal()
     return number;
 }
 
-//TArray<AActor*> ASATORI_GameState::GetEnemyActors()
-//{
-//    return EnemyActors;
-//}
-//
-//void ASATORI_GameState::AddEnemyActor(AActor* Enemy)
-//{
-//    EnemyActors.Add(Enemy);
-//}
-//
-//void ASATORI_GameState::RemoveEnemyActor(AActor* Enemy)
-//{
-//    EnemyActors.Remove(Enemy);
-//}
-//
-//bool ASATORI_GameState::IsEmptyEnemyActors()
-//{
-//    return EnemyActors.Num() == 0 ? true : false;
-//}
+void ASATORI_GameState::AddEnemyActor(AActor* Enemy)
+{
+    EnemyActors.Add(Enemy);
+}
+
+void ASATORI_GameState::RemoveEnemyActor(AActor* Enemy)
+{
+    EnemyActors.Remove(Enemy);
+}
+
+bool ASATORI_GameState::IsEmptyEnemyActors()
+{
+    return EnemyActors.Num() == 0 ? true : false;
+}
+

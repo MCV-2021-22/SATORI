@@ -135,8 +135,9 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	class USphereComponent* HeadComponent;
-	//Target System Interface related and Tag Abilities related (Nacho)
-public:
+
+	
+public: //Target System Interface related and Tag Abilities related (Nacho)
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Tag")
 	FGameplayTag  EnemyTag;

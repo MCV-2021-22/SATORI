@@ -6,7 +6,7 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Engine/Classes/Camera/CameraComponent.h"
 #include "Components/WidgetComponent.h"
-//#include "GameState/SATORI_GameState.h"
+#include "GameState/SATORI_GameState.h"
 #include "SATORIGameMode.h"
 //Debug
 #include "DrawDebugHelpers.h"
@@ -123,8 +123,10 @@ void USATORI_TargetSystemComponent::TargetActor()
 	else 
 	{
 		//Temporary
-		TargetableActors = GetWorld()->GetAuthGameMode<ASATORIGameMode>()->GetEnemyActors();
-		LockedOnTargetActor = FindNearestTarget(TargetableActors);
+		//TargetableActors = GetWorld()->GetAuthGameMode<ASATORIGameMode>()->GetEnemyActors();
+		//TargetableActors = GetWorld()->GetGameState<ASATORI_GameState>()->GetEnemyActors();
+		TArray < AActor* >& AllEnemies = GetWorld()->GetGameState<ASATORI_GameState>()->GetEnemyActorsRef();
+		LockedOnTargetActor = FindNearestTarget(AllEnemies);
 		TargetLockOn(LockedOnTargetActor);
 	}
 }
@@ -154,7 +156,7 @@ void USATORI_TargetSystemComponent::TargetLockOn(AActor* TargetToLockOn)
 	CreateAndAttachTargetLockedOnWidgetComponent(TargetToLockOn);
 
 	//It will not break line of sight with others enemies
-	LineOfSightIgnoreActors = TargetableActors;
+	LineOfSightIgnoreActors = GetWorld()->GetGameState<ASATORI_GameState>()->GetEnemyActorsRef();
 	LineOfSightIgnoreActors.Remove(LockedOnTargetActor);
 
 	//Ignore controller input
@@ -381,9 +383,11 @@ void USATORI_TargetSystemComponent::TargetActorWithAxisInput(const float AxisVal
 	TArray<AActor*> ActorsToIgnore;
 	ActorsToIgnore.Add(CurrentTarget);
 
-	TargetableActors = GetWorld()->GetAuthGameMode<ASATORIGameMode>()->GetEnemyActors();
+	//TargetableActors = GetWorld()->GetAuthGameMode<ASATORIGameMode>()->GetEnemyActors();
+	//TargetableActors = GetWorld()->GetGameState<ASATORI_GameState>()->GetEnemyActors();
+	TArray < AActor* >& AllEnemies = GetWorld()->GetGameState<ASATORI_GameState>()->GetEnemyActorsRef();
 
-	for (AActor* Actor : TargetableActors)
+	for (AActor* Actor : AllEnemies)
 	{
 		const bool bHit = LineTraceForActor(Actor, ActorsToIgnore);
 		if (bHit && IsInViewport(Actor))
@@ -526,21 +530,6 @@ AActor* USATORI_TargetSystemComponent::GetLockedOnTargetActor() const
 bool USATORI_TargetSystemComponent::IsLocked() const
 {
 	return bTargetLocked && LockedOnTargetActor;
-}
-
-const TArray<AActor*> USATORI_TargetSystemComponent::GetTargetableActors() const
-{
-	return TargetableActors;
-}
-
-void USATORI_TargetSystemComponent::AddTargetableActor(AActor* ActorToAdd)
-{
-	TargetableActors.Add(ActorToAdd);
-}
-
-void USATORI_TargetSystemComponent::RemoveTargetableActor(AActor* ActorToRemove)
-{
-	TargetableActors.Remove(ActorToRemove);
 }
 
 void USATORI_TargetSystemComponent::CreateAndAttachTargetLockedOnWidgetComponent(AActor* TargetActor)

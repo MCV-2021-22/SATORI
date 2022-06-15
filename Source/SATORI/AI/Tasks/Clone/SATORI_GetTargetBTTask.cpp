@@ -8,6 +8,7 @@
 #include "BehaviorTree/BlackboardComponent.h"
 #include "SATORICharacter.h"
 #include "SATORIGameMode.h"
+#include "GameState/SATORI_GameState.h"
 
 USATORI_GetTargetBTTask::USATORI_GetTargetBTTask()
 {
@@ -33,8 +34,8 @@ EBTNodeResult::Type USATORI_GetTargetBTTask::ExecuteTask(UBehaviorTreeComponent&
 		APawn* Pawn = AIController->GetPawn();
 		FVector ClonePosition = Pawn->GetActorLocation();
 
-		TArray<AActor*> Actors = GetWorld()->GetAuthGameMode<ASATORIGameMode>()->GetEnemyActors();
-		for (AActor* Actor : Actors)
+		TArray < AActor* >& AllEnemies = GetWorld()->GetGameState<ASATORI_GameState>()->GetEnemyActorsRef();
+		for (AActor* Actor : AllEnemies)
 		{
 			const float Distance = FVector::Distance(ClonePosition, Actor->GetActorLocation());
 			if (Distance < Range)
