@@ -221,37 +221,6 @@ void ASATORI_AICharacter::PossessedBy(AController* NewController)
 
 }
 
-void ASATORI_AICharacter::CharacterDeath()
-{
-	// Only runs on Server
-	RemoveCharacterAbilities();
-
-	/*GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-	GetCharacterMovement()->GravityScale = 0;
-	GetCharacterMovement()->Velocity = FVector(0);*/
-
-	if (AbilitySystemComponent.IsValid())
-	{
-		AbilitySystemComponent->CancelAllAbilities();
-
-		FGameplayTagContainer EffectTagsToRemove;
-		EffectTagsToRemove.AddTag(EffectRemoveOnDeathTag);
-		int32 NumEffectsRemoved = AbilitySystemComponent->RemoveActiveEffectsWithTags(EffectTagsToRemove);
-
-		AbilitySystemComponent->AddLooseGameplayTag(DeadTag);
-	}
-
-	if (DeathMontage)
-	{
-		PlayAnimMontage(DeathMontage);
-	}
-}
-
-void ASATORI_AICharacter::RemoveCharacterAbilities()
-{
-
-}
-
 float ASATORI_AICharacter::getDistAttack()
 {
 	return dist_attack;
@@ -379,23 +348,16 @@ void ASATORI_AICharacter::sendDamage(float dmg)
 			float b = Spawned->SpawnedDie();
 
 			
-			Die();
+			CharacterDeath();
 		}
 		else
 		{
-			Die();
+			CharacterDeath();
 		}
 		
 	}
 
 
-}
-
-void ASATORI_AICharacter::Die()
-{
-	//GetWorld()->GetAuthGameMode<ASATORIGameMode>()->RemoveEnemyActor(this);
-	GetWorld()->GetGameState<ASATORI_GameState>()->RemoveEnemyActor(this);
-	Destroy();
 }
 
 void ASATORI_AICharacter::HealthBarProjection(UWidgetComponent* HealthBar, float ViewDistance, float RangeA, float RangeB)
@@ -446,4 +408,57 @@ void ASATORI_AICharacter::RegisterInTargetableArray_Implementation()
 		//GetWorld()->GetAuthGameMode<ASATORIGameMode>()->AddEnemyActor(this);
 		GetWorld()->GetGameState<ASATORI_GameState>()->AddEnemyActor(this);
 	}
+}
+
+void ASATORI_AICharacter::CharacterDeath()
+{
+	
+	RemoveCharacterAbilities();
+	GetWorld()->GetGameState<ASATORI_GameState>()->RemoveEnemyActor(this);
+
+	if (AbilitySystemComponent.IsValid())
+	{
+		AbilitySystemComponent->CancelAllAbilities();
+
+		FGameplayTagContainer EffectTagsToRemove;
+		EffectTagsToRemove.AddTag(EffectRemoveOnDeathTag);
+		int32 NumEffectsRemoved = AbilitySystemComponent->RemoveActiveEffectsWithTags(EffectTagsToRemove);
+
+		AbilitySystemComponent->AddLooseGameplayTag(DeadTag);
+	}
+
+	if (DeathMontage)
+	{
+		PlayAnimMontage(DeathMontage);
+		DestroyMyself();
+	}
+	else
+	{
+		DestroyMyself();
+	}
+
+}
+
+void ASATORI_AICharacter::DestroyMyself()
+{
+	Destroy();
+}
+
+void ASATORI_AICharacter::RemoveCharacterAbilities()
+{
+	TArray<FGameplayAbilitySpecHandle> AbilitiesToRemove;
+	for (const FGameplayAbilitySpec& Spec : AbilitySystemComponent->GetActivatableAbilities())
+	{
+		if ((Spec.SourceObject == this) && AICharacterAbilities.Contains(Spec.Ability->GetClass()))
+		{
+			AbilitiesToRemove.Add(Spec.Handle);
+		}
+	}
+
+	// Do in two passes so the removal happens after we have the full list
+	for (int32 i = 0; i < AbilitiesToRemove.Num(); i++)
+	{
+		AbilitySystemComponent->ClearAbility(AbilitiesToRemove[i]);
+	}
+
 }

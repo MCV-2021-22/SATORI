@@ -8,6 +8,7 @@
 #include "AbilitySystemComponent.h"
 #include "Character/SATORI_CharacterBase.h"
 #include "GameplayTags.h"
+#include "Animation/AnimNotifies/AnimNotify.h"
 #include "SATORI_AICharacter.generated.h"
 
 
@@ -92,12 +93,6 @@ public:
 
 	float getMaxRangeDist();
 
-	void Die();
-
-	virtual void CharacterDeath() override;
-
-	virtual void RemoveCharacterAbilities() override;
-
 	UFUNCTION(BlueprintCallable)
 	void HealthBarProjection(UWidgetComponent* HealthBar, float ViewDistance, float RangeA, float RangeB);
 
@@ -167,4 +162,15 @@ public: //Target System Interface related and Tag Abilities related (Nacho)
 
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "Target System")
 	void RegisterInTargetableArray();
+
+public: //Character Death
+
+	virtual void CharacterDeath() override;
+
+	virtual void RemoveCharacterAbilities() override;
+
+	virtual void Notify(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation) override;
+
+	void DestroyMyself();
+
 };
