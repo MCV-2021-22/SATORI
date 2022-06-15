@@ -54,6 +54,7 @@ void ASATORI_DashMeleeActor::OnOverlapSphere(
 	if (Character)
 	{
 		DamagePlayer = true;
+		Damage = 10.f;
 	}
 	else
 	{
