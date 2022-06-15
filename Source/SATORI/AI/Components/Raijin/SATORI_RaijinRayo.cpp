@@ -181,6 +181,13 @@ void ASATORI_RaijinRayo::OnComponentBeginOverlap(
 
 	}
 
+	if(OtherActor->ActorHasTag(FName("LimitMap")))
+	{
+		Tags.Add("State.CollisionMapLimit");
+
+	}
+
+
 }
 
 void ASATORI_RaijinRayo::OnComponentEndOverlap(
@@ -198,5 +205,17 @@ void ASATORI_RaijinRayo::OnComponentEndOverlap(
 		
 
 	}
+
+}
+
+bool ASATORI_RaijinRayo::CheckCollision()
+{
+
+	if(ActorHasTag(FName("State.CollisionMapLimit")))
+	{
+		return true;
+
+	}
+	return false;
 
 }

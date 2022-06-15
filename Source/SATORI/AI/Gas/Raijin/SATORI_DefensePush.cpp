@@ -1,46 +1,32 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "AI/Gas/Raijin/SATORI_Rayo.h"
+#include "AI/Gas/Raijin/SATORI_DefensePush.h"
 
 #include "SATORICharacter.h"
 
 #include "Kismet/GameplayStatics.h"
 #include "Widgets/Text/ISlateEditableTextWidget.h"
 
-USATORI_Rayo::USATORI_Rayo()
+USATORI_DefensePush::USATORI_DefensePush()
 {
 
 	InstancingPolicy = EGameplayAbilityInstancingPolicy::InstancedPerActor;
 
 }
 
-void USATORI_Rayo::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData)
+void USATORI_DefensePush::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData)
 {
 
-
-	TimerDelegate = FTimerDelegate::CreateUObject(this, &USATORI_Rayo::OnBucleRayos, Handle, ActorInfo, ActivationInfo);
-	GetWorld()->GetTimerManager().SetTimer(TimerHandle, TimerDelegate, 1.0f, true);
-
-
-
-
+	FVector IA_POS = ActorInfo->AvatarActor->GetActorLocation();
 	
-}
-
-
-
-void USATORI_Rayo::OnBucleRayos(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo)
-{
-	iteracion++;
-
 	TArray< AActor* > enemigos;
 
 	UGameplayStatics::GetAllActorsWithTag(GetWorld(), FName("PossessedBy.Player"), enemigos);
 
 	for (AActor* Actor : enemigos)
 	{
-		
+
 		//Actor->Tags.Add("PossessedBy.Player");
 		if (Cast<ASATORICharacter>(Actor) != nullptr)
 		{
@@ -58,9 +44,11 @@ void USATORI_Rayo::OnBucleRayos(const FGameplayAbilitySpecHandle Handle, const F
 			FTransform IATransform = ActorInfo->AvatarActor->GetTransform();
 
 
-			ASATORI_RaijinRayo* Rayo = GetWorld()->SpawnActor<ASATORI_RaijinRayo>(ProjectileClass,
-				Player->GetActorLocation(),
+			ASATORI_RaijinDefensePush* Empuje = GetWorld()->SpawnActor<ASATORI_RaijinDefensePush>(ProjectileClass,
+				IA_POS,
 				RotationOfIA);
+
+			Empuje->PushPlayer(Player);
 
 
 			break;
@@ -70,14 +58,10 @@ void USATORI_Rayo::OnBucleRayos(const FGameplayAbilitySpecHandle Handle, const F
 	}
 
 
-	if (iteracion == max_iteracion)
-	{
-		
-		GetWorld()->GetTimerManager().ClearTimer(TimerHandle);
-		iteracion = 0;
-		EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true);
 
-	}
-
-
+	EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true);
+	
 }
+
+
+
