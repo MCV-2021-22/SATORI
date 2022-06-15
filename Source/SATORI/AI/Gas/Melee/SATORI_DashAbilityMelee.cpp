@@ -8,11 +8,14 @@
 #include "Character/SATORI_PlayerController.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Kismet/GameplayStatics.h"
+#include "Kismet/KismetMathLibrary.h"
 
 
 USATORI_DashAbilityMelee::USATORI_DashAbilityMelee()
 {
 	InstancingPolicy = EGameplayAbilityInstancingPolicy::InstancedPerActor;
+
+	bDashing = false;
 
 	bIsCreateOnRunning = GIsRunning;
 }
@@ -24,6 +27,8 @@ void USATORI_DashAbilityMelee::ActivateAbility(
 	const FGameplayEventData* TriggerEventData)
 {
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
+
+	bDashing = false;
 
 	if (!IsValid(AnimMontage))
 	{
@@ -66,8 +71,7 @@ void USATORI_DashAbilityMelee::OnCancelled(FGameplayTag EventTag, FGameplayEvent
 
 void USATORI_DashAbilityMelee::OnCompleted(FGameplayTag EventTag, FGameplayEventData EventData)
 {
-	//Melee->GetCharacterMovement()->StopMovementImmediately();
-	//EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, false);
+	EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, false);
 }
 
 void USATORI_DashAbilityMelee::EventReceived(FGameplayTag EventTag, FGameplayEventData EventData)
@@ -112,15 +116,15 @@ void USATORI_DashAbilityMelee::Tick(float DeltaTime)
 	{
 		FVector Position = Melee->GetActorLocation();
 
-		FVector Forward = Melee->GetActorForwardVector();
+		FVector NextPos = UKismetMathLibrary::VInterpTo(Position, EnemyPosition, DeltaTime, 5.f);
 
-		Melee->SetActorLocation(Position + Forward * 5.f);
+		Melee->SetActorLocation(NextPos);
 	}
 
 	if(Melee->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag("Dash.Stop")))
 	{
 		Melee->RemoveGameplayTag(FGameplayTag::RequestGameplayTag("Dash.Stop"));
-		EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, false);
+		bDashing = false;
 	}
 }
 

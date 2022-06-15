@@ -10,23 +10,24 @@ void USATORI_ANS_Combo::NotifyBegin(USkeletalMeshComponent* MeshComp, UAnimSeque
 {
 	Super::NotifyBegin(MeshComp, Animation, TotalDuration);
 
-	// UE_LOG(LogTemp, Display, TEXT("ComboSection Begin"));
 
-	ASATORICharacter* PlayerCharacter = Cast<ASATORICharacter>(MeshComp->GetOwner());
+	ASATORI_CharacterBase* PlayerCharacter = Cast<ASATORI_CharacterBase>(MeshComp->GetOwner());
 	if (PlayerCharacter)
 	{
 		PlayerCharacter->AttackingCollision->SetGenerateOverlapEvents(true);
-		USATORI_ComboSystemComponent* ComboSystem = PlayerCharacter->GetComboSystemComponent();
-		if (ComboSystem)
-		{
-			UE_LOG(LogTemp, Display, TEXT("ComboSection Begin"));
-			/*if (ComboState == EComboState::SafeAttack)
-			{
-				ComboSystem->lightAttackCounter += 1;
-			}*/
-			ComboSystem->isLightAttack = false;
-			//ComboSystem->AttackingCollision->Activate(true);
-		}
+		UE_LOG(LogTemp, Display, TEXT("ComboSection Begin"));
+
+		//USATORI_ComboSystemComponent* ComboSystem = PlayerCharacter->GetComboSystemComponent();
+		//if (ComboSystem)
+		//{
+		//	UE_LOG(LogTemp, Display, TEXT("ComboSection Begin"));
+		//	/*if (ComboState == EComboState::SafeAttack)
+		//	{
+		//		ComboSystem->lightAttackCounter += 1;
+		//	}*/
+		//	ComboSystem->isLightAttack = false;
+		//	//ComboSystem->AttackingCollision->Activate(true);
+		//}
 	}
 	/*
 
@@ -46,22 +47,23 @@ void USATORI_ANS_Combo::NotifyEnd(USkeletalMeshComponent* MeshComp, UAnimSequenc
 {
 	Super::NotifyEnd(MeshComp, Animation);
 
-	UE_LOG(LogTemp, Display, TEXT("ComboSection End"));
 
-	ASATORICharacter* PlayerCharacter = Cast<ASATORICharacter>(MeshComp->GetOwner());
+	ASATORI_CharacterBase* PlayerCharacter = Cast<ASATORI_CharacterBase>(MeshComp->GetOwner());
 	if (PlayerCharacter)
 	{
 		PlayerCharacter->AttackingCollision->SetGenerateOverlapEvents(false);
-		USATORI_ComboSystemComponent* ComboSystem = PlayerCharacter->GetComboSystemComponent();
-		if (ComboSystem)
-		{
-			UE_LOG(LogTemp, Display, TEXT("ComboSection Begin"));
-			/*if (ComboState == EComboState::SafeAttack)
-			{
-				ComboSystem->lightAttackCounter += 1;
-			}*/
-			ComboSystem->isLightAttack = true;
-			//ComboSystem->AttackingCollision->Activate(false);
-		}
+		UE_LOG(LogTemp, Display, TEXT("ComboSection End"));
+
+		//USATORI_ComboSystemComponent* ComboSystem = PlayerCharacter->GetComboSystemComponent();
+		//if (ComboSystem)
+		//{
+		//	UE_LOG(LogTemp, Display, TEXT("ComboSection Begin"));
+		//	/*if (ComboState == EComboState::SafeAttack)
+		//	{
+		//		ComboSystem->lightAttackCounter += 1;
+		//	}*/
+		//	ComboSystem->isLightAttack = true;
+		//	//ComboSystem->AttackingCollision->Activate(false);
+		//}
 	}
 }

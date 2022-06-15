@@ -4,7 +4,6 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
-#include "AbilitySystemInterface.h"
 #include "Interfaces/SATORI_TargetSystemInterface.h"
 #include "AbilitySystemComponent.h"
 #include "Character/SATORI_CharacterBase.h"
@@ -19,6 +18,7 @@ class USATORI_GameplayAbility;
 class USATORI_AbilityDataAsset;
 class UBehaviorTree;
 class UPawnSensingComponent;
+class USkeletalMeshComponent;
 class UWidgetComponent;
 class USATORI_EnemyHealthBar;
 class USATORI_EnemyStatComponent;
@@ -73,8 +73,15 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Awareness)
 	UPawnSensingComponent* PawnSensor;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon")
+	UCapsuleComponent* AttackingCollision2;
+
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Stats")
 	USATORI_EnemyStatComponent* EnemyStatComponent;
+
+	// Death Animation
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Death|Animation")
+	UAnimMontage* DeathMontage;
 
 	bool GetIsInFront() const { return isInFrontPlayer; }
 
@@ -86,6 +93,10 @@ public:
 	float getMaxRangeDist();
 
 	void Die();
+
+	virtual void CharacterDeath() override;
+
+	virtual void RemoveCharacterAbilities() override;
 
 	UFUNCTION(BlueprintCallable)
 	void HealthBarProjection(UWidgetComponent* HealthBar, float ViewDistance, float RangeA, float RangeB);
@@ -109,6 +120,12 @@ protected:
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "AI|GAS")
 	TArray<TSubclassOf<USATORI_GameplayAbility>> AICharacterAbilities;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Weapon")
+	USkeletalMeshComponent* SwordComponent;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Weapon")
+	USkeletalMeshComponent* SwordComponent2;
+	
 	UPROPERTY(EditAnywhere)
 	TSoftObjectPtr <UBehaviorTree> bte;
 

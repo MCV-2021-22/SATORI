@@ -10,7 +10,8 @@
 
 class USATORI_AbilitySystemComponent;
 class USATORI_AttributeSet;
-
+class UCapsuleComponent;
+class UAnimMontage;
 
 UCLASS()
 class SATORI_API ASATORI_CharacterBase : public ACharacter, public IAbilitySystemInterface
@@ -57,6 +58,9 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Player|Attributes")
 	int32 GetCharacterLevel() const;
 
+	UFUNCTION(BlueprintCallable, Category = "Player|Attributes")
+	bool IsDead() const;
+
 	UFUNCTION(BlueprintCallable, Category = "Tags")
 	void AddGameplayTag(const FGameplayTag& TagToAdd);
 
@@ -86,6 +90,19 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "Tags")
 	bool HasAnyMatchingGameplayTags(const FGameplayTagContainer& TagContainer) const;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon")
+	UCapsuleComponent* AttackingCollision;
+
+	UFUNCTION()
+	virtual void CharacterDeath() {};
+
+	UFUNCTION()
+	virtual void RemoveCharacterAbilities() {};
+
+	//Tag 
+	FGameplayTag DeadTag;
+	FGameplayTag EffectRemoveOnDeathTag;
 
 protected:
 

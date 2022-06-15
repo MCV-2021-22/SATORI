@@ -13,6 +13,7 @@
 #include "Perception/PawnSensingComponent.h"
 #include "DrawDebugHelpers.h"
 #include "SATORICharacter.h"
+#include "Components/CapsuleComponent.h"
 #include "Spawned/SATORI_Spawned.h"
 #include "Components/WidgetComponent.h"
 #include "UI/Enemy/SATORI_EnemyHealthBar.h"
@@ -52,6 +53,21 @@ ASATORI_AICharacter::ASATORI_AICharacter()
 	//btree = bte.LoadSynchronous();
 
 	EnemyType = SATORIEnemyType::None;
+
+	// Weapon Component
+	SwordComponent = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("Sword"));
+	AttackingCollision = CreateDefaultSubobject<UCapsuleComponent>(TEXT("Sword Collision"));
+	if (SwordComponent)
+	{
+		const FAttachmentTransformRules AttachmentRules = FAttachmentTransformRules(EAttachmentRule::KeepRelative, false);
+		SwordComponent->AttachToComponent(GetMesh(), AttachmentRules, "WeaponSocket2");
+		// Sphere Collision
+		AttackingCollision->SetCapsuleSize(20.f, 60.f, true);
+		AttackingCollision->SetCollisionProfileName("Pawn");
+		AttackingCollision->SetGenerateOverlapEvents(false);
+		AttackingCollision->AttachTo(SwordComponent);
+	}
+
 }
 
 // Called when the game starts or when spawned
@@ -86,7 +102,7 @@ void ASATORI_AICharacter::BeginPlay()
 
 void ASATORI_AICharacter::OnConstruction(const FTransform& Transform)
 {
-	if (HealthBarWidgetComponen )
+	if (HealthBarWidgetComponen)
 	{
 		HealthBarWidgetComponen->RegisterComponent();
 		const FAttachmentTransformRules AttachmentRules = FAttachmentTransformRules(EAttachmentRule::KeepRelative, false);
@@ -99,12 +115,16 @@ void ASATORI_AICharacter::OnConstruction(const FTransform& Transform)
 		//HealthBarWidgetComponen->AttachToComponent(HeadComponent, AttachmentRules);
 		/*struct ConstructorHelpers::FClassFinder<USATORI_EnemyHealthBar> EnemyUIBar(TEXT("/Game/SATORI/UI/Enemy/"));
 		if (EnemyUIBar.Class != NULL)*/
-		/*if (HealthBarUI)
+		if (HealthBarUI)
 		{
 			HealthBarWidgetComponen->SetWidgetSpace(EWidgetSpace::World);
-			HealthBarWidgetComponen->SetDrawSize(FVector2D(100.f, 20.f));
+			HealthBarWidgetComponen->SetDrawSize(FVector2D(200.f, 20.f));
 			HealthBarWidgetComponen->SetWidgetClass(HealthBarUI);
-		}*/
+			FVector2D LocalDrawSize = FVector2D(100.0f, 20.0f);
+			HealthBarWidgetComponen->SetDrawSize(LocalDrawSize);
+			FVector2D LocalPivot = FVector2D(0.5f, 0.5f);
+			HealthBarWidgetComponen->SetPivot(LocalPivot);
+		}
 	}
 }
 
@@ -195,9 +215,40 @@ void ASATORI_AICharacter::PossessedBy(AController* NewController)
 
 		InitializeAttributes();
 		AddAICharacterAbilities();
-		SetHealth(90);
+		SetHealth(GetMaxHealth());
 
 	}
+
+}
+
+void ASATORI_AICharacter::CharacterDeath()
+{
+	// Only runs on Server
+	RemoveCharacterAbilities();
+
+	/*GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	GetCharacterMovement()->GravityScale = 0;
+	GetCharacterMovement()->Velocity = FVector(0);*/
+
+	if (AbilitySystemComponent.IsValid())
+	{
+		AbilitySystemComponent->CancelAllAbilities();
+
+		FGameplayTagContainer EffectTagsToRemove;
+		EffectTagsToRemove.AddTag(EffectRemoveOnDeathTag);
+		int32 NumEffectsRemoved = AbilitySystemComponent->RemoveActiveEffectsWithTags(EffectTagsToRemove);
+
+		AbilitySystemComponent->AddLooseGameplayTag(DeadTag);
+	}
+
+	if (DeathMontage)
+	{
+		PlayAnimMontage(DeathMontage);
+	}
+}
+
+void ASATORI_AICharacter::RemoveCharacterAbilities()
+{
 
 }
 
@@ -282,7 +333,7 @@ void ASATORI_AICharacter::Tick(float DeltaSeconds)
 
 	if (HealthBarUI)
 	{
-		HealthBarProjection(HealthBarWidgetComponen, 1024, 0.5, 0.1);
+		HealthBarProjection(HealthBarWidgetComponen, 1024, 0.1, 0.5);
 	}
 	
 	Super::Tick(DeltaSeconds);

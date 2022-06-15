@@ -40,6 +40,7 @@ void USATORI_Rayo::OnBucleRayos(const FGameplayAbilitySpecHandle Handle, const F
 
 	for (AActor* Actor : enemigos)
 	{
+		
 		//Actor->Tags.Add("PossessedBy.Player");
 		if (Cast<ASATORICharacter>(Actor) != nullptr)
 		{

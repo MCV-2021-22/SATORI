@@ -6,7 +6,8 @@
 
 ASATORI_CharacterBase::ASATORI_CharacterBase()
 {
-
+	/*DeadTag = FGameplayTag::RequestGameplayTag(FName("State.Dead"));
+	EffectRemoveOnDeathTag = FGameplayTag::RequestGameplayTag(FName("Effect.RemoveOnDeath"));*/
 }
 
 void ASATORI_CharacterBase::BeginPlay()
@@ -128,6 +129,14 @@ float ASATORI_CharacterBase::GetGold() const
 int32 ASATORI_CharacterBase::GetCharacterLevel() const
 {
 	return 1;
+}
+
+bool ASATORI_CharacterBase::IsDead() const
+{
+	if (AttributeSetBase.IsValid())
+		return AttributeSetBase->GetHealth() > 0;
+
+	return false;
 }
 
 // Setters
