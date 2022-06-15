@@ -71,8 +71,7 @@ void USATORI_DashAbilityMelee::OnCancelled(FGameplayTag EventTag, FGameplayEvent
 
 void USATORI_DashAbilityMelee::OnCompleted(FGameplayTag EventTag, FGameplayEventData EventData)
 {
-	//Melee->GetCharacterMovement()->StopMovementImmediately();
-	//EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, false);
+	EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, false);
 }
 
 void USATORI_DashAbilityMelee::EventReceived(FGameplayTag EventTag, FGameplayEventData EventData)
@@ -125,7 +124,7 @@ void USATORI_DashAbilityMelee::Tick(float DeltaTime)
 	if(Melee->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag("Dash.Stop")))
 	{
 		Melee->RemoveGameplayTag(FGameplayTag::RequestGameplayTag("Dash.Stop"));
-		EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, false);
+		bDashing = false;
 	}
 }
 

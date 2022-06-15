@@ -55,6 +55,20 @@ void ASATORI_DashMeleeActor::OnOverlapSphere(
 	{
 		DamagePlayer = true;
 	}
+	else
+	{
+		ASATORI_Melee* Melee = Cast<ASATORI_Melee>(OtherActor);
+		if (Melee)
+		{
+			if(USkeletalMeshComponent* Mesh = Melee->GetMesh())
+			{
+				if(UAnimInstance* AnimInstance = Mesh->GetAnimInstance())
+				{
+					AnimInstance->Montage_JumpToSection(FName("ending"), AnimInstance->GetCurrentActiveMontage());
+				}
+			}
+		}
+	}
 }
 
 void ASATORI_DashMeleeActor::OnOverlapEnd(
@@ -86,6 +100,7 @@ void ASATORI_DashMeleeActor::OnOverlapSphereMelee(
 	{
 		Melee->AddGameplayTag(FGameplayTag::RequestGameplayTag("Dash.Stop"));
 
+		
 		DestroyObject = true;
 		
 	}
