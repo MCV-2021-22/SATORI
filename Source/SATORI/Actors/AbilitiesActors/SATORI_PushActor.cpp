@@ -52,20 +52,19 @@ void ASATORI_PushActor::OnOverlapSphere(
 	//Enemies
 	if(Character->HasMatchingGameplayTag(EnemyTag) && !Character->HasMatchingGameplayTag(PushedTag))
 	{	
-		float DamageDone = USATORI_BlueprintLibrary::ApplyGameplayEffectDamage(OtherActor, Damage, OtherActor, DamageGameplayEffect);
-		Character->sendDamage(DamageDone);
-		//Array with Actor for move the actor on tick
 		ArrayPushed.AddUnique(OtherActor);
-		//Array with the Character used for the PushedTag
 		Character->AddGameplayTag(PushedTag);
-		ArrayTagPushed.AddUnique(Character);
 	}
 }
 
 void ASATORI_PushActor::DestroyMyself()
 {	
-	for (ASATORI_AICharacter* Character : ArrayTagPushed) {
-		Character->RemoveGameplayTag(PushedTag);
+	for (AActor* Actor : ArrayPushed) {
+		if (IsValid(Actor))
+		{
+			ASATORI_AICharacter* Character = Cast<ASATORI_AICharacter>(Actor);
+			Character->RemoveGameplayTag(PushedTag);
+		}
 	}
 	Destroy();
 }
@@ -95,7 +94,14 @@ void ASATORI_PushActor::Tick(float DeltaTime)
 
 	//Pushing
 	for (AActor* Actor : ArrayPushed) {
-		Actor->SetActorLocation(Actor->GetActorLocation() + ActorForward * PushForce * DeltaTime);
+		if (IsValid(Actor))
+		{
+			Actor->SetActorLocation(Actor->GetActorLocation() + ActorForward * PushForce * DeltaTime);
+			//Damage Calculation
+			ASATORI_AICharacter* Character = Cast<ASATORI_AICharacter>(Actor);
+			float DamageDone = USATORI_BlueprintLibrary::ApplyGameplayEffectDamage(Actor, Damage, Actor, DamageGameplayEffect);
+			Character->sendDamage(DamageDone);
+		}
 	}
 
 	//Stay grounded calculation

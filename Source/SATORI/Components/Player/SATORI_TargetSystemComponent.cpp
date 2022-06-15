@@ -6,7 +6,8 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Engine/Classes/Camera/CameraComponent.h"
 #include "Components/WidgetComponent.h"
-
+//#include "GameState/SATORI_GameState.h"
+#include "SATORIGameMode.h"
 //Debug
 #include "DrawDebugHelpers.h"
 
@@ -96,6 +97,7 @@ void USATORI_TargetSystemComponent::TickComponent(const float DeltaTime, const E
 	{
 		DrawDebugLine(GetWorld(), OwnerActor->GetActorLocation(), LockedOnTargetActor->GetActorLocation(), FColor(0, 0, 255), false, 1.0f, 0, 1);
 	}
+
 }
 
 bool USATORI_TargetSystemComponent::TargetIsTargetable(const AActor* Actor)
@@ -120,6 +122,8 @@ void USATORI_TargetSystemComponent::TargetActor()
 	}
 	else 
 	{
+		//Temporary
+		TargetableActors = GetWorld()->GetAuthGameMode<ASATORIGameMode>()->GetEnemyActors();
 		LockedOnTargetActor = FindNearestTarget(TargetableActors);
 		TargetLockOn(LockedOnTargetActor);
 	}
@@ -377,6 +381,8 @@ void USATORI_TargetSystemComponent::TargetActorWithAxisInput(const float AxisVal
 	TArray<AActor*> ActorsToIgnore;
 	ActorsToIgnore.Add(CurrentTarget);
 
+	TargetableActors = GetWorld()->GetAuthGameMode<ASATORIGameMode>()->GetEnemyActors();
+
 	for (AActor* Actor : TargetableActors)
 	{
 		const bool bHit = LineTraceForActor(Actor, ActorsToIgnore);
@@ -544,7 +550,7 @@ void USATORI_TargetSystemComponent::CreateAndAttachTargetLockedOnWidgetComponent
 	TargetLockedOnWidgetComponent->SetWidgetClass(LockedOnWidgetClass);
 
 	UMeshComponent* MeshComponent = TargetActor->FindComponentByClass<UMeshComponent>();
-	USceneComponent* ParentComponent = TargetActor->GetRootComponent();
+	USceneComponent* ParentComponent = MeshComponent && LockedOnWidgetParentSocket != NAME_None ? MeshComponent : TargetActor->GetRootComponent();
 
 	if (IsValid(OwnerPlayerController))
 	{
@@ -552,7 +558,9 @@ void USATORI_TargetSystemComponent::CreateAndAttachTargetLockedOnWidgetComponent
 	}
 
 	TargetLockedOnWidgetComponent->SetWidgetSpace(EWidgetSpace::Screen);
-	TargetLockedOnWidgetComponent->SetupAttachment(ParentComponent);
+	TargetLockedOnWidgetComponent->SetupAttachment(ParentComponent, LockedOnWidgetParentSocket);
+	TargetLockedOnWidgetComponent->SetRelativeLocation(LockedOnWidgetRelativeLocation);
+	TargetLockedOnWidgetComponent->SetDrawSize(FVector2D(LockedOnWidgetDrawSize, LockedOnWidgetDrawSize));
 	TargetLockedOnWidgetComponent->SetVisibility(true);
 	TargetLockedOnWidgetComponent->RegisterComponent();
 }

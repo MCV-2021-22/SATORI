@@ -421,12 +421,14 @@ void ASATORICharacter::GetAllAbilities()
 
 void ASATORICharacter::RemoveAllAbilities()
 {
-	/*for (TSubclassOf < USATORI_GameplayAbility > Ability : PlayerGameplayAbilityComponent->EnabledAbilityClasses)
+	for (const TPair<FName, FSATORI_AbilitiesDatas>& pair : PlayerGameplayAbilityComponent->PlayerGameplayAbility)
 	{
-		PlayerGameplayAbilityComponent->DisabledAbilityClasses.AddUnique(Ability);
+		PlayerGameplayAbilityComponent->PlayerGameplayAbilityDissabled.Add(pair);
+		PlayerGameplayAbilityComponent->PlayerAbilitiesNamesDissabled.Add(pair.Key);
 	}
-	AbilityToChoose = 0;
-	PlayerGameplayAbilityComponent->EnabledAbilityClasses.Empty();*/
+	PlayerGameplayAbilityComponent->PlayerGameplayAbility.Empty();
+	PlayerGameplayAbilityComponent->PlayerAbilitiesNames.Empty();
+	PlayerGameplayAbilityComponent->CurrentAbilityValue = 0;
 }
 
 void ASATORICharacter::GetAbility(FName AbilityName)

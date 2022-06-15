@@ -3,11 +3,11 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GameFramework/GameModeBase.h"
+#include "GameFramework/GameMode.h"
 #include "SATORIGameMode.generated.h"
 
 UCLASS(minimalapi)
-class ASATORIGameMode : public AGameModeBase
+class ASATORIGameMode : public AGameMode
 {
 	GENERATED_BODY()
 
@@ -24,6 +24,24 @@ public:
 		void OpenLevel();
 
 	//virtual void InitGame(const FString& MapName, const FString& Options, FString& ErrorMessage) override;
+
+	//EnemyActors
+	UFUNCTION()
+	TArray < AActor* > GetEnemyActors();
+
+	UFUNCTION()
+	void AddEnemyActor(AActor* Enemy);
+
+	UFUNCTION()
+	void RemoveEnemyActor(AActor* Enemy);
+
+	UFUNCTION()
+	bool IsEmptyEnemyActors();
+
+private:
+
+	TArray < AActor* > EnemyActors;
+
 };
 
 
