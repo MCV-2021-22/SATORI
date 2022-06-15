@@ -358,6 +358,8 @@ void ASATORI_AICharacter::sendDamage(float dmg)
 
 void ASATORI_AICharacter::Die()
 {
+	
+
 	GetWorld()->GetAuthGameMode<ASATORIGameMode>()->RemoveEnemyActor(this);
 
 	//ASATORI_GameState* const GameState = GetWorld() != NULL ? GetWorld()->GetGameState<ASATORI_GameState>() : NULL;
