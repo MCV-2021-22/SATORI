@@ -33,6 +33,12 @@ public:
 	float GetMaxHealth() const;
 
 	UFUNCTION(BlueprintCallable, Category = "Player|Attributes")
+	float GetMana() const;
+
+	UFUNCTION(BlueprintCallable, Category = "Player|Attributes")
+	float GetMaxMana() const;
+
+	UFUNCTION(BlueprintCallable, Category = "Player|Attributes")
 	float GetDefense() const;
 
 	UFUNCTION(BlueprintCallable, Category = "Player|Attributes")

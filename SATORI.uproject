@@ -11,7 +11,8 @@
 			"AdditionalDependencies": [
 				"GameplayAbilities",
 				"Engine",
-				"UMG"
+				"UMG",
+				"AIModule"
 			]
 		},
 		{
@@ -27,6 +28,10 @@
 		},
 		{
 			"Name": "Volumetrics",
+			"Enabled": true
+		},
+		{
+			"Name": "FMODStudio",
 			"Enabled": true
 		}
 	]

@@ -11,6 +11,26 @@ class UGameplayEffect;
 class UStaticMeshComponent;
 class USphereComponent;
 class UTextRenderComponent;
+class USATORI_MainUI;
+class USATORI_DoorInteractUI;
+class USATORI_PortalPassiveDataAsset;
+class UBillboardComponent;
+
+USTRUCT(BlueprintType)
+struct FSATORI_DoorPassiveReward
+{
+	GENERATED_BODY()
+public:
+
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<UGameplayEffect> PassiveEffect;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	UTexture2D* PassiveIcon;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	FText Description;
+};
 
 UCLASS()
 class SATORI_API ASATORI_Portal : public AActor
@@ -21,6 +41,11 @@ public:
 	// Sets default values for this actor's properties
 	ASATORI_Portal();
 
+	// Called when the game starts or when spawned
+	virtual void BeginPlay() override;
+
+	virtual void OnConstruction(const FTransform& Transform) override;
+
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
 	UStaticMeshComponent* StaticMeshComponent = nullptr;
 
@@ -30,13 +55,27 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
 	UTextRenderComponent* TextRenderComponent = nullptr;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
+	UBillboardComponent* PortalIconTexture = nullptr;
+
 	// Effect apply to player 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "GameplayEffect")
-	TArray<TSubclassOf<UGameplayEffect>> PortalEffectsToApply;
+	FSATORI_DoorPassiveReward PortalEffectsToApply;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spawner")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FGameplayTag PlayerTag;
 
+	// Widgets
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "UI")
+	TSubclassOf<USATORI_MainUI> SATORIMainUI;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "UI")
+	USATORI_DoorInteractUI* DoorInteractUI;
+
+	/*UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "PassiveDataAsset")
+	USATORI_PortalPassiveDataAsset* PassiveDataAsset;*/
+
+	void SetCurrentGameplayEffectData(FSATORI_DoorPassiveReward CurrentEffecData);
 public:
 	UFUNCTION()
 	void OnComponentBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
@@ -44,11 +83,8 @@ public:
 
 	void ApplyEffectToPlayer(AActor* PlayerCharacter);
 
+	TSubclassOf<UGameplayEffect> GetCurrentGameplayEffect();
+
 private:
-	TSubclassOf<UGameplayEffect> SelectRandomEffect();
-
-protected:
-	// Called when the game starts or when spawned
-	virtual void BeginPlay() override;
-
+	TSubclassOf<UGameplayEffect> CurrentGameplayEffect;
 };

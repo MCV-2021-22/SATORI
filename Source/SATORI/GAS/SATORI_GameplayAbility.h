@@ -6,9 +6,9 @@
 #include "Abilities/GameplayAbility.h"
 #include "SATORI_GameplayAbility.generated.h"
 
-/**
- * 
- */
+
+class UTexture2D;
+
 UCLASS()
 class SATORI_API USATORI_GameplayAbility : public UGameplayAbility
 {
@@ -28,4 +28,21 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = Ability)
 	class ASATORICharacter* GetOwningSatoriCharacter() const;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool bIsActivated = false;
+
+	// Gameplay Effect
+	//virtual void ApplyEffectContainer();
+	//virtual void ApplyEffectContainerSpec();
+
+	// Ability Property
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UTexture2D* AbilityIcon;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FName AbilityName;
+
+	UFUNCTION(BlueprintCallable)
+	FName GetAbilityName() const;
 };

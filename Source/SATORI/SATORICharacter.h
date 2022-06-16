@@ -7,17 +7,21 @@
 #include "AbilitySystemInterface.h"
 #include "AbilitySystemComponent.h"
 #include "Character/Mask/SATORI_AbilityMask.h"
+#include "Components/Player/SATORI_TargetSystemComponent.h"
+#include "Character/SATORI_CharacterBase.h"
 #include "SATORICharacter.generated.h"
 
 class USATORI_AbilityDataAsset;
 class UGameplayEffect;
-class USATORI_AttributeSet;
 class USATORI_AbilitySystemComponent;
 class USATORI_AbilityMask;
 class USATORI_ANS_JumpSection;
+class USATORI_GameplayAbility;
+class USkeletalMeshComponent;
+class UCapsuleComponent;
 
 UCLASS(config=Game)
-class ASATORICharacter : public ACharacter, public IAbilitySystemInterface
+class ASATORICharacter : public ASATORI_CharacterBase
 {
 	GENERATED_BODY()
 
@@ -28,16 +32,16 @@ public:
 	virtual void PossessedBy(AController* NewController) override;
 
 	/** Base turn rate, in deg/sec. Other scaling may affect final turn rate. */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	FName WeaponSocketName;
+
+	/** Base turn rate, in deg/sec. Other scaling may affect final turn rate. */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category=Camera)
 	float BaseTurnRate;
 
 	/** Base look up/down rate, in deg/sec. Other scaling may affect final rate. */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category=Camera)
 	float BaseLookUpRate;
-
-	// Character Default Abilities Asset (Contain List of Player Abilities)
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Player|Data")
-	USATORI_AbilityDataAsset* DefaultAbilities;
 
 	// Default attributes for a character for initializing
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Player|GameplayEffect")
@@ -46,33 +50,21 @@ public:
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Player|Component")
 	USATORI_AbilityMask* SATORIAbilityMaskComponent;
 
+	// Death Animation
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Death|Animation")
+	UAnimMontage* DeathMontage;
+
 	UPROPERTY()
 	SATORIMaskType MaskType = SATORIMaskType::NONE;
-public:
 
-	UAbilitySystemComponent* GetAbilitySystemComponent() const override;
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	int AbilityToChoose = 0;
 
-	// Gettes for attributes
-	UFUNCTION(BlueprintCallable, Category = "Player|Attributes")
-	float GetHealth() const;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Weapon")
+	USkeletalMeshComponent* SwordComponent;
 
-	UFUNCTION(BlueprintCallable, Category = "Player|Attributes")
-	float GetMaxHealth() const;
-
-	UFUNCTION(BlueprintCallable, Category = "Player|Attributes")
-	float GetDefense() const;
-
-	UFUNCTION(BlueprintCallable, Category = "Player|Attributes")
-	float GetAttack() const;
-
-	UFUNCTION(BlueprintCallable, Category = "Player|Attributes")
-	float GetMoveSpeed() const;
-
-	UFUNCTION(BlueprintCallable, Category = "Player|Attributes")
-	float GetGold() const;
-
-	UFUNCTION(BlueprintCallable, Category = "Player|Attributes")
-	int32 GetCharacterLevel() const;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Weapon")
+	USceneComponent* HandComponent;
 
 	void SetComboJumpSection(USATORI_ANS_JumpSection* JumpSection);
 
@@ -80,11 +72,23 @@ public:
 	UFUNCTION(BlueprintCallable)
 	bool AttackJumpSectionCombo();
 
+	// Ray Cast
 	UFUNCTION(BlueprintCallable)
+	bool DoRayCast();
+
+	UFUNCTION(BlueprintCallable)
+	
 	bool PlayerActiveAbilityWithTag(FGameplayTag TagName);
+
+	virtual void CharacterDeath() override;
+	
+	virtual void RemoveCharacterAbilities() override;
 
 	// Getters for Components
 	FORCEINLINE class USATORI_StatsComponent* GetStatsComponent() const { return StatsComponent; }
+	class USATORI_ComboSystemComponent* GetComboSystemComponent() const { return ComboSystemComponent; }
+	class USATORI_TargetSystemComponent* GetTargetSystemComponent() const { return TargetSystemComponent; }
+
 protected:
 
 	// Initialization for player abilities
@@ -93,19 +97,25 @@ protected:
 	void GrantAbilityToPlayer(FGameplayAbilitySpec Ability);
 	void InitializePassiveAttributes();
 
-	virtual void SetHealth(float Health);
-
 protected:
 
 	// The core ActorComponent for interfacing with the GameplayAbilities System
-	TWeakObjectPtr<USATORI_AbilitySystemComponent> AbilitySystemComponent;
+	//TWeakObjectPtr<USATORI_AbilitySystemComponent> AbilitySystemComponent;
 	
-	// USATORI_AttributeSet from the PlayerState 
-	TWeakObjectPtr<USATORI_AttributeSet> AttributeSetBase;
-
-	// Component
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Player|Data")
+	// Components
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	class USATORI_StatsComponent* StatsComponent;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	class USATORI_ComboSystemComponent* ComboSystemComponent;
+
+public:
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
+	class USATORI_GameplayAbilityComponent* PlayerGameplayAbilityComponent;
+protected:
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
+	class USATORI_TargetSystemComponent* TargetSystemComponent;
 
 	// Anim Notify Section
 	UPROPERTY()
@@ -145,5 +155,30 @@ protected:
 
 	/** Handler for when a touch input stops. */
 	void TouchStopped(ETouchIndex::Type FingerIndex, FVector Location);
+
+//Cheats
+public:
+
+	UFUNCTION(Exec)
+	void SetGodMode();
+
+	UFUNCTION(Exec)
+	void RestartStats();
+
+	UFUNCTION(Exec)
+	void GetAllAbilities();
+
+	UFUNCTION(Exec)
+	void RemoveAllAbilities();
+
+	UFUNCTION(Exec)
+	void GetAbility(FName AbilityName);
+
+	UFUNCTION(Exec)
+	void GetEnabledAbilityName();
+
+	UFUNCTION(Exec)
+	void KillAllEnemies();
+
 };
 
