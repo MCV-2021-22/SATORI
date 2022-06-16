@@ -6,6 +6,7 @@
 #include "FunctionLibrary/SATORI_BlueprintLibrary.h"
 #include "SATORICharacter.h"
 #include "SATORIGameMode.h"
+//#include "GameState/SATORI_GameState.h"
 
 // Sets default values
 ASATORI_PullActor::ASATORI_PullActor()
@@ -93,9 +94,10 @@ void ASATORI_PullActor::BeginPlay()
 	}
 	else
 	{
-		TArray<AActor*> Actors = GetWorld()->GetAuthGameMode<ASATORIGameMode>()->GetEnemyActors();
+		TArray < AActor* >& AllEnemies = GetWorld()->GetAuthGameMode<ASATORIGameMode>()->GetEnemyActorsRef();
+		//TArray < AActor* >& AllEnemies = GetWorld()->GetGameState<ASATORI_GameState>()->GetEnemyActorsRef();
 
-		for (AActor* Actor : Actors)
+		for (AActor* Actor : AllEnemies)
 		{
 			const float Distance = GetDistanceTo(Actor);
 			if (Distance < Range && Player->GetTargetSystemComponent()->IsInViewport(Actor))

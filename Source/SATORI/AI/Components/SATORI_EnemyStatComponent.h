@@ -34,6 +34,8 @@ public:
 	UPROPERTY(BlueprintAssignable, meta = (DisplayName = "HealthChanged"))
 	FHealthChangedSignature UpdateHealthBarPercent;
 
+	float GetHealth();
+	float GetMaxHealth();
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
