@@ -305,6 +305,14 @@ void ASATORI_AICharacter::Tick(float DeltaSeconds)
 	if (HealthBarUI)
 	{
 		HealthBarProjection(HealthBarWidgetComponen, 1024, 0.1, 0.5);
+		//// HealthBarUI
+		//USATORI_EnemyHealthBar* HearthBar = Cast<USATORI_EnemyHealthBar>(HealthBarWidgetComponen->GetWidget());
+		//if (HearthBar)
+		//{
+		//	float Health = EnemyStatComponent->GetHealth();
+		//	float Maxhealth = EnemyStatComponent->GetMaxHealth();
+		//	HearthBar->UpdateHealthBar(Health, Maxhealth);
+		//}
 	}
 	
 	Super::Tick(DeltaSeconds);

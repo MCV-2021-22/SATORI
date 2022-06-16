@@ -71,3 +71,12 @@ void USATORI_EnemyStatComponent::MaxHealthChanged(const FOnAttributeChangeData& 
 	UpdateHealthBarPercent.Broadcast(Health, MaxHealth);
 }
 
+float USATORI_EnemyStatComponent::GetHealth()
+{
+	return Health;
+}
+
+float USATORI_EnemyStatComponent::GetMaxHealth()
+{
+	return MaxHealth;
+}
