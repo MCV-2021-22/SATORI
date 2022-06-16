@@ -34,21 +34,21 @@ public:
 
 	//EnemyActors
 
-	TArray < AActor* >& GetEnemyActorsRef() { return EnemyActors; };
+	//TArray < AActor* >& GetEnemyActorsRef() { return EnemyActors; };
 
-	UFUNCTION()
-	void AddEnemyActor(AActor* Enemy);
+	//UFUNCTION()
+	//void AddEnemyActor(AActor* Enemy);
 
-	UFUNCTION()
-	void RemoveEnemyActor(AActor* Enemy);
+	//UFUNCTION()
+	//void RemoveEnemyActor(AActor* Enemy);
 
-	UFUNCTION()
-	bool IsEmptyEnemyActors();
+	//UFUNCTION()
+	//bool IsEmptyEnemyActors();
 
 private:
 
-	UPROPERTY()
-	TArray < AActor* > EnemyActors;
+	//UPROPERTY()
+	//TArray < AActor* > EnemyActors;
 
 	int GenerateRandomNumberForPortal();
 

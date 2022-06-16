@@ -8,7 +8,7 @@
 #include "SATORI/FunctionLibrary/SATORI_BlueprintLibrary.h"
 #include "SATORICharacter.h"
 #include "SATORIGameMode.h"
-#include "GameState/SATORI_GameState.h"
+//#include "GameState/SATORI_GameState.h"
 
 ASATORI_MissileActor::ASATORI_MissileActor()
 {
@@ -80,7 +80,8 @@ void ASATORI_MissileActor::BeginPlay()
 	}
 	else
 	{
-		TArray < AActor* >& AllEnemies = GetWorld()->GetGameState<ASATORI_GameState>()->GetEnemyActorsRef();
+		TArray < AActor* >& AllEnemies = GetWorld()->GetAuthGameMode<ASATORIGameMode>()->GetEnemyActorsRef();
+		//TArray < AActor* >& AllEnemies = GetWorld()->GetGameState<ASATORI_GameState>()->GetEnemyActorsRef();
 
 		for (AActor* Actor : AllEnemies)
 		{

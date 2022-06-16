@@ -6,7 +6,7 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Engine/Classes/Camera/CameraComponent.h"
 #include "Components/WidgetComponent.h"
-#include "GameState/SATORI_GameState.h"
+//#include "GameState/SATORI_GameState.h"
 #include "SATORIGameMode.h"
 //Debug
 #include "DrawDebugHelpers.h"
@@ -122,10 +122,8 @@ void USATORI_TargetSystemComponent::TargetActor()
 	}
 	else 
 	{
-		//Temporary
-		//TargetableActors = GetWorld()->GetAuthGameMode<ASATORIGameMode>()->GetEnemyActors();
-		//TargetableActors = GetWorld()->GetGameState<ASATORI_GameState>()->GetEnemyActors();
-		TArray < AActor* >& AllEnemies = GetWorld()->GetGameState<ASATORI_GameState>()->GetEnemyActorsRef();
+		TArray < AActor* >& AllEnemies = GetWorld()->GetAuthGameMode<ASATORIGameMode>()->GetEnemyActorsRef();
+		//TArray < AActor* >& AllEnemies = GetWorld()->GetGameState<ASATORI_GameState>()->GetEnemyActorsRef();
 		LockedOnTargetActor = FindNearestTarget(AllEnemies);
 		TargetLockOn(LockedOnTargetActor);
 	}
@@ -156,7 +154,8 @@ void USATORI_TargetSystemComponent::TargetLockOn(AActor* TargetToLockOn)
 	CreateAndAttachTargetLockedOnWidgetComponent(TargetToLockOn);
 
 	//It will not break line of sight with others enemies
-	LineOfSightIgnoreActors = GetWorld()->GetGameState<ASATORI_GameState>()->GetEnemyActorsRef();
+	LineOfSightIgnoreActors = GetWorld()->GetAuthGameMode<ASATORIGameMode>()->GetEnemyActorsRef();
+	//LineOfSightIgnoreActors = GetWorld()->GetGameState<ASATORI_GameState>()->GetEnemyActorsRef();
 	LineOfSightIgnoreActors.Remove(LockedOnTargetActor);
 
 	//Ignore controller input
@@ -383,9 +382,8 @@ void USATORI_TargetSystemComponent::TargetActorWithAxisInput(const float AxisVal
 	TArray<AActor*> ActorsToIgnore;
 	ActorsToIgnore.Add(CurrentTarget);
 
-	//TargetableActors = GetWorld()->GetAuthGameMode<ASATORIGameMode>()->GetEnemyActors();
-	//TargetableActors = GetWorld()->GetGameState<ASATORI_GameState>()->GetEnemyActors();
-	TArray < AActor* >& AllEnemies = GetWorld()->GetGameState<ASATORI_GameState>()->GetEnemyActorsRef();
+	TArray < AActor* >& AllEnemies = GetWorld()->GetAuthGameMode<ASATORIGameMode>()->GetEnemyActorsRef();
+	//TArray < AActor* >& AllEnemies = GetWorld()->GetGameState<ASATORI_GameState>()->GetEnemyActorsRef();
 
 	for (AActor* Actor : AllEnemies)
 	{

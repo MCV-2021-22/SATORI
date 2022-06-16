@@ -8,7 +8,7 @@
 #include "AbilitySystemComponent.h"
 #include "Character/SATORI_CharacterBase.h"
 #include "GameplayTags.h"
-#include "Animation/AnimNotifies/AnimNotify.h"
+#include "GAS\SATORI_GameplayAbility.h"
 #include "SATORI_AICharacter.generated.h"
 
 
@@ -168,8 +168,6 @@ public: //Character Death
 	virtual void CharacterDeath() override;
 
 	virtual void RemoveCharacterAbilities() override;
-
-	virtual void Notify(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation) override;
 
 	void DestroyMyself();
 
