@@ -15,7 +15,7 @@ ASATORI_ArcherProjectile::ASATORI_ArcherProjectile()
 	SphereComponent = CreateDefaultSubobject<USphereComponent>(TEXT("Sphere"));
 	SphereComponent->SetSphereRadius(5.0f);
 	//SphereComponent->SetCollisionProfileName(UCollisionProfile::BlockAllDynamic_ProfileName);
-	SphereComponent->SetCollisionProfileName(FName("Trigger"));
+	
 	SphereComponent->OnComponentHit.AddUniqueDynamic(this, &ASATORI_ArcherProjectile::OnComponentHit);
 	SphereComponent->OnComponentBeginOverlap.AddUniqueDynamic(this, &ASATORI_ArcherProjectile::OnComponentBeginOverlap);
 	//SphereComponent->SetSimulatePhysics(true);
@@ -112,8 +112,11 @@ void ASATORI_ArcherProjectile::OnComponentBeginOverlap(
 
 	ASATORI_ArcherProjectile* Choque = Cast<ASATORI_ArcherProjectile>(OtherActor);
 
-
-	if (!Choque || inmunity <= 0 || LifeTime <= 0)
+	if(Choque)
+	{
+		ASATORICharacter* Player = Cast<ASATORICharacter>(OtherActor);
+	}
+	else if (!Choque || inmunity <= 0 || LifeTime <= 0)
 	{
 		ASATORICharacter* Player = Cast<ASATORICharacter>(OtherActor);
 		if(Player)
