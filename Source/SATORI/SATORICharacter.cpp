@@ -23,6 +23,7 @@
 #include "DrawDebugHelpers.h"
 #include "AI/Character/SATORI_AICharacter.h"
 #include "GAS/Attributes/SATORI_AttributeSet.h"
+#include "Character/SATORI_PlayerController.h"
 //Cheat related include
 #include "Kismet/GameplayStatics.h"
 
@@ -277,6 +278,11 @@ void ASATORICharacter::CharacterDeath()
 
 	if (DeathMontage)
 	{
+		ASATORI_PlayerController* SatoriController = Cast<ASATORI_PlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
+		if (SatoriController)
+		{
+			DisableInput(SatoriController);
+		}
 		PlayAnimMontage(DeathMontage);
 	}
 }
