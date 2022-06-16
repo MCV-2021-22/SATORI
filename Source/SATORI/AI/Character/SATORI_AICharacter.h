@@ -80,10 +80,6 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Stats")
 	USATORI_EnemyStatComponent* EnemyStatComponent;
 
-	// Death Animation
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Death|Animation")
-	UAnimMontage* DeathMontage;
-
 	bool GetIsInFront() const { return isInFrontPlayer; }
 
 	UFUNCTION(BlueprintCallable)
@@ -165,10 +161,16 @@ public: //Target System Interface related and Tag Abilities related (Nacho)
 
 public: //Character Death
 
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Death")
+	UAnimMontage* DeathMontage;
+
 	virtual void CharacterDeath() override;
 
 	virtual void RemoveCharacterAbilities() override;
 
 	void DestroyMyself();
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Tag")
+	FGameplayTagContainer   BlockTags;
 
 };

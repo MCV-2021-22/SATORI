@@ -23,8 +23,9 @@
 #include "Components/SphereComponent.h"
 #include "Kismet/GameplayStatics.h"
 //#include "GameState/SATORI_GameState.h"
-#include "GameFramework/PawnMovementComponent.h"
 #include "SATORIGameMode.h"
+#include "GameFramework\CharacterMovementComponent.h"
+
 
 
 // Sets default values
@@ -420,7 +421,16 @@ void ASATORI_AICharacter::CharacterDeath()
 	//GetWorld()->GetGameState<ASATORI_GameState>()->RemoveEnemyActor(this);
 
 	SetActorEnableCollision(ECollisionEnabled::NoCollision);
-	GetMovementComponent()->Velocity = FVector(0);
+	GetCharacterMovement()->Velocity = FVector(0);
+	GetCharacterMovement()->RotationRate = FRotator(0.0f, 0.0f, 0.0f);
+
+	AAIController* AIController = Cast<AAIController>(GetController());
+	if (AIController)
+	{
+		FString Death = "Dying";
+		AIController->GetBrainComponent()->StopLogic(Death);
+	}
+	
 
 	if (AbilitySystemComponent.IsValid())
 	{
@@ -431,6 +441,7 @@ void ASATORI_AICharacter::CharacterDeath()
 		int32 NumEffectsRemoved = AbilitySystemComponent->RemoveActiveEffectsWithTags(EffectTagsToRemove);
 
 		AbilitySystemComponent->AddLooseGameplayTag(DeadTag);
+
 	}
 
 	if (DeathMontage)
@@ -454,19 +465,5 @@ void ASATORI_AICharacter::DestroyMyself()
 
 void ASATORI_AICharacter::RemoveCharacterAbilities()
 {
-	TArray<FGameplayAbilitySpecHandle> AbilitiesToRemove;
-	for (const FGameplayAbilitySpec& Spec : AbilitySystemComponent->GetActivatableAbilities())
-	{
-		if ((Spec.SourceObject == this) && AICharacterAbilities.Contains(Spec.Ability->GetClass()))
-		{
-			AbilitiesToRemove.Add(Spec.Handle);
-		}
-	}
-
-	// Do in two passes so the removal happens after we have the full list
-	for (int32 i = 0; i < AbilitiesToRemove.Num(); i++)
-	{
-		AbilitySystemComponent->ClearAbility(AbilitiesToRemove[i]);
-	}
-
+	AbilitySystemComponent->BlockAbilitiesWithTags(BlockTags);
 }
