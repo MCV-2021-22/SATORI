@@ -49,4 +49,8 @@ private:
 
 	TArray<AActor*> ArrayLured;
 
+protected:
+
+	virtual void BeginPlay() override;
+
 };

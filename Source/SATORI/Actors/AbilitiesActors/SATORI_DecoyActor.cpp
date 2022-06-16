@@ -105,6 +105,8 @@ void ASATORI_DecoyActor::BeginPlay()
 {
 	Super::BeginPlay();
 
+	Tags.Add("Ability.Decoy");
+
 	//Set max time before auto destruc
 	GetWorldTimerManager().SetTimer(TimerHandleDestroy, this, &ASATORI_DecoyActor::Explode, TimeToDestroy, false);
 }

@@ -74,11 +74,6 @@ int ASATORI_GameState::GenerateRandomNumberForPortal()
     return number;
 }
 
-//TArray<AActor*> ASATORI_GameState::GetEnemyActors()
-//{
-//    return EnemyActors;
-//}
-//
 //void ASATORI_GameState::AddEnemyActor(AActor* Enemy)
 //{
 //    EnemyActors.Add(Enemy);
@@ -93,3 +88,4 @@ int ASATORI_GameState::GenerateRandomNumberForPortal()
 //{
 //    return EnemyActors.Num() == 0 ? true : false;
 //}
+

@@ -24,6 +24,8 @@
 #include "Kismet/GameplayStatics.h"
 //#include "GameState/SATORI_GameState.h"
 #include "SATORIGameMode.h"
+#include "GameFramework\CharacterMovementComponent.h"
+
 
 
 // Sets default values
@@ -92,7 +94,6 @@ void ASATORI_AICharacter::BeginPlay()
 		Character->GetOwnedGameplayTags(TagContainer);
 		AbilitySystemComponent->AddLooseGameplayTags(TagContainer);
 	}
-	AddGameplayTag(FGameplayTag::RequestGameplayTag("State.Burst"));
 
 	//Needed for targeting system (Nacho)
 	if (bIsTargetable) {
@@ -218,37 +219,6 @@ void ASATORI_AICharacter::PossessedBy(AController* NewController)
 		SetHealth(GetMaxHealth());
 
 	}
-
-}
-
-void ASATORI_AICharacter::CharacterDeath()
-{
-	// Only runs on Server
-	RemoveCharacterAbilities();
-
-	/*GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-	GetCharacterMovement()->GravityScale = 0;
-	GetCharacterMovement()->Velocity = FVector(0);*/
-
-	if (AbilitySystemComponent.IsValid())
-	{
-		AbilitySystemComponent->CancelAllAbilities();
-
-		FGameplayTagContainer EffectTagsToRemove;
-		EffectTagsToRemove.AddTag(EffectRemoveOnDeathTag);
-		int32 NumEffectsRemoved = AbilitySystemComponent->RemoveActiveEffectsWithTags(EffectTagsToRemove);
-
-		AbilitySystemComponent->AddLooseGameplayTag(DeadTag);
-	}
-
-	if (DeathMontage)
-	{
-		PlayAnimMontage(DeathMontage);
-	}
-}
-
-void ASATORI_AICharacter::RemoveCharacterAbilities()
-{
 
 }
 
@@ -387,29 +357,16 @@ void ASATORI_AICharacter::sendDamage(float dmg)
 			float b = Spawned->SpawnedDie();
 
 			
-			Die();
+			CharacterDeath();
 		}
 		else
 		{
-			Die();
+			CharacterDeath();
 		}
 		
 	}
 
 
-}
-
-void ASATORI_AICharacter::Die()
-{
-	
-
-	GetWorld()->GetAuthGameMode<ASATORIGameMode>()->RemoveEnemyActor(this);
-
-	//ASATORI_GameState* const GameState = GetWorld() != NULL ? GetWorld()->GetGameState<ASATORI_GameState>() : NULL;
-	//GameState->RemoveEnemyActor(this);
-	//ASATORICharacter* Player = Cast<ASATORICharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
-	//Player->GetTargetSystemComponent()->RemoveTargetableActor(this);
-	Destroy();
 }
 
 void ASATORI_AICharacter::HealthBarProjection(UWidgetComponent* HealthBar, float ViewDistance, float RangeA, float RangeB)
@@ -457,9 +414,63 @@ void ASATORI_AICharacter::RegisterInTargetableArray_Implementation()
 {
 	if (bIsTargetable)
 	{
-		 GetWorld()->GetAuthGameMode<ASATORIGameMode>()->AddEnemyActor(this);
+		GetWorld()->GetAuthGameMode<ASATORIGameMode>()->AddEnemyActor(this);
 		//GetWorld()->GetGameState<ASATORI_GameState>()->AddEnemyActor(this);
-		//ASATORICharacter* Player = Cast<ASATORICharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
-		//Player->GetTargetSystemComponent()->AddTargetableActor(this);
 	}
+}
+
+void ASATORI_AICharacter::CharacterDeath()
+{
+	
+	RemoveCharacterAbilities();
+
+	GetWorld()->GetAuthGameMode<ASATORIGameMode>()->RemoveEnemyActor(this);
+	//GetWorld()->GetGameState<ASATORI_GameState>()->RemoveEnemyActor(this);
+
+	SetActorEnableCollision(ECollisionEnabled::NoCollision);
+	GetCharacterMovement()->Velocity = FVector(0);
+	GetCharacterMovement()->RotationRate = FRotator(0.0f, 0.0f, 0.0f);
+
+	AAIController* AIController = Cast<AAIController>(GetController());
+	if (AIController)
+	{
+		FString Death = "Dying";
+		AIController->GetBrainComponent()->StopLogic(Death);
+	}
+	
+
+	if (AbilitySystemComponent.IsValid())
+	{
+		AbilitySystemComponent->CancelAllAbilities();
+
+		FGameplayTagContainer EffectTagsToRemove;
+		EffectTagsToRemove.AddTag(EffectRemoveOnDeathTag);
+		int32 NumEffectsRemoved = AbilitySystemComponent->RemoveActiveEffectsWithTags(EffectTagsToRemove);
+
+		AbilitySystemComponent->AddLooseGameplayTag(DeadTag);
+
+	}
+
+	if (DeathMontage)
+	{
+		float TimeToEnd = PlayAnimMontage(DeathMontage);
+		FTimerHandle TimerHandleDestroy;
+		GetWorldTimerManager().SetTimer(TimerHandleDestroy, this, &ASATORI_AICharacter::DestroyMyself, TimeToEnd, false);
+
+	}
+	else
+	{
+		DestroyMyself();
+	}
+
+}
+
+void ASATORI_AICharacter::DestroyMyself()
+{
+	Destroy();
+}
+
+void ASATORI_AICharacter::RemoveCharacterAbilities()
+{
+	AbilitySystemComponent->BlockAbilitiesWithTags(BlockTags);
 }

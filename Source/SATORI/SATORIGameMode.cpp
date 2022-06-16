@@ -46,11 +46,6 @@ void ASATORIGameMode::OpenLevel()
 //	}
 //}
 
-TArray<AActor*> ASATORIGameMode::GetEnemyActors()
-{
-	return EnemyActors;
-}
-
 void ASATORIGameMode::AddEnemyActor(AActor* Enemy)
 {
 	EnemyActors.Add(Enemy);
