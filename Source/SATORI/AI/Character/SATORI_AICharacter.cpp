@@ -94,7 +94,6 @@ void ASATORI_AICharacter::BeginPlay()
 		Character->GetOwnedGameplayTags(TagContainer);
 		AbilitySystemComponent->AddLooseGameplayTags(TagContainer);
 	}
-	AddGameplayTag(FGameplayTag::RequestGameplayTag("State.Burst"));
 
 	//Needed for targeting system (Nacho)
 	if (bIsTargetable) {

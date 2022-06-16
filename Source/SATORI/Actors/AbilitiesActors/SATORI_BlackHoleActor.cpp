@@ -53,7 +53,7 @@ void ASATORI_BlackHoleActor::OnOverlapCollisionSphere(UPrimitiveComponent* Overl
 		return;
 	}
 
-	if (Character->HasMatchingGameplayTag(EnemyTag))
+	if (Character->HasMatchingGameplayTag(EnemyTag) && !Character->HasMatchingGameplayTag(TrappedTag))
 	{
 		Character->AddGameplayTag(TrappedTag);
 		ArrayActorsTrapped.AddUnique(OtherActor);
@@ -62,6 +62,17 @@ void ASATORI_BlackHoleActor::OnOverlapCollisionSphere(UPrimitiveComponent* Overl
 
 void ASATORI_BlackHoleActor::DestroyMyself()
 {
+
+	for (AActor* Actor : ArrayActorsTrapped) {
+
+		if (IsValid(Actor))
+		{
+			ASATORI_AICharacter* Character = Cast<ASATORI_AICharacter>(Actor);
+			//RemoveTagTrapped
+			Character->RemoveGameplayTag(TrappedTag);
+		}
+	}
+
 	Destroy();
 }
 
@@ -86,9 +97,6 @@ void ASATORI_BlackHoleActor::StopAttraction()
 			ASATORI_AICharacter* Character = Cast<ASATORI_AICharacter>(Actor);
 			float DamageDone = USATORI_BlueprintLibrary::ApplyGameplayEffectDamage(Actor, DamageExplosion, Actor, DamageGameplayEffect);
 			Character->sendDamage(DamageDone);
-
-			//RemoveTagTrapped
-			Character->RemoveGameplayTag(TrappedTag);
 
 			//Return to normal size
 			Actor->SetActorScale3D(FVector(1.0f, 1.0f, 1.0f));

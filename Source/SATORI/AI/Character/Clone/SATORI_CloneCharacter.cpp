@@ -49,3 +49,10 @@ void ASATORI_CloneCharacter::OnOverlapLuringSphere(UPrimitiveComponent* Overlapp
 		ArrayLured.AddUnique(OtherActor);
 	}
 }
+
+void ASATORI_CloneCharacter::BeginPlay()
+{
+	Super::BeginPlay();
+
+	Tags.Add("Character.Clone");
+}
