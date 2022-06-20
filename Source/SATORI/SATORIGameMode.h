@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/GameMode.h"
+#include "Actors/Portal/SATORI_Portal.h"
 #include "SATORIGameMode.generated.h"
 
 UCLASS(minimalapi)
@@ -38,10 +39,22 @@ public:
 	UFUNCTION()
 	bool IsEmptyEnemyActors();
 
+	UFUNCTION()
+	int NumOfEnemyActors();
+
+	UFUNCTION()
+	void AddPortalActor(ASATORI_Portal* Portal);
+
+	UFUNCTION()
+	int NumOfPortalActors();
+
 private:
 
 	UPROPERTY()
 	TArray < AActor* > EnemyActors;
+
+	UPROPERTY()
+	TArray < ASATORI_Portal* > PortalActors;
 
 };
 

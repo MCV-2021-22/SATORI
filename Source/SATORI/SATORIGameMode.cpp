@@ -54,9 +54,33 @@ void ASATORIGameMode::AddEnemyActor(AActor* Enemy)
 void ASATORIGameMode::RemoveEnemyActor(AActor* Enemy)
 {
 	EnemyActors.Remove(Enemy);
+
+	if (IsEmptyEnemyActors())
+	{
+		for (ASATORI_Portal* Portal : PortalActors)
+		{
+			Portal->ActivatePortal();
+			
+		}
+	}
 }
 
 bool ASATORIGameMode::IsEmptyEnemyActors()
 {
 	return EnemyActors.Num() == 0 ? true : false;
+}
+
+int ASATORIGameMode::NumOfEnemyActors()
+{
+	return EnemyActors.Num();
+}
+
+void ASATORIGameMode::AddPortalActor(ASATORI_Portal* Portal)
+{
+	PortalActors.Add(Portal);
+}
+
+int ASATORIGameMode::NumOfPortalActors()
+{
+	return PortalActors.Num();
 }

@@ -32,10 +32,16 @@ public:
 	void UnRegisterActorToSave();
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		float PlayerLife = 0.0f;
+	float PlayerLife = 0.0f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		float PlayerMana = 0.0f;
+	float PlayerMana = 0.0f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float PlayerMaxLife = 0.0f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float PlayerMaxMana = 0.0f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		int PlayerAbility = 0;
