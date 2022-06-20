@@ -92,6 +92,7 @@ void USATORI_StatsComponent::HealthChanged(const FOnAttributeChangeData& Data)
 	if (Health <= 0)
 	{
 		SatoriCharacter->CharacterDeath();
+
 	}
 
 	UpdateHealthBarPercent();

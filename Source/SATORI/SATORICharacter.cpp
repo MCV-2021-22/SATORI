@@ -282,6 +282,7 @@ void ASATORICharacter::CharacterDeath()
 		if (SatoriController)
 		{
 			DisableInput(SatoriController);
+			SatoriController->SetShowMouseCursor(true);
 		}
 		PlayAnimMontage(DeathMontage);
 	}
