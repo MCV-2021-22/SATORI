@@ -155,7 +155,6 @@ void ASATORI_Portal::ChangeLevel(ASATORICharacter* Character)
 	FString CurrentLevel = GetWorld()->GetMapName();
 	CurrentLevel.RemoveFromStart(GetWorld()->StreamingLevelsPrefix);
 
-
 	USATORI_GameInstance* GameInstanceRef = Cast<USATORI_GameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
 
 	if (GameInstanceRef)

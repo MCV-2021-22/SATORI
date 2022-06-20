@@ -23,7 +23,7 @@
 #include "DrawDebugHelpers.h"
 #include "AI/Character/SATORI_AICharacter.h"
 #include "GAS/Attributes/SATORI_AttributeSet.h"
-//Cheat related include
+#include "GameplayFramework/SATORI_GameInstance.h"
 #include "Kismet/GameplayStatics.h"
 
 //////////////////////////////////////////////////////////////////////////

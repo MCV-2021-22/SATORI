@@ -104,13 +104,14 @@ public:
 	FGameplayTag DeadTag;
 	FGameplayTag EffectRemoveOnDeathTag;
 
+	virtual void SetHealth(float Health);
+
+	virtual void SetMana(float Mana);
+
 protected:
 
 	virtual void BeginPlay() override;
 
-	virtual void SetHealth(float Health);
-
-	virtual void SetMana(float Mana);
 
 	TWeakObjectPtr<USATORI_AttributeSet> AttributeSetBase;
 
