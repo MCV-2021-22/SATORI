@@ -26,8 +26,13 @@ void UGA_ArqueroDefensivo::ActivateAbility(const FGameplayAbilitySpecHandle Hand
 
 	ASATORI_RangeMovable* Character = Cast<ASATORI_RangeMovable>(GetAvatarActorFromActorInfo());
 	if (Defensive)
+	{
+		Character->RemoveGameplayTag(FGameplayTag::RequestGameplayTag("State.Burst"));
 		Character->moveBackwards = true;
+	}
+		
 
+	
 	TimerDelegate = FTimerDelegate::CreateUObject(this, &UGA_ArqueroDefensivo::OnTimerFinished, Handle, ActorInfo, ActivationInfo);
 	GetWorld()->GetTimerManager().SetTimer(TimerHandle, TimerDelegate, 0.5f, true);
 	
@@ -57,56 +62,11 @@ void UGA_ArqueroDefensivo::OnTimerFinished(const FGameplayAbilitySpecHandle Hand
 	if (IsClone)
 	{
 		UGameplayStatics::GetAllActorsWithTag(GetWorld(), FName("Character.Clone"), enemigos);
-		/*for (AActor* Actor : enemigos)
-		{
-			//Actor->Tags.Add("PossessedBy.Player");
-			if (Cast<ASATORI_AICharacter>(Actor) != nullptr)
-			{
-				ASATORI_AICharacter* Player = Cast<ASATORI_AICharacter>(Actor);
-				bool tiene = Player->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag("PossessedBy.Player"));
-
-				FVector dest = Player->GetActorLocation();
-				if (Sphere)
-				{
-					FVector newForward = dest - Sphere->GetActorLocation();
-					newForward.Normalize();
-
-					Sphere->setDirection(newForward * 20);
-				}
-
-
-				break;
-
-			}
-
-		}*/
 	}
 	else
 	{
 		UGameplayStatics::GetAllActorsWithTag(GetWorld(), FName("PossessedBy.Player"), enemigos);
-		/*for (AActor* Actor : enemigos)
-		{
-			//Actor->Tags.Add("PossessedBy.Player");
-			if (Cast<ASATORICharacter>(Actor) != nullptr)
-			{
-				ASATORICharacter* Player = Cast<ASATORICharacter>(Actor);
-				bool tiene = Player->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag("PossessedBy.Player"));
-
-				FVector dest = Player->GetActorLocation();
-				if (Sphere)
-				{
-					FVector newForward = dest - Sphere->GetActorLocation();
-					newForward.Normalize();
-
-					Sphere->setDirection(newForward * 20);
-				}
-
-
-				break;
-
-			}
-
-		}*/
+		
 	}
 
 	for (AActor* Actor : enemigos)
@@ -155,6 +115,9 @@ void UGA_ArqueroDefensivo::OnTimerFinished(const FGameplayAbilitySpecHandle Hand
 
 void UGA_ArqueroDefensivo::OnEndAb(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo)
 {
+	ASATORI_RangeMovable* Character = Cast<ASATORI_RangeMovable>(GetAvatarActorFromActorInfo());
+	Character->RemoveGameplayTag(FGameplayTag::RequestGameplayTag("State.Burst"));
+
 	EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true);
 }
 

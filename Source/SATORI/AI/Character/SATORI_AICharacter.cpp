@@ -301,6 +301,7 @@ void ASATORI_AICharacter::Tick(float DeltaSeconds)
 		if(time_burst <= 0.f)
 		{
 			bursting = false;
+			RemoveGameplayTag(FGameplayTag::RequestGameplayTag("State.Burst"));
 		}
 	}
 
