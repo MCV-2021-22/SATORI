@@ -172,6 +172,9 @@ void ASATORI_AICharacter::AddAICharacterAbilities()
 	for (FSATORIGameplayAbilityInfo Ability : DefaultAbilities->Abilities)
 	{
 		GrantAbilityToPlayer(FGameplayAbilitySpec(Ability.SATORIAbility, 1, static_cast<uint32>(Ability.AbilityKeys), this));
+
+		// Adding Remove Abilities, use for death, need to remove all abilities
+		RemovedgameplayAbilities.Add(Ability.SATORIAbility.Get());
 	}
 }
 
@@ -473,4 +476,29 @@ void ASATORI_AICharacter::DestroyMyself()
 void ASATORI_AICharacter::RemoveCharacterAbilities()
 {
 	AbilitySystemComponent->BlockAbilitiesWithTags(BlockTags);
+
+	if (GetLocalRole() != ROLE_Authority || !AbilitySystemComponent.IsValid())
+	{
+		return;
+	}
+
+	// Remove any abilities added from a previous call. This checks to make sure the ability is in the startup 'CharacterAbilities' array.
+	TArray<FGameplayAbilitySpecHandle> AbilitiesToRemove;
+
+	if (RemovedgameplayAbilities.Num() > 0)
+	{
+		for (const FGameplayAbilitySpec& Spec : AbilitySystemComponent->GetActivatableAbilities())
+		{
+			if ((Spec.SourceObject == this) && RemovedgameplayAbilities.Contains(Spec.Ability->GetClass()))
+			{
+				AbilitiesToRemove.Add(Spec.Handle);
+			}
+		}
+	}
+
+	// Do in two passes so the removal happens after we have the full list
+	for (int32 i = 0; i < AbilitiesToRemove.Num(); i++)
+	{
+		AbilitySystemComponent->ClearAbility(AbilitiesToRemove[i]);
+	}
 }

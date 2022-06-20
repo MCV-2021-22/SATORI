@@ -12,6 +12,7 @@ class USATORI_AbilitySystemComponent;
 class USATORI_AttributeSet;
 class UCapsuleComponent;
 class UAnimMontage;
+class USATORI_GameplayAbility;
 
 UCLASS()
 class SATORI_API ASATORI_CharacterBase : public ACharacter, public IAbilitySystemInterface
@@ -117,4 +118,5 @@ protected:
 	// The core ActorComponent for interfacing with the GameplayAbilities System
 	TWeakObjectPtr<USATORI_AbilitySystemComponent> AbilitySystemComponent;
 
+	TArray<TSubclassOf<USATORI_GameplayAbility>> RemovedgameplayAbilities;
 };

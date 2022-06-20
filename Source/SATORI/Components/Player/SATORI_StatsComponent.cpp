@@ -10,6 +10,7 @@
 #include "AbilitySystemComponent.h"
 #include "UI/SATORI_MainUI.h"
 #include "Character/SATORI_PlayerController.h"
+#include "Blueprint/UserWidget.h"
 
 // Sets default values for this component's properties
 USATORI_StatsComponent::USATORI_StatsComponent()
@@ -92,7 +93,10 @@ void USATORI_StatsComponent::HealthChanged(const FOnAttributeChangeData& Data)
 	if (Health <= 0)
 	{
 		SatoriCharacter->CharacterDeath();
-
+		/*if (DeathWidget)
+		{
+			DeathWidget.Get;
+		}*/
 	}
 
 	UpdateHealthBarPercent();

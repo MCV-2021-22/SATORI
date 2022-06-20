@@ -77,8 +77,10 @@ public:
 	bool DoRayCast();
 
 	UFUNCTION(BlueprintCallable)
-	
 	bool PlayerActiveAbilityWithTag(FGameplayTag TagName);
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void ShowDeathWidget();
 
 	virtual void CharacterDeath() override;
 	

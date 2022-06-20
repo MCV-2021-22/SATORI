@@ -11,6 +11,7 @@ class ASATORICharacter;
 class ASATORI_PlayerState;
 class USATORI_AttributeSet;
 class UAbilitySystemComponent;
+class UUserWidget;
 
 /*
 * Class represent All Player Stats, we can use for UI 
