@@ -210,6 +210,9 @@ void ASATORI_AICharacter::PossessedBy(AController* NewController)
 
 		AAIController* controller = Cast<AAIController>(NewController);
 
+		AddGameplayTag(FGameplayTag::RequestGameplayTag("State.PlayerNonSeen"));
+		
+
 		AttributeSetBase = AttributeSet;
 		btree = bte.LoadSynchronous();
 		controller->RunBehaviorTree(btree);

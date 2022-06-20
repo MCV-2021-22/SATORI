@@ -54,14 +54,67 @@ void UGA_ArqueroDefensivo::OnTimerFinished(const FGameplayAbilitySpecHandle Hand
 		RotationOfIA);
 
 	TArray< AActor* > enemigos;
-	UGameplayStatics::GetAllActorsWithTag(GetWorld(), FName("PossessedBy.Player"), enemigos);
+	if (IsClone)
+	{
+		UGameplayStatics::GetAllActorsWithTag(GetWorld(), FName("Character.Clone"), enemigos);
+		/*for (AActor* Actor : enemigos)
+		{
+			//Actor->Tags.Add("PossessedBy.Player");
+			if (Cast<ASATORI_AICharacter>(Actor) != nullptr)
+			{
+				ASATORI_AICharacter* Player = Cast<ASATORI_AICharacter>(Actor);
+				bool tiene = Player->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag("PossessedBy.Player"));
+
+				FVector dest = Player->GetActorLocation();
+				if (Sphere)
+				{
+					FVector newForward = dest - Sphere->GetActorLocation();
+					newForward.Normalize();
+
+					Sphere->setDirection(newForward * 20);
+				}
+
+
+				break;
+
+			}
+
+		}*/
+	}
+	else
+	{
+		UGameplayStatics::GetAllActorsWithTag(GetWorld(), FName("PossessedBy.Player"), enemigos);
+		/*for (AActor* Actor : enemigos)
+		{
+			//Actor->Tags.Add("PossessedBy.Player");
+			if (Cast<ASATORICharacter>(Actor) != nullptr)
+			{
+				ASATORICharacter* Player = Cast<ASATORICharacter>(Actor);
+				bool tiene = Player->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag("PossessedBy.Player"));
+
+				FVector dest = Player->GetActorLocation();
+				if (Sphere)
+				{
+					FVector newForward = dest - Sphere->GetActorLocation();
+					newForward.Normalize();
+
+					Sphere->setDirection(newForward * 20);
+				}
+
+
+				break;
+
+			}
+
+		}*/
+	}
 
 	for (AActor* Actor : enemigos)
 	{
 		//Actor->Tags.Add("PossessedBy.Player");
-		if (Cast<ASATORICharacter>(Actor) != nullptr)
+		if (Cast<ASATORI_CharacterBase>(Actor) != nullptr)
 		{
-			ASATORICharacter* Player = Cast<ASATORICharacter>(Actor);
+			ASATORI_CharacterBase* Player = Cast<ASATORI_CharacterBase>(Actor);
 			bool tiene = Player->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag("PossessedBy.Player"));
 
 			FVector dest = Player->GetActorLocation();
