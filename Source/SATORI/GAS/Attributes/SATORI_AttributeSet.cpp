@@ -129,6 +129,13 @@ void USATORI_AttributeSet::PostGameplayEffectExecute(const struct FGameplayEffec
 		// Health loss should go through Damage.
 		SetHealth(FMath::Clamp(GetHealth(), 0.0f, GetMaxHealth()));
 	}
+
+	if (Data.EvaluatedData.Attribute == GetManaAttribute())
+	{
+		// Handle other health changes.
+		// Health loss should go through Damage.
+		SetMana(FMath::Clamp(GetHealth(), 0.0f, GetMaxMana()));
+	}
 }
 
 void USATORI_AttributeSet::AdjustAttributeForMaxChange(FGameplayAttributeData& AffectedAttribute,
