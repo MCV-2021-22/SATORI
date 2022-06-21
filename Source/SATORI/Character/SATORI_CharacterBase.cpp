@@ -151,3 +151,9 @@ void ASATORI_CharacterBase::SetMana(float Mana)
 	if (AttributeSetBase.IsValid())
 		AttributeSetBase->SetMana(Mana);
 }
+
+void ASATORI_CharacterBase::SetDefense(float Defense)
+{
+	if (AttributeSetBase.IsValid())
+		AttributeSetBase->SetDefense(Defense);
+}

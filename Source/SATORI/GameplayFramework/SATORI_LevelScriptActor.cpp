@@ -22,9 +22,9 @@ void ASATORI_LevelScriptActor::LoadPlayerStats()
 
 	if (GameInstanceRef != nullptr && Character != nullptr)
 	{
-		//Character->SetHealth(GameInstanceRef->PlayerLife);
-		Character->SetHealth(5);
+		Character->SetHealth(GameInstanceRef->PlayerLife);
 		Character->SetMana(GameInstanceRef->PlayerMana);
+		Character->SetDefense(GameInstanceRef->PlayerDefense);
 		//Character->SetMaxHealth(GameInstanceRef->PlayerMaxLife);
 		//Character->SetMaxMana(GameInstanceRef->PlayerMaxMana);
 	}

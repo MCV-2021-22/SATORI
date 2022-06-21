@@ -5,7 +5,6 @@
 #include "CoreMinimal.h"
 #include "Engine/GameInstance.h"
 #include "Savegame/SATORI_SaveGame.h"
-
 #include "SATORI_GameInstance.generated.h"
 
 /**
@@ -44,7 +43,12 @@ public:
 	float PlayerMaxMana = 0.0f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		int PlayerAbility = 0;
+	float PlayerDefense = 0.0f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int PlayerAbility = 0;
+
+
 private:
 	void InitSaveGame();
 

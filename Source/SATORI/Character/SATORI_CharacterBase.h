@@ -104,9 +104,14 @@ public:
 	FGameplayTag DeadTag;
 	FGameplayTag EffectRemoveOnDeathTag;
 
+	UFUNCTION(BlueprintCallable, Category = "Player|Attributes")
 	virtual void SetHealth(float Health);
 
+	UFUNCTION(BlueprintCallable, Category = "Player|Attributes")
 	virtual void SetMana(float Mana);
+
+	UFUNCTION(BlueprintCallable, Category = "Player|Attributes")
+	virtual void SetDefense(float Defense);
 
 protected:
 
