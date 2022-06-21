@@ -38,4 +38,7 @@ public:
 	UPROPERTY(BlueprintReadOnly, EditAnywhere)
 		bool IsClone;
 
+	UPROPERTY(BlueprintReadOnly, EditAnywhere)
+		float damage;
+
 };

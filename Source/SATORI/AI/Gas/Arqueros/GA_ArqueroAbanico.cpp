@@ -26,126 +26,18 @@ void UGA_ArqueroAbanico::ActivateAbility(const FGameplayAbilitySpecHandle Handle
 	FActorSpawnParameters SpawnParams;
 	SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
 
-
-	FVector prueba = FVector(0, 0, 1);
-	FVector RotatePrueba = prueba.RotateAngleAxis(-90.0f, FVector(0, 0, 1));
-
-
 	TArray< AActor* > enemigos;
 
 	if(IsClone)
 	{
 		UGameplayStatics::GetAllActorsWithTag(GetWorld(), FName("Character.Clone"), enemigos);
-		/*for (AActor* Actor : enemigos)
-		{
-			//Actor->Tags.Add("PossessedBy.Player");
-			if (Cast<ASATORI_AICharacter>(Actor) != nullptr)
-			{
-				ASATORI_AICharacter* Player = Cast<ASATORI_AICharacter>(Actor);
-				
-				FVector dest = Player->GetActorLocation();
-
-				//primer misil
-
-				ASATORI_ArcherProjectile* Sphere = GetWorld()->SpawnActor<ASATORI_ArcherProjectile>(ProjectileClass,
-					ActorInfo->AvatarActor->GetActorLocation() + ActorInfo->AvatarActor->GetActorForwardVector() * 200,
-					RotationOfIA, SpawnParams);
-
-				if (Sphere)
-				{
-					FVector newForward = dest - Sphere->GetActorLocation();
-
-					newForward.Normalize();
-
-					Sphere->setDirection(newForward * 20);
-				}
-				// segundo misil
-
-				ASATORI_ArcherProjectile* Sphere1 = GetWorld()->SpawnActor<ASATORI_ArcherProjectile>(ProjectileClass,
-					ActorInfo->AvatarActor->GetActorLocation() + ActorInfo->AvatarActor->GetActorForwardVector() * 150,
-					RotationOfIA, SpawnParams);
-
-				if (Sphere1)
-				{
-					FVector newForward1 = dest - Sphere1->GetActorLocation();
-					FVector RotateValue1 = newForward1.RotateAngleAxis(15.0f, FVector(0, 0, 1));
-					RotateValue1.Normalize();
-					//Sphere1->setDirection(newForward1 * 50);
-					Sphere1->setDirection(RotateValue1 * 20);
-				}
-				// tercer misil
-				ASATORI_ArcherProjectile* Sphere2 = GetWorld()->SpawnActor<ASATORI_ArcherProjectile>(ProjectileClass,
-					ActorInfo->AvatarActor->GetActorLocation() + ActorInfo->AvatarActor->GetActorForwardVector() * 100,
-					RotationOfIA, SpawnParams);
-				if (Sphere2)
-				{
-					FVector newForward2 = dest - Sphere2->GetActorLocation();
-					FVector RotateValue2 = newForward2.RotateAngleAxis(-15.0f, FVector(0, 0, 1));
-					RotateValue2.Normalize();
-					Sphere2->setDirection(RotateValue2 * 20);
-
-				}
-				break;
-			}
-		}*/
+		
 	}
 	else
 	{
 		UGameplayStatics::GetAllActorsWithTag(GetWorld(), FName("PossessedBy.Player"), enemigos);
-		/*for (AActor* Actor : enemigos)
-		{
-			//Actor->Tags.Add("PossessedBy.Player");
-			if (Cast<ASATORICharacter>(Actor) != nullptr)
-			{
-				ASATORICharacter* Player = Cast<ASATORICharacter>(Actor);
-
-				FVector dest = Player->GetActorLocation();
-
-				//primer misil
-
-				ASATORI_ArcherProjectile* Sphere = GetWorld()->SpawnActor<ASATORI_ArcherProjectile>(ProjectileClass,
-					ActorInfo->AvatarActor->GetActorLocation() + ActorInfo->AvatarActor->GetActorForwardVector() * 200,
-					RotationOfIA, SpawnParams);
-
-				if (Sphere)
-				{
-					FVector newForward = dest - Sphere->GetActorLocation();
-
-					newForward.Normalize();
-
-					Sphere->setDirection(newForward * 20);
-				}
-				// segundo misil
-
-				ASATORI_ArcherProjectile* Sphere1 = GetWorld()->SpawnActor<ASATORI_ArcherProjectile>(ProjectileClass,
-					ActorInfo->AvatarActor->GetActorLocation() + ActorInfo->AvatarActor->GetActorForwardVector() * 150,
-					RotationOfIA, SpawnParams);
-
-				if (Sphere1)
-				{
-					FVector newForward1 = dest - Sphere1->GetActorLocation();
-					FVector RotateValue1 = newForward1.RotateAngleAxis(15.0f, FVector(0, 0, 1));
-					RotateValue1.Normalize();
-					//Sphere1->setDirection(newForward1 * 50);
-					Sphere1->setDirection(RotateValue1 * 20);
-				}
-				// tercer misil
-				ASATORI_ArcherProjectile* Sphere2 = GetWorld()->SpawnActor<ASATORI_ArcherProjectile>(ProjectileClass,
-					ActorInfo->AvatarActor->GetActorLocation() + ActorInfo->AvatarActor->GetActorForwardVector() * 100,
-					RotationOfIA, SpawnParams);
-				if (Sphere2)
-				{
-					FVector newForward2 = dest - Sphere2->GetActorLocation();
-					FVector RotateValue2 = newForward2.RotateAngleAxis(-15.0f, FVector(0, 0, 1));
-					RotateValue2.Normalize();
-					Sphere2->setDirection(RotateValue2 * 20);
-
-				}
-				break;
-			}
-		}*/
+		
 	}
-	
 
 	for (AActor* Actor : enemigos)
 	{
@@ -170,7 +62,7 @@ void UGA_ArqueroAbanico::ActivateAbility(const FGameplayAbilitySpecHandle Handle
 				FVector newForward = dest - Sphere->GetActorLocation();
 
 				newForward.Normalize();
-
+				Sphere->damage = this->damage;
 				Sphere->setDirection(newForward * 20);
 			}
 			
@@ -187,10 +79,7 @@ void UGA_ArqueroAbanico::ActivateAbility(const FGameplayAbilitySpecHandle Handle
 				FVector RotateValue1 = newForward1.RotateAngleAxis(15.0f, FVector(0, 0, 1));
 
 				RotateValue1.Normalize();
-
-
-
-
+				Sphere->damage = this->damage;
 				//Sphere1->setDirection(newForward1 * 50);
 				Sphere1->setDirection(RotateValue1 * 20);
 			}
@@ -205,26 +94,12 @@ void UGA_ArqueroAbanico::ActivateAbility(const FGameplayAbilitySpecHandle Handle
 				FVector newForward2 = dest - Sphere2->GetActorLocation();
 				FVector RotateValue2 = newForward2.RotateAngleAxis(-15.0f, FVector(0, 0, 1));
 				RotateValue2.Normalize();
-
-
-
-
+				Sphere->damage = this->damage;
 				Sphere2->setDirection(RotateValue2 * 20);
 
 			}
-			
-
-			
-
-
 			break;
-
 		}
-
 	}
-
 	EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true);
-
-
-
 }

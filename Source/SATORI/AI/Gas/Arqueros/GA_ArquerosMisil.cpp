@@ -26,69 +26,14 @@ void UGA_ArquerosMisil::ActivateAbility(const FGameplayAbilitySpecHandle Handle,
 	if (IsClone)
 	{
 		UGameplayStatics::GetAllActorsWithTag(GetWorld(), FName("Character.Clone"), enemigos);
-		/*for (AActor* Actor : enemigos)
-		{
-			if (Cast<ASATORI_AICharacter>(Actor) != nullptr)
-			{
-				ASATORI_AICharacter* Player = Cast<ASATORI_AICharacter>(Actor);
-
-				FVector dest = Player->GetActorLocation();
-
-				FRotator RotationOfIA = ActorInfo->AvatarActor->GetActorRotation();
-				FActorSpawnParameters SpawnParams;
-				SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
-
-				ASATORI_ArcherProjectile* Sphere = GetWorld()->SpawnActor<ASATORI_ArcherProjectile>(ProjectileClass,
-					ActorInfo->AvatarActor->GetActorLocation() + ActorInfo->AvatarActor->GetActorForwardVector() * 100,
-					RotationOfIA);
-
-				if (Sphere)
-				{
-					FVector newForward = dest - Sphere->GetActorLocation();
-					newForward.Normalize();
-					Sphere->setDirection(newForward * 20);
-				}
-				break;
-			}
-		}*/
+		
 	}
 	else
 	{
 		UGameplayStatics::GetAllActorsWithTag(GetWorld(), FName("PossessedBy.Player"), enemigos);
-		/*for (AActor* Actor : enemigos)
-		{
-			if (Cast<ASATORICharacter>(Actor) != nullptr)
-			{
-				ASATORICharacter* Player = Cast<ASATORICharacter>(Actor);
-				bool tiene = Player->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag("PossessedBy.Player"));
-
-				UE_LOG(LogTemp, Display, TEXT("Number of actors with that tag: %d"), tiene);
-
-				FVector dest = Player->GetActorLocation();
-
-				FRotator RotationOfIA = ActorInfo->AvatarActor->GetActorRotation();
-				FActorSpawnParameters SpawnParams;
-				SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
-
-				FTransform IATransform = ActorInfo->AvatarActor->GetTransform();
-
-
-				ASATORI_ArcherProjectile* Sphere = GetWorld()->SpawnActor<ASATORI_ArcherProjectile>(ProjectileClass,
-					ActorInfo->AvatarActor->GetActorLocation() + ActorInfo->AvatarActor->GetActorForwardVector() * 100,
-					RotationOfIA);
-
-				if (Sphere)
-				{
-					FVector newForward = dest - Sphere->GetActorLocation();
-					newForward.Normalize();
-					Sphere->setDirection(newForward * 20);
-				}
-				break;
-			}
-		}*/
+		
 	}
 
-	
 	for (AActor* Actor : enemigos)
 	{
 		if(Cast<ASATORI_CharacterBase>(Actor) != nullptr)
@@ -114,6 +59,7 @@ void UGA_ArquerosMisil::ActivateAbility(const FGameplayAbilitySpecHandle Handle,
 			{
 				FVector newForward = dest - Sphere->GetActorLocation();
 				newForward.Normalize();
+				Sphere->damage = this->damage;
 				Sphere->setDirection(newForward * 20);
 			}
 			break;
