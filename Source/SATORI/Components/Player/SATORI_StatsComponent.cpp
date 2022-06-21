@@ -41,13 +41,13 @@ void USATORI_StatsComponent::InitializeStatsAttributes(ASATORI_PlayerState* Play
 	if (PlayerAttributes.IsValid())
 	{
 		MaxHealth = PlayerAttributes->GetMaxHealth();
-		Health = MaxHealth;
+		Health = PlayerAttributes->GetHealth();
 		PandaCoins = PlayerAttributes->GetGold();
 		PlayerAttributes->InitHealth(Health);
 		PlayerAttributes->InitGold(PandaCoins);
 
 		MaxMana = PlayerAttributes->GetMaxMana();
-		Mana = MaxMana;
+		Mana = PlayerAttributes->GetMana();
 		PlayerAttributes->InitMana(Mana);
 
 		// Update Health UI 
