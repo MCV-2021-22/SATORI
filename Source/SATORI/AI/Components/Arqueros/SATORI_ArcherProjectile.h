@@ -24,8 +24,8 @@ public:
 		UStaticMeshComponent* StaticMeshComponent = nullptr;
 
 
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Meta = (ExposeOnSpawn = true), Category = "Missile")
-	float Damage = 10;
+	//UPROPERTY(BlueprintReadWrite, EditAnywhere, Meta = (ExposeOnSpawn = true), Category = "Missile")
+	float damage = 10.0f;
 
 	UFUNCTION()
 		void OnComponentBeginOverlap(
@@ -48,7 +48,7 @@ public:
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Meta = (ExposeOnSpawn = true), Category = "Missile")
 		TSubclassOf<UGameplayEffect> DamageGameplayEffect;
 
-
+	
 
 protected:
 
@@ -64,6 +64,8 @@ protected:
 	float inmunity = 1.f;
 
 	float LifeTime = 8.f;
+
+	
 
 };
 

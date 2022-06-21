@@ -22,24 +22,14 @@ UGA_ArqueroDefensivo::UGA_ArqueroDefensivo()
 
 void UGA_ArqueroDefensivo::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData)
 {
-
-
 	ASATORI_RangeMovable* Character = Cast<ASATORI_RangeMovable>(GetAvatarActorFromActorInfo());
 	if (Defensive)
 	{
 		Character->RemoveGameplayTag(FGameplayTag::RequestGameplayTag("State.Burst"));
 		Character->moveBackwards = true;
 	}
-		
-
-	
 	TimerDelegate = FTimerDelegate::CreateUObject(this, &UGA_ArqueroDefensivo::OnTimerFinished, Handle, ActorInfo, ActivationInfo);
 	GetWorld()->GetTimerManager().SetTimer(TimerHandle, TimerDelegate, 0.5f, true);
-	
-
-	
-	
-
 }
 
 void UGA_ArqueroDefensivo::OnTimerFinished(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo)
@@ -51,8 +41,6 @@ void UGA_ArqueroDefensivo::OnTimerFinished(const FGameplayAbilitySpecHandle Hand
 	FRotator RotationOfIA = ActorInfo->AvatarActor->GetActorRotation();
 	FActorSpawnParameters SpawnParams;
 	SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
-
-
 
 	ASATORI_ArcherProjectile* Sphere = GetWorld()->SpawnActor<ASATORI_ArcherProjectile>(ProjectileClass,
 		ActorInfo->AvatarActor->GetActorLocation() + ActorInfo->AvatarActor->GetActorForwardVector() * 100,
@@ -82,15 +70,11 @@ void UGA_ArqueroDefensivo::OnTimerFinished(const FGameplayAbilitySpecHandle Hand
 			{
 				FVector newForward = dest - Sphere->GetActorLocation();
 				newForward.Normalize();
-
+				Sphere->damage = this->damage;
 				Sphere->setDirection(newForward * 20);
 			}
-
-			
 			break;
-
 		}
-
 	}
 	
 	if(iteracion == 3)
@@ -99,8 +83,6 @@ void UGA_ArqueroDefensivo::OnTimerFinished(const FGameplayAbilitySpecHandle Hand
 		{
 			//ASATORI_RangeMovable* Character = Cast<ASATORI_RangeMovable>(GetAvatarActorFromActorInfo());
 			Character->moveBackwards = false;
-
-
 			Character->RemoveGameplayTag(FGameplayTag::RequestGameplayTag("State.Burst"));
 		}
 
@@ -109,8 +91,6 @@ void UGA_ArqueroDefensivo::OnTimerFinished(const FGameplayAbilitySpecHandle Hand
 		EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true);
 		
 	}
-
-
 }
 
 void UGA_ArqueroDefensivo::OnEndAb(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo)

@@ -50,6 +50,9 @@ public:
 	UPROPERTY(BlueprintReadOnly, EditAnywhere)
 		bool IsClone;
 
+	UPROPERTY(BlueprintReadOnly, EditAnywhere)
+		float damage;
+
 private:
 
 	ASATORI_AICharacter* Enemy = nullptr;

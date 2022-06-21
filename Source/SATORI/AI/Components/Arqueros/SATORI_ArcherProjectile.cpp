@@ -121,7 +121,7 @@ void ASATORI_ArcherProjectile::OnComponentBeginOverlap(
 		ASATORICharacter* Player = Cast<ASATORICharacter>(OtherActor);
 		if(Player)
 		{
-			float dmg_done= USATORI_BlueprintLibrary::ApplyGameplayEffectDamage(OtherActor, Damage, OtherActor, DamageGameplayEffect);
+			float dmg_done= USATORI_BlueprintLibrary::ApplyGameplayEffectDamage(OtherActor, damage, OtherActor, DamageGameplayEffect);
 		}
 		Destroy();
 	}
