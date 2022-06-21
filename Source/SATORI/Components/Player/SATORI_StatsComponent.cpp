@@ -23,6 +23,8 @@ void USATORI_StatsComponent::BeginPlay()
 {
 	Super::BeginPlay();
 
+	ASATORICharacter* SatoriCharacter = Cast<ASATORICharacter>(GetOwner());
+	BindAttributeChage(SatoriCharacter);
 	/*ASATORI_PlayerState* PlayerState = SatoriCharacter->GetPlayerState<ASATORI_PlayerState>();
 
 	if (SatoriCharacter && PlayerState)
