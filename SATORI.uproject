@@ -14,11 +14,6 @@
 				"UMG",
 				"AIModule"
 			]
-		},
-		{
-			"Name": "SATORIDebug",
-			"Type": "Runtime",
-			"LoadingPhase": "Default"
 		}
 	],
 	"Plugins": [
