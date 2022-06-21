@@ -118,6 +118,8 @@ void ASATORICharacter::PossessedBy(AController* NewController)
 
 		// Set Health to Max Health Value
 		SetHealth(GetMaxHealth());
+
+		StatsComponent->InitializeStatsAttributes(PS);
 	}
 
 	if (Cast<APlayerController>(NewController) != nullptr) {

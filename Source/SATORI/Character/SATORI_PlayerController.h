@@ -20,6 +20,8 @@ public:
 	USATORI_MainUI* GetSatoriMainUI() { return SATORIMainWidget; }
 
 protected:
+	// Called when the game starts
+	virtual void BeginPlay() override;
 
 	virtual void OnPossess(APawn* aPawn) override;
 
