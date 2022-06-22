@@ -5,7 +5,6 @@
 #include "CoreMinimal.h"
 #include "Engine/GameInstance.h"
 #include "Savegame/SATORI_SaveGame.h"
-
 #include "SATORI_GameInstance.generated.h"
 
 /**
@@ -32,19 +31,37 @@ public:
 	void UnRegisterActorToSave();
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float PlayerLife = 0.0f;
+	float Health = 0.0f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float PlayerMana = 0.0f;
+	float Mana = 0.0f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float PlayerMaxLife = 0.0f;
+	float MaxHealth = 0.0f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float PlayerMaxMana = 0.0f;
+	float MaxMana = 0.0f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		int PlayerAbility = 0;
+	float Defense = 0.0f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float Attack = 0.0f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float MoveSpeed = 0.0f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float Gold = 0.0f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int PlayerAbility = 0;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	USATORI_AttributeSet* Attributes;
+
+	bool PlayerStart = true;
+
 private:
 	void InitSaveGame();
 

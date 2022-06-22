@@ -159,10 +159,14 @@ void ASATORI_Portal::ChangeLevel(ASATORICharacter* Character)
 
 	if (GameInstanceRef)
 	{
-		GameInstanceRef->PlayerLife = Character->GetHealth();
-		GameInstanceRef->PlayerMana = Character->GetMana();
-		GameInstanceRef->PlayerMaxLife = Character->GetMaxHealth();
-		GameInstanceRef->PlayerMaxMana = Character->GetMaxMana();
+		GameInstanceRef->Health = Character->GetHealth();
+		GameInstanceRef->MaxHealth = Character->GetMaxHealth();
+		GameInstanceRef->Mana = Character->GetMana();
+		GameInstanceRef->MaxMana = Character->GetMaxMana();
+		GameInstanceRef->Defense = Character->GetDefense();
+		GameInstanceRef->Attack = Character->GetAttack();
+		GameInstanceRef->MoveSpeed = Character->GetMoveSpeed();
+		GameInstanceRef->Gold = Character->GetGold();
 	}
 
 	if (LevelNames.Num() != 0)

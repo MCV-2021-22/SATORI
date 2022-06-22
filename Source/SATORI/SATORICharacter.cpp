@@ -24,6 +24,8 @@
 #include "AI/Character/SATORI_AICharacter.h"
 #include "GAS/Attributes/SATORI_AttributeSet.h"
 #include "GameplayFramework/SATORI_GameInstance.h"
+#include "Character/SATORI_PlayerController.h"
+//Cheat related include
 #include "Kismet/GameplayStatics.h"
 
 //////////////////////////////////////////////////////////////////////////
@@ -92,7 +94,7 @@ void ASATORICharacter::PossessedBy(AController* NewController)
 {
 	Super::PossessedBy(NewController);
 	UE_LOG(LogTemp, Warning, TEXT("On Possessed"));
-
+	USATORI_GameInstance* GameInstanceRef = Cast<USATORI_GameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
 	ASATORI_PlayerState* PS = GetPlayerState<ASATORI_PlayerState>();
 	if (PS)
 	{
@@ -115,8 +117,34 @@ void ASATORICharacter::PossessedBy(AController* NewController)
 		SATORIAbilityMaskComponent->GrantedMaskEffects(MaskType);
 		// -------------------
 
+		if(GameInstanceRef->PlayerStart)
+		{
+			SetHealth(GetMaxHealth());
+			SetMana(GetMaxMana());
+			GameInstanceRef->PlayerStart = false;
+		}
+		else
+		{
+			SetHealth(GameInstanceRef->Health);
+			SetMana(GameInstanceRef->Mana);
+			SetMaxHealth(GameInstanceRef->MaxHealth);
+			SetMaxMana(GameInstanceRef->MaxMana);
+			SetDefense(GameInstanceRef->Defense);
+			SetAttack(GameInstanceRef->Attack);
+			SetMoveSpeed(GameInstanceRef->MoveSpeed);
+			SetGold(GameInstanceRef->Gold);
+		}
+		
+
+		ASATORI_PlayerController* SatoriPlayerController = Cast<ASATORI_PlayerController>(GetController());
+		if (SatoriPlayerController)
+		{
+			SatoriPlayerController->CreateMainHUD();
+		}
+
+		StatsComponent->InitializeStatsAttributes(PS);
+
 		// Set Health to Max Health Value
-		SetHealth(GetMaxHealth());
 	}
 
 	if (Cast<APlayerController>(NewController) != nullptr) {
@@ -124,6 +152,47 @@ void ASATORICharacter::PossessedBy(AController* NewController)
 		AddGameplayTag(FGameplayTag::RequestGameplayTag("PossessedBy.Player"));
 		//AddGameplayTag(FGameplayTag::RequestGameplayTag("PossessedBy.AI"));
 	}
+}
+
+void ASATORICharacter::OnRep_PlayerState()
+{
+	Super::OnRep_PlayerState();
+
+	ASATORI_PlayerState* PS = GetPlayerState<ASATORI_PlayerState>();
+	if (PS)
+	{
+		AbilitySystemComponent = Cast<USATORI_AbilitySystemComponent>(PS->GetAbilitySystemComponent());
+
+		AbilitySystemComponent->InitAbilityActorInfo(PS, this);
+
+		AttributeSetBase = PS->GetSatoriAttributeSet();
+
+		AbilitySystemComponent->AddLooseGameplayTag(FGameplayTag::RequestGameplayTag("PossessedBy.Player"));
+
+		Tags.Add("PossessedBy.Player");
+
+
+		InitializePassiveAttributes();
+		ApplyDefaultAbilities();
+
+		// Test Mask Effect
+		MaskType = SATORIMaskType::Aka;
+		SATORIAbilityMaskComponent->GrantedMaskEffects(MaskType);
+		// -------------------
+
+		// Set Health to Max Health Value
+		SetHealth(GetMaxHealth());
+
+		ASATORI_PlayerController* SatoriPlayerController = Cast<ASATORI_PlayerController>(GetController());
+		if (SatoriPlayerController)
+		{
+			SatoriPlayerController->CreateMainHUD();
+		}
+
+		StatsComponent->InitializeStatsAttributes(PS);
+	}
+
+	AddGameplayTag(FGameplayTag::RequestGameplayTag("PossessedBy.Player"));
 }
 
 void ASATORICharacter::ApplyDefaultAbilities()
@@ -139,6 +208,9 @@ void ASATORICharacter::ApplyDefaultAbilities()
 	{
 		// GameplayAbilitySpec exists on the ASC after a GameplayAbility is granted and defines the activatable GameplayAbility
 		GrantAbilityToPlayer(FGameplayAbilitySpec(Ability.SATORIAbility, 1, static_cast<uint32>(Ability.AbilityKeys), this));
+
+		// Adding Remove Abilities, use for death, need to remove all abilities
+		RemovedgameplayAbilities.Add(Ability.SATORIAbility.Get());
 	}
 }
 
@@ -277,13 +349,43 @@ void ASATORICharacter::CharacterDeath()
 
 	if (DeathMontage)
 	{
+		ASATORI_PlayerController* SatoriController = Cast<ASATORI_PlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
+		if (SatoriController)
+		{
+			DisableInput(SatoriController);
+			SatoriController->SetShowMouseCursor(true);
+			ShowDeathWidget();
+		}
 		PlayAnimMontage(DeathMontage);
 	}
 }
 
 void ASATORICharacter::RemoveCharacterAbilities()
 {
+	if (GetLocalRole() != ROLE_Authority || !AbilitySystemComponent.IsValid())
+	{
+		return;
+	}
 
+	// Remove any abilities added from a previous call. This checks to make sure the ability is in the startup 'CharacterAbilities' array.
+	TArray<FGameplayAbilitySpecHandle> AbilitiesToRemove;
+
+	if (RemovedgameplayAbilities.Num() > 0)
+	{
+		for (const FGameplayAbilitySpec& Spec : AbilitySystemComponent->GetActivatableAbilities())
+		{
+			if ((Spec.SourceObject == this) && RemovedgameplayAbilities.Contains(Spec.Ability->GetClass()))
+			{
+				AbilitiesToRemove.Add(Spec.Handle);
+			}
+		}
+	}
+	
+	// Do in two passes so the removal happens after we have the full list
+	for (int32 i = 0; i < AbilitiesToRemove.Num(); i++)
+	{
+		AbilitySystemComponent->ClearAbility(AbilitiesToRemove[i]);
+	}
 }
 
 //////////////////////////////////////////////////////////////////////////

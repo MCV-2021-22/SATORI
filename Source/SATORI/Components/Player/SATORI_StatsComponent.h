@@ -11,6 +11,8 @@ class ASATORICharacter;
 class ASATORI_PlayerState;
 class USATORI_AttributeSet;
 class UAbilitySystemComponent;
+class UUserWidget;
+class ASATORI_PlayerController;
 
 /*
 * Class represent All Player Stats, we can use for UI 
@@ -26,12 +28,11 @@ public:
 	// Sets default values for this component's properties
 	USATORI_StatsComponent();
 
+	// Initialize all Health attributes for local values
+	virtual void InitializeStatsAttributes(ASATORI_PlayerState* PlayerState);
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
-
-	// Initialize all Health attributes for local values
-	virtual void InitializeStatsAttributes(ASATORI_PlayerState* PlayerState);
 
 	// Helper function if we change some value attributes and we capture the changes
 	virtual void BindAttributeChage(ASATORICharacter* PlayerCharacter);
@@ -80,6 +81,4 @@ protected:
 	void UpdateManaBarText();
 
 	void UpdatePandaCoinText();
-	
-	ASATORICharacter* SatoriCharacter = nullptr;
 };
