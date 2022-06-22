@@ -62,17 +62,6 @@ void ASATORI_BlackHoleActor::OnOverlapCollisionSphere(UPrimitiveComponent* Overl
 
 void ASATORI_BlackHoleActor::DestroyMyself()
 {
-
-	for (AActor* Actor : ArrayActorsTrapped) {
-
-		if (IsValid(Actor))
-		{
-			ASATORI_AICharacter* Character = Cast<ASATORI_AICharacter>(Actor);
-			//RemoveTagTrapped
-			Character->RemoveGameplayTag(TrappedTag);
-		}
-	}
-
 	Destroy();
 }
 
@@ -89,10 +78,13 @@ void ASATORI_BlackHoleActor::StopAttraction()
 	RadialForceComponent->Radius = 64.0f;
 	RadialForceComponent->ForceStrength = 500000.0f;
 
+	CollisionSphereComponent->SetCollisionProfileName(UCollisionProfile::NoCollision_ProfileName);
+	
 	for (AActor* Actor : ArrayActorsTrapped) {
 
 		if (IsValid(Actor))
 		{
+
 			//Damage Explosion Calculation
 			ASATORI_AICharacter* Character = Cast<ASATORI_AICharacter>(Actor);
 			float DamageDone = USATORI_BlueprintLibrary::ApplyGameplayEffectDamage(Actor, DamageExplosion, Actor, DamageGameplayEffect);
@@ -105,6 +97,8 @@ void ASATORI_BlackHoleActor::StopAttraction()
 			FVector PrecautionMeasure = FMath::VRand();
 			PrecautionMeasure.Z = 0.0f;
 			Actor->AddActorLocalOffset(PrecautionMeasure * 200);
+
+			Character->RemoveGameplayTag(TrappedTag);
 		}
 	}
 
