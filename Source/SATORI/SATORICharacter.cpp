@@ -94,7 +94,7 @@ void ASATORICharacter::PossessedBy(AController* NewController)
 {
 	Super::PossessedBy(NewController);
 	UE_LOG(LogTemp, Warning, TEXT("On Possessed"));
-
+	USATORI_GameInstance* GameInstanceRef = Cast<USATORI_GameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
 	ASATORI_PlayerState* PS = GetPlayerState<ASATORI_PlayerState>();
 	if (PS)
 	{
@@ -116,7 +116,17 @@ void ASATORICharacter::PossessedBy(AController* NewController)
 		MaskType = SATORIMaskType::Aka;
 		SATORIAbilityMaskComponent->GrantedMaskEffects(MaskType);
 		// -------------------
-		SetHealth(GetMaxHealth());
+
+		if(GameInstanceRef->PlayerStart)
+		{
+			SetHealth(GetMaxHealth());
+			GameInstanceRef->PlayerStart = false;
+		}
+		else
+		{
+			SetHealth(GameInstanceRef->PlayerLife);
+		}
+		
 
 		ASATORI_PlayerController* SatoriPlayerController = Cast<ASATORI_PlayerController>(GetController());
 		if (SatoriPlayerController)

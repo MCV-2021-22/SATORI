@@ -48,7 +48,7 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	int PlayerAbility = 0;
 
-
+	bool PlayerStart = true;
 private:
 	void InitSaveGame();
 

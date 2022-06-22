@@ -166,7 +166,7 @@ void ASATORI_Portal::ChangeLevel(ASATORICharacter* Character)
 		Character->SetDefense(5);
 		GameInstanceRef->PlayerDefense= Character->GetDefense();
 
-		GameInstanceRef->Atributset = Character->AttributeSetBase;
+		//GameInstanceRef->Atributset = Character->AttributeSetBase;
 	}
 
 	if (LevelNames.Num() != 0)
