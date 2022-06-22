@@ -34,5 +34,11 @@ public:
 	UPROPERTY(BlueprintReadOnly, EditAnywhere)
 		TSubclassOf<ASATORI_ArcherProjectile> ProjectileClass;
 
+	UPROPERTY(BlueprintReadOnly, EditAnywhere)
+		bool IsClone;
+
+	UPROPERTY(BlueprintReadOnly, EditAnywhere)
+		float damage;
+
 
 };

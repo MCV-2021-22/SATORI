@@ -47,6 +47,12 @@ public:
 	UPROPERTY(EditDefaultsOnly)
 		float RemainingSeconds = 2.0f;
 
+	UPROPERTY(BlueprintReadOnly, EditAnywhere)
+		bool IsClone;
+
+	UPROPERTY(BlueprintReadOnly, EditAnywhere)
+		float damage;
+
 private:
 
 	ASATORI_AICharacter* Enemy = nullptr;

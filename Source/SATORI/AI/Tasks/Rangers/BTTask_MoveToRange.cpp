@@ -21,7 +21,7 @@ EBTNodeResult::Type UBTTask_MoveToRange::ExecuteTask(UBehaviorTreeComponent& Own
 
 	ASATORI_RangeMovable* AI = Cast<ASATORI_RangeMovable>(Pawn);
 
-	ASATORICharacter* Player1 = Cast<ASATORICharacter>(OwnerComp.GetBlackboardComponent()->GetValueAsObject(MyBlackboardKey.SelectedKeyName));
+	ASATORI_CharacterBase* Player1 = Cast<ASATORI_CharacterBase>(OwnerComp.GetBlackboardComponent()->GetValueAsObject(MyBlackboardKey.SelectedKeyName));
 
 	float dist = AI->GetDistanceTo(Player1);
 
@@ -46,3 +46,9 @@ EBTNodeResult::Type UBTTask_MoveToRange::ExecuteTask(UBehaviorTreeComponent& Own
 	return Result;
 }
 
+EBTNodeResult::Type UBTTask_MoveToRange::AbortTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
+{
+	EBTNodeResult::Type Result = EBTNodeResult::Failed;
+	Result = EBTNodeResult::Aborted;
+	return Result;
+}

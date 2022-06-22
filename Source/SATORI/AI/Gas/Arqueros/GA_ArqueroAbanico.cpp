@@ -26,20 +26,25 @@ void UGA_ArqueroAbanico::ActivateAbility(const FGameplayAbilitySpecHandle Handle
 	FActorSpawnParameters SpawnParams;
 	SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
 
-
-	FVector prueba = FVector(0, 0, 1);
-	FVector RotatePrueba = prueba.RotateAngleAxis(-90.0f, FVector(0, 0, 1));
-
-
 	TArray< AActor* > enemigos;
-	UGameplayStatics::GetAllActorsWithTag(GetWorld(), FName("PossessedBy.Player"), enemigos);
+
+	if(IsClone)
+	{
+		UGameplayStatics::GetAllActorsWithTag(GetWorld(), FName("Character.Clone"), enemigos);
+		
+	}
+	else
+	{
+		UGameplayStatics::GetAllActorsWithTag(GetWorld(), FName("PossessedBy.Player"), enemigos);
+		
+	}
 
 	for (AActor* Actor : enemigos)
 	{
 		//Actor->Tags.Add("PossessedBy.Player");
-		if (Cast<ASATORICharacter>(Actor) != nullptr)
+		if (Cast<ASATORI_CharacterBase>(Actor) != nullptr)
 		{
-			ASATORICharacter* Player = Cast<ASATORICharacter>(Actor);
+			ASATORI_CharacterBase* Player = Cast<ASATORI_CharacterBase>(Actor);
 			bool tiene = Player->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag("PossessedBy.Player"));
 
 			UE_LOG(LogTemp, Display, TEXT("Number of actors with that tag: %d"), tiene);
@@ -57,7 +62,7 @@ void UGA_ArqueroAbanico::ActivateAbility(const FGameplayAbilitySpecHandle Handle
 				FVector newForward = dest - Sphere->GetActorLocation();
 
 				newForward.Normalize();
-
+				Sphere->damage = this->damage;
 				Sphere->setDirection(newForward * 20);
 			}
 			
@@ -74,10 +79,7 @@ void UGA_ArqueroAbanico::ActivateAbility(const FGameplayAbilitySpecHandle Handle
 				FVector RotateValue1 = newForward1.RotateAngleAxis(15.0f, FVector(0, 0, 1));
 
 				RotateValue1.Normalize();
-
-
-
-
+				Sphere->damage = this->damage;
 				//Sphere1->setDirection(newForward1 * 50);
 				Sphere1->setDirection(RotateValue1 * 20);
 			}
@@ -92,26 +94,12 @@ void UGA_ArqueroAbanico::ActivateAbility(const FGameplayAbilitySpecHandle Handle
 				FVector newForward2 = dest - Sphere2->GetActorLocation();
 				FVector RotateValue2 = newForward2.RotateAngleAxis(-15.0f, FVector(0, 0, 1));
 				RotateValue2.Normalize();
-
-
-
-
+				Sphere->damage = this->damage;
 				Sphere2->setDirection(RotateValue2 * 20);
 
 			}
-			
-
-			
-
-
 			break;
-
 		}
-
 	}
-
 	EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true);
-
-
-
 }

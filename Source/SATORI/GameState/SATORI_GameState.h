@@ -3,12 +3,13 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Actors/Portal/SATORI_Portal.h"
 #include "GameFramework/GameState.h"
 #include "SATORI_GameState.generated.h"
 
 class ASATORI_Portal;
 class USATORI_PortalPassiveDataAsset;
-struct FSATORI_DoorPassiveReward;
+
 
 UCLASS()
 class SATORI_API ASATORI_GameState : public AGameState

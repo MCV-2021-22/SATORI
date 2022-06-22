@@ -19,26 +19,26 @@ void UGA_ArquerosMisil::ActivateAbility(const FGameplayAbilitySpecHandle Handle,
 	FVector IA_POS = ActorInfo->AvatarActor->GetActorLocation();    
 
 	TArray< AActor* > enemigos;
-	TArray< AActor* > enemigos2;
+	
 
 	FName tag = "PossessedBy.Player";
 
-	UGameplayStatics::GetAllActorsWithTag(GetWorld(), FName("PossessedBy.Player"), enemigos);
-
-	UGameplayStatics::GetAllActorsOfClass(GetWorld(), ASATORICharacter::StaticClass(), enemigos2);
-
-	int array_dim = enemigos.Num();
-	int array_dim2 = enemigos2.Num();
-
-	UE_LOG(LogTemp, Display, TEXT("Number of actors with that tag: %d"), array_dim);
-
-	UE_LOG(LogTemp, Display, TEXT("Number of actors2 with that tag: %d"), array_dim2);
+	if (IsClone)
+	{
+		UGameplayStatics::GetAllActorsWithTag(GetWorld(), FName("Character.Clone"), enemigos);
+		
+	}
+	else
+	{
+		UGameplayStatics::GetAllActorsWithTag(GetWorld(), FName("PossessedBy.Player"), enemigos);
+		
+	}
 
 	for (AActor* Actor : enemigos)
 	{
-		if(Cast<ASATORICharacter>(Actor) != nullptr)
+		if(Cast<ASATORI_CharacterBase>(Actor) != nullptr)
 		{
-			ASATORICharacter* Player = Cast<ASATORICharacter>(Actor);
+			ASATORI_CharacterBase* Player = Cast<ASATORI_CharacterBase>(Actor);
 			bool tiene = Player->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag("PossessedBy.Player"));
 
 			UE_LOG(LogTemp, Display, TEXT("Number of actors with that tag: %d"), tiene);
@@ -51,7 +51,6 @@ void UGA_ArquerosMisil::ActivateAbility(const FGameplayAbilitySpecHandle Handle,
 			
 			FTransform IATransform = ActorInfo->AvatarActor->GetTransform();
 
-
 			ASATORI_ArcherProjectile* Sphere = GetWorld()->SpawnActor<ASATORI_ArcherProjectile>(ProjectileClass,
 				ActorInfo->AvatarActor->GetActorLocation() + ActorInfo->AvatarActor->GetActorForwardVector() * 100,
 				RotationOfIA);
@@ -60,6 +59,7 @@ void UGA_ArquerosMisil::ActivateAbility(const FGameplayAbilitySpecHandle Handle,
 			{
 				FVector newForward = dest - Sphere->GetActorLocation();
 				newForward.Normalize();
+				Sphere->damage = this->damage;
 				Sphere->setDirection(newForward * 20);
 			}
 			break;

@@ -213,6 +213,9 @@ void ASATORI_AICharacter::PossessedBy(AController* NewController)
 
 		AAIController* controller = Cast<AAIController>(NewController);
 
+		AddGameplayTag(FGameplayTag::RequestGameplayTag("State.PlayerNonSeen"));
+		
+
 		AttributeSetBase = AttributeSet;
 		btree = bte.LoadSynchronous();
 		controller->RunBehaviorTree(btree);
@@ -301,6 +304,7 @@ void ASATORI_AICharacter::Tick(float DeltaSeconds)
 		if(time_burst <= 0.f)
 		{
 			bursting = false;
+			RemoveGameplayTag(FGameplayTag::RequestGameplayTag("State.Burst"));
 		}
 	}
 
