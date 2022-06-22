@@ -34,10 +34,10 @@ void USATORI_StatsComponent::BeginPlay()
 	}*/
 }
 
-void USATORI_StatsComponent::InitializeStatsAttributes(USATORI_AttributeSet* PlayerState)
+void USATORI_StatsComponent::InitializeStatsAttributes(ASATORI_PlayerState* PlayerState)
 {
 	// Initialize attributes from player state 
-	PlayerAttributes = PlayerState;
+	PlayerAttributes = PlayerState->GetSatoriAttributeSet();
 	if (PlayerAttributes.IsValid())
 	{
 		MaxHealth = PlayerAttributes->GetMaxHealth();

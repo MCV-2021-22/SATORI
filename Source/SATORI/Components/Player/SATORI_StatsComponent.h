@@ -29,7 +29,7 @@ public:
 	USATORI_StatsComponent();
 
 	// Initialize all Health attributes for local values
-	virtual void InitializeStatsAttributes(USATORI_AttributeSet* PlayerState);
+	virtual void InitializeStatsAttributes(ASATORI_PlayerState* PlayerState);
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;

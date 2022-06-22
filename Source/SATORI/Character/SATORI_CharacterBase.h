@@ -114,14 +114,12 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Player|Attributes")
 	virtual void SetDefense(float Defense);
 
-	USATORI_AttributeSet* AttributeSetBase;
-
 protected:
 
 	virtual void BeginPlay() override;
 
 
-	
+	TWeakObjectPtr<USATORI_AttributeSet> AttributeSetBase;
 
 	// The core ActorComponent for interfacing with the GameplayAbilities System
 	TWeakObjectPtr<USATORI_AbilitySystemComponent> AbilitySystemComponent;

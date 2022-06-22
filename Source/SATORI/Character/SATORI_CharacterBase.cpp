@@ -64,7 +64,7 @@ bool ASATORI_CharacterBase::HasAnyMatchingGameplayTags(const FGameplayTagContain
 // Getters
 float ASATORI_CharacterBase::GetHealth() const
 {
-	if (AttributeSetBase)
+	if (AttributeSetBase.IsValid())
 		return AttributeSetBase->GetHealth();
 
 	return 0.0f;
@@ -72,7 +72,7 @@ float ASATORI_CharacterBase::GetHealth() const
 
 float ASATORI_CharacterBase::GetMaxHealth() const
 {
-	if (AttributeSetBase)
+	if (AttributeSetBase.IsValid())
 		return AttributeSetBase->GetMaxHealth();
 
 	return 0.0f;
@@ -80,7 +80,7 @@ float ASATORI_CharacterBase::GetMaxHealth() const
 
 float ASATORI_CharacterBase::GetMana() const
 {
-	if (AttributeSetBase)
+	if (AttributeSetBase.IsValid())
 		return AttributeSetBase->GetMana();
 
 	return 0.0f;
@@ -88,7 +88,7 @@ float ASATORI_CharacterBase::GetMana() const
 
 float ASATORI_CharacterBase::GetMaxMana() const
 {
-	if (AttributeSetBase)
+	if (AttributeSetBase.IsValid())
 		return AttributeSetBase->GetMaxMana();
 
 	return 0.0f;
@@ -96,7 +96,7 @@ float ASATORI_CharacterBase::GetMaxMana() const
 
 float ASATORI_CharacterBase::GetDefense() const
 {
-	if (AttributeSetBase)
+	if (AttributeSetBase.IsValid())
 		return AttributeSetBase->GetDefense();
 
 	return 0.0f;
@@ -104,7 +104,7 @@ float ASATORI_CharacterBase::GetDefense() const
 
 float ASATORI_CharacterBase::GetAttack() const
 {
-	if (AttributeSetBase)
+	if (AttributeSetBase.IsValid())
 		return AttributeSetBase->GetAttack();
 
 	return 0.0f;
@@ -112,7 +112,7 @@ float ASATORI_CharacterBase::GetAttack() const
 
 float ASATORI_CharacterBase::GetMoveSpeed() const
 {
-	if (AttributeSetBase)
+	if (AttributeSetBase.IsValid())
 		return AttributeSetBase->GetMoveSpeed();
 
 	return 0.0f;
@@ -120,7 +120,7 @@ float ASATORI_CharacterBase::GetMoveSpeed() const
 
 float ASATORI_CharacterBase::GetGold() const
 {
-	if (AttributeSetBase)
+	if (AttributeSetBase.IsValid())
 		return AttributeSetBase->GetGold();
 
 	return 0.0f;
@@ -133,7 +133,7 @@ int32 ASATORI_CharacterBase::GetCharacterLevel() const
 
 bool ASATORI_CharacterBase::IsDead() const
 {
-	if (AttributeSetBase)
+	if (AttributeSetBase.IsValid())
 		return AttributeSetBase->GetHealth() > 0;
 
 	return false;
@@ -142,18 +142,18 @@ bool ASATORI_CharacterBase::IsDead() const
 // Setters
 void ASATORI_CharacterBase::SetHealth(float Health)
 {
-	if (AttributeSetBase)
+	if (AttributeSetBase.IsValid())
 		AttributeSetBase->SetHealth(Health);
 }
 
 void ASATORI_CharacterBase::SetMana(float Mana)
 {
-	if (AttributeSetBase)
+	if (AttributeSetBase.IsValid())
 		AttributeSetBase->SetMana(Mana);
 }
 
 void ASATORI_CharacterBase::SetDefense(float Defense)
 {
-	if (AttributeSetBase)
+	if (AttributeSetBase.IsValid())
 		AttributeSetBase->SetDefense(Defense);
 }

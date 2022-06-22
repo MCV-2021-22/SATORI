@@ -25,7 +25,6 @@ void ASATORI_LevelScriptActor::LoadPlayerStats()
 		Character->SetHealth(GameInstanceRef->PlayerLife);
 		Character->SetMana(GameInstanceRef->PlayerMana);
 		Character->SetDefense(GameInstanceRef->PlayerDefense);
-		Character->AttributeSetBase = GameInstanceRef->Atributset;
 		//Character->SetMaxHealth(GameInstanceRef->PlayerMaxLife);
 		//Character->SetMaxMana(GameInstanceRef->PlayerMaxMana);
 	}
