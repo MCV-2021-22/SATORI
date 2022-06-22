@@ -120,11 +120,19 @@ void ASATORICharacter::PossessedBy(AController* NewController)
 		if(GameInstanceRef->PlayerStart)
 		{
 			SetHealth(GetMaxHealth());
+			SetMana(GetMaxMana());
 			GameInstanceRef->PlayerStart = false;
 		}
 		else
 		{
-			SetHealth(GameInstanceRef->PlayerLife);
+			SetHealth(GameInstanceRef->Health);
+			SetMana(GameInstanceRef->Mana);
+			SetMaxHealth(GameInstanceRef->MaxHealth);
+			SetMaxMana(GameInstanceRef->MaxMana);
+			SetDefense(GameInstanceRef->Defense);
+			SetAttack(GameInstanceRef->Attack);
+			SetMoveSpeed(GameInstanceRef->MoveSpeed);
+			SetGold(GameInstanceRef->Gold);
 		}
 		
 

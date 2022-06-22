@@ -112,7 +112,22 @@ public:
 	virtual void SetMana(float Mana);
 
 	UFUNCTION(BlueprintCallable, Category = "Player|Attributes")
+	virtual void SetMaxHealth(float MaxHealth);
+
+	UFUNCTION(BlueprintCallable, Category = "Player|Attributes")
+	virtual void SetMaxMana(float MaxMana);
+
+	UFUNCTION(BlueprintCallable, Category = "Player|Attributes")
 	virtual void SetDefense(float Defense);
+
+	UFUNCTION(BlueprintCallable, Category = "Player|Attributes")
+	virtual void SetAttack(float Attack);
+
+	UFUNCTION(BlueprintCallable, Category = "Player|Attributes")
+	virtual void SetMoveSpeed(float MoveSpeed);
+
+	UFUNCTION(BlueprintCallable, Category = "Player|Attributes")
+	virtual void SetGold(float Gold);
 
 protected:
 

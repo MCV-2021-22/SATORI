@@ -134,7 +134,7 @@ void USATORI_AttributeSet::PostGameplayEffectExecute(const struct FGameplayEffec
 	{
 		// Handle other health changes.
 		// Health loss should go through Damage.
-		SetMana(FMath::Clamp(GetHealth(), 0.0f, GetMaxMana()));
+		SetMana(FMath::Clamp(GetMana(), 0.0f, GetMaxMana()));
 	}
 }
 
