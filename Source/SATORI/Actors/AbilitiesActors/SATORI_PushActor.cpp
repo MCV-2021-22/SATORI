@@ -59,6 +59,9 @@ void ASATORI_PushActor::OnOverlapSphere(
 
 void ASATORI_PushActor::DestroyMyself()
 {	
+
+	CollisionSphereComponent->SetCollisionProfileName(UCollisionProfile::NoCollision_ProfileName);
+
 	for (AActor* Actor : ArrayPushed) {
 		if (IsValid(Actor))
 		{

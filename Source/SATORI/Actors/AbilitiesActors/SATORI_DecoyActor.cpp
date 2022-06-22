@@ -54,7 +54,7 @@ void ASATORI_DecoyActor::OnOverlapCollisionSphere(UPrimitiveComponent* Overlappe
 		return;
 	}
 
-	if (Character->HasMatchingGameplayTag(EnemyTag))
+	if (Character->HasMatchingGameplayTag(EnemyTag) && !Character->HasMatchingGameplayTag(LuredTag))
 	{
 		Character->AddGameplayTag(LuredTag);
 		ArrayLured.AddUnique(OtherActor);
@@ -87,6 +87,9 @@ void ASATORI_DecoyActor::DestroyMyself()
 
 void ASATORI_DecoyActor::Explode()
 {
+
+	CollisionSphereComponent->SetCollisionProfileName(UCollisionProfile::NoCollision_ProfileName);
+
 	for (AActor* Actor : ArrayLured)
 	{
 		ASATORI_AICharacter* Character = Cast<ASATORI_AICharacter>(Actor);
