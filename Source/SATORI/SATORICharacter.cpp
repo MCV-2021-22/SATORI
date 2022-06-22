@@ -101,8 +101,15 @@ void ASATORICharacter::PossessedBy(AController* NewController)
 		AbilitySystemComponent = Cast<USATORI_AbilitySystemComponent>(PS->GetAbilitySystemComponent());	
 
 		AbilitySystemComponent->InitAbilityActorInfo(PS, this);
+		USATORI_GameInstance* GameInstanceRef = Cast<USATORI_GameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
 
-		AttributeSetBase = PS->GetSatoriAttributeSet();
+		if(GameInstanceRef->PlayerStart)
+		{
+			AttributeSetBase = PS->GetSatoriAttributeSet();
+			GameInstanceRef->PlayerStart = false;
+
+		}
+		
 		
 		AbilitySystemComponent->AddLooseGameplayTag(FGameplayTag::RequestGameplayTag("PossessedBy.Player"));
 
@@ -116,7 +123,7 @@ void ASATORICharacter::PossessedBy(AController* NewController)
 		MaskType = SATORIMaskType::Aka;
 		SATORIAbilityMaskComponent->GrantedMaskEffects(MaskType);
 		// -------------------
-		SetHealth(GetMaxHealth());
+		SetHealth(GetHealth());
 
 		ASATORI_PlayerController* SatoriPlayerController = Cast<ASATORI_PlayerController>(GetController());
 		if (SatoriPlayerController)
@@ -124,7 +131,7 @@ void ASATORICharacter::PossessedBy(AController* NewController)
 			SatoriPlayerController->CreateMainHUD();
 		}
 
-		StatsComponent->InitializeStatsAttributes(PS);
+		StatsComponent->InitializeStatsAttributes(AttributeSetBase);
 
 		// Set Health to Max Health Value
 	}
@@ -171,7 +178,7 @@ void ASATORICharacter::OnRep_PlayerState()
 			SatoriPlayerController->CreateMainHUD();
 		}
 
-		StatsComponent->InitializeStatsAttributes(PS);
+		StatsComponent->InitializeStatsAttributes(AttributeSetBase);
 	}
 
 	AddGameplayTag(FGameplayTag::RequestGameplayTag("PossessedBy.Player"));
