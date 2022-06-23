@@ -49,19 +49,19 @@ protected:
 	float Damage = 5.0f;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (UIMin = "0.0"), Category = "Ability|Push")
-	float Speed = 4000.0f;
+	float Speed = 6000.0f;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (UIMin = "0.0"), Category = "Ability|Push")
-	float PushForce = 2500.0f;
+	float PushForce = 6000.0f;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (UIMin = "0.0"), Category = "Ability|Push")
-	float TimeToDestroy = 0.5f;
+	float TimeToDestroy = 0.2f;
 
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, meta = (UIMin = "100.0", UIMax = "10000.0"), Category = "Ability|Push")
-	float Range = 1000.0f;
+	float Range = 3000.0f;
 
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, meta = (UIMin = "5.0", UIMax = "85.0"), Category = "Ability|Push")
-	float AngleRange = 40.0f;
+	float AngleRange = 20.0f;
 
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, meta = (UIMin = "16.0", UIMax = "128.0"), Category = "Ability|Push")
 	float SphereRadius = 32.0f;

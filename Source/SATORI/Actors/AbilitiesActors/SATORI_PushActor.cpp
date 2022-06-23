@@ -22,6 +22,13 @@ ASATORI_PushActor::ASATORI_PushActor()
 	CollisionSphereComponent->SetGenerateOverlapEvents(true);
 	CollisionSphereComponent->OnComponentBeginOverlap.AddDynamic(this, &ASATORI_PushActor::OnOverlapSphere);
 
+	NiagaraComponent = CreateDefaultSubobject<UNiagaraComponent>(TEXT("Niagara"));
+	NiagaraComponent->SetupAttachment(RootComponent);
+
+	MeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Mesh"));
+	MeshComponent->SetupAttachment(RootComponent);
+	MeshComponent->SetCollisionProfileName(UCollisionProfile::NoCollision_ProfileName);
+
 	//Debug
 	CollisionSphereComponent->bHiddenInGame = false;
 }
@@ -69,7 +76,9 @@ void ASATORI_PushActor::DestroyMyself()
 			Character->RemoveGameplayTag(PushedTag);
 		}
 	}
-	Destroy();
+
+	SetActorTickEnabled(false);
+	MeshComponent->SetVisibility(false);
 }
 
 void ASATORI_PushActor::BeginPlay() 
@@ -126,5 +135,5 @@ void ASATORI_PushActor::Tick(float DeltaTime)
 			SetActorLocation(ActorPosition);
 		}
 	}
-}
 
+}
