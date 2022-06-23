@@ -112,8 +112,8 @@ void ASATORICharacter::PossessedBy(AController* NewController)
 		ApplyDefaultAbilities();
 
 		// Test Mask Effect
-		MaskType = SATORIMaskType::Aka;
-		SATORIAbilityMaskComponent->GrantedMaskEffects(MaskType);
+		/*MaskType = SATORIMaskType::Aka;
+		SATORIAbilityMaskComponent->GrantedMaskEffects(MaskType);*/
 		// -------------------
 		SetHealth(GetMaxHealth());
 
@@ -157,8 +157,8 @@ void ASATORICharacter::OnRep_PlayerState()
 		ApplyDefaultAbilities();
 
 		// Test Mask Effect
-		MaskType = SATORIMaskType::Aka;
-		SATORIAbilityMaskComponent->GrantedMaskEffects(MaskType);
+		/*MaskType = SATORIMaskType::Aka;
+		SATORIAbilityMaskComponent->GrantedMaskEffects(MaskType);*/
 		// -------------------
 
 		// Set Health to Max Health Value
