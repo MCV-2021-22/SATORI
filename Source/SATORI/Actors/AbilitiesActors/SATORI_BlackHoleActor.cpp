@@ -16,15 +16,18 @@ ASATORI_BlackHoleActor::ASATORI_BlackHoleActor()
 
 	RootComponent = CreateDefaultSubobject<USceneComponent>(TEXT("RootComponent"));
 
-	StaticMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("StaticMesh"));
-	StaticMeshComponent->SetupAttachment(RootComponent);
-	StaticMeshComponent->SetCollisionProfileName(UCollisionProfile::NoCollision_ProfileName);
+	StaticMeshComponentInner = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("StaticMeshInner"));
+	StaticMeshComponentInner->SetupAttachment(RootComponent);
+	StaticMeshComponentInner->SetCollisionProfileName(UCollisionProfile::NoCollision_ProfileName);
 
 	CollisionSphereComponent = CreateDefaultSubobject<USphereComponent>(TEXT("CollisionSphere"));
 	CollisionSphereComponent->SetCollisionProfileName(FName(TEXT("PlayerAbility")));
-	CollisionSphereComponent->SetupAttachment(StaticMeshComponent);
+	CollisionSphereComponent->SetupAttachment(StaticMeshComponentInner);
 	CollisionSphereComponent->SetGenerateOverlapEvents(true);
 	CollisionSphereComponent->OnComponentBeginOverlap.AddDynamic(this, &ASATORI_BlackHoleActor::OnOverlapCollisionSphere);
+
+	NiagaraComponent = CreateDefaultSubobject<UNiagaraComponent>(TEXT("Niagara"));
+	NiagaraComponent->SetupAttachment(RootComponent);
 
 	RadialForceComponent = CreateDefaultSubobject<URadialForceComponent>(TEXT("RadialForce"));
 	RadialForceComponent->SetupAttachment(CollisionSphereComponent);
@@ -62,7 +65,8 @@ void ASATORI_BlackHoleActor::OnOverlapCollisionSphere(UPrimitiveComponent* Overl
 
 void ASATORI_BlackHoleActor::DestroyMyself()
 {
-	Destroy();
+	SetActorTickEnabled(false);
+	StaticMeshComponentInner->SetVisibility(false);
 }
 
 void ASATORI_BlackHoleActor::StopGrowing()

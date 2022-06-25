@@ -532,8 +532,10 @@ bool ASATORICharacter::PlayerActiveAbilityWithTag(FGameplayTag TagName)
 //Cheats
 void ASATORICharacter::SetGodMode()
 {
-	SetHealth(10000);
-	SetMana(10000);
+	SetDefense(100);
+	SetHealth(GetMaxHealth());
+	SetMana(GetMaxMana());
+
 }
 
 void ASATORICharacter::RestartStats()
