@@ -6,10 +6,13 @@
 #include "GameFramework/Actor.h"
 #include "GameplayTagContainer.h"
 #include "GameplayEffect.h"
+#include "NiagaraComponent.h"
 #include "AI/Character/SATORI_AICharacter.h"
 #include "SATORI_PushActor.generated.h"
 
 class USphereComponent;
+class UNiagaraComponent;
+class UStaticMeshComponent;
 
 UCLASS()
 class SATORI_API ASATORI_PushActor : public AActor
@@ -25,6 +28,12 @@ public:
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Meta = (ExposeOnSpawn = true), Category = "Push")
 	TSubclassOf<UGameplayEffect> DamageGameplayEffect;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Push")
+	UNiagaraComponent* NiagaraComponent;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Push")
+	UStaticMeshComponent* MeshComponent;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Meta = (ExposeOnSpawn = true), Category = "Push")
 	float Damage;

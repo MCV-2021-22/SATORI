@@ -27,6 +27,9 @@ ASATORI_MissileActor::ASATORI_MissileActor()
 	CollisionSphereComponent->SetGenerateOverlapEvents(true);
 	CollisionSphereComponent->OnComponentBeginOverlap.AddDynamic(this, &ASATORI_MissileActor::OnOverlapCollisionSphere);
 
+	//NiagaraComponent = CreateDefaultSubobject<UNiagaraComponent>(TEXT("Niagara"));
+	//NiagaraComponent->SetupAttachment(RootComponent);
+
 	ProjectileMovementComponent = CreateDefaultSubobject<UProjectileMovementComponent>("ProjectileMovement");
 	ProjectileMovementComponent->bIsHomingProjectile = true;
 
@@ -58,14 +61,14 @@ void ASATORI_MissileActor::OnOverlapCollisionSphere(UPrimitiveComponent* Overlap
 		float DamageDone = USATORI_BlueprintLibrary::ApplyGameplayEffectDamage(OtherActor, Damage, OtherActor, DamageGameplayEffect);
 		Character->sendDamage(DamageDone);
 	}
-
 	DestroyMyself();
 }
 
 void ASATORI_MissileActor::DestroyMyself()
 {
-	ProjectileMovementComponent->Velocity = (FVector::ZeroVector);
-	Destroy();
+	ProjectileMovementComponent->StopMovementImmediately();
+	ProjectileMovementComponent->HomingTargetComponent = nullptr;
+	StaticMeshComponent->SetVisibility(false);
 }
 
 void ASATORI_MissileActor::BeginPlay()
@@ -75,6 +78,9 @@ void ASATORI_MissileActor::BeginPlay()
 	ProjectileMovementComponent->HomingTargetComponent = nullptr;
 
 	ASATORICharacter* Player = Cast<ASATORICharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
+
+	float  MissileRange = Range;
+	Target = nullptr;
 
 	if (Player->GetTargetSystemComponent()->IsLocked())
 	{
@@ -88,9 +94,9 @@ void ASATORI_MissileActor::BeginPlay()
 		for (AActor* Actor : AllEnemies)
 		{
 			const float Distance = GetDistanceTo(Actor);
-			if (Distance < Range && Player->GetTargetSystemComponent()->IsInViewport(Actor))
+			if (Distance < MissileRange && Player->GetTargetSystemComponent()->IsInViewport(Actor))
 			{
-				Range = Distance;
+				MissileRange = Distance;
 				Target = Actor;
 			}
 		}
