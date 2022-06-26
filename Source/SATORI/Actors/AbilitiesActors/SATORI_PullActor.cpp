@@ -78,7 +78,6 @@ void ASATORI_PullActor::DestroyMyself()
 	{
 		Pulling->RemoveGameplayTag(PullingTag);
 	}
-	Destroy();
 }
 
 // Called when the game starts or when spawned
