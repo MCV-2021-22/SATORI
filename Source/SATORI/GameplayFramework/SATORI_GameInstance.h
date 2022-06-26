@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Engine/GameInstance.h"
+#include "GAS/Attributes/SATORI_AttributeSet.h"
 #include "Savegame/SATORI_SaveGame.h"
 #include "SATORI_GameInstance.generated.h"
 
@@ -57,10 +58,14 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	int PlayerAbility = 0;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	USATORI_AttributeSet* Attributes;
+	//UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	//USATORI_AttributeSet* Attributes;
 
 	bool PlayerStart = true;
+
+	bool TimeSlow = false;
+
+	bool TimeStop = false;
 
 private:
 	void InitSaveGame();

@@ -79,7 +79,7 @@ void UGA_ArqueroAbanico::ActivateAbility(const FGameplayAbilitySpecHandle Handle
 				FVector RotateValue1 = newForward1.RotateAngleAxis(15.0f, FVector(0, 0, 1));
 
 				RotateValue1.Normalize();
-				Sphere->damage = this->damage;
+				Sphere1->damage = this->damage;
 				//Sphere1->setDirection(newForward1 * 50);
 				Sphere1->setDirection(RotateValue1 * 20);
 			}
@@ -94,7 +94,7 @@ void UGA_ArqueroAbanico::ActivateAbility(const FGameplayAbilitySpecHandle Handle
 				FVector newForward2 = dest - Sphere2->GetActorLocation();
 				FVector RotateValue2 = newForward2.RotateAngleAxis(-15.0f, FVector(0, 0, 1));
 				RotateValue2.Normalize();
-				Sphere->damage = this->damage;
+				Sphere2->damage = this->damage;
 				Sphere2->setDirection(RotateValue2 * 20);
 
 			}

@@ -4,12 +4,14 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "NiagaraComponent.h"
 #include "GameplayTagContainer.h"
 #include "GameplayEffect.h"
 #include "SATORI_MissileActor.generated.h"
 
 class USphereComponent;
 class UStaticMeshComponent;
+class UNiagaraComponent;
 class UGameplayEffect;
 class UProjectileMovementComponent;
 
@@ -26,8 +28,11 @@ public:
 	UPROPERTY(EditDefaultsOnly, Category = "Missile")
 	USphereComponent* CollisionSphereComponent = nullptr;
 
-	UPROPERTY(EditDefaultsOnly, Category = "Missile")
+	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category = "Missile")
 	UStaticMeshComponent* StaticMeshComponent = nullptr;
+
+	//UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Missile")
+	//UNiagaraComponent* NiagaraComponent;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Missile")
 	UProjectileMovementComponent* ProjectileMovementComponent = nullptr;
