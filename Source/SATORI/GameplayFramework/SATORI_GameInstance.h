@@ -57,10 +57,14 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	int PlayerAbility = 0;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	USATORI_AttributeSet* Attributes;
+	//UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	//USATORI_AttributeSet* Attributes;
 
 	bool PlayerStart = true;
+
+	bool TimeSlow = false;
+
+	bool TimeStop = false;
 
 private:
 	void InitSaveGame();
