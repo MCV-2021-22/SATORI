@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "GameplayFramework/SATORI_GameInstance.h"
 #include "GAS/SATORI_GameplayAbility.h"
 #include "SATORI_TimeStopAbility.generated.h"
 
@@ -54,6 +55,8 @@ protected:
 
 	UFUNCTION()
 	void EventReceived(FGameplayTag EventTag, FGameplayEventData EventData);
+
+	USATORI_GameInstance* GameInstanceRef;
 
 private:
 	const bool bStopWhenAbilityEnds = true;
