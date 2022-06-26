@@ -41,6 +41,8 @@ void ASATORI_MissileActor::OnOverlapCollisionSphere(UPrimitiveComponent* Overlap
 	// Enemies
 	// Walls
 
+	CollisionSphereComponent->SetCollisionProfileName(UCollisionProfile::NoCollision_ProfileName);
+
 	ASATORI_AICharacter* Character = Cast<ASATORI_AICharacter>(OtherActor);
 
 	// Walls
