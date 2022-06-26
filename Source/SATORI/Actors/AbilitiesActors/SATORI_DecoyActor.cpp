@@ -82,7 +82,13 @@ void ASATORI_DecoyActor::OnOverlapExplosionSphere(UPrimitiveComponent* Overlappe
 
 void ASATORI_DecoyActor::DestroyMyself()
 {
-	Destroy();
+
+	ExplosionSphereComponent->SetCollisionProfileName(UCollisionProfile::NoCollision_ProfileName);
+	ProjectileMovementComponent->StopMovementImmediately();
+	ProjectileMovementComponent->ProjectileGravityScale = 0.0f;
+	StaticMeshComponent->SetVisibility(false);
+	SetActorTickEnabled(false);
+	//Destroy();
 }
 
 void ASATORI_DecoyActor::Explode()

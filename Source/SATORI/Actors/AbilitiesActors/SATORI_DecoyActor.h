@@ -29,7 +29,7 @@ public:
 	UPROPERTY(EditDefaultsOnly, Category = "Decoy")
 	USphereComponent* ExplosionSphereComponent = nullptr;
 
-	UPROPERTY(EditDefaultsOnly, Category = "Decoy")
+	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category = "Decoy")
 	UStaticMeshComponent* StaticMeshComponent = nullptr;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Decoy")
