@@ -79,6 +79,7 @@ void ASATORI_PushActor::DestroyMyself()
 
 	SetActorTickEnabled(false);
 	MeshComponent->SetVisibility(false);
+	NiagaraComponent->Deactivate();
 }
 
 void ASATORI_PushActor::BeginPlay() 

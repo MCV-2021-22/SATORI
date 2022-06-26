@@ -67,6 +67,7 @@ void ASATORI_BlackHoleActor::DestroyMyself()
 {
 	SetActorTickEnabled(false);
 	StaticMeshComponentInner->SetVisibility(false);
+	NiagaraComponent->Deactivate();
 }
 
 void ASATORI_BlackHoleActor::StopGrowing()

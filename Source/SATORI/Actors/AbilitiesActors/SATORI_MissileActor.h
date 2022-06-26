@@ -28,11 +28,11 @@ public:
 	UPROPERTY(EditDefaultsOnly, Category = "Missile")
 	USphereComponent* CollisionSphereComponent = nullptr;
 
-	UPROPERTY(EditDefaultsOnly, Category = "Missile")
+	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category = "Missile")
 	UStaticMeshComponent* StaticMeshComponent = nullptr;
 
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Missile")
-	UNiagaraComponent* NiagaraComponent;
+	//UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Missile")
+	//UNiagaraComponent* NiagaraComponent;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Missile")
 	UProjectileMovementComponent* ProjectileMovementComponent = nullptr;
