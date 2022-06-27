@@ -5,12 +5,15 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "GameplayTagContainer.h"
+#include "NiagaraComponent.h"
+#include "NiagaraFunctionLibrary.h"
 #include "GameplayEffect.h"
 #include "AI/Character/SATORI_AICharacter.h"
 #include "SATORI_DecoyActor.generated.h"
 
 class USphereComponent;
 class UStaticMeshComponent;
+class UNiagaraComponent;
 class UGameplayEffect;
 class UProjectileMovementComponent;
 
@@ -31,6 +34,18 @@ public:
 
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category = "Decoy")
 	UStaticMeshComponent* StaticMeshComponent = nullptr;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Decoy")
+	UNiagaraComponent* NiagaraComponent;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Decoy")
+	UNiagaraSystem* NiagaraSystemExplode;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Decoy")
+	UNiagaraSystem* NiagaraSystemExplodePart2;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Decoy")
+	UMaterialInterface* MaterialBright;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Decoy")
 	UProjectileMovementComponent* ProjectileMovementComponent = nullptr;
@@ -68,7 +83,7 @@ public:
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Debug")
 	bool bDrawDebug = false;
 
-	UFUNCTION(BlueprintCallable, Category = "Missile")
+	UFUNCTION(BlueprintCallable, Category = "Decoy")
 		void OnOverlapCollisionSphere(
 			UPrimitiveComponent* OverlappedComp,
 			AActor* OtherActor,
@@ -78,7 +93,7 @@ public:
 			const FHitResult& SweepResult);
 
 
-	UFUNCTION(BlueprintCallable, Category = "Missile")
+	UFUNCTION(BlueprintCallable, Category = "Decoy")
 		void OnOverlapExplosionSphere(
 			UPrimitiveComponent* OverlappedComp,
 			AActor* OtherActor,
@@ -86,6 +101,10 @@ public:
 			int32 OtherBodyIndex,
 			bool bFromSweep,
 			const FHitResult& SweepResult);
+
+
+	UFUNCTION(BlueprintCallable, Category = "Decoy")
+	void OnNiagaraFinished();
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Decoy|Tags")
 	FGameplayTag  EnemyTag;

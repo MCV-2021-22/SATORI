@@ -22,7 +22,7 @@ class SATORI_API UBTTask_ActivateAbility : public UBTTaskNode
 protected:
 
 	UPROPERTY(EditAnywhere)
-	TSubclassOf<UGameplayAbility> AbilityToActivte;
+	TSubclassOf<UGameplayAbility> AbilityToActivate;
 
 	UFUNCTION()
 	void OnAbilityEnded(UGameplayAbility* EndedAbility);
