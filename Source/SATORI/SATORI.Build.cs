@@ -12,6 +12,6 @@ public class SATORI : ModuleRules
 			"GameplayAbilities", "GameplayTags", "GameplayTasks","AIModule","Niagara"});
 
 		PublicIncludePaths.Add("SATORI");
-
+	
 	}
 }

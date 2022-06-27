@@ -24,6 +24,14 @@ public:
 
 	UGA_ArquerosMisil();
 
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Ability")
+		UAnimMontage* AnimMontage;
+
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Ability|Tags")
+		FGameplayTag TagSpawnAbility;
+
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Ability|Tags")
+		FGameplayTag TagEndAbility;
 
 
 	
@@ -40,5 +48,17 @@ public:
 	UPROPERTY(BlueprintReadOnly, EditAnywhere)
 		float damage;
 
+protected:
+	UFUNCTION()
+		void OnCancelled(FGameplayTag EventTag, FGameplayEventData EventData);
 
+	UFUNCTION()
+		void OnCompleted(FGameplayTag EventTag, FGameplayEventData EventData);
+
+	UFUNCTION()
+		void EventReceived(FGameplayTag EventTag, FGameplayEventData EventData);
+
+private:
+
+	const bool bStopWhenAbilityEnds = true;
 };

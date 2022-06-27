@@ -147,4 +147,12 @@ void ASATORI_DashMeleeActor::Tick(float DeltaTime)
 		}
 		DestroyMyself();
 	}
+
+	if(CurrentTime >= 20.f)
+	{
+		DestroyMyself();
+	}
+
+	CurrentTime += DeltaTime;
+
 }

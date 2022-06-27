@@ -7,6 +7,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "Widgets/Text/ISlateEditableTextWidget.h"
 #include "TimerManager.h"
+#include "AbilityTask/SATORI_PlayMontageAndWaitEvent.h"
 #include "AI/Character/RangeMovable/SATORI_RangeMovable.h"
 #include "GameFramework/CharacterMovementComponent.h"
 
@@ -20,16 +21,49 @@ UGA_ArqueroDefensivo::UGA_ArqueroDefensivo()
 
 }
 
+void UGA_ArqueroDefensivo::OnCancelled(FGameplayTag EventTag, FGameplayEventData EventData)
+{
+	EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true);
+}
+
+
+void UGA_ArqueroDefensivo::OnCompleted(FGameplayTag EventTag, FGameplayEventData EventData)
+{
+	//EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true);
+}
+
+
+void UGA_ArqueroDefensivo::EventReceived(FGameplayTag EventTag, FGameplayEventData EventData)
+{
+	if (EventTag == TagSpawnAbility)
+	{
+		ASATORI_RangeMovable* Character = Cast<ASATORI_RangeMovable>(GetAvatarActorFromActorInfo());
+		if (Defensive)
+		{
+			Character->RemoveGameplayTag(FGameplayTag::RequestGameplayTag("State.Burst"));
+			Character->moveBackwards = true;
+		}
+		TimerDelegate = FTimerDelegate::CreateUObject(this, &UGA_ArqueroDefensivo::OnTimerFinished, CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo);
+		GetWorld()->GetTimerManager().SetTimer(TimerHandle, TimerDelegate, 0.5f, true);
+	}
+		
+}
+
+
+
 void UGA_ArqueroDefensivo::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData)
 {
-	ASATORI_RangeMovable* Character = Cast<ASATORI_RangeMovable>(GetAvatarActorFromActorInfo());
-	if (Defensive)
-	{
-		Character->RemoveGameplayTag(FGameplayTag::RequestGameplayTag("State.Burst"));
-		Character->moveBackwards = true;
-	}
-	TimerDelegate = FTimerDelegate::CreateUObject(this, &UGA_ArqueroDefensivo::OnTimerFinished, Handle, ActorInfo, ActivationInfo);
-	GetWorld()->GetTimerManager().SetTimer(TimerHandle, TimerDelegate, 0.5f, true);
+	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
+
+	//Handling of events
+	USATORI_PlayMontageAndWaitEvent* Task = USATORI_PlayMontageAndWaitEvent::PlayMontageAndWaitForEvent(this, NAME_None, AnimMontage, FGameplayTagContainer(), 1.0f, NAME_None, bStopWhenAbilityEnds, 1.0f);
+	Task->OnBlendOut.AddDynamic(this, &UGA_ArqueroDefensivo::OnCompleted);
+	Task->OnCompleted.AddDynamic(this, &UGA_ArqueroDefensivo::OnCompleted);
+	Task->OnInterrupted.AddDynamic(this, &UGA_ArqueroDefensivo::OnCancelled);
+	Task->OnCancelled.AddDynamic(this, &UGA_ArqueroDefensivo::OnCancelled);
+	Task->EventReceived.AddDynamic(this, &UGA_ArqueroDefensivo::EventReceived);
+	Task->ReadyForActivation();
+	
 }
 
 void UGA_ArqueroDefensivo::OnTimerFinished(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo)
