@@ -12,6 +12,7 @@ class USATORI_AbilitySystemComponent;
 class USATORI_AttributeSet;
 class UCapsuleComponent;
 class UAnimMontage;
+class USATORI_GameplayAbility;
 
 UCLASS()
 class SATORI_API ASATORI_CharacterBase : public ACharacter, public IAbilitySystemInterface
@@ -104,17 +105,39 @@ public:
 	FGameplayTag DeadTag;
 	FGameplayTag EffectRemoveOnDeathTag;
 
+	UFUNCTION(BlueprintCallable, Category = "Player|Attributes")
+	virtual void SetHealth(float Health);
+
+	UFUNCTION(BlueprintCallable, Category = "Player|Attributes")
+	virtual void SetMana(float Mana);
+
+	UFUNCTION(BlueprintCallable, Category = "Player|Attributes")
+	virtual void SetMaxHealth(float MaxHealth);
+
+	UFUNCTION(BlueprintCallable, Category = "Player|Attributes")
+	virtual void SetMaxMana(float MaxMana);
+
+	UFUNCTION(BlueprintCallable, Category = "Player|Attributes")
+	virtual void SetDefense(float Defense);
+
+	UFUNCTION(BlueprintCallable, Category = "Player|Attributes")
+	virtual void SetAttack(float Attack);
+
+	UFUNCTION(BlueprintCallable, Category = "Player|Attributes")
+	virtual void SetMoveSpeed(float MoveSpeed);
+
+	UFUNCTION(BlueprintCallable, Category = "Player|Attributes")
+	virtual void SetGold(float Gold);
+
 protected:
 
 	virtual void BeginPlay() override;
 
-	virtual void SetHealth(float Health);
-
-	virtual void SetMana(float Mana);
 
 	TWeakObjectPtr<USATORI_AttributeSet> AttributeSetBase;
 
 	// The core ActorComponent for interfacing with the GameplayAbilities System
 	TWeakObjectPtr<USATORI_AbilitySystemComponent> AbilitySystemComponent;
 
+	TArray<TSubclassOf<USATORI_GameplayAbility>> RemovedgameplayAbilities;
 };

@@ -17,9 +17,13 @@ public:
 
 	ASATORI_PlayerController(const class FObjectInitializer& InitializerObject);
 
+	void CreateMainHUD();
+
 	USATORI_MainUI* GetSatoriMainUI() { return SATORIMainWidget; }
 
 protected:
+	// Called when the game starts
+	virtual void BeginPlay() override;
 
 	virtual void OnPossess(APawn* aPawn) override;
 
@@ -27,6 +31,6 @@ protected:
 	TSubclassOf<USATORI_MainUI> SATORIMainUI;
 
 	class USATORI_MainUI* SATORIMainWidget;
-	
 
+	virtual void OnRep_PlayerState() override;
 };

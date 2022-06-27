@@ -6,12 +6,14 @@
 #include "GameFramework/Actor.h"
 #include "GameplayTagContainer.h"
 #include "GameplayEffect.h"
+#include "NiagaraComponent.h"
 #include "PhysicsEngine/RadialForceComponent.h"
 #include "AI/Character/SATORI_AICharacter.h"
 #include "SATORI_BlackHoleActor.generated.h"
 
 class USphereComponent;
 class UStaticMeshComponent;
+class UNiagaraComponent;
 class URadialForceComponent;
 class UProjectileMovementComponent;
 
@@ -28,7 +30,10 @@ public:
 	USphereComponent* CollisionSphereComponent = nullptr;
 
 	UPROPERTY(EditDefaultsOnly, Category = "BlackHole")
-	UStaticMeshComponent* StaticMeshComponent = nullptr;
+	UStaticMeshComponent* StaticMeshComponentInner = nullptr;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "BlackHole")
+	UNiagaraComponent* NiagaraComponent;
 
 	UPROPERTY(EditDefaultsOnly, Category = "BlackHole")
 	URadialForceComponent* RadialForceComponent = nullptr;

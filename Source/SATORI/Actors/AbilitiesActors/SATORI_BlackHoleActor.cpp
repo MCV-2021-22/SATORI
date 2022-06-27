@@ -16,15 +16,18 @@ ASATORI_BlackHoleActor::ASATORI_BlackHoleActor()
 
 	RootComponent = CreateDefaultSubobject<USceneComponent>(TEXT("RootComponent"));
 
-	StaticMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("StaticMesh"));
-	StaticMeshComponent->SetupAttachment(RootComponent);
-	StaticMeshComponent->SetCollisionProfileName(UCollisionProfile::NoCollision_ProfileName);
+	StaticMeshComponentInner = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("StaticMeshInner"));
+	StaticMeshComponentInner->SetupAttachment(RootComponent);
+	StaticMeshComponentInner->SetCollisionProfileName(UCollisionProfile::NoCollision_ProfileName);
 
 	CollisionSphereComponent = CreateDefaultSubobject<USphereComponent>(TEXT("CollisionSphere"));
 	CollisionSphereComponent->SetCollisionProfileName(FName(TEXT("PlayerAbility")));
-	CollisionSphereComponent->SetupAttachment(StaticMeshComponent);
+	CollisionSphereComponent->SetupAttachment(StaticMeshComponentInner);
 	CollisionSphereComponent->SetGenerateOverlapEvents(true);
 	CollisionSphereComponent->OnComponentBeginOverlap.AddDynamic(this, &ASATORI_BlackHoleActor::OnOverlapCollisionSphere);
+
+	NiagaraComponent = CreateDefaultSubobject<UNiagaraComponent>(TEXT("Niagara"));
+	NiagaraComponent->SetupAttachment(RootComponent);
 
 	RadialForceComponent = CreateDefaultSubobject<URadialForceComponent>(TEXT("RadialForce"));
 	RadialForceComponent->SetupAttachment(CollisionSphereComponent);
@@ -62,18 +65,9 @@ void ASATORI_BlackHoleActor::OnOverlapCollisionSphere(UPrimitiveComponent* Overl
 
 void ASATORI_BlackHoleActor::DestroyMyself()
 {
-
-	for (AActor* Actor : ArrayActorsTrapped) {
-
-		if (IsValid(Actor))
-		{
-			ASATORI_AICharacter* Character = Cast<ASATORI_AICharacter>(Actor);
-			//RemoveTagTrapped
-			Character->RemoveGameplayTag(TrappedTag);
-		}
-	}
-
-	Destroy();
+	SetActorTickEnabled(false);
+	StaticMeshComponentInner->SetVisibility(false);
+	NiagaraComponent->Deactivate();
 }
 
 void ASATORI_BlackHoleActor::StopGrowing()
@@ -89,10 +83,13 @@ void ASATORI_BlackHoleActor::StopAttraction()
 	RadialForceComponent->Radius = 64.0f;
 	RadialForceComponent->ForceStrength = 500000.0f;
 
+	CollisionSphereComponent->SetCollisionProfileName(UCollisionProfile::NoCollision_ProfileName);
+	
 	for (AActor* Actor : ArrayActorsTrapped) {
 
 		if (IsValid(Actor))
 		{
+
 			//Damage Explosion Calculation
 			ASATORI_AICharacter* Character = Cast<ASATORI_AICharacter>(Actor);
 			float DamageDone = USATORI_BlueprintLibrary::ApplyGameplayEffectDamage(Actor, DamageExplosion, Actor, DamageGameplayEffect);
@@ -105,6 +102,8 @@ void ASATORI_BlackHoleActor::StopAttraction()
 			FVector PrecautionMeasure = FMath::VRand();
 			PrecautionMeasure.Z = 0.0f;
 			Actor->AddActorLocalOffset(PrecautionMeasure * 200);
+
+			Character->RemoveGameplayTag(TrappedTag);
 		}
 	}
 

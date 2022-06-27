@@ -1,7 +1,7 @@
-SET UE4_ROOT="C:/Program Files/Epic Games/UE_4.27"
+SET UE4_ROOT="E:/UnrealEngine4/UE_4.27"
 SET UE4_UAT=%UE4_ROOT%/Engine/Build/BatchFiles/RunUAT.bat
-SET PROJECT_ROOT=C:/Users/aules/Documents/UE4_MCV_Project
-SET UPROJECT=C:/Users/aules/Documents/UE4_MCV_Project/SATORI/SATORI.uproject
+SET PROJECT_ROOT=D:/Project__UPF
+SET UPROJECT=D:/Project__UPF/SATORI/SATORI.uproject
 SET CONFIG=Development
 
 %UE4_UAT% ^

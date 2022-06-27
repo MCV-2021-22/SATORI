@@ -151,3 +151,39 @@ void ASATORI_CharacterBase::SetMana(float Mana)
 	if (AttributeSetBase.IsValid())
 		AttributeSetBase->SetMana(Mana);
 }
+
+void ASATORI_CharacterBase::SetMaxHealth(float MaxHealth)
+{
+	if (AttributeSetBase.IsValid())
+		AttributeSetBase->SetMaxHealth(MaxHealth);
+}
+
+void ASATORI_CharacterBase::SetMaxMana(float MaxMana)
+{
+	if (AttributeSetBase.IsValid())
+		AttributeSetBase->SetMaxMana(MaxMana);
+}
+
+void ASATORI_CharacterBase::SetDefense(float Defense)
+{
+	if (AttributeSetBase.IsValid())
+		AttributeSetBase->SetDefense(Defense);
+}
+
+void ASATORI_CharacterBase::SetAttack(float Attack)
+{
+	if (AttributeSetBase.IsValid())
+		AttributeSetBase->SetAttack(Attack);
+}
+
+void ASATORI_CharacterBase::SetMoveSpeed(float MoveSpeed)
+{
+	if (AttributeSetBase.IsValid())
+		AttributeSetBase->SetMoveSpeed(MoveSpeed);
+}
+
+void ASATORI_CharacterBase::SetGold(float Gold)
+{
+	if (AttributeSetBase.IsValid())
+		AttributeSetBase->SetGold(Gold);
+}

@@ -25,6 +25,15 @@ public:
 
 		UGA_ArqueroDefensivo();
 
+		UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Ability")
+			UAnimMontage* AnimMontage;
+
+		UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Ability|Tags")
+			FGameplayTag TagSpawnAbility;
+
+		UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Ability|Tags")
+			FGameplayTag TagEndAbility;
+
 
 		FTimerDelegate TimerDelegate;
 
@@ -50,6 +59,9 @@ public:
 	UPROPERTY(BlueprintReadOnly, EditAnywhere)
 		bool IsClone;
 
+	UPROPERTY(BlueprintReadOnly, EditAnywhere)
+		float damage;
+
 private:
 
 	ASATORI_AICharacter* Enemy = nullptr;
@@ -59,4 +71,19 @@ private:
 	void OnEndAb(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo);
 
 	int iteracion = 0;
+
+
+protected:
+	UFUNCTION()
+		void OnCancelled(FGameplayTag EventTag, FGameplayEventData EventData);
+
+	UFUNCTION()
+		void OnCompleted(FGameplayTag EventTag, FGameplayEventData EventData);
+
+	UFUNCTION()
+		void EventReceived(FGameplayTag EventTag, FGameplayEventData EventData);
+
+private:
+
+	const bool bStopWhenAbilityEnds = true;
 };

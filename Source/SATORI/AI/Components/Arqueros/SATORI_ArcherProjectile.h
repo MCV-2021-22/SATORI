@@ -3,6 +3,7 @@
 #include "CoreMinimal.h"
 
 #include "GameplayTagAssetInterface.h"
+#include "GameplayFramework/SATORI_GameInstance.h"
 #include "SATORI_ArcherProjectile.generated.h"
 
 class UGameplayEffect;
@@ -24,8 +25,8 @@ public:
 		UStaticMeshComponent* StaticMeshComponent = nullptr;
 
 
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Meta = (ExposeOnSpawn = true), Category = "Missile")
-	float Damage = 10;
+	//UPROPERTY(BlueprintReadWrite, EditAnywhere, Meta = (ExposeOnSpawn = true), Category = "Missile")
+	float damage = 10.0f;
 
 	UFUNCTION()
 		void OnComponentBeginOverlap(
@@ -48,7 +49,7 @@ public:
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Meta = (ExposeOnSpawn = true), Category = "Missile")
 		TSubclassOf<UGameplayEffect> DamageGameplayEffect;
 
-
+	
 
 protected:
 
@@ -64,6 +65,11 @@ protected:
 	float inmunity = 1.f;
 
 	float LifeTime = 8.f;
+
+	USATORI_GameInstance* GameInstanceRef;
+
+
+	
 
 };
 
