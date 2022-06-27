@@ -116,7 +116,7 @@ void ASATORI_AICharacter::OnConstruction(const FTransform& Transform)
 		//HealthBarWidgetComponen->AttachToComponent(HeadComponent, AttachmentRules);
 		/*struct ConstructorHelpers::FClassFinder<USATORI_EnemyHealthBar> EnemyUIBar(TEXT("/Game/SATORI/UI/Enemy/"));
 		if (EnemyUIBar.Class != NULL)*/
-		if (HealthBarUI)
+		/*if (HealthBarUI)
 		{
 			HealthBarWidgetComponen->SetWidgetSpace(EWidgetSpace::World);
 			HealthBarWidgetComponen->SetDrawSize(FVector2D(200.f, 20.f));
@@ -125,7 +125,7 @@ void ASATORI_AICharacter::OnConstruction(const FTransform& Transform)
 			HealthBarWidgetComponen->SetDrawSize(LocalDrawSize);
 			FVector2D LocalPivot = FVector2D(0.5f, 0.5f);
 			HealthBarWidgetComponen->SetPivot(LocalPivot);
-		}
+		}*/
 	}
 }
 
