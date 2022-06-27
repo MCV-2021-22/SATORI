@@ -4,6 +4,7 @@
 #include "AI/Gas/Arqueros/GA_ArquerosMisil.h"
 
 #include "SATORICharacter.h"
+#include "AbilityTask/SATORI_PlayMontageAndWaitEvent.h"
 
 #include "Kismet/GameplayStatics.h"
 #include "Widgets/Text/ISlateEditableTextWidget.h"
@@ -13,60 +14,89 @@ UGA_ArquerosMisil::UGA_ArquerosMisil()
 	InstancingPolicy = EGameplayAbilityInstancingPolicy::InstancedPerActor;
 }
 
-void UGA_ArquerosMisil::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData)
+void UGA_ArquerosMisil::OnCancelled(FGameplayTag EventTag, FGameplayEventData EventData)
 {
+	EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true);
+}
 
-	FVector IA_POS = ActorInfo->AvatarActor->GetActorLocation();    
 
-	TArray< AActor* > enemigos;
-	TArray< AActor* > enemigos2;
+void UGA_ArquerosMisil::OnCompleted(FGameplayTag EventTag, FGameplayEventData EventData)
+{
+	//EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true);
+}
 
-	FName tag = "PossessedBy.Player";
 
-	UGameplayStatics::GetAllActorsWithTag(GetWorld(), FName("PossessedBy.Player"), enemigos);
-
-	UGameplayStatics::GetAllActorsOfClass(GetWorld(), ASATORICharacter::StaticClass(), enemigos2);
-
-	int array_dim = enemigos.Num();
-	int array_dim2 = enemigos2.Num();
-
-	UE_LOG(LogTemp, Display, TEXT("Number of actors with that tag: %d"), array_dim);
-
-	UE_LOG(LogTemp, Display, TEXT("Number of actors2 with that tag: %d"), array_dim2);
-
-	for (AActor* Actor : enemigos)
+void UGA_ArquerosMisil::EventReceived(FGameplayTag EventTag, FGameplayEventData EventData)
+{
+	if (EventTag == TagSpawnAbility)
 	{
-		if(Cast<ASATORICharacter>(Actor) != nullptr)
+		FVector IA_POS = CurrentActorInfo->AvatarActor->GetActorLocation();
+
+		TArray< AActor* > enemigos;
+
+
+		FName tag = "PossessedBy.Player";
+
+		if (IsClone)
 		{
-			ASATORICharacter* Player = Cast<ASATORICharacter>(Actor);
-			bool tiene = Player->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag("PossessedBy.Player"));
+			UGameplayStatics::GetAllActorsWithTag(GetWorld(), FName("Character.Clone"), enemigos);
 
-			UE_LOG(LogTemp, Display, TEXT("Number of actors with that tag: %d"), tiene);
-
-			FVector dest = Player->GetActorLocation();
-
-			FRotator RotationOfIA = ActorInfo->AvatarActor->GetActorRotation();
-			FActorSpawnParameters SpawnParams;
-			SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
-			
-			FTransform IATransform = ActorInfo->AvatarActor->GetTransform();
-
-
-			ASATORI_ArcherProjectile* Sphere = GetWorld()->SpawnActor<ASATORI_ArcherProjectile>(ProjectileClass,
-				ActorInfo->AvatarActor->GetActorLocation() + ActorInfo->AvatarActor->GetActorForwardVector() * 100,
-				RotationOfIA);
-
-			if(Sphere)
-			{
-				FVector newForward = dest - Sphere->GetActorLocation();
-				newForward.Normalize();
-				Sphere->setDirection(newForward * 20);
-			}
-			break;
 		}
+		else
+		{
+			UGameplayStatics::GetAllActorsWithTag(GetWorld(), FName("PossessedBy.Player"), enemigos);
+
+		}
+
+		for (AActor* Actor : enemigos)
+		{
+			if (Cast<ASATORI_CharacterBase>(Actor) != nullptr)
+			{
+				ASATORI_CharacterBase* Player = Cast<ASATORI_CharacterBase>(Actor);
+				bool tiene = Player->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag("PossessedBy.Player"));
+
+				UE_LOG(LogTemp, Display, TEXT("Number of actors with that tag: %d"), tiene);
+
+				FVector dest = Player->GetActorLocation();
+
+				FRotator RotationOfIA = CurrentActorInfo->AvatarActor->GetActorRotation();
+				FActorSpawnParameters SpawnParams;
+				SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+
+				FTransform IATransform = CurrentActorInfo->AvatarActor->GetTransform();
+
+				ASATORI_ArcherProjectile* Sphere = GetWorld()->SpawnActor<ASATORI_ArcherProjectile>(ProjectileClass,
+					CurrentActorInfo->AvatarActor->GetActorLocation() + CurrentActorInfo->AvatarActor->GetActorForwardVector() * 100,
+					RotationOfIA);
+
+				if (Sphere)
+				{
+					FVector newForward = dest - Sphere->GetActorLocation();
+					newForward.Normalize();
+					Sphere->damage = this->damage;
+					Sphere->setDirection(newForward * 20);
+				}
+				break;
+			}
+		}
+		EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true);
 	}
 
-	EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true);
+}
+
+
+void UGA_ArquerosMisil::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData)
+{
+	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
+
+	//Handling of events
+	USATORI_PlayMontageAndWaitEvent* Task = USATORI_PlayMontageAndWaitEvent::PlayMontageAndWaitForEvent(this, NAME_None, AnimMontage, FGameplayTagContainer(), 1.0f, NAME_None, bStopWhenAbilityEnds, 1.0f);
+	Task->OnBlendOut.AddDynamic(this, &UGA_ArquerosMisil::OnCompleted);
+	Task->OnCompleted.AddDynamic(this, &UGA_ArquerosMisil::OnCompleted);
+	Task->OnInterrupted.AddDynamic(this, &UGA_ArquerosMisil::OnCancelled);
+	Task->OnCancelled.AddDynamic(this, &UGA_ArquerosMisil::OnCancelled);
+	Task->EventReceived.AddDynamic(this, &UGA_ArquerosMisil::EventReceived);
+	Task->ReadyForActivation();
 }
 
 

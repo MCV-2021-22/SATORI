@@ -16,11 +16,15 @@ class SATORI_API UBTTask_MoveToRange : public UBTTaskNode
 
 	UBTTask_MoveToRange();
 	virtual EBTNodeResult::Type ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory) override;
+	virtual EBTNodeResult::Type AbortTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory) override;
 
 public:
 	
 
 	UPROPERTY(EditAnywhere)
 		FBlackboardKeySelector MyBlackboardKey;
+
+	
+
 
 };

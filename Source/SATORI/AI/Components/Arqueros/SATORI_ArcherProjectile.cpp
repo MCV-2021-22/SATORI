@@ -45,8 +45,9 @@ void ASATORI_ArcherProjectile::BeginPlay()
 {
 	Super::BeginPlay();
 	PrimaryActorTick.bCanEverTick = true;
+	GameInstanceRef = Cast<USATORI_GameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
 
-
+	
 
 }
 
@@ -56,14 +57,36 @@ void ASATORI_ArcherProjectile::Tick(float DeltaTime)
 
 	Super::Tick(DeltaTime);
 
-	FVector position = GetActorLocation();
-	FVector new_pos = position + direction;
+	if(!GameInstanceRef->TimeStop)
+	{
+		if(GameInstanceRef->TimeSlow)
+		{
+			FVector position = GetActorLocation();
+			FVector new_pos = position + direction * 0.25;
 
-	SetActorLocation(new_pos);
-	RootComponent->SetWorldLocation(new_pos);
+			SetActorLocation(new_pos);
+			RootComponent->SetWorldLocation(new_pos);
 
-	inmunity -= DeltaTime;
-	LifeTime -= DeltaTime;
+			inmunity -= DeltaTime * 0.25;
+			LifeTime -= DeltaTime * 0.25;
+		}
+		else
+		{
+			FVector position = GetActorLocation();
+			FVector new_pos = position + direction;
+
+			SetActorLocation(new_pos);
+			RootComponent->SetWorldLocation(new_pos);
+
+			inmunity -= DeltaTime;
+			LifeTime -= DeltaTime;
+		}
+
+
+		
+	}
+
+	
 }
 
 
@@ -121,7 +144,7 @@ void ASATORI_ArcherProjectile::OnComponentBeginOverlap(
 		ASATORICharacter* Player = Cast<ASATORICharacter>(OtherActor);
 		if(Player)
 		{
-			float dmg_done= USATORI_BlueprintLibrary::ApplyGameplayEffectDamage(OtherActor, Damage, OtherActor, DamageGameplayEffect);
+			float dmg_done= USATORI_BlueprintLibrary::ApplyGameplayEffectDamage(OtherActor, damage, OtherActor, DamageGameplayEffect);
 		}
 		Destroy();
 	}

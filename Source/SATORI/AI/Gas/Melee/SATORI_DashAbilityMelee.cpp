@@ -89,11 +89,33 @@ void USATORI_DashAbilityMelee::EventReceived(FGameplayTag EventTag, FGameplayEve
 
 	if (EventTag == TagSpawnAbility)
 	{
-		ASATORICharacter* Enemy = Cast<ASATORICharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(),0));
+		ASATORI_CharacterBase* Enemy = nullptr;
+		if (IsClone)
+		{
+			TArray< AActor* > enemigos;
+			UGameplayStatics::GetAllActorsWithTag(GetWorld(), FName("Character.Clone"), enemigos);
 
+			for (AActor* Actor : enemigos)
+			{
+				if (Cast<ASATORI_CharacterBase>(Actor) != nullptr)
+				{
+					Enemy = Cast<ASATORI_CharacterBase>(Actor);
+					
+					
+				}
+			}
+		}
+		else
+		{
+			Enemy = Cast<ASATORI_CharacterBase>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
+			
+		}
 		EnemyPosition = Enemy->GetActorLocation();
 
 		SpawnActor();
+		
+
+		
 	}
 }
 
