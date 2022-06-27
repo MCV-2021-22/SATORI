@@ -50,6 +50,7 @@ Binaries/*
 Plugins/*/Binaries/*
 
 # Builds
+Builds/*
 Build/*
 
 # Whitelist PakBlacklist-<BuildConfiguration>.txt files
@@ -59,6 +60,7 @@ Build/*/**
 
 # Don't ignore icon files in Build
 !Build/**/*.ico
+!Builds/**/*.ico
 
 # Built data for maps
 *_BuiltData.uasset
