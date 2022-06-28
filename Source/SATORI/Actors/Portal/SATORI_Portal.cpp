@@ -16,6 +16,7 @@
 #include <algorithm>
 #include "SATORIGameMode.h"
 #include "GameplayFramework/SATORI_GameInstance.h"
+#include "Components/WidgetComponent.h"
 
 // Sets default values
 ASATORI_Portal::ASATORI_Portal()
@@ -37,6 +38,11 @@ ASATORI_Portal::ASATORI_Portal()
 	SphereComponent->SetCollisionProfileName(UCollisionProfile::NoCollision_ProfileName);
 
 	SphereComponent->OnComponentBeginOverlap.AddUniqueDynamic(this, &ASATORI_Portal::OnComponentBeginOverlap);
+
+	WidgetComponent = CreateDefaultSubobject<UWidgetComponent>(TEXT("WidgetComponent"));
+	WidgetComponent->SetupAttachment(RootComponent);
+	// Hide interaction
+	WidgetComponent->SetVisibility(false, true);
 
 }
 
@@ -173,5 +179,23 @@ void ASATORI_Portal::ChangeLevel(ASATORICharacter* Character)
 	{
 		UGameplayStatics::OpenLevel(GetWorld(), FName(LevelNames.Pop()));
 	}
-	
+}
+
+void ASATORI_Portal::Interact(AActor* ActorInteracting)
+{
+	FVector Delta = ActorInteracting->GetActorLocation() - GetActorLocation();
+	UE_LOG(LogTemp, Display, TEXT("Interact With Door"));
+
+	// Todo : Interact with the player
+	// ActivatePortal();
+}
+
+void ASATORI_Portal::StartCanInteract(AActor* ActorInteracting)
+{
+	WidgetComponent->SetVisibility(true, true);
+}
+
+void ASATORI_Portal::StopCanInteract(AActor* ActorInteracting)
+{
+	WidgetComponent->SetVisibility(false, true);
 }

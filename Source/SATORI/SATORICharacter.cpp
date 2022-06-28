@@ -27,6 +27,7 @@
 #include "Character/SATORI_PlayerController.h"
 //Cheat related include
 #include "Kismet/GameplayStatics.h"
+#include "Components/Player/SATORI_InteractComponent.h"
 
 //////////////////////////////////////////////////////////////////////////
 // ASATORICharacter
@@ -70,7 +71,7 @@ ASATORICharacter::ASATORICharacter()
 	AbilitySystemComponent->SetIsReplicated(true);
 	PlayerGameplayAbilityComponent = CreateDefaultSubobject<USATORI_GameplayAbilityComponent>(TEXT("SATORI_GameplayAbilityComponent"));
 	TargetSystemComponent = CreateDefaultSubobject<USATORI_TargetSystemComponent>(TEXT("TargetSystemComponent"));
-
+	InteractComponent = CreateDefaultSubobject<USATORI_InteractComponent>(TEXT("InteractComponent"));
 	//Hand Component
 	HandComponent = CreateDefaultSubobject<USceneComponent>(TEXT("Hand"));
 	HandComponent->SetupAttachment(GetMesh(), "Bip001-R-Hand");
@@ -413,6 +414,9 @@ void ASATORICharacter::SetupPlayerInputComponent(class UInputComponent* PlayerIn
 	PlayerInputComponent->BindTouch(IE_Pressed, this, &ASATORICharacter::TouchStarted);
 	PlayerInputComponent->BindTouch(IE_Released, this, &ASATORICharacter::TouchStopped);
 
+	// Interact Action
+	PlayerInputComponent->BindAction("Interact", IE_Pressed, this, &ASATORICharacter::OnInteract);
+
 	AbilitySystemComponent->BindAbilityActivationToInputComponent(InputComponent, FGameplayAbilityInputBinds(FString("ConfirmTarget"),
 		FString("CancelTarget"), FString("ESATORIAbilityInputID"), static_cast<int32>(ESATORIAbilityInputID::Type::Confirm), static_cast<int32>(ESATORIAbilityInputID::Type::Cancel)));
 }
@@ -466,6 +470,11 @@ void ASATORICharacter::MoveRight(float Value)
 		// add movement in that direction
 		AddMovementInput(Direction, Value);
 	}
+}
+
+void ASATORICharacter::OnInteract()
+{
+	InteractComponent->TryToInteract();
 }
 
 void ASATORICharacter::SetComboJumpSection(USATORI_ANS_JumpSection* JumpSection)

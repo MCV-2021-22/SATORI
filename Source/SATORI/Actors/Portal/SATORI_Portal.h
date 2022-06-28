@@ -6,6 +6,7 @@
 #include "GameFramework/Actor.h"
 #include "GameplayTags.h"
 #include "SATORICharacter.h"
+#include "Interfaces/SATORI_InteractInterface.h"
 #include "SATORI_Portal.generated.h"
 
 class UGameplayEffect;
@@ -16,6 +17,7 @@ class USATORI_MainUI;
 class USATORI_DoorInteractUI;
 class USATORI_PortalPassiveDataAsset;
 class UBillboardComponent;
+class UWidgetComponent;
 
 USTRUCT(BlueprintType)
 struct FSATORI_DoorPassiveReward
@@ -34,7 +36,7 @@ public:
 };
 
 UCLASS()
-class SATORI_API ASATORI_Portal : public AActor
+class SATORI_API ASATORI_Portal : public AActor, public ISATORI_InteractInterface
 {
 	GENERATED_BODY()
 	
@@ -46,6 +48,14 @@ public:
 	virtual void BeginPlay() override;
 
 	virtual void OnConstruction(const FTransform& Transform) override;
+
+	// Virtual function 
+	virtual void Interact(AActor* ActorInteracting) override;
+	virtual void StartCanInteract(AActor* ActorInteracting) override;
+	virtual void StopCanInteract(AActor* ActorInteracting) override;
+
+	UPROPERTY(EditDefaultsOnly)
+	UWidgetComponent* WidgetComponent = nullptr;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
 	UStaticMeshComponent* StaticMeshComponent = nullptr;

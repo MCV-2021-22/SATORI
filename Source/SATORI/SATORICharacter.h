@@ -19,6 +19,7 @@ class USATORI_ANS_JumpSection;
 class USATORI_GameplayAbility;
 class USkeletalMeshComponent;
 class UCapsuleComponent;
+class USATORI_InteractComponent;
 
 UCLASS(config=Game)
 class ASATORICharacter : public ASATORI_CharacterBase
@@ -113,6 +114,9 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	class USATORI_ComboSystemComponent* ComboSystemComponent;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	USATORI_InteractComponent* InteractComponent = nullptr;
+
 public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
 	class USATORI_GameplayAbilityComponent* PlayerGameplayAbilityComponent;
@@ -160,6 +164,7 @@ protected:
 	/** Handler for when a touch input stops. */
 	void TouchStopped(ETouchIndex::Type FingerIndex, FVector Location);
 
+	void OnInteract();
 //Cheats
 public:
 
