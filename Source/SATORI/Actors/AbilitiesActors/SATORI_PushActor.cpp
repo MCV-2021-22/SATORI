@@ -25,6 +25,10 @@ ASATORI_PushActor::ASATORI_PushActor()
 	NiagaraComponent = CreateDefaultSubobject<UNiagaraComponent>(TEXT("Niagara"));
 	NiagaraComponent->SetupAttachment(RootComponent);
 
+	FScriptDelegate Delegate;
+	Delegate.BindUFunction(this, TEXT("OnNiagaraFinished"));
+	NiagaraComponent->OnSystemFinished.AddUnique(Delegate);
+
 	MeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Mesh"));
 	MeshComponent->SetupAttachment(RootComponent);
 	MeshComponent->SetCollisionProfileName(UCollisionProfile::NoCollision_ProfileName);
@@ -62,6 +66,11 @@ void ASATORI_PushActor::OnOverlapSphere(
 		ArrayPushed.AddUnique(OtherActor);
 		Character->AddGameplayTag(PushedTag);
 	}
+}
+
+void ASATORI_PushActor::OnNiagaraFinished()
+{
+	Destroy();
 }
 
 void ASATORI_PushActor::DestroyMyself()

@@ -27,6 +27,7 @@
 #include "Character/SATORI_PlayerController.h"
 //Cheat related include
 #include "Kismet/GameplayStatics.h"
+#include "SATORIGameMode.h"
 
 //////////////////////////////////////////////////////////////////////////
 // ASATORICharacter
@@ -598,6 +599,7 @@ void ASATORICharacter::KillAllEnemies()
 	UGameplayStatics::GetAllActorsOfClass(GetWorld(), ASATORI_AICharacter::StaticClass(), Actors);
 	for (AActor* Actor : Actors)
 	{
+		GetWorld()->GetAuthGameMode<ASATORIGameMode>()->RemoveEnemyActor(Actor);
 		Actor->Destroy();
 	}
 }
