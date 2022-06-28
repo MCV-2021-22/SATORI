@@ -93,7 +93,7 @@ void ASATORI_Portal::OnComponentBeginOverlap(UPrimitiveComponent* OverlappedComp
 		
 		// TODO
 
-		PortalIconTexture->SetSprite(PortalEffectsToApply.PassiveIcon);
+		
 
 		ApplyEffectToPlayer(Character);
 
@@ -146,6 +146,8 @@ void ASATORI_Portal::ActivatePortal()
 	//TO DO: UI
 
 	SphereComponent->SetCollisionProfileName(FName("IgnoreAllOverlapOnlyPlayer"));
+
+	PortalIconTexture->SetSprite(PortalEffectsToApply.PassiveIcon);
 
 }
 
