@@ -20,6 +20,8 @@ class SATORI_API USATORI_ChangeAbilitiesWidget : public UUserWidget
 public:
 	bool Initialize() override;
 
+	virtual void NativeOnInitialized();
+	virtual void NativePreConstruct();
 	virtual void NativeConstruct() override;
 	virtual void NativeDestruct() override;
 

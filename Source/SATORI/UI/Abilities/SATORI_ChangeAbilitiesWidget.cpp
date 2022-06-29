@@ -17,6 +17,17 @@ bool USATORI_ChangeAbilitiesWidget::Initialize()
 	return true;
 }
 
+void USATORI_ChangeAbilitiesWidget::NativeOnInitialized()
+{
+	Super::NativeOnInitialized();
+}
+
+void USATORI_ChangeAbilitiesWidget::NativePreConstruct()
+{
+	Super::NativePreConstruct();
+}
+
+
 void USATORI_ChangeAbilitiesWidget::NativeConstruct()
 {
 	Super::NativeConstruct();
