@@ -187,5 +187,8 @@ public:
 	UFUNCTION(Exec)
 	void KillAllEnemies();
 
+	UFUNCTION(Exec)
+	void KillPlayer();
+
 };
 

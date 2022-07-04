@@ -603,3 +603,8 @@ void ASATORICharacter::KillAllEnemies()
 		Actor->Destroy();
 	}
 }
+
+void ASATORICharacter::KillPlayer()
+{
+	SetHealth(0);
+}
