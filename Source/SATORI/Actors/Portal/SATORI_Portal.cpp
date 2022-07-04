@@ -171,9 +171,11 @@ void ASATORI_Portal::ChangeLevel(ASATORICharacter* Character)
 		GameInstanceRef->Gold = Character->GetGold();
 	}
 
-	if (LevelNames.Num() != 0)
+	if (SecondLevelNames.Num() != 0)
 	{
-		UGameplayStatics::OpenLevel(GetWorld(), FName(LevelNames.Pop()));
+		int NumLevels = SecondLevelNames.Num() - 1;
+		int  Level = FMath::RandRange(0, NumLevels);
+		UGameplayStatics::OpenLevel(GetWorld(), FName(SecondLevelNames[Level]));
 	}
 	
 }

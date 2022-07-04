@@ -6,7 +6,7 @@
 #include "GameFramework/Actor.h"
 #include "GameplayTags.h"
 #include "SATORICharacter.h"
-#include "SATORI_Portal.generated.h"
+#include "SATORI_PortalStart.generated.h"
 
 class UGameplayEffect;
 class UStaticMeshComponent;
@@ -17,30 +17,14 @@ class USATORI_DoorInteractUI;
 class USATORI_PortalPassiveDataAsset;
 class UBillboardComponent;
 
-USTRUCT(BlueprintType)
-struct FSATORI_DoorPassiveReward
-{
-	GENERATED_BODY()
-public:
-
-	UPROPERTY(EditAnywhere)
-	TSubclassOf<UGameplayEffect> PassiveEffect;
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	UTexture2D* PassiveIcon;
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	FText Description;
-};
-
 UCLASS()
-class SATORI_API ASATORI_Portal : public AActor
+class SATORI_API ASATORI_PortalStart : public AActor
 {
 	GENERATED_BODY()
 	
 public:	
 	// Sets default values for this actor's properties
-	ASATORI_Portal();
+	ASATORI_PortalStart();
 
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -59,12 +43,11 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
 	UBillboardComponent* PortalIconTexture = nullptr;
 
-	// Effect apply to player 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "GameplayEffect")
-	FSATORI_DoorPassiveReward PortalEffectsToApply;
-
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FGameplayTag PlayerTag;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Levels")
+	TArray < FString > FirstLevelNames;
 
 	// Widgets
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "UI")
@@ -73,39 +56,12 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "UI")
 	USATORI_DoorInteractUI* DoorInteractUI;
 
-	/*UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "PassiveDataAsset")
-	USATORI_PortalPassiveDataAsset* PassiveDataAsset;*/
-
-	void SetCurrentGameplayEffectData(FSATORI_DoorPassiveReward CurrentEffecData);
 public:
+
 	UFUNCTION()
 	void OnComponentBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
 			UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
-	void ApplyEffectToPlayer(AActor* PlayerCharacter);
-
-	TSubclassOf<UGameplayEffect> GetCurrentGameplayEffect();
-
-private:
-	TSubclassOf<UGameplayEffect> CurrentGameplayEffect;
-
-public:
-
-	void ActivatePortal();
-
 	void ChangeLevel(ASATORICharacter* Character);
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Levels")
-	TArray < FString > SecondLevelNames;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Levels")
-	TArray < FString > ThirdLevelNames;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Levels")
-	FString BossLevelName;
-
-private:
-
-	bool Active = false;
 
 };
