@@ -47,7 +47,7 @@ public:
 	FGameplayTag PlayerTag;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Levels")
-	TArray < FString > FirstLevelNames;
+	TArray < FString > LevelNames;
 
 	// Widgets
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "UI")

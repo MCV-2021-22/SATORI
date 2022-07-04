@@ -96,13 +96,7 @@ public:
 	void ChangeLevel(ASATORICharacter* Character);
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Levels")
-	TArray < FString > SecondLevelNames;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Levels")
-	TArray < FString > ThirdLevelNames;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Levels")
-	FString BossLevelName;
+	TArray < FString > LevelNames;
 
 private:
 
