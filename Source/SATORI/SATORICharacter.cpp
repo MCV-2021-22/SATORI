@@ -117,6 +117,7 @@ void ASATORICharacter::PossessedBy(AController* NewController)
 		/*MaskType = SATORIMaskType::Aka;
 		SATORIAbilityMaskComponent->GrantedMaskEffects(MaskType);*/
 		// -------------------
+		
 
 		if(GameInstanceRef->PlayerStart)
 		{
@@ -136,7 +137,7 @@ void ASATORICharacter::PossessedBy(AController* NewController)
 			SetGold(GameInstanceRef->Gold);
 		}
 		
-
+		// Set Health to Max Health Value
 		ASATORI_PlayerController* SatoriPlayerController = Cast<ASATORI_PlayerController>(GetController());
 		if (SatoriPlayerController)
 		{
@@ -144,8 +145,7 @@ void ASATORICharacter::PossessedBy(AController* NewController)
 		}
 
 		StatsComponent->InitializeStatsAttributes(PS);
-
-		// Set Health to Max Health Value
+	
 	}
 
 	if (Cast<APlayerController>(NewController) != nullptr) {
