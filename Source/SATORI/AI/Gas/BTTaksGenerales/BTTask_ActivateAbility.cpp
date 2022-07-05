@@ -19,11 +19,11 @@ EBTNodeResult::Type UBTTask_ActivateAbility::ExecuteTask(UBehaviorTreeComponent&
 	AAIController* AIController = OwnerComp.GetAIOwner();
 	APawn* Pawn = AIController->GetPawn();
 	UAbilitySystemComponent* ASC = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(Pawn);
-	bool bActivationSuccessful = ASC->TryActivateAbilityByClass(AbilityToActivte);
+	bool bActivationSuccessful = ASC->TryActivateAbilityByClass(AbilityToActivate);
 	
 	if (bActivationSuccessful)
 	{
-		FGameplayAbilitySpec* AbilitySpec = ASC->FindAbilitySpecFromClass(AbilityToActivte);
+		FGameplayAbilitySpec* AbilitySpec = ASC->FindAbilitySpecFromClass(AbilityToActivate);
 		UGameplayAbility* AbilityInstance = AbilitySpec->GetPrimaryInstance();
 		if (AbilityInstance->IsActive())
 		{

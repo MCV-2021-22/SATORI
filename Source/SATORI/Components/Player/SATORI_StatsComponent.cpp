@@ -10,6 +10,7 @@
 #include "AbilitySystemComponent.h"
 #include "UI/SATORI_MainUI.h"
 #include "Character/SATORI_PlayerController.h"
+#include "Blueprint/UserWidget.h"
 
 // Sets default values for this component's properties
 USATORI_StatsComponent::USATORI_StatsComponent()
@@ -22,14 +23,15 @@ void USATORI_StatsComponent::BeginPlay()
 {
 	Super::BeginPlay();
 
-	SatoriCharacter = Cast<ASATORICharacter>(GetOwner());
-	ASATORI_PlayerState* PlayerState = SatoriCharacter->GetPlayerState<ASATORI_PlayerState>();
+	ASATORICharacter* SatoriCharacter = Cast<ASATORICharacter>(GetOwner());
+	BindAttributeChage(SatoriCharacter);
+	/*ASATORI_PlayerState* PlayerState = SatoriCharacter->GetPlayerState<ASATORI_PlayerState>();
 
 	if (SatoriCharacter && PlayerState)
 	{
 		InitializeStatsAttributes(PlayerState);
 		BindAttributeChage(SatoriCharacter);
-	}
+	}*/
 }
 
 void USATORI_StatsComponent::InitializeStatsAttributes(ASATORI_PlayerState* PlayerState)
@@ -39,13 +41,13 @@ void USATORI_StatsComponent::InitializeStatsAttributes(ASATORI_PlayerState* Play
 	if (PlayerAttributes.IsValid())
 	{
 		MaxHealth = PlayerAttributes->GetMaxHealth();
-		Health = MaxHealth;
+		Health = PlayerAttributes->GetHealth();
 		PandaCoins = PlayerAttributes->GetGold();
 		PlayerAttributes->InitHealth(Health);
 		PlayerAttributes->InitGold(PandaCoins);
 
 		MaxMana = PlayerAttributes->GetMaxMana();
-		Mana = MaxMana;
+		Mana = PlayerAttributes->GetMana();
 		PlayerAttributes->InitMana(Mana);
 
 		// Update Health UI 
@@ -84,6 +86,7 @@ void USATORI_StatsComponent::BindAttributeChage(ASATORICharacter* PlayerCharacte
 
 void USATORI_StatsComponent::HealthChanged(const FOnAttributeChangeData& Data)
 {
+
 	float NewValue = Data.NewValue;
 	float OldValue = Data.OldValue;
 
@@ -91,7 +94,13 @@ void USATORI_StatsComponent::HealthChanged(const FOnAttributeChangeData& Data)
 
 	if (Health <= 0)
 	{
-		SatoriCharacter->CharacterDeath();
+		ASATORICharacter* SatoriCharacter = Cast<ASATORICharacter>(GetOwner());
+		if(SatoriCharacter)
+			SatoriCharacter->CharacterDeath();
+		/*if (DeathWidget)
+		{
+			DeathWidget.Get;
+		}*/
 	}
 
 	UpdateHealthBarPercent();
@@ -144,68 +153,88 @@ void USATORI_StatsComponent::PandaCoinChanged(const FOnAttributeChangeData& Data
 void USATORI_StatsComponent::UpdateHealthBarPercent()
 {
 	// Controller
-	ASATORI_PlayerController* PlayerController = Cast<ASATORI_PlayerController>(SatoriCharacter->GetController());
-	if (PlayerController)
+	ASATORICharacter* SatoriCharacter = Cast<ASATORICharacter>(GetOwner());
+	if (SatoriCharacter)
 	{
-		USATORI_MainUI* MainUI = PlayerController->GetSatoriMainUI();
-		if (MainUI)
+		ASATORI_PlayerController* PlayerController = Cast<ASATORI_PlayerController>(SatoriCharacter->GetController());
+		if (PlayerController)
 		{
-			MainUI->SetHealthBarPercentage(Health / MaxHealth);
+			USATORI_MainUI* MainUI = PlayerController->GetSatoriMainUI();
+			if (MainUI)
+			{
+				MainUI->SetHealthBarPercentage(Health / MaxHealth);
+			}
 		}
 	}
 }
 
 void USATORI_StatsComponent::UpdateHealthBarText()
 {
-	// Controller
-	ASATORI_PlayerController* PlayerController = Cast<ASATORI_PlayerController>(SatoriCharacter->GetController());
-	if (PlayerController)
+	ASATORICharacter* SatoriCharacter = Cast<ASATORICharacter>(GetOwner());
+	if (SatoriCharacter)
 	{
-		USATORI_MainUI* MainUI = PlayerController->GetSatoriMainUI();
-		if (MainUI)
+		// Controller
+		ASATORI_PlayerController* PlayerController = Cast<ASATORI_PlayerController>(SatoriCharacter->GetController());
+		if (PlayerController)
 		{
-			MainUI->SetHealthTextBlock(Health, MaxHealth);
+			USATORI_MainUI* MainUI = PlayerController->GetSatoriMainUI();
+			if (MainUI)
+			{
+				MainUI->SetHealthTextBlock(Health, MaxHealth);
+			}
 		}
 	}
 }
 
 void USATORI_StatsComponent::UpdateManaBarPercent()
 {
-	ASATORI_PlayerController* PlayerController = Cast<ASATORI_PlayerController>(SatoriCharacter->GetController());
-	if (PlayerController)
+	ASATORICharacter* SatoriCharacter = Cast<ASATORICharacter>(GetOwner());
+	if (SatoriCharacter)
 	{
-		USATORI_MainUI* MainUI = PlayerController->GetSatoriMainUI();
-		if (MainUI)
+		ASATORI_PlayerController* PlayerController = Cast<ASATORI_PlayerController>(SatoriCharacter->GetController());
+		if (PlayerController)
 		{
-			MainUI->SetManaBarPercentage(Mana / MaxMana);
+			USATORI_MainUI* MainUI = PlayerController->GetSatoriMainUI();
+			if (MainUI)
+			{
+				MainUI->SetManaBarPercentage(Mana / MaxMana);
+			}
 		}
 	}
 }
 
 void USATORI_StatsComponent::UpdateManaBarText()
 {
-	// Controller
-	ASATORI_PlayerController* PlayerController = Cast<ASATORI_PlayerController>(SatoriCharacter->GetController());
-	if (PlayerController)
+	ASATORICharacter* SatoriCharacter = Cast<ASATORICharacter>(GetOwner());
+	if (SatoriCharacter)
 	{
-		USATORI_MainUI* MainUI = PlayerController->GetSatoriMainUI();
-		if (MainUI)
+		// Controller
+		ASATORI_PlayerController* PlayerController = Cast<ASATORI_PlayerController>(SatoriCharacter->GetController());
+		if (PlayerController)
 		{
-			MainUI->SetManaTextBlock(Mana, MaxMana);
+			USATORI_MainUI* MainUI = PlayerController->GetSatoriMainUI();
+			if (MainUI)
+			{
+				MainUI->SetManaTextBlock(Mana, MaxMana);
+			}
 		}
 	}
 }
 
 void USATORI_StatsComponent::UpdatePandaCoinText()
 {
-	// Controller
-	ASATORI_PlayerController* PlayerController = Cast<ASATORI_PlayerController>(SatoriCharacter->GetController());
-	if (PlayerController)
+	ASATORICharacter* SatoriCharacter = Cast<ASATORICharacter>(GetOwner());
+	if (SatoriCharacter)
 	{
-		USATORI_MainUI* MainUI = PlayerController->GetSatoriMainUI();
-		if (MainUI)
+		// Controller
+		ASATORI_PlayerController* PlayerController = Cast<ASATORI_PlayerController>(SatoriCharacter->GetController());
+		if (PlayerController)
 		{
-			MainUI->SetCurrencyText(PandaCoins);
+			USATORI_MainUI* MainUI = PlayerController->GetSatoriMainUI();
+			if (MainUI)
+			{
+				MainUI->SetCurrencyText(PandaCoins);
+			}
 		}
 	}
 }

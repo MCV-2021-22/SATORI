@@ -14,11 +14,6 @@
 				"UMG",
 				"AIModule"
 			]
-		},
-		{
-			"Name": "SATORIDebug",
-			"Type": "Runtime",
-			"LoadingPhase": "Default"
 		}
 	],
 	"Plugins": [
@@ -29,6 +24,10 @@
 		{
 			"Name": "Volumetrics",
 			"Enabled": true
+		},
+		{
+			"Name": "FMODStudio",
+			"Enabled": false
 		}
 	]
 }

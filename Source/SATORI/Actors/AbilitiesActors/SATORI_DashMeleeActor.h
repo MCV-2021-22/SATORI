@@ -36,7 +36,7 @@ public:
 	TSubclassOf<UGameplayEffect> DamageGameplayEffect;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Meta = (ExposeOnSpawn = true), Category = "DashMelee")
-	float Damage = 10.f;
+	float Damage = 50.f;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Meta = (ExposeOnSpawn = true), Category = "DashMelee")
 	float Speed;

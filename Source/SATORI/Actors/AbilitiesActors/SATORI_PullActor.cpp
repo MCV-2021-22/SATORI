@@ -19,6 +19,8 @@ ASATORI_PullActor::ASATORI_PullActor()
 	StaticMeshComponent->SetCollisionProfileName(UCollisionProfile::NoCollision_ProfileName);
 	StaticMeshComponent->SetupAttachment(RootComponent);
 
+	NiagaraComponent = CreateDefaultSubobject<UNiagaraComponent>(TEXT("Niagara"));
+
 	//If collides will grab
 	CollisionSphereComponent = CreateDefaultSubobject<USphereComponent>(TEXT("CollisionSphere"));
 	CollisionSphereComponent->SetCollisionProfileName(FName(TEXT("PlayerAbility")));
@@ -40,6 +42,8 @@ void ASATORI_PullActor::OnOverlapCollisionSphere(UPrimitiveComponent* Overlapped
 	//Pull possible collisions : 
 	// Enemies
 	// Walls
+
+	CollisionSphereComponent->SetCollisionProfileName(UCollisionProfile::NoCollision_ProfileName);
 
 	ASATORI_AICharacter* Character = Cast<ASATORI_AICharacter>(OtherActor);
 
@@ -72,10 +76,17 @@ void ASATORI_PullActor::OnOverlapCollisionSphere(UPrimitiveComponent* Overlapped
 
 void ASATORI_PullActor::DestroyMyself()
 {
+
+	ProjectileMovementComponent->HomingTargetComponent = nullptr;
+	ProjectileMovementComponent->StopMovementImmediately();
+
 	if (Pulling && IsValid(Pulling))
 	{
 		Pulling->RemoveGameplayTag(PullingTag);
 	}
+	
+	NiagaraComponent->DestroyComponent();
+
 	Destroy();
 }
 
@@ -87,6 +98,22 @@ void ASATORI_PullActor::BeginPlay()
 	ProjectileMovementComponent->HomingTargetComponent = nullptr;
 	
 	Player = Cast<ASATORICharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
+
+	NiagaraComponent = UNiagaraFunctionLibrary::SpawnSystemAttached(
+		NiagaraSystem,
+		Player->GetHandComponent(),
+		FName (TEXT("NAME_NONE")),
+		Player->GetHandComponent()->GetComponentLocation(),
+		Player->GetHandComponent()->GetComponentRotation(),
+		EAttachLocation::KeepWorldPosition,
+		false,
+		true,
+		ENCPoolMethod::None,
+		true
+	);
+
+	float  PullRange = Range;
+	Target = nullptr;
 
 	if (Player->GetTargetSystemComponent()->IsLocked())
 	{
@@ -100,9 +127,9 @@ void ASATORI_PullActor::BeginPlay()
 		for (AActor* Actor : AllEnemies)
 		{
 			const float Distance = GetDistanceTo(Actor);
-			if (Distance < Range && Player->GetTargetSystemComponent()->IsInViewport(Actor))
+			if (Distance < PullRange && Player->GetTargetSystemComponent()->IsInViewport(Actor))
 			{
-				Range = Distance;
+				PullRange = Distance;
 				Target = Actor;
 			}
 		}
@@ -124,6 +151,8 @@ void ASATORI_PullActor::Tick(float DeltaTime)
 
 	//Movement
 	FVector ActorPosition = GetActorLocation();
+
+	NiagaraComponent->SetVectorParameter("User.Beam End", ActorPosition);
 
 	//If has grabbed an enemy
 	if (Pulling)

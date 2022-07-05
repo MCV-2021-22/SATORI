@@ -16,15 +16,18 @@ ASATORI_BlackHoleActor::ASATORI_BlackHoleActor()
 
 	RootComponent = CreateDefaultSubobject<USceneComponent>(TEXT("RootComponent"));
 
-	StaticMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("StaticMesh"));
-	StaticMeshComponent->SetupAttachment(RootComponent);
-	StaticMeshComponent->SetCollisionProfileName(UCollisionProfile::NoCollision_ProfileName);
+	StaticMeshComponentInner = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("StaticMeshInner"));
+	StaticMeshComponentInner->SetupAttachment(RootComponent);
+	StaticMeshComponentInner->SetCollisionProfileName(UCollisionProfile::NoCollision_ProfileName);
 
 	CollisionSphereComponent = CreateDefaultSubobject<USphereComponent>(TEXT("CollisionSphere"));
 	CollisionSphereComponent->SetCollisionProfileName(FName(TEXT("PlayerAbility")));
-	CollisionSphereComponent->SetupAttachment(StaticMeshComponent);
+	CollisionSphereComponent->SetupAttachment(StaticMeshComponentInner);
 	CollisionSphereComponent->SetGenerateOverlapEvents(true);
 	CollisionSphereComponent->OnComponentBeginOverlap.AddDynamic(this, &ASATORI_BlackHoleActor::OnOverlapCollisionSphere);
+
+	NiagaraComponent = CreateDefaultSubobject<UNiagaraComponent>(TEXT("Niagara"));
+	NiagaraComponent->SetupAttachment(RootComponent);
 
 	RadialForceComponent = CreateDefaultSubobject<URadialForceComponent>(TEXT("RadialForce"));
 	RadialForceComponent->SetupAttachment(CollisionSphereComponent);
@@ -56,23 +59,35 @@ void ASATORI_BlackHoleActor::OnOverlapCollisionSphere(UPrimitiveComponent* Overl
 	if (Character->HasMatchingGameplayTag(EnemyTag) && !Character->HasMatchingGameplayTag(TrappedTag))
 	{
 		Character->AddGameplayTag(TrappedTag);
-		ArrayActorsTrapped.AddUnique(OtherActor);
+
+		FMaterials Materials;
+		Materials.Materials = Character->GetMesh()->GetMaterials();
+
+		MapActorsTrapped.Add(OtherActor, Materials);
+
+		for (int i = 0; i < Character->GetMesh()->GetMaterials().Num(); i++)
+		{
+			Character->GetMesh()->SetMaterial(i, MaterialInstance);
+		}
 	}
 }
 
 void ASATORI_BlackHoleActor::DestroyMyself()
 {
+	SetActorTickEnabled(false);
+	StaticMeshComponentInner->SetVisibility(false);
+	NiagaraComponent->Deactivate();
 
-	for (AActor* Actor : ArrayActorsTrapped) {
+	NiagaraComponent = UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), NiagaraSystemExplode, GetRootComponent()->GetComponentLocation());
+	NiagaraComponent->Activate();
 
-		if (IsValid(Actor))
-		{
-			ASATORI_AICharacter* Character = Cast<ASATORI_AICharacter>(Actor);
-			//RemoveTagTrapped
-			Character->RemoveGameplayTag(TrappedTag);
-		}
-	}
+	FScriptDelegate Delegate;
+	Delegate.BindUFunction(this, TEXT("OnNiagaraFinished"));
+	NiagaraComponent->OnSystemFinished.AddUnique(Delegate);
+}
 
+void ASATORI_BlackHoleActor::OnNiagaraFinished()
+{
 	Destroy();
 }
 
@@ -89,10 +104,15 @@ void ASATORI_BlackHoleActor::StopAttraction()
 	RadialForceComponent->Radius = 64.0f;
 	RadialForceComponent->ForceStrength = 500000.0f;
 
-	for (AActor* Actor : ArrayActorsTrapped) {
+	CollisionSphereComponent->SetCollisionProfileName(UCollisionProfile::NoCollision_ProfileName);
+	
+	for (auto& ActorTrapped : MapActorsTrapped) {
+
+		AActor* Actor = ActorTrapped.Key;
 
 		if (IsValid(Actor))
 		{
+
 			//Damage Explosion Calculation
 			ASATORI_AICharacter* Character = Cast<ASATORI_AICharacter>(Actor);
 			float DamageDone = USATORI_BlueprintLibrary::ApplyGameplayEffectDamage(Actor, DamageExplosion, Actor, DamageGameplayEffect);
@@ -101,10 +121,17 @@ void ASATORI_BlackHoleActor::StopAttraction()
 			//Return to normal size
 			Actor->SetActorScale3D(FVector(1.0f, 1.0f, 1.0f));
 
+			for (int i = 0; i < Character->GetMesh()->GetMaterials().Num(); i++)
+			{
+				Character->GetMesh()->SetMaterial(i, ActorTrapped.Value.Materials[i]);
+			}
+
 			//Sometimes they get stuck together, trying this to fix it
 			FVector PrecautionMeasure = FMath::VRand();
 			PrecautionMeasure.Z = 0.0f;
 			Actor->AddActorLocalOffset(PrecautionMeasure * 200);
+
+			Character->RemoveGameplayTag(TrappedTag);
 		}
 	}
 
@@ -115,6 +142,8 @@ void ASATORI_BlackHoleActor::BeginPlay()
 {
 	Super::BeginPlay();
 
+	MaterialInstance = UMaterialInstanceDynamic::Create(MaterialChange, this);
+
 	SetActorScale3D(ScaleGrowing);
 	GetWorldTimerManager().SetTimer(TimerHandleGrowing, this, &ASATORI_BlackHoleActor::StopGrowing, TimeToStopGrowing, false);
 }
@@ -122,6 +151,8 @@ void ASATORI_BlackHoleActor::BeginPlay()
 void ASATORI_BlackHoleActor::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
+	MaterialInstance->SetVectorParameterValue("CollapseLocation", GetActorLocation());
 
 	if (bGrowing)
 	{
@@ -149,8 +180,10 @@ void ASATORI_BlackHoleActor::Tick(float DeltaTime)
 	if (bShouldAttract)
 	{
 		//Adding more force to the black hole
-		for (AActor* Actor : ArrayActorsTrapped) 
-		{
+		for (auto& ActorTrapped : MapActorsTrapped) {
+
+			AActor* Actor = ActorTrapped.Key;
+
 			if (IsValid(Actor))
 			{
 				//This first part sometimes causes problems

@@ -25,6 +25,9 @@ ASATORI_DecoyActor::ASATORI_DecoyActor()
 	CollisionSphereComponent->SetGenerateOverlapEvents(true);
 	CollisionSphereComponent->OnComponentBeginOverlap.AddDynamic(this, &ASATORI_DecoyActor::OnOverlapCollisionSphere);
 
+	NiagaraComponent = CreateDefaultSubobject<UNiagaraComponent>(TEXT("Niagara"));
+	NiagaraComponent->SetupAttachment(RootComponent);
+
 	ExplosionSphereComponent = CreateDefaultSubobject<USphereComponent>(TEXT("ExplosionRangeSphere"));
 	ExplosionSphereComponent->SetCollisionProfileName(UCollisionProfile::NoCollision_ProfileName);
 	ExplosionSphereComponent->SetupAttachment(StaticMeshComponent);
@@ -54,7 +57,7 @@ void ASATORI_DecoyActor::OnOverlapCollisionSphere(UPrimitiveComponent* Overlappe
 		return;
 	}
 
-	if (Character->HasMatchingGameplayTag(EnemyTag))
+	if (Character->HasMatchingGameplayTag(EnemyTag) && !Character->HasMatchingGameplayTag(LuredTag))
 	{
 		Character->AddGameplayTag(LuredTag);
 		ArrayLured.AddUnique(OtherActor);
@@ -82,11 +85,39 @@ void ASATORI_DecoyActor::OnOverlapExplosionSphere(UPrimitiveComponent* Overlappe
 
 void ASATORI_DecoyActor::DestroyMyself()
 {
+
+	ExplosionSphereComponent->SetCollisionProfileName(UCollisionProfile::NoCollision_ProfileName);
+	ProjectileMovementComponent->StopMovementImmediately();
+	ProjectileMovementComponent->ProjectileGravityScale = 0.0f;
+	StaticMeshComponent->SetVisibility(false);
+
+	NiagaraComponent->Deactivate();
+	NiagaraComponent = UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), NiagaraSystemExplodePart2, GetRootComponent()->GetComponentLocation());
+	NiagaraComponent->Activate();
+
+	FScriptDelegate Delegate;
+	Delegate.BindUFunction(this, TEXT("OnNiagaraFinished"));
+	NiagaraComponent->OnSystemFinished.AddUnique(Delegate);
+
+	SetActorTickEnabled(false);
+}
+
+void ASATORI_DecoyActor::OnNiagaraFinished()
+{
 	Destroy();
 }
 
 void ASATORI_DecoyActor::Explode()
 {
+
+	StaticMeshComponent->SetMaterial(0, MaterialBright);
+
+	NiagaraComponent->Deactivate();
+	NiagaraComponent = UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), NiagaraSystemExplode, GetRootComponent()->GetComponentLocation());
+	NiagaraComponent->Activate();
+
+	CollisionSphereComponent->SetCollisionProfileName(UCollisionProfile::NoCollision_ProfileName);
+
 	for (AActor* Actor : ArrayLured)
 	{
 		ASATORI_AICharacter* Character = Cast<ASATORI_AICharacter>(Actor);
@@ -98,7 +129,7 @@ void ASATORI_DecoyActor::Explode()
 
 	ExplosionSphereComponent->SetCollisionProfileName(FName(TEXT("PlayerAbility")), true);
 
-	GetWorldTimerManager().SetTimer(TimerHandleDestroyWait, this, &ASATORI_DecoyActor::DestroyMyself, 0.2f, false);
+	GetWorldTimerManager().SetTimer(TimerHandleDestroyWait, this, &ASATORI_DecoyActor::DestroyMyself, 0.5f, false);
 }
 
 void ASATORI_DecoyActor::BeginPlay()

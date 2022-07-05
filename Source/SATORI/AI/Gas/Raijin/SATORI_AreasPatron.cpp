@@ -60,9 +60,13 @@ void USATORI_AreasPatron::ActivateAbility(const FGameplayAbilitySpecHandle Handl
 				ActorInfo->AvatarActor->GetActorLocation() + ActorInfo->AvatarActor->GetActorForwardVector() * 100,
 				RotationOfIA);
 
-			FVector newForward = dest - Sphere->GetActorLocation();
-			newForward.Normalize();
-			Sphere->setDirection(newForward * 20);
+			if(Sphere)
+			{
+				FVector newForward = dest - Sphere->GetActorLocation();
+				newForward.Normalize();
+				Sphere->setDirection(newForward * 20);
+			}
+			
 			break;
 			
 		/*	ASATORI_ArcherProjectile* Sphere = GetWorld()->SpawnActor<ASATORI_ArcherProjectile>(

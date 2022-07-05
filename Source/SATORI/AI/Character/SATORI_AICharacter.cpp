@@ -116,7 +116,7 @@ void ASATORI_AICharacter::OnConstruction(const FTransform& Transform)
 		//HealthBarWidgetComponen->AttachToComponent(HeadComponent, AttachmentRules);
 		/*struct ConstructorHelpers::FClassFinder<USATORI_EnemyHealthBar> EnemyUIBar(TEXT("/Game/SATORI/UI/Enemy/"));
 		if (EnemyUIBar.Class != NULL)*/
-		if (HealthBarUI)
+		/*if (HealthBarUI)
 		{
 			HealthBarWidgetComponen->SetWidgetSpace(EWidgetSpace::World);
 			HealthBarWidgetComponen->SetDrawSize(FVector2D(200.f, 20.f));
@@ -125,7 +125,7 @@ void ASATORI_AICharacter::OnConstruction(const FTransform& Transform)
 			HealthBarWidgetComponen->SetDrawSize(LocalDrawSize);
 			FVector2D LocalPivot = FVector2D(0.5f, 0.5f);
 			HealthBarWidgetComponen->SetPivot(LocalPivot);
-		}
+		}*/
 	}
 }
 
@@ -172,6 +172,9 @@ void ASATORI_AICharacter::AddAICharacterAbilities()
 	for (FSATORIGameplayAbilityInfo Ability : DefaultAbilities->Abilities)
 	{
 		GrantAbilityToPlayer(FGameplayAbilitySpec(Ability.SATORIAbility, 1, static_cast<uint32>(Ability.AbilityKeys), this));
+
+		// Adding Remove Abilities, use for death, need to remove all abilities
+		RemovedgameplayAbilities.Add(Ability.SATORIAbility.Get());
 	}
 }
 
@@ -209,6 +212,9 @@ void ASATORI_AICharacter::PossessedBy(AController* NewController)
 		UE_LOG(LogTemp, Display, TEXT("EJECUTAMOS EL BT"));
 
 		AAIController* controller = Cast<AAIController>(NewController);
+
+		AddGameplayTag(FGameplayTag::RequestGameplayTag("State.PlayerNonSeen"));
+		
 
 		AttributeSetBase = AttributeSet;
 		btree = bte.LoadSynchronous();
@@ -298,6 +304,7 @@ void ASATORI_AICharacter::Tick(float DeltaSeconds)
 		if(time_burst <= 0.f)
 		{
 			bursting = false;
+			RemoveGameplayTag(FGameplayTag::RequestGameplayTag("State.Burst"));
 		}
 	}
 
@@ -337,8 +344,10 @@ void ASATORI_AICharacter::sendDamage(float dmg)
 	{
 
 		ASATORI_CharacterBase* pryeba = Cast<ASATORI_CharacterBase>(this);
-		AddGameplayTag(FGameplayTag::RequestGameplayTag("State.Burst"));
-
+		if(!HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag(("State.Burst"))))
+		{
+			AddGameplayTag(FGameplayTag::RequestGameplayTag("State.Burst"));
+		}
 		//AbilitySystemComponent->AddLooseGameplayTag(FGameplayTag::RequestGameplayTag("State.Burst"));
 	}
 	
@@ -473,4 +482,29 @@ void ASATORI_AICharacter::DestroyMyself()
 void ASATORI_AICharacter::RemoveCharacterAbilities()
 {
 	AbilitySystemComponent->BlockAbilitiesWithTags(BlockTags);
+
+	if (GetLocalRole() != ROLE_Authority || !AbilitySystemComponent.IsValid())
+	{
+		return;
+	}
+
+	// Remove any abilities added from a previous call. This checks to make sure the ability is in the startup 'CharacterAbilities' array.
+	TArray<FGameplayAbilitySpecHandle> AbilitiesToRemove;
+
+	if (RemovedgameplayAbilities.Num() > 0)
+	{
+		for (const FGameplayAbilitySpec& Spec : AbilitySystemComponent->GetActivatableAbilities())
+		{
+			if ((Spec.SourceObject == this) && RemovedgameplayAbilities.Contains(Spec.Ability->GetClass()))
+			{
+				AbilitiesToRemove.Add(Spec.Handle);
+			}
+		}
+	}
+
+	// Do in two passes so the removal happens after we have the full list
+	for (int32 i = 0; i < AbilitiesToRemove.Num(); i++)
+	{
+		AbilitySystemComponent->ClearAbility(AbilitiesToRemove[i]);
+	}
 }

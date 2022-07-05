@@ -14,6 +14,8 @@
 #include "Data/SATORI_PortalPassiveDataAsset.h"
 #include "Components/BillboardComponent.h"
 #include <algorithm>
+#include "SATORIGameMode.h"
+#include "GameplayFramework/SATORI_GameInstance.h"
 
 // Sets default values
 ASATORI_Portal::ASATORI_Portal()
@@ -32,7 +34,7 @@ ASATORI_Portal::ASATORI_Portal()
 	SphereComponent = CreateDefaultSubobject<USphereComponent>(TEXT("SphereComponent"));
 	SphereComponent->SetupAttachment(RootComponent);
 	SphereComponent->SetSphereRadius(120.0f);
-	SphereComponent->SetCollisionProfileName(FName("Trigger"));
+	SphereComponent->SetCollisionProfileName(UCollisionProfile::NoCollision_ProfileName);
 
 	SphereComponent->OnComponentBeginOverlap.AddUniqueDynamic(this, &ASATORI_Portal::OnComponentBeginOverlap);
 
@@ -61,6 +63,8 @@ void ASATORI_Portal::BeginPlay()
 	//		}
 	//	}
 	//}
+
+	GetWorld()->GetAuthGameMode<ASATORIGameMode>()->AddPortalActor(this);
 }
 
 void ASATORI_Portal::OnConstruction(const FTransform& Transform)
@@ -89,9 +93,12 @@ void ASATORI_Portal::OnComponentBeginOverlap(UPrimitiveComponent* OverlappedComp
 		
 		// TODO
 
-		PortalIconTexture->SetSprite(PortalEffectsToApply.PassiveIcon);
+		
 
 		ApplyEffectToPlayer(Character);
+
+		ChangeLevel(Character);
+
 	}
 }
 
@@ -123,8 +130,52 @@ TSubclassOf<UGameplayEffect> ASATORI_Portal::GetCurrentGameplayEffect()
 	return PortalEffectsToApply.PassiveEffect;
 }
 
+
+
 void ASATORI_Portal::SetCurrentGameplayEffectData(FSATORI_DoorPassiveReward CurrentEffectData)
 {
 	PortalEffectsToApply = CurrentEffectData;
 	CurrentGameplayEffect = PortalEffectsToApply.PassiveEffect;
+}
+
+void ASATORI_Portal::ActivatePortal()
+{
+	Active = true;
+	UE_LOG(LogTemp, Display, TEXT("[%s] ASATORI_Portal: Portal is Active ... "), *GetName());
+	
+	//TO DO: UI
+
+	SphereComponent->SetCollisionProfileName(FName("IgnoreAllOverlapOnlyPlayer"));
+
+	PortalIconTexture->SetSprite(PortalEffectsToApply.PassiveIcon);
+
+}
+
+void ASATORI_Portal::ChangeLevel(ASATORICharacter* Character)
+{
+
+	FString CurrentLevel = GetWorld()->GetMapName();
+	CurrentLevel.RemoveFromStart(GetWorld()->StreamingLevelsPrefix);
+
+	USATORI_GameInstance* GameInstanceRef = Cast<USATORI_GameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
+
+	if (GameInstanceRef)
+	{
+		GameInstanceRef->Health = Character->GetHealth();
+		GameInstanceRef->MaxHealth = Character->GetMaxHealth();
+		GameInstanceRef->Mana = Character->GetMana();
+		GameInstanceRef->MaxMana = Character->GetMaxMana();
+		GameInstanceRef->Defense = Character->GetDefense();
+		GameInstanceRef->Attack = Character->GetAttack();
+		GameInstanceRef->MoveSpeed = Character->GetMoveSpeed();
+		GameInstanceRef->Gold = Character->GetGold();
+	}
+
+	if (LevelNames.Num() != 0)
+	{
+		int NumLevels = LevelNames.Num() - 1;
+		int  Level = FMath::RandRange(0, NumLevels);
+		UGameplayStatics::OpenLevel(GetWorld(), FName(LevelNames[Level]));
+	}
+	
 }

@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "GameplayTags.h"
+#include "SATORICharacter.h"
 #include "SATORI_Portal.generated.h"
 
 class UGameplayEffect;
@@ -87,4 +88,18 @@ public:
 
 private:
 	TSubclassOf<UGameplayEffect> CurrentGameplayEffect;
+
+public:
+
+	void ActivatePortal();
+
+	void ChangeLevel(ASATORICharacter* Character);
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Levels")
+	TArray < FString > LevelNames;
+
+private:
+
+	bool Active = false;
+
 };
