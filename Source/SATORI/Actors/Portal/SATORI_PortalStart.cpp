@@ -78,9 +78,9 @@ void ASATORI_PortalStart::ChangeLevel(ASATORICharacter* Character)
 
 	if (GameInstanceRef)
 	{
-		GameInstanceRef->Health = Character->GetHealth();
+		GameInstanceRef->Health = Character->GetMaxHealth();
 		GameInstanceRef->MaxHealth = Character->GetMaxHealth();
-		GameInstanceRef->Mana = Character->GetMana();
+		GameInstanceRef->Mana = Character->GetMaxMana();
 		GameInstanceRef->MaxMana = Character->GetMaxMana();
 		GameInstanceRef->Defense = Character->GetDefense();
 		GameInstanceRef->Attack = Character->GetAttack();

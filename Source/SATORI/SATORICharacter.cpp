@@ -123,6 +123,7 @@ void ASATORICharacter::PossessedBy(AController* NewController)
 		/*MaskType = SATORIMaskType::Aka;
 		SATORIAbilityMaskComponent->GrantedMaskEffects(MaskType);*/
 		// -------------------
+		
 
 		if(GameInstanceRef->PlayerStart)
 		{
