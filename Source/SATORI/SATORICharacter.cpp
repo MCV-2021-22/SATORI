@@ -113,6 +113,12 @@ void ASATORICharacter::PossessedBy(AController* NewController)
 		InitializePassiveAttributes();
 		ApplyDefaultAbilities();
 
+		ASATORI_PlayerController* SatoriPlayerController = Cast<ASATORI_PlayerController>(GetController());
+		if (SatoriPlayerController)
+		{
+			SatoriPlayerController->CreateMainHUD();
+		}
+
 		// Test Mask Effect
 		/*MaskType = SATORIMaskType::Aka;
 		SATORIAbilityMaskComponent->GrantedMaskEffects(MaskType);*/
@@ -123,27 +129,21 @@ void ASATORICharacter::PossessedBy(AController* NewController)
 			SetHealth(GetMaxHealth());
 			SetMana(GetMaxMana());
 			GameInstanceRef->PlayerStart = false;
+			StatsComponent->InitializeStatsAttributes(PS);
 		}
 		else
 		{
-			SetHealth(GameInstanceRef->Health);
-			SetMana(GameInstanceRef->Mana);
-			SetMaxHealth(GameInstanceRef->MaxHealth);
-			SetMaxMana(GameInstanceRef->MaxMana);
-			SetDefense(GameInstanceRef->Defense);
-			SetAttack(GameInstanceRef->Attack);
-			SetMoveSpeed(GameInstanceRef->MoveSpeed);
-			SetGold(GameInstanceRef->Gold);
-		}
-		
+			//SetHealth(GameInstanceRef->Health);
+			//SetMana(GameInstanceRef->Mana);
+			//SetMaxHealth(GameInstanceRef->MaxHealth);
+			//SetMaxMana(GameInstanceRef->MaxMana);
+			//SetDefense(GameInstanceRef->Defense);
+			//SetAttack(GameInstanceRef->Attack);
+			//SetMoveSpeed(GameInstanceRef->MoveSpeed);
+			//SetGold(GameInstanceRef->Gold);
 
-		ASATORI_PlayerController* SatoriPlayerController = Cast<ASATORI_PlayerController>(GetController());
-		if (SatoriPlayerController)
-		{
-			SatoriPlayerController->CreateMainHUD();
+			StatsComponent->InitializeStatsAttributesByInstance(PS, GameInstanceRef);
 		}
-
-		StatsComponent->InitializeStatsAttributes(PS);
 
 		// Set Health to Max Health Value
 	}
