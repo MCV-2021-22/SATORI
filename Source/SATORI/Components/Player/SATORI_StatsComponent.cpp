@@ -11,6 +11,7 @@
 #include "UI/SATORI_MainUI.h"
 #include "Character/SATORI_PlayerController.h"
 #include "Blueprint/UserWidget.h"
+#include "GameplayFramework/SATORI_GameInstance.h"
 
 // Sets default values for this component's properties
 USATORI_StatsComponent::USATORI_StatsComponent()
@@ -49,6 +50,38 @@ void USATORI_StatsComponent::InitializeStatsAttributes(ASATORI_PlayerState* Play
 		MaxMana = PlayerAttributes->GetMaxMana();
 		Mana = PlayerAttributes->GetMana();
 		PlayerAttributes->InitMana(Mana);
+
+		// Update Health UI 
+		UpdateHealthBarPercent();
+		UpdateHealthBarText();
+		// Update Health UI 
+		UpdateManaBarPercent();
+		UpdateManaBarText();
+
+		// Update Coins
+		UpdatePandaCoinText();
+	}
+}
+
+void USATORI_StatsComponent::InitializeStatsAttributesByInstance(ASATORI_PlayerState* PlayerState, USATORI_GameInstance* GameInstance)
+{
+	if (GameInstance && PlayerState)
+	{
+		ASATORICharacter* SatoriCharacter = Cast<ASATORICharacter>(GetOwner());
+		if (SatoriCharacter)
+		{
+			MaxHealth = GameInstance->MaxHealth;
+			Health = GameInstance->Health;
+			PandaCoins = GameInstance->Gold;
+			SatoriCharacter->SetHealth(Health);
+			SatoriCharacter->SetMaxHealth(MaxHealth);
+			SatoriCharacter->SetGold(PandaCoins);
+
+			MaxMana = GameInstance->MaxMana;
+			Mana = GameInstance->Mana;
+			SatoriCharacter->SetMana(Mana);
+			SatoriCharacter->SetMaxMana(MaxMana);
+		}
 
 		// Update Health UI 
 		UpdateHealthBarPercent();

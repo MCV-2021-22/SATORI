@@ -99,7 +99,7 @@ void ASATORI_Portal::OnComponentBeginOverlap(UPrimitiveComponent* OverlappedComp
 		
 		// TODO
 
-		PortalIconTexture->SetSprite(PortalEffectsToApply.PassiveIcon);
+		
 
 		ApplyEffectToPlayer(Character);
 
@@ -153,6 +153,8 @@ void ASATORI_Portal::ActivatePortal()
 
 	SphereComponent->SetCollisionProfileName(FName("IgnoreAllOverlapOnlyPlayer"));
 
+	PortalIconTexture->SetSprite(PortalEffectsToApply.PassiveIcon);
+
 }
 
 void ASATORI_Portal::ChangeLevel(ASATORICharacter* Character)
@@ -177,7 +179,9 @@ void ASATORI_Portal::ChangeLevel(ASATORICharacter* Character)
 
 	if (LevelNames.Num() != 0)
 	{
-		UGameplayStatics::OpenLevel(GetWorld(), FName(LevelNames.Pop()));
+		int NumLevels = LevelNames.Num() - 1;
+		int  Level = FMath::RandRange(0, NumLevels);
+		UGameplayStatics::OpenLevel(GetWorld(), FName(LevelNames[Level]));
 	}
 }
 

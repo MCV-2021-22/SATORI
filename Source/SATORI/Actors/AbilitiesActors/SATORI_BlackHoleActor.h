@@ -7,6 +7,8 @@
 #include "GameplayTagContainer.h"
 #include "GameplayEffect.h"
 #include "NiagaraComponent.h"
+#include "NiagaraFunctionLibrary.h"
+#include "Materials/Material.h"
 #include "PhysicsEngine/RadialForceComponent.h"
 #include "AI/Character/SATORI_AICharacter.h"
 #include "SATORI_BlackHoleActor.generated.h"
@@ -16,6 +18,15 @@ class UStaticMeshComponent;
 class UNiagaraComponent;
 class URadialForceComponent;
 class UProjectileMovementComponent;
+
+USTRUCT()
+struct FMaterials
+{
+	GENERATED_BODY()
+
+	UPROPERTY()
+	TArray < UMaterialInterface*  > Materials;
+};
 
 UCLASS()
 class SATORI_API ASATORI_BlackHoleActor : public AActor
@@ -34,6 +45,12 @@ public:
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "BlackHole")
 	UNiagaraComponent* NiagaraComponent;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "BlackHole")
+	UNiagaraSystem* NiagaraSystemExplode;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "BlackHole")
+	UMaterialInterface* MaterialChange;
 
 	UPROPERTY(EditDefaultsOnly, Category = "BlackHole")
 	URadialForceComponent* RadialForceComponent = nullptr;
@@ -95,6 +112,9 @@ public:
 			bool bFromSweep,
 			const FHitResult& SweepResult);
 
+	UFUNCTION(BlueprintCallable, Category = "BlackHole")
+	void OnNiagaraFinished();
+
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "BlackHole|Tags")
 	FGameplayTag  TrappedTag;
 
@@ -109,9 +129,17 @@ public:
 
 	virtual void Tick(float DeltaTime) override;
 
+
 private:
 
-	TArray<AActor*> ArrayActorsTrapped;
+	//UPROPERTY()
+	//TArray<AActor*> ArrayActorsTrapped;
+
+	UPROPERTY()
+	TMap <AActor*, FMaterials > MapActorsTrapped;
+
+	UMaterialInstanceDynamic* MaterialInstance;
+
 
 	FTimerHandle TimerHandleDestroy;
 	FTimerHandle TimerHandleGrowing;

@@ -28,6 +28,7 @@
 //Cheat related include
 #include "Kismet/GameplayStatics.h"
 #include "Components/Player/SATORI_InteractComponent.h"
+#include "SATORIGameMode.h"
 
 //////////////////////////////////////////////////////////////////////////
 // ASATORICharacter
@@ -113,37 +114,38 @@ void ASATORICharacter::PossessedBy(AController* NewController)
 		InitializePassiveAttributes();
 		ApplyDefaultAbilities();
 
-		// Test Mask Effect
-		/*MaskType = SATORIMaskType::Aka;
-		SATORIAbilityMaskComponent->GrantedMaskEffects(MaskType);*/
-		// -------------------
-
-		if(GameInstanceRef->PlayerStart)
-		{
-			SetHealth(GetMaxHealth());
-			SetMana(GetMaxMana());
-			GameInstanceRef->PlayerStart = false;
-		}
-		else
-		{
-			SetHealth(GameInstanceRef->Health);
-			SetMana(GameInstanceRef->Mana);
-			SetMaxHealth(GameInstanceRef->MaxHealth);
-			SetMaxMana(GameInstanceRef->MaxMana);
-			SetDefense(GameInstanceRef->Defense);
-			SetAttack(GameInstanceRef->Attack);
-			SetMoveSpeed(GameInstanceRef->MoveSpeed);
-			SetGold(GameInstanceRef->Gold);
-		}
-		
-
 		ASATORI_PlayerController* SatoriPlayerController = Cast<ASATORI_PlayerController>(GetController());
 		if (SatoriPlayerController)
 		{
 			SatoriPlayerController->CreateMainHUD();
 		}
 
-		StatsComponent->InitializeStatsAttributes(PS);
+		// Test Mask Effect
+		/*MaskType = SATORIMaskType::Aka;
+		SATORIAbilityMaskComponent->GrantedMaskEffects(MaskType);*/
+		// -------------------
+		
+
+		if(GameInstanceRef->PlayerStart)
+		{
+			SetHealth(GetMaxHealth());
+			SetMana(GetMaxMana());
+			GameInstanceRef->PlayerStart = false;
+			StatsComponent->InitializeStatsAttributes(PS);
+		}
+		else
+		{
+			//SetHealth(GameInstanceRef->Health);
+			//SetMana(GameInstanceRef->Mana);
+			//SetMaxHealth(GameInstanceRef->MaxHealth);
+			//SetMaxMana(GameInstanceRef->MaxMana);
+			//SetDefense(GameInstanceRef->Defense);
+			//SetAttack(GameInstanceRef->Attack);
+			//SetMoveSpeed(GameInstanceRef->MoveSpeed);
+			//SetGold(GameInstanceRef->Gold);
+
+			StatsComponent->InitializeStatsAttributesByInstance(PS, GameInstanceRef);
+		}
 
 		// Set Health to Max Health Value
 	}
@@ -607,6 +609,12 @@ void ASATORICharacter::KillAllEnemies()
 	UGameplayStatics::GetAllActorsOfClass(GetWorld(), ASATORI_AICharacter::StaticClass(), Actors);
 	for (AActor* Actor : Actors)
 	{
+		GetWorld()->GetAuthGameMode<ASATORIGameMode>()->RemoveEnemyActor(Actor);
 		Actor->Destroy();
 	}
+}
+
+void ASATORICharacter::KillPlayer()
+{
+	SetHealth(0);
 }
