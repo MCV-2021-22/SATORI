@@ -78,6 +78,11 @@ void USATORI_InteractComponent::TickComponent(float DeltaTime, ELevelTick TickTy
 
 void USATORI_InteractComponent::TryToInteract_Implementation()
 {
-
+	ISATORI_InteractInterface* CurrentInteract = Cast<ISATORI_InteractInterface>(CurrentActor);
+	if (CurrentInteract)
+	{
+		UE_LOG(LogTemp, Display, TEXT("Interacting with actor %s"), *CurrentActor->GetName());
+		CurrentInteract->Interact(GetOwner());
+	}
 }
 

@@ -125,7 +125,6 @@ void ASATORICharacter::PossessedBy(AController* NewController)
 		SATORIAbilityMaskComponent->GrantedMaskEffects(MaskType);*/
 		// -------------------
 		
-
 		if(GameInstanceRef->PlayerStart)
 		{
 			SetHealth(GetMaxHealth());

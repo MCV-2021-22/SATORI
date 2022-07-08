@@ -66,6 +66,10 @@ protected:
 
 	float PandaCoins = 0.0f;
 
+	float MoveSpeed = 0.0f;
+	float Defense = 0.0f;
+	float Attack = 0.0f;
+
 	// Delegates
 	FDelegateHandle HealthChangedDelegateHandle;
 	FDelegateHandle MaxHealthChangedDelegateHandle;
