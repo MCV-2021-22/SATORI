@@ -70,6 +70,7 @@ public:
 
 	bool TimeStop = false;
 
+	bool isInteractWithMaskVendor = false;
 private:
 	void InitSaveGame();
 

@@ -4,13 +4,22 @@
 #include "Actors/Mask/SATORI_MaskVendor.h"
 #include "SATORI/SATORICharacter.h"
 #include "Kismet/GameplayStatics.h"
+#include "Components/WidgetComponent.h"
+#include "GameplayFramework/SATORI_GameInstance.h"
+#include "Kismet/GameplayStatics.h"
+#include "UI/SATORI_MainUI.h"
+#include "Character/SATORI_PlayerController.h"
 
 // Sets default values
 ASATORI_MaskVendor::ASATORI_MaskVendor()
 {
- 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
-	PrimaryActorTick.bCanEverTick = true;
+	MaskVendorMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("StaticMeshComponent"));
+	MaskVendorMesh->SetupAttachment(RootComponent);
 
+	WidgetComponent = CreateDefaultSubobject<UWidgetComponent>(TEXT("WidgetComponent"));
+
+	// Hide interaction
+	WidgetComponent->SetVisibility(false, true);
 }
 
 // Called when the game starts or when spawned
@@ -22,17 +31,36 @@ void ASATORI_MaskVendor::BeginPlay()
 
 void ASATORI_MaskVendor::Interact(AActor* ActorInteracting)
 {
-	UE_LOG(LogTemp, Display, TEXT("Interacting with Mask Vendor"));
+	//UE_LOG(LogTemp, Display, TEXT("Interacting with Mask Vendor"));
+
+	USATORI_GameInstance* GameInstanceRef = Cast<USATORI_GameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
+
+	if (!GameInstanceRef->isInteractWithMaskVendor)
+	{
+		if (!isPanelOpened)
+		{
+			isPanelOpened = true;
+			CheckPanelIsOpenedStatus(isPanelOpened);
+		}
+		else
+		{
+			isPanelOpened = false;
+			CheckPanelIsOpenedStatus(isPanelOpened);
+		}
+	}
 }
 
 void ASATORI_MaskVendor::StartCanInteract(AActor* ActorInteracting)
 {
-
+	WidgetComponent->SetVisibility(true, true);
 }
 
 void ASATORI_MaskVendor::StopCanInteract(AActor* ActorInteracting)
 {
-	
+	WidgetComponent->SetVisibility(false, true);
+
+	isPanelOpened = false;
+	CheckPanelIsOpenedStatus(isPanelOpened);
 }
 
 void ASATORI_MaskVendor::OnComponentBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
@@ -44,9 +72,21 @@ void ASATORI_MaskVendor::OnComponentBeginOverlap(UPrimitiveComponent* Overlapped
 	{
 		return;
 	}
+}
 
-	if (Character)
+void ASATORI_MaskVendor::CheckPanelIsOpenedStatus(bool Value)
+{
+	ASATORICharacter* SatoriCharacter = Cast<ASATORICharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
+	if (SatoriCharacter)
 	{
-
+		ASATORI_PlayerController* PlayerController = Cast<ASATORI_PlayerController>(SatoriCharacter->GetController());
+		if (PlayerController)
+		{
+			USATORI_MainUI* MainUI = PlayerController->GetSatoriMainUI();
+			if (MainUI)
+			{
+				MainUI->SetMaskVendorVisibility(Value);
+			}
+		}
 	}
 }

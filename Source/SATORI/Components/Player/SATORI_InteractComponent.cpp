@@ -36,23 +36,36 @@ void USATORI_InteractComponent::TickComponent(float DeltaTime, ELevelTick TickTy
 
 		FVector PosStart = Owner->GetActorLocation();
 		FVector ActorForward = Owner->GetActorRotation().Vector();
+		const FRotator StartRotation = Owner->GetActorRotation();
 		FVector PosEnd = PosStart + ActorForward * InteractionDistance;
+		FVector delta = PosEnd - PosStart;
 
 		UWorld* World = GetWorld();
 		FHitResult HitResult;
+		TWeakObjectPtr<AActor> NewActor = nullptr;
 
-		// Test a ray with objects
-		FCollisionQueryParams TraceParams(FName("CompInteract"), FCollisionQueryParams::GetUnknownStatId(), true, Owner);
-		bool bHitAnything = World->LineTraceSingleByChannel(HitResult, PosStart, PosEnd, CollisionChannel, TraceParams);
-		::DrawDebugLine(World, PosStart, PosEnd, bHitAnything ? FColor::Green : FColor::Red, false, 1.0f);
-
-		// 
-		TWeakObjectPtr<AActor> NewActor = bHitAnything ? HitResult.Actor : nullptr;
-
-		// Did we change anything?
-		if (NewActor == CurrentActor)
+		for (int i = -5; i <= 5; i++)
 		{
-			return;
+			FVector Axis = FVector::ZAxisVector;
+			float rad = FMath::DegreesToRadians(i * 5);
+			FQuat quaternion = FQuat(Axis, rad);
+			FRotator rotator = FRotator(quaternion);
+			FVector newDelta = rotator.RotateVector(delta);
+
+			FVector newEndPos = newDelta + PosStart;
+
+			// Test a ray with objects
+			FCollisionQueryParams TraceParams(FName("CompInteract"), FCollisionQueryParams::GetUnknownStatId(), true, Owner);
+			bool bHitAnything = World->LineTraceSingleByChannel(HitResult, PosStart, newEndPos, CollisionChannel, TraceParams);
+			::DrawDebugLine(World, PosStart, PosEnd, bHitAnything ? FColor::Green : FColor::Red, false, 1.0f);
+ 
+			NewActor = bHitAnything ? HitResult.Actor : nullptr;
+
+			// Did we change anything?
+			if (NewActor == CurrentActor)
+			{
+				return;
+			}
 		}
 
 		// Check if the Actor implements the InteractInterface. No problem if NewActor is null

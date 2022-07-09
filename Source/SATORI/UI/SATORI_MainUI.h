@@ -10,6 +10,7 @@ class USATORI_HealthWidget;
 class USATORI_ManaWidget;
 class USATORI_CurrencyWidget;
 class USATORI_ChangeAbilitiesWidget;
+class USATORI_MaksInteractUI;
 class UTexture2D;
 
 /*
@@ -37,6 +38,9 @@ public:
 	UPROPERTY(meta = (BindWidget))
 	USATORI_ChangeAbilitiesWidget* PlayerAbilitiesWidget;
 
+	// Mask Vendor
+	UPROPERTY(meta = (BindWidget))
+	USATORI_MaksInteractUI* MaskVendorWidget;
 public:
 	// Health helper functions
 	void SetHealthBarPercentage(float value);
@@ -47,4 +51,6 @@ public:
 	void SetManaTextBlock(float Mana, float MaxMana);
 
 	void SetCurrencyText(float currency);
+
+	void SetMaskVendorVisibility(bool Vendor_Visibility);
 };

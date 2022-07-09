@@ -73,6 +73,7 @@ ASATORICharacter::ASATORICharacter()
 	PlayerGameplayAbilityComponent = CreateDefaultSubobject<USATORI_GameplayAbilityComponent>(TEXT("SATORI_GameplayAbilityComponent"));
 	TargetSystemComponent = CreateDefaultSubobject<USATORI_TargetSystemComponent>(TEXT("TargetSystemComponent"));
 	InteractComponent = CreateDefaultSubobject<USATORI_InteractComponent>(TEXT("InteractComponent"));
+
 	//Hand Component
 	HandComponent = CreateDefaultSubobject<USceneComponent>(TEXT("Hand"));
 	HandComponent->SetupAttachment(GetMesh(), "Bip001-R-Hand");
@@ -134,15 +135,6 @@ void ASATORICharacter::PossessedBy(AController* NewController)
 		}
 		else
 		{
-			//SetHealth(GameInstanceRef->Health);
-			//SetMana(GameInstanceRef->Mana);
-			//SetMaxHealth(GameInstanceRef->MaxHealth);
-			//SetMaxMana(GameInstanceRef->MaxMana);
-			//SetDefense(GameInstanceRef->Defense);
-			//SetAttack(GameInstanceRef->Attack);
-			//SetMoveSpeed(GameInstanceRef->MoveSpeed);
-			//SetGold(GameInstanceRef->Gold);
-
 			StatsComponent->InitializeStatsAttributesByInstance(PS, GameInstanceRef);
 		}
 
