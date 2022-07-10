@@ -79,6 +79,9 @@ public:
 	UFUNCTION(BlueprintCallable)
 	bool DoRayCast();
 
+	UFUNCTION()
+	void SetCharacterMask(SATORIMaskType GrantedMaskType);
+
 	UFUNCTION(BlueprintCallable)
 	bool PlayerActiveAbilityWithTag(FGameplayTag TagName);
 

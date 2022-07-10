@@ -9,6 +9,8 @@
 #include "Kismet/GameplayStatics.h"
 #include "UI/SATORI_MainUI.h"
 #include "Character/SATORI_PlayerController.h"
+#include "GameFramework/CharacterMovementComponent.h"
+#include "Character/Mask/SATORI_AbilityMask.h"
 
 // Sets default values
 ASATORI_MaskVendor::ASATORI_MaskVendor()
@@ -34,8 +36,9 @@ void ASATORI_MaskVendor::Interact(AActor* ActorInteracting)
 	//UE_LOG(LogTemp, Display, TEXT("Interacting with Mask Vendor"));
 
 	USATORI_GameInstance* GameInstanceRef = Cast<USATORI_GameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
+	ASATORICharacter* SatoriCharacter = Cast<ASATORICharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
 
-	if (!GameInstanceRef->isInteractWithMaskVendor)
+	if (!GameInstanceRef->isInteractWithMaskVendor && SatoriCharacter->MaskType == SATORIMaskType::NONE)
 	{
 		if (!isPanelOpened)
 		{
@@ -74,19 +77,34 @@ void ASATORI_MaskVendor::OnComponentBeginOverlap(UPrimitiveComponent* Overlapped
 	}
 }
 
-void ASATORI_MaskVendor::CheckPanelIsOpenedStatus(bool Value)
+void ASATORI_MaskVendor::CheckPanelIsOpenedStatus(bool IsOpened)
 {
 	ASATORICharacter* SatoriCharacter = Cast<ASATORICharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
+	ASATORI_PlayerController* PlayerController = nullptr;
 	if (SatoriCharacter)
 	{
-		ASATORI_PlayerController* PlayerController = Cast<ASATORI_PlayerController>(SatoriCharacter->GetController());
+		PlayerController = Cast<ASATORI_PlayerController>(SatoriCharacter->GetController());
 		if (PlayerController)
 		{
 			USATORI_MainUI* MainUI = PlayerController->GetSatoriMainUI();
 			if (MainUI)
 			{
-				MainUI->SetMaskVendorVisibility(Value);
+				MainUI->SetMaskVendorVisibility(IsOpened);
 			}
 		}
+	}
+
+	// Show Mouse
+	if (IsOpened && PlayerController && SatoriCharacter)
+	{
+		PlayerController->bShowMouseCursor = true;
+		PlayerController->bEnableClickEvents = true;
+		PlayerController->bEnableMouseOverEvents = true;
+	}
+	else
+	{
+		PlayerController->bShowMouseCursor = false;
+		PlayerController->bEnableClickEvents = false;
+		PlayerController->bEnableMouseOverEvents = false;
 	}
 }

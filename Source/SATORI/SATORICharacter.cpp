@@ -382,6 +382,15 @@ void ASATORICharacter::RemoveCharacterAbilities()
 	}
 }
 
+void ASATORICharacter::SetCharacterMask(SATORIMaskType GrantedMaskType)
+{
+	if (GrantedMaskType != SATORIMaskType::NONE)
+	{
+		MaskType = GrantedMaskType;
+		SATORIAbilityMaskComponent->GrantedMaskEffects(MaskType);
+	}
+}
+
 //////////////////////////////////////////////////////////////////////////
 // Input
 
