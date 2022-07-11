@@ -33,7 +33,7 @@ public:
 	UFUNCTION()
 	void AddEnemyActor(AActor* Enemy);
 
-	UFUNCTION()
+	UFUNCTION(BlueprintCallable)
 	void RemoveEnemyActor(AActor* Enemy);
 
 	UFUNCTION()

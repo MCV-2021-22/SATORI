@@ -18,9 +18,13 @@ void USATORI_AttributeSet::PreAttributeChange(const FGameplayAttribute& Attribut
 	Super::PreAttributeChange(Attribute, NewValue);
 
 	// Health
-	if (Attribute == GetMaxHealthAttribute())
+	if (Attribute == GetMaxHealthAttribute()) // GetMaxHealthAttribute comes from the Macros defined at the top of the header
 	{
 		AdjustAttributeForMaxChange(Health, MaxHealth, NewValue, GetHealthAttribute());
+	}
+	else if (Attribute == GetMaxHealthAttribute())
+	{
+		NewValue = FMath::Clamp<float>(NewValue, 0.001f, 10000.0f);
 	}
 	else if (Attribute == GetMoveSpeedAttribute())
 	{
@@ -149,6 +153,7 @@ void USATORI_AttributeSet::AdjustAttributeForMaxChange(FGameplayAttributeData& A
 		const float CurrentValue = AffectedAttribute.GetCurrentValue();
 		float NewDelta = (CurrentMaxValue > 0.f) ? (CurrentValue * NewMaxValue / CurrentMaxValue) - CurrentValue : NewMaxValue;
 
+		if (!(NewDelta + CurrentMaxValue > NewMaxValue))
 		AbilityComp->ApplyModToAttributeUnsafe(AffectedAttributeProperty, EGameplayModOp::Additive, NewDelta);
 	}
 }

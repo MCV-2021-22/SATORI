@@ -13,6 +13,7 @@ class USATORI_AttributeSet;
 class UAbilitySystemComponent;
 class UUserWidget;
 class ASATORI_PlayerController;
+class USATORI_GameInstance;
 
 /*
 * Class represent All Player Stats, we can use for UI 
@@ -30,6 +31,7 @@ public:
 
 	// Initialize all Health attributes for local values
 	virtual void InitializeStatsAttributes(ASATORI_PlayerState* PlayerState);
+	virtual void InitializeStatsAttributesByInstance(ASATORI_PlayerState* PlayerState, USATORI_GameInstance* GameInstance);
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
