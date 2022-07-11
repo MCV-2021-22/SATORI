@@ -93,6 +93,9 @@ public:
 	class USATORI_ComboSystemComponent* GetComboSystemComponent() const { return ComboSystemComponent; }
 	class USATORI_TargetSystemComponent* GetTargetSystemComponent() const { return TargetSystemComponent; }
 
+	UFUNCTION(BlueprintCallable)
+	USceneComponent* GetHandComponent() const { return HandComponent; }
+
 protected:
 
 	// Initialization for player abilities
@@ -183,6 +186,9 @@ public:
 
 	UFUNCTION(Exec)
 	void KillAllEnemies();
+
+	UFUNCTION(Exec)
+	void KillPlayer();
 
 };
 

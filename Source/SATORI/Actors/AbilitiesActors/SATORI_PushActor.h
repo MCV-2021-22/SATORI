@@ -71,6 +71,9 @@ public:
 			bool bFromSweep,
 			const FHitResult& SweepResult);
 
+	UFUNCTION(BlueprintCallable, Category = "Push")
+	void OnNiagaraFinished();
+
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Push|Tags")
 	FGameplayTag  EnemyTag;
 
