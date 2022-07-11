@@ -37,7 +37,7 @@ public:
 	TSubclassOf<UUserWidget> LockedOnWidgetClass;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Target System|Widget")
-	FName LockedOnWidgetParentSocket = FName("spine_03");
+	FName LockedOnWidgetParentSocket = FName("Bip001-Head");
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Target System|Widget")
 	FVector LockedOnWidgetRelativeLocation = FVector(0.0f, 0.0f, 0.0f);

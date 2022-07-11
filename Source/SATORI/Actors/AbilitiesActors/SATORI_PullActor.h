@@ -6,12 +6,15 @@
 #include "GameFramework/Actor.h"
 #include "GameplayTagContainer.h"
 #include "GameplayEffect.h"
+#include "NiagaraComponent.h"
+#include "NiagaraFunctionLibrary.h"
 #include "AI/Character/SATORI_AICharacter.h"
 #include "SATORICharacter.h"
 #include "SATORI_PullActor.generated.h"
 
 class USphereComponent;
 class UStaticMeshComponent;
+class UNiagaraComponent;
 class UGameplayEffect;
 class UProjectileMovementComponent;
 
@@ -30,6 +33,12 @@ public:
 	UPROPERTY(EditDefaultsOnly, Category = "Pull")
 	UStaticMeshComponent* StaticMeshComponent = nullptr;
 
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Pull")
+	UNiagaraComponent* NiagaraComponent;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Pull")
+	UNiagaraSystem* NiagaraSystem;
+
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Pull")
 	UProjectileMovementComponent* ProjectileMovementComponent = nullptr;
 
@@ -46,7 +55,7 @@ public:
 	float TimeToDestroy;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Debug")
-	float FinalDistanceToPlayer = 150.0f;
+	float FinalDistanceToPlayer = 250.0f;
 	
 	UFUNCTION(BlueprintCallable, Category = "Pull")
 	void OnOverlapCollisionSphere(
@@ -74,6 +83,7 @@ public:
 private:
 
 	AActor* Target;
+
 	ASATORICharacter* Player;
 
 	ASATORI_AICharacter* Pulling = nullptr;

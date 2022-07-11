@@ -344,8 +344,10 @@ void ASATORI_AICharacter::sendDamage(float dmg)
 	{
 
 		ASATORI_CharacterBase* pryeba = Cast<ASATORI_CharacterBase>(this);
-		AddGameplayTag(FGameplayTag::RequestGameplayTag("State.Burst"));
-
+		if(!HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag(("State.Burst"))))
+		{
+			AddGameplayTag(FGameplayTag::RequestGameplayTag("State.Burst"));
+		}
 		//AbilitySystemComponent->AddLooseGameplayTag(FGameplayTag::RequestGameplayTag("State.Burst"));
 	}
 	

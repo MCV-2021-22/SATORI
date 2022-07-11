@@ -28,6 +28,9 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void SaveGameToDisk();
 
+	UFUNCTION(BlueprintCallable)
+	void SetPlayerStart(bool PlayerStartChange) { PlayerStart =  PlayerStartChange; }
+
 	void RegisterActorToSave();
 	void UnRegisterActorToSave();
 
