@@ -78,7 +78,7 @@ public:
 	int CurrentAbilityValue = 0;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
-	int nextAbilityValue = 1;
+	int NextAbilityValue = 1;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	int PrevAbilityValue;

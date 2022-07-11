@@ -5,6 +5,7 @@
 #include "Components/Button.h"
 #include "Kismet/GameplayStatics.h"
 #include "SATORICharacter.h"
+#include "Character/SATORI_PlayerController.h"
 
 bool USATORI_MaksInteractUI::Initialize()
 {
@@ -45,6 +46,11 @@ void USATORI_MaksInteractUI::AkaMaskButtonOnClicked()
 	{
 		isClicked = true;
 		Character->SetCharacterMask(SATORIMaskType::Aka);
+		ASATORI_PlayerController* PlayerController = Cast<ASATORI_PlayerController>(Character->GetController());
+		if (PlayerController)
+		{
+			Character->EnableInput(PlayerController);
+		}
 	}
 }
 
@@ -55,6 +61,11 @@ void USATORI_MaksInteractUI::AoMaskButtonOnClicked()
 	{
 		isClicked = true;
 		Character->SetCharacterMask(SATORIMaskType::Ao);
+		ASATORI_PlayerController* PlayerController = Cast<ASATORI_PlayerController>(Character->GetController());
+		if (PlayerController)
+		{
+			Character->EnableInput(PlayerController);
+		}
 	}
 }
 
@@ -65,5 +76,10 @@ void USATORI_MaksInteractUI::MidoriMaskButtonOnClicked()
 	{
 		isClicked = true;
 		Character->SetCharacterMask(SATORIMaskType::Midori);
+		ASATORI_PlayerController* PlayerController = Cast<ASATORI_PlayerController>(Character->GetController());
+		if (PlayerController)
+		{
+			Character->EnableInput(PlayerController);
+		}
 	}
 }

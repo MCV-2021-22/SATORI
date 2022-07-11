@@ -89,9 +89,9 @@ void USATORI_GameplayAbilityComponent::SetNextAbility()
 	if (CurrentAbilityValue >= PlayerAbilitiesNames.Num())
 		CurrentAbilityValue = 0;
 
-	nextAbilityValue++;
-	if (nextAbilityValue >= PlayerAbilitiesNames.Num())
-		nextAbilityValue = 0;
+	NextAbilityValue++;
+	if (NextAbilityValue >= PlayerAbilitiesNames.Num())
+		NextAbilityValue = 0;
 
 	PrevAbilityValue++;
 	if (PrevAbilityValue >= PlayerAbilitiesNames.Num())
@@ -106,9 +106,9 @@ void USATORI_GameplayAbilityComponent::SetPrevAbility()
 	if (CurrentAbilityValue < 0)
 		CurrentAbilityValue = PlayerAbilitiesNames.Num() - 1;
 
-	nextAbilityValue--;
-	if (nextAbilityValue < 0)
-		nextAbilityValue = PlayerAbilitiesNames.Num() - 1;
+	NextAbilityValue--;
+	if (NextAbilityValue < 0)
+		NextAbilityValue = PlayerAbilitiesNames.Num() - 1;
 
 	PrevAbilityValue--;
 	if (PrevAbilityValue < 0)
@@ -152,7 +152,7 @@ void USATORI_GameplayAbilityComponent::NotifyAbilityChanged()
 {
 	const FSATORI_AbilitiesDatas* CurrentAbilityData = PlayerGameplayAbility.Find(PlayerAbilitiesNames[CurrentAbilityValue]);
 
-	const FSATORI_AbilitiesDatas* NextAbilityData = PlayerGameplayAbility.Find(PlayerAbilitiesNames[nextAbilityValue]);
+	const FSATORI_AbilitiesDatas* NextAbilityData = PlayerGameplayAbility.Find(PlayerAbilitiesNames[NextAbilityValue]);
 
 	const FSATORI_AbilitiesDatas* PrevAbilityData = PlayerGameplayAbility.Find(PlayerAbilitiesNames[PrevAbilityValue]);
 

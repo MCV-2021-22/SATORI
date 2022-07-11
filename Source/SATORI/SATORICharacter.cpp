@@ -574,6 +574,8 @@ void ASATORICharacter::RemoveAllAbilities()
 	PlayerGameplayAbilityComponent->PlayerGameplayAbility.Empty();
 	PlayerGameplayAbilityComponent->PlayerAbilitiesNames.Empty();
 	PlayerGameplayAbilityComponent->CurrentAbilityValue = 0;
+	PlayerGameplayAbilityComponent->PrevAbilityValue = 0;
+	PlayerGameplayAbilityComponent->NextAbilityValue = 0;
 }
 
 void ASATORICharacter::GetAbility(FName AbilityName)

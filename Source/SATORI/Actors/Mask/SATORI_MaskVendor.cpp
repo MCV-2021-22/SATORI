@@ -38,7 +38,7 @@ void ASATORI_MaskVendor::Interact(AActor* ActorInteracting)
 	USATORI_GameInstance* GameInstanceRef = Cast<USATORI_GameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
 	ASATORICharacter* SatoriCharacter = Cast<ASATORICharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
 
-	if (!GameInstanceRef->isInteractWithMaskVendor && SatoriCharacter->MaskType == SATORIMaskType::NONE)
+	if (!GameInstanceRef->isInteractWithMaskVendor/* && SatoriCharacter->MaskType == SATORIMaskType::NONE*/)
 	{
 		if (!isPanelOpened)
 		{
@@ -100,11 +100,14 @@ void ASATORI_MaskVendor::CheckPanelIsOpenedStatus(bool IsOpened)
 		PlayerController->bShowMouseCursor = true;
 		PlayerController->bEnableClickEvents = true;
 		PlayerController->bEnableMouseOverEvents = true;
+		SatoriCharacter->DisableInput(PlayerController);
+		//PlayerController->SetInputMode();
 	}
 	else
 	{
 		PlayerController->bShowMouseCursor = false;
 		PlayerController->bEnableClickEvents = false;
 		PlayerController->bEnableMouseOverEvents = false;
+		SatoriCharacter->EnableInput(PlayerController);
 	}
 }
