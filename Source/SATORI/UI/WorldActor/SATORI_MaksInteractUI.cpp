@@ -20,22 +20,19 @@ void USATORI_MaksInteractUI::NativeConstruct()
 {
 	Super::NativeConstruct();
 
-	if (!isClicked)
+	if (AkaButton)
 	{
-		if (AkaButton)
-		{
-			AkaButton->OnClicked.AddDynamic(this, &USATORI_MaksInteractUI::AkaMaskButtonOnClicked);
-		}
+		AkaButton->OnClicked.AddDynamic(this, &USATORI_MaksInteractUI::AkaMaskButtonOnClicked);
+	}
 
-		if (AoButton)
-		{
-			AoButton->OnClicked.AddDynamic(this, &USATORI_MaksInteractUI::AoMaskButtonOnClicked);
-		}
+	if (AoButton)
+	{
+		AoButton->OnClicked.AddDynamic(this, &USATORI_MaksInteractUI::AoMaskButtonOnClicked);
+	}
 
-		if (MidoriButton)
-		{
-			MidoriButton->OnClicked.AddDynamic(this, &USATORI_MaksInteractUI::MidoriMaskButtonOnClicked);
-		}
+	if (MidoriButton)
+	{
+		MidoriButton->OnClicked.AddDynamic(this, &USATORI_MaksInteractUI::MidoriMaskButtonOnClicked);
 	}
 }
 
@@ -45,6 +42,10 @@ void USATORI_MaksInteractUI::AkaMaskButtonOnClicked()
 	if (Character)
 	{
 		isClicked = true;
+		if (Character->MaskType != SATORIMaskType::NONE)
+		{
+			Character->RemoveMaskGameplayEffect();
+		}
 		Character->SetCharacterMask(SATORIMaskType::Aka);
 		ASATORI_PlayerController* PlayerController = Cast<ASATORI_PlayerController>(Character->GetController());
 		if (PlayerController)
@@ -60,6 +61,10 @@ void USATORI_MaksInteractUI::AoMaskButtonOnClicked()
 	if (Character)
 	{
 		isClicked = true;
+		if (Character->MaskType != SATORIMaskType::NONE)
+		{
+			Character->RemoveMaskGameplayEffect();
+		}
 		Character->SetCharacterMask(SATORIMaskType::Ao);
 		ASATORI_PlayerController* PlayerController = Cast<ASATORI_PlayerController>(Character->GetController());
 		if (PlayerController)
@@ -75,6 +80,10 @@ void USATORI_MaksInteractUI::MidoriMaskButtonOnClicked()
 	if (Character)
 	{
 		isClicked = true;
+		if (Character->MaskType != SATORIMaskType::NONE)
+		{
+			Character->RemoveMaskGameplayEffect();
+		}
 		Character->SetCharacterMask(SATORIMaskType::Midori);
 		ASATORI_PlayerController* PlayerController = Cast<ASATORI_PlayerController>(Character->GetController());
 		if (PlayerController)

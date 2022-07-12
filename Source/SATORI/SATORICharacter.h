@@ -88,6 +88,11 @@ public:
 	UFUNCTION(BlueprintImplementableEvent)
 	void ShowDeathWidget();
 
+	UFUNCTION()
+	void RemoveMaskGameplayEffect();
+
+	virtual void OnMaskRemoveGameplayEffectCallback(const FActiveGameplayEffect& EffectRemoved);
+
 	virtual void CharacterDeath() override;
 	
 	virtual void RemoveCharacterAbilities() override;

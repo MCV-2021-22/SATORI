@@ -391,6 +391,22 @@ void ASATORICharacter::SetCharacterMask(SATORIMaskType GrantedMaskType)
 	}
 }
 
+void ASATORICharacter::RemoveMaskGameplayEffect()
+{
+	//AbilitySystemComponent->OnAnyGameplayEffectRemovedDelegate().AddUObject(this, &ASATORICharacter::OnMaskRemoveGameplayEffectCallback);
+	
+	AbilitySystemComponent->RemoveActiveGameplayEffect(SATORIAbilityMaskComponent->GetCurrentActiveGEHandle());
+
+	//AbilitySystemComponent->RemoveActiveGameplayEffectBySourceEffect(SATORIAbilityMaskComponent->ChooseMaskEffectoToApply(MaskType),
+	//	AbilitySystemComponent.Get());
+}
+
+void ASATORICharacter::OnMaskRemoveGameplayEffectCallback(const FActiveGameplayEffect& EffectRemoved)
+{
+	FGameplayTagContainer AssetTags;
+	EffectRemoved.Spec.GetAllAssetTags(AssetTags);
+}
+
 //////////////////////////////////////////////////////////////////////////
 // Input
 

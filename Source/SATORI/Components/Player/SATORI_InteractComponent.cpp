@@ -3,6 +3,7 @@
 
 #include "Components/Player/SATORI_InteractComponent.h"
 #include "Interfaces/SATORI_InteractInterface.h"
+#include "SATORICharacter.h"
 #include "DrawDebugHelpers.h"	
 
 // Sets default values for this component's properties
@@ -89,13 +90,18 @@ void USATORI_InteractComponent::TickComponent(float DeltaTime, ELevelTick TickTy
 	}
 }
 
-void USATORI_InteractComponent::TryToInteract_Implementation()
+void USATORI_InteractComponent::TryToInteract()
 {
 	ISATORI_InteractInterface* CurrentInteract = Cast<ISATORI_InteractInterface>(CurrentActor);
-	if (CurrentInteract)
+	ASATORICharacter* Character = Cast<ASATORICharacter>(GetOwner());
+	if (CurrentInteract && Character)
 	{
 		UE_LOG(LogTemp, Display, TEXT("Interacting with actor %s"), *CurrentActor->GetName());
-		CurrentInteract->Interact(GetOwner());
+		CurrentInteract->Interact(Character);
+	}
+	else
+	{
+		UE_LOG(LogTemp, Display, TEXT("Not Interacting"));
 	}
 }
 

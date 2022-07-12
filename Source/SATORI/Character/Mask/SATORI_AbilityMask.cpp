@@ -43,11 +43,16 @@ void USATORI_AbilityMask::GrantedMaskEffects(SATORIMaskType MaskType)
 
 			if (NewHandle.IsValid())
 			{
-				FActiveGameplayEffectHandle ActiveGEHandle = AbilitySystemComponent->ApplyGameplayEffectSpecToTarget(*NewHandle.Data.Get(),
+				ActiveGEHandle = AbilitySystemComponent->ApplyGameplayEffectSpecToTarget(*NewHandle.Data.Get(),
 					AbilitySystemComponent);
 			}
 		}
 	}
+}
+
+FActiveGameplayEffectHandle USATORI_AbilityMask::GetCurrentActiveGEHandle()
+{
+	return ActiveGEHandle;
 }
 
 TSubclassOf<UGameplayEffect> USATORI_AbilityMask::ChooseMaskEffectoToApply(SATORIMaskType MaskType)
