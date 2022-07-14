@@ -28,6 +28,10 @@
 		{
 			"Name": "FMODStudio",
 			"Enabled": false
+		},
+		{
+			"Name": "Water",
+			"Enabled": true
 		}
 	]
 }
