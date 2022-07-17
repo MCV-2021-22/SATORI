@@ -32,8 +32,6 @@ public:
 	// For player controlled characters where the ASC lives on the Pawn
 	virtual void PossessedBy(AController* NewController) override;
 
-	virtual void OnRep_PlayerState() override;
-
 	/** Base turn rate, in deg/sec. Other scaling may affect final turn rate. */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	FName WeaponSocketName;
@@ -90,8 +88,6 @@ public:
 
 	UFUNCTION()
 	void RemoveMaskGameplayEffect();
-
-	virtual void OnMaskRemoveGameplayEffectCallback(const FActiveGameplayEffect& EffectRemoved);
 
 	virtual void CharacterDeath() override;
 	

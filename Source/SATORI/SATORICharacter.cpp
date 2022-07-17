@@ -136,6 +136,7 @@ void ASATORICharacter::PossessedBy(AController* NewController)
 		else
 		{
 			StatsComponent->InitializeStatsAttributesByInstance(PS, GameInstanceRef);
+			SATORIAbilityMaskComponent->GrantedMaskEffects(GameInstanceRef->MaskType);
 		}
 
 		// Set Health to Max Health Value
@@ -146,47 +147,6 @@ void ASATORICharacter::PossessedBy(AController* NewController)
 		AddGameplayTag(FGameplayTag::RequestGameplayTag("PossessedBy.Player"));
 		//AddGameplayTag(FGameplayTag::RequestGameplayTag("PossessedBy.AI"));
 	}
-}
-
-void ASATORICharacter::OnRep_PlayerState()
-{
-	Super::OnRep_PlayerState();
-
-	ASATORI_PlayerState* PS = GetPlayerState<ASATORI_PlayerState>();
-	if (PS)
-	{
-		AbilitySystemComponent = Cast<USATORI_AbilitySystemComponent>(PS->GetAbilitySystemComponent());
-
-		AbilitySystemComponent->InitAbilityActorInfo(PS, this);
-
-		AttributeSetBase = PS->GetSatoriAttributeSet();
-
-		AbilitySystemComponent->AddLooseGameplayTag(FGameplayTag::RequestGameplayTag("PossessedBy.Player"));
-
-		Tags.Add("PossessedBy.Player");
-
-
-		InitializePassiveAttributes();
-		ApplyDefaultAbilities();
-
-		// Test Mask Effect
-		/*MaskType = SATORIMaskType::Aka;
-		SATORIAbilityMaskComponent->GrantedMaskEffects(MaskType);*/
-		// -------------------
-
-		// Set Health to Max Health Value
-		SetHealth(GetMaxHealth());
-
-		ASATORI_PlayerController* SatoriPlayerController = Cast<ASATORI_PlayerController>(GetController());
-		if (SatoriPlayerController)
-		{
-			SatoriPlayerController->CreateMainHUD();
-		}
-
-		StatsComponent->InitializeStatsAttributes(PS);
-	}
-
-	AddGameplayTag(FGameplayTag::RequestGameplayTag("PossessedBy.Player"));
 }
 
 void ASATORICharacter::ApplyDefaultAbilities()
@@ -393,18 +353,10 @@ void ASATORICharacter::SetCharacterMask(SATORIMaskType GrantedMaskType)
 
 void ASATORICharacter::RemoveMaskGameplayEffect()
 {
-	//AbilitySystemComponent->OnAnyGameplayEffectRemovedDelegate().AddUObject(this, &ASATORICharacter::OnMaskRemoveGameplayEffectCallback);
-	
 	AbilitySystemComponent->RemoveActiveGameplayEffect(SATORIAbilityMaskComponent->GetCurrentActiveGEHandle());
 
 	//AbilitySystemComponent->RemoveActiveGameplayEffectBySourceEffect(SATORIAbilityMaskComponent->ChooseMaskEffectoToApply(MaskType),
 	//	AbilitySystemComponent.Get());
-}
-
-void ASATORICharacter::OnMaskRemoveGameplayEffectCallback(const FActiveGameplayEffect& EffectRemoved)
-{
-	FGameplayTagContainer AssetTags;
-	EffectRemoved.Spec.GetAllAssetTags(AssetTags);
 }
 
 //////////////////////////////////////////////////////////////////////////

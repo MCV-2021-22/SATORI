@@ -6,6 +6,7 @@
 #include "Engine/GameInstance.h"
 #include "GAS/Attributes/SATORI_AttributeSet.h"
 #include "Savegame/SATORI_SaveGame.h"
+#include "Character/Mask/SATORI_AbilityMask.h"
 #include "SATORI_GameInstance.generated.h"
 
 /**
@@ -61,8 +62,8 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	int PlayerAbility = 0;
 
-	//UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	//USATORI_AttributeSet* Attributes;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	SATORIMaskType MaskType = SATORIMaskType::NONE;
 
 	bool PlayerStart = true;
 
@@ -79,6 +80,4 @@ private:
 
 	UPROPERTY()
 	FString SaveSlotName = "MCVSaveData";
-
-	
 };

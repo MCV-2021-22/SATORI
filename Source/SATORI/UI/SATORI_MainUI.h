@@ -11,6 +11,7 @@ class USATORI_ManaWidget;
 class USATORI_CurrencyWidget;
 class USATORI_ChangeAbilitiesWidget;
 class USATORI_MaksInteractUI;
+class USATORI_GeneralVendorInteractUI;
 class UTexture2D;
 
 /*
@@ -41,6 +42,10 @@ public:
 	// Mask Vendor
 	UPROPERTY(meta = (BindWidget))
 	USATORI_MaksInteractUI* MaskVendorWidget;
+
+	// General Vendor
+	UPROPERTY(meta = (BindWidget))
+	USATORI_GeneralVendorInteractUI* GeneralVendorWidget;
 public:
 	// Health helper functions
 	void SetHealthBarPercentage(float value);
@@ -50,7 +55,12 @@ public:
 	void SetManaBarPercentage(float value);
 	void SetManaTextBlock(float Mana, float MaxMana);
 
+	// Currency function
 	void SetCurrencyText(float currency);
 
+	// Mask Vendor function
 	void SetMaskVendorVisibility(bool Vendor_Visibility);
+
+	// General Vendor function
+	void SetGeneralVendorVisibility(bool Vendor_Visibility);
 };

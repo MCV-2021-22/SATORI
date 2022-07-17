@@ -6,6 +6,7 @@
 #include "Mana/SATORI_ManaWidget.h"
 #include "Currency/SATORI_CurrencyWidget.h"
 #include "WorldActor/SATORI_MaksInteractUI.h"
+#include "WorldActor/SATORI_GeneralVendorInteractUI.h"
 #include "Abilities/SATORI_ChangeAbilitiesWidget.h"
 #include "Engine/Texture2D.h"
 
@@ -18,6 +19,11 @@ bool USATORI_MainUI::Initialize()
 	if (MaskVendorWidget)
 	{
 		MaskVendorWidget->RemoveFromViewport();
+	}
+
+	if (GeneralVendorWidget)
+	{
+		GeneralVendorWidget->RemoveFromViewport();
 	}
 
 	return true;
@@ -62,5 +68,17 @@ void USATORI_MainUI::SetMaskVendorVisibility(bool Vendor_Visibility)
 	else
 	{
 		MaskVendorWidget->RemoveFromViewport();
+	}
+}
+
+void USATORI_MainUI::SetGeneralVendorVisibility(bool Vendor_Visibility)
+{
+	if (Vendor_Visibility)
+	{
+		GeneralVendorWidget->AddToViewport();
+	}
+	else
+	{
+		GeneralVendorWidget->RemoveFromViewport();
 	}
 }
