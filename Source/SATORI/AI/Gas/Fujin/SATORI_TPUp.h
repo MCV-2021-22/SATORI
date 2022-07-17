@@ -8,7 +8,6 @@
 #include "GameplayTagAssetInterface.h"
 #include "GAS/SATORI_GameplayAbility.h"
 #include "SATORI/AbilityTask/SATORI_PlayMontageandWaitNotify.h"
-#include "AI/Components/Raijin/SATORI_RaijinRayo.h"
 #include "SATORI_TPUp.generated.h"
 
 
@@ -33,10 +32,9 @@ public:
 	virtual void ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, 
 		const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData) override;
 
+	void Teleport(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo);
 
-	UPROPERTY(BlueprintReadOnly, EditAnywhere)
-		TSubclassOf<ASATORI_RaijinRayo> ProjectileClass;
-
+	
 
 protected:
 
