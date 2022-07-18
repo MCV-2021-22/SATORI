@@ -12,6 +12,7 @@
 #include "SATORICharacter.generated.h"
 
 class USATORI_AbilityDataAsset;
+class USATORI_GameplayEffect;
 class UGameplayEffect;
 class USATORI_AbilitySystemComponent;
 class USATORI_AbilityMask;
@@ -66,6 +67,15 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Weapon")
 	USceneComponent* HandComponent;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Gameply Effect")
+	TSubclassOf<UGameplayEffect> DamageEffect;
+
+	UPROPERTY()
+	USATORI_GameplayEffect* ManaRecoverGameplayEffect;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	float AnimactionPlayRater = 1.0f;
 
 	void SetComboJumpSection(USATORI_ANS_JumpSection* JumpSection);
 
@@ -172,6 +182,15 @@ protected:
 	void TouchStopped(ETouchIndex::Type FingerIndex, FVector Location);
 
 	void OnInteract();
+
+	// Weapon Overlap
+	UFUNCTION()
+	void OnWeaponOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, 
+		UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+
+	UFUNCTION()
+	void OnWeaponOverlapEnd(class UPrimitiveComponent* OverlappedComp, 
+			class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 //Cheats
 public:
 

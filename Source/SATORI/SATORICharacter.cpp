@@ -25,6 +25,8 @@
 #include "GAS/Attributes/SATORI_AttributeSet.h"
 #include "GameplayFramework/SATORI_GameInstance.h"
 #include "Character/SATORI_PlayerController.h"
+#include "FunctionLibrary/SATORI_BlueprintLibrary.h"
+#include "GAS/Effects/SATORI_ManaRecoverEffect.h"
 //Cheat related include
 #include "Kismet/GameplayStatics.h"
 #include "Components/Player/SATORI_InteractComponent.h"
@@ -90,6 +92,9 @@ ASATORICharacter::ASATORICharacter()
 		AttackingCollision->SetCollisionProfileName("Pawn");
 		AttackingCollision->SetGenerateOverlapEvents(false);
 		AttackingCollision->AttachTo(SwordComponent);
+
+		AttackingCollision->OnComponentBeginOverlap.AddDynamic(this, &ASATORICharacter::OnWeaponOverlapBegin);
+		AttackingCollision->OnComponentEndOverlap.AddDynamic(this, &ASATORICharacter::OnWeaponOverlapEnd);
 	}
 }
 
@@ -111,9 +116,10 @@ void ASATORICharacter::PossessedBy(AController* NewController)
 
 		Tags.Add("PossessedBy.Player");
 
-
 		InitializePassiveAttributes();
 		ApplyDefaultAbilities();
+
+		ManaRecoverGameplayEffect = USATORI_ManaRecoverEffect::StaticClass()->GetDefaultObject<USATORI_GameplayEffect>();
 
 		ASATORI_PlayerController* SatoriPlayerController = Cast<ASATORI_PlayerController>(GetController());
 		if (SatoriPlayerController)
@@ -357,6 +363,34 @@ void ASATORICharacter::RemoveMaskGameplayEffect()
 
 	//AbilitySystemComponent->RemoveActiveGameplayEffectBySourceEffect(SATORIAbilityMaskComponent->ChooseMaskEffectoToApply(MaskType),
 	//	AbilitySystemComponent.Get());
+}
+
+void ASATORICharacter::OnWeaponOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
+	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	if (OtherActor && (OtherActor != this))
+	{
+		ASATORI_AICharacter* EnemyCharacter = Cast<ASATORI_AICharacter>(OtherActor);
+		if (EnemyCharacter)
+		{
+			float Damage_Values = USATORI_BlueprintLibrary::ApplyGameplayEffectDamage(EnemyCharacter, 40, this, DamageEffect);
+			AbilitySystemComponent->ApplyGameplayEffectToSelf(ManaRecoverGameplayEffect, 1.0f, AbilitySystemComponent->MakeEffectContext());
+			AttackingCollision->SetGenerateOverlapEvents(false);
+			EnemyCharacter->sendDamage(Damage_Values);
+			AnimactionPlayRater = 0.5f;
+			UGameplayStatics::SetGlobalTimeDilation(GetWorld(), AnimactionPlayRater);
+		}
+	}
+}
+
+void ASATORICharacter::OnWeaponOverlapEnd(class UPrimitiveComponent* OverlappedComp,
+	class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
+{
+	if (OtherActor && (OtherActor != this))
+	{
+		AnimactionPlayRater = 1.0f;
+		UGameplayStatics::SetGlobalTimeDilation(GetWorld(), AnimactionPlayRater);
+	}
 }
 
 //////////////////////////////////////////////////////////////////////////
