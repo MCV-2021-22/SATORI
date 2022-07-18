@@ -238,6 +238,11 @@ float ASATORI_AICharacter::getMaxRangeDist()
 	return max_range_dist;
 }
 
+void ASATORI_AICharacter::SetBurstingFalse()
+{
+	bursting = false;
+}
+
 bool ASATORI_AICharacter::CheckPlayerWithRayCast()
 {
 	const FVector StartPosition = GetActorLocation();
@@ -331,7 +336,6 @@ void ASATORI_AICharacter::sendDamage(float dmg)
 		time_burst = 5.f;
 		dmg_burst = 0.f;
 		bursting = true;
-
 	}
 
 	dmg_burst += dmg;
@@ -339,6 +343,8 @@ void ASATORI_AICharacter::sendDamage(float dmg)
 
 	float max_health_possible = GetMaxHealth();
 	UE_LOG(LogTemp, Display, TEXT("La max health es: %f"), max_health_possible);
+	UE_LOG(LogTemp, Display, TEXT("Damage dealt: %f"), dmg);
+	UE_LOG(LogTemp, Display, TEXT("Damage burst: %f"), dmg_burst);
 
 	if(dmg_burst>= max_health_possible*0.2f)
 	{
