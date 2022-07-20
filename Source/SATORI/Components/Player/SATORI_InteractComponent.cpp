@@ -58,7 +58,7 @@ void USATORI_InteractComponent::TickComponent(float DeltaTime, ELevelTick TickTy
 			// Test a ray with objects
 			FCollisionQueryParams TraceParams(FName("CompInteract"), FCollisionQueryParams::GetUnknownStatId(), true, Owner);
 			bool bHitAnything = World->LineTraceSingleByChannel(HitResult, PosStart, newEndPos, CollisionChannel, TraceParams);
-			::DrawDebugLine(World, PosStart, PosEnd, bHitAnything ? FColor::Green : FColor::Red, false, 1.0f);
+			//::DrawDebugLine(World, PosStart, PosEnd, bHitAnything ? FColor::Green : FColor::Red, false, 1.0f);
  
 			NewActor = bHitAnything ? HitResult.Actor : nullptr;
 

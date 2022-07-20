@@ -97,9 +97,6 @@ public:
 	TArray<TSubclassOf<UGameplayEffect>> PassiveGameplayEffects;
 
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "UI")
-	UWidgetComponent* HealthBarWidgetComponen = nullptr;
-
-	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "UI")
 	TSubclassOf<USATORI_EnemyHealthBar> HealthBarUI;
 	
 protected:

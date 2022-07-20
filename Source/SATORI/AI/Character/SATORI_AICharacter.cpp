@@ -39,8 +39,6 @@ ASATORI_AICharacter::ASATORI_AICharacter()
 
 	AttributeSet = CreateDefaultSubobject<USATORI_AttributeSet>(TEXT("AttributeSet"));
 
-	HealthBarWidgetComponen = CreateDefaultSubobject<UWidgetComponent>(TEXT("HealthBarWidgetComponen"));
-
 	//HeadComponent = CreateDefaultSubobject<USphereComponent>(TEXT("Head Position"));
 
 	PawnSensor = CreateDefaultSubobject<UPawnSensingComponent>(TEXT("Pawn Sensor"));
@@ -103,30 +101,30 @@ void ASATORI_AICharacter::BeginPlay()
 
 void ASATORI_AICharacter::OnConstruction(const FTransform& Transform)
 {
-	if (HealthBarWidgetComponen)
-	{
-		HealthBarWidgetComponen->RegisterComponent();
-		const FAttachmentTransformRules AttachmentRules = FAttachmentTransformRules(EAttachmentRule::KeepRelative, false);
-		//const APlayerController* PC = UGameplayStatics::GetPlayerController(GetWorld(), 0);
-		//UUserWidget* HealthWidget = PC ? CreateWidget(PC/*, HealthBarUI*/) : nullptr;
-		//if (HealthWidget)
-		//{
-		//	HealthBarWidgetComponen->SetWidget(HealthWidget);
-		//}
-		//HealthBarWidgetComponen->AttachToComponent(HeadComponent, AttachmentRules);
-		/*struct ConstructorHelpers::FClassFinder<USATORI_EnemyHealthBar> EnemyUIBar(TEXT("/Game/SATORI/UI/Enemy/"));
-		if (EnemyUIBar.Class != NULL)*/
-		/*if (HealthBarUI)
-		{
-			HealthBarWidgetComponen->SetWidgetSpace(EWidgetSpace::World);
-			HealthBarWidgetComponen->SetDrawSize(FVector2D(200.f, 20.f));
-			HealthBarWidgetComponen->SetWidgetClass(HealthBarUI);
-			FVector2D LocalDrawSize = FVector2D(100.0f, 20.0f);
-			HealthBarWidgetComponen->SetDrawSize(LocalDrawSize);
-			FVector2D LocalPivot = FVector2D(0.5f, 0.5f);
-			HealthBarWidgetComponen->SetPivot(LocalPivot);
-		}*/
-	}
+	//if (HealthBarWidgetComponen)
+	//{
+	//	HealthBarWidgetComponen->RegisterComponent();
+	//	const FAttachmentTransformRules AttachmentRules = FAttachmentTransformRules(EAttachmentRule::KeepRelative, false);
+	//	const APlayerController* PC = UGameplayStatics::GetPlayerController(GetWorld(), 0);
+	//	UUserWidget* HealthWidget = PC ? CreateWidget(PC/*, HealthBarUI*/) : nullptr;
+	//	if (HealthWidget)
+	//	{
+	//		HealthBarWidgetComponen->SetWidget(HealthWidget);
+	//	}
+	//	HealthBarWidgetComponen->AttachToComponent(HeadComponent, AttachmentRules);
+	//	/*struct ConstructorHelpers::FClassFinder<USATORI_EnemyHealthBar> EnemyUIBar(TEXT("/Game/SATORI/UI/Enemy/"));
+	//	if (EnemyUIBar.Class != NULL)*/
+	//	/*if (HealthBarUI)
+	//	{
+	//		HealthBarWidgetComponen->SetWidgetSpace(EWidgetSpace::World);
+	//		HealthBarWidgetComponen->SetDrawSize(FVector2D(200.f, 20.f));
+	//		HealthBarWidgetComponen->SetWidgetClass(HealthBarUI);
+	//		FVector2D LocalDrawSize = FVector2D(100.0f, 20.0f);
+	//		HealthBarWidgetComponen->SetDrawSize(LocalDrawSize);
+	//		FVector2D LocalPivot = FVector2D(0.5f, 0.5f);
+	//		HealthBarWidgetComponen->SetPivot(LocalPivot);
+	//	}*/
+	//}
 }
 
 void ASATORI_AICharacter::InitializeAttributes()
@@ -308,19 +306,6 @@ void ASATORI_AICharacter::Tick(float DeltaSeconds)
 		}
 	}
 
-	if (HealthBarUI)
-	{
-		HealthBarProjection(HealthBarWidgetComponen, 1024, 0.1, 0.5);
-		//// HealthBarUI
-		//USATORI_EnemyHealthBar* HearthBar = Cast<USATORI_EnemyHealthBar>(HealthBarWidgetComponen->GetWidget());
-		//if (HearthBar)
-		//{
-		//	float Health = EnemyStatComponent->GetHealth();
-		//	float Maxhealth = EnemyStatComponent->GetMaxHealth();
-		//	HearthBar->UpdateHealthBar(Health, Maxhealth);
-		//}
-	}
-	
 	Super::Tick(DeltaSeconds);
 }
 

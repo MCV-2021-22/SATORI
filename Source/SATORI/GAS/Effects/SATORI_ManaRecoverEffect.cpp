@@ -13,11 +13,6 @@ USATORI_ManaRecoverEffect::USATORI_ManaRecoverEffect()
 	ModifierInfo.ModifierOp = EGameplayModOp::Additive;
 	ModifierInfo.ModifierMagnitude = FScalableFloat(5.0f);
 
-	/*FAttributeBasedFloat AttributeBasedFloat;
-	AttributeBasedFloat.Coefficient = 1.0f;
-
-	ModifierInfo.ModifierMagnitude = AttributeBasedFloat;*/
-
 	Modifiers.Add(ModifierInfo);
 
 }
