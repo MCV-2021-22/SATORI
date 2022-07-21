@@ -76,6 +76,8 @@ private:
 
 	ASATORI_CharacterBase* Character;
 
+	UCapsuleComponent* CapsuleComponent;
+
 public:
 
 	bool bIsCreateOnRunning = false;

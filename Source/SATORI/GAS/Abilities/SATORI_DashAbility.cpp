@@ -3,6 +3,7 @@
 #include "GAS/Abilities/SATORI_DashAbility.h"
 #include "AbilitySystemComponent.h"
 #include "SATORICharacter.h"
+#include "Components/CapsuleComponent.h"
 #include "Character/SATORI_PlayerController.h"
 
 USATORI_DashAbility::USATORI_DashAbility()
@@ -33,6 +34,9 @@ void USATORI_DashAbility::ActivateAbility(
 		UE_LOG(LogTemp, Display, TEXT("[%s] USATORI_DashAbility: Cannot Cast ASATORICharacter ... "), *GetName());
 		Super::EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true);
 	}
+
+	CapsuleComponent = Character->GetCapsuleComponent();
+	//CapsuleComponent->SetCollisionResponseToChannel(ECollisionChannel, ECollisionResponse::ECR_Ignore);
 
 	ASATORI_PlayerController* Controller = Cast<ASATORI_PlayerController>(Character->GetController());
 	if (Controller)
@@ -66,6 +70,8 @@ void USATORI_DashAbility::EndAbility(
 	Character = Cast<ASATORI_CharacterBase>(GetOwningSatoriCharacter());
 	if(Character)
 	{
+		//CapsuleComponent->SetCollisionResponseToChannel(ECollisionChannel, ECollisionResponse::ECR_Overlap);
+
 		ASATORI_PlayerController* Controller = Cast<ASATORI_PlayerController>(Character->GetController());
 		if (Controller)
 		{

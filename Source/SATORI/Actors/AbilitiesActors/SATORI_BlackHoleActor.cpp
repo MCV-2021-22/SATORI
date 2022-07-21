@@ -53,22 +53,14 @@ void ASATORI_BlackHoleActor::OnOverlapCollisionSphere(UPrimitiveComponent* Overl
 
 	if (!Character) 
 	{
+		ProjectileMovementComponent->StopMovementImmediately();
 		return;
 	}
 
 	if (Character->HasMatchingGameplayTag(EnemyTag) && !Character->HasMatchingGameplayTag(TrappedTag))
 	{
 		Character->AddGameplayTag(TrappedTag);
-
-		FMaterials Materials;
-		Materials.Materials = Character->GetMesh()->GetMaterials();
-
-		MapActorsTrapped.Add(OtherActor, Materials);
-
-		for (int i = 0; i < Character->GetMesh()->GetMaterials().Num(); i++)
-		{
-			Character->GetMesh()->SetMaterial(i, MaterialInstance);
-		}
+		ArrayActorsTrapped.AddUnique(OtherActor);
 	}
 }
 
@@ -106,13 +98,10 @@ void ASATORI_BlackHoleActor::StopAttraction()
 
 	CollisionSphereComponent->SetCollisionProfileName(UCollisionProfile::NoCollision_ProfileName);
 	
-	for (auto& ActorTrapped : MapActorsTrapped) {
-
-		AActor* Actor = ActorTrapped.Key;
+	for (AActor* Actor : ArrayActorsTrapped) {
 
 		if (IsValid(Actor))
 		{
-
 			//Damage Explosion Calculation
 			ASATORI_AICharacter* Character = Cast<ASATORI_AICharacter>(Actor);
 			float DamageDone = USATORI_BlueprintLibrary::ApplyGameplayEffectDamage(Actor, DamageExplosion, Actor, DamageGameplayEffect);
@@ -121,15 +110,10 @@ void ASATORI_BlackHoleActor::StopAttraction()
 			//Return to normal size
 			Actor->SetActorScale3D(FVector(1.0f, 1.0f, 1.0f));
 
-			for (int i = 0; i < Character->GetMesh()->GetMaterials().Num(); i++)
-			{
-				Character->GetMesh()->SetMaterial(i, ActorTrapped.Value.Materials[i]);
-			}
-
 			//Sometimes they get stuck together, trying this to fix it
 			FVector PrecautionMeasure = FMath::VRand();
 			PrecautionMeasure.Z = 0.0f;
-			Actor->AddActorLocalOffset(PrecautionMeasure * 200);
+			Actor->AddActorLocalOffset(PrecautionMeasure * 400);
 
 			Character->RemoveGameplayTag(TrappedTag);
 		}
@@ -142,8 +126,6 @@ void ASATORI_BlackHoleActor::BeginPlay()
 {
 	Super::BeginPlay();
 
-	MaterialInstance = UMaterialInstanceDynamic::Create(MaterialChange, this);
-
 	SetActorScale3D(ScaleGrowing);
 	GetWorldTimerManager().SetTimer(TimerHandleGrowing, this, &ASATORI_BlackHoleActor::StopGrowing, TimeToStopGrowing, false);
 }
@@ -151,8 +133,6 @@ void ASATORI_BlackHoleActor::BeginPlay()
 void ASATORI_BlackHoleActor::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
-	MaterialInstance->SetVectorParameterValue("CollapseLocation", GetActorLocation());
 
 	if (bGrowing)
 	{
@@ -180,9 +160,7 @@ void ASATORI_BlackHoleActor::Tick(float DeltaTime)
 	if (bShouldAttract)
 	{
 		//Adding more force to the black hole
-		for (auto& ActorTrapped : MapActorsTrapped) {
-
-			AActor* Actor = ActorTrapped.Key;
+		for (AActor* Actor : ArrayActorsTrapped) {
 
 			if (IsValid(Actor))
 			{
@@ -198,6 +176,7 @@ void ASATORI_BlackHoleActor::Tick(float DeltaTime)
 				//This part is necesary for correct behavior
 				FVector ActorPosition = Actor->GetActorLocation();
 				VectorToCenter = ActorPosition - GetActorLocation();
+
 				Actor->SetActorLocation(ActorPosition - (VectorToCenter * DeltaTime * 5)); // 5 Little bit or risk of weird behavior // 10 Not weird behavior, but less random attraction...
 
 				//Scale down enemies
@@ -219,5 +198,4 @@ void ASATORI_BlackHoleActor::Tick(float DeltaTime)
 		ScaleGrowing = ScaleGrowing + (Increment * ExplosionSize * DeltaTime);
 		SetActorScale3D(ScaleGrowing);
 	}
-
 }

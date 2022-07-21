@@ -19,15 +19,6 @@ class UNiagaraComponent;
 class URadialForceComponent;
 class UProjectileMovementComponent;
 
-USTRUCT()
-struct FMaterials
-{
-	GENERATED_BODY()
-
-	UPROPERTY()
-	TArray < UMaterialInterface*  > Materials;
-};
-
 UCLASS()
 class SATORI_API ASATORI_BlackHoleActor : public AActor
 {
@@ -48,9 +39,6 @@ public:
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "BlackHole")
 	UNiagaraSystem* NiagaraSystemExplode;
-
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "BlackHole")
-	UMaterialInterface* MaterialChange;
 
 	UPROPERTY(EditDefaultsOnly, Category = "BlackHole")
 	URadialForceComponent* RadialForceComponent = nullptr;
@@ -132,14 +120,8 @@ public:
 
 private:
 
-	//UPROPERTY()
-	//TArray<AActor*> ArrayActorsTrapped;
-
 	UPROPERTY()
-	TMap <AActor*, FMaterials > MapActorsTrapped;
-
-	UMaterialInstanceDynamic* MaterialInstance;
-
+	TArray<AActor*> ArrayActorsTrapped;
 
 	FTimerHandle TimerHandleDestroy;
 	FTimerHandle TimerHandleGrowing;
@@ -155,4 +137,5 @@ private:
 
 	bool bShouldAttract = true;
 	void StopAttraction();
+
 };
