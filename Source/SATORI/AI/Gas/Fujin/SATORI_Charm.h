@@ -9,20 +9,20 @@
 #include "GAS/SATORI_GameplayAbility.h"
 #include "SATORI/AbilityTask/SATORI_PlayMontageandWaitNotify.h"
 #include "AI/Components/Raijin/SATORI_RaijinRayo.h"
-#include "SATORI_GrabPlayer.generated.h"
+#include "SATORI_Charm.generated.h"
 
 
 /**
  * 
  */
 UCLASS()
-class SATORI_API USATORI_GrabPlayer : public UGameplayAbility
+class SATORI_API USATORI_Charm : public UGameplayAbility
 {
 	GENERATED_BODY()
 
 public:
 
-	USATORI_GrabPlayer();
+	USATORI_Charm();
 
 
 
