@@ -27,6 +27,7 @@
 #include "Character/SATORI_PlayerController.h"
 #include "FunctionLibrary/SATORI_BlueprintLibrary.h"
 #include "GAS/Effects/SATORI_ManaRecoverEffect.h"
+#include "Kismet/KismetMathLibrary.h"
 //Cheat related include
 #include "Kismet/GameplayStatics.h"
 #include "Components/Player/SATORI_InteractComponent.h"
@@ -246,6 +247,60 @@ bool ASATORICharacter::DoRayCast()
 		}	
 	}
 	return false;
+}
+
+bool ASATORICharacter::IsEnemyInFrontOfAngle()
+{
+	const FVector StartPosition = GetActorLocation();
+	const FRotator StartRotation = GetActorRotation();
+	const FVector EndPosition = StartPosition + (StartRotation.Vector() * VisibleAttackLength);
+
+	UWorld* World = GetWorld();
+	FHitResult HitResult;
+	FCollisionQueryParams Params = FCollisionQueryParams(FName("LineTraceSingle"));
+	Params.AddIgnoredActor(RootComponent->GetOwner());
+
+	FVector delta = EndPosition - StartPosition;
+	TWeakObjectPtr<AActor> NewActor;
+
+	bool bHit = false;
+	for (int i = -6; i <= 6; i++)
+	{
+		FVector Axis = FVector::ZAxisVector;
+		float rad = FMath::DegreesToRadians(i * 6);
+		FQuat quaternion = FQuat(Axis, rad);
+		FRotator rotator = FRotator(quaternion);
+		FVector newDelta = rotator.RotateVector(delta);
+
+		FVector newEndPos = newDelta + StartPosition;
+
+		bool newHit = GetWorld()->LineTraceSingleByChannel(
+			HitResult,
+			StartPosition,
+			newEndPos,
+			ECollisionChannel::ECC_Pawn,
+			Params
+		);
+
+		::DrawDebugLine(World, StartPosition, newEndPos, newHit ? FColor::Green : FColor::Red, false, 1.0f);
+		if (newHit)
+		{
+			NewActor = HitResult.Actor;
+			bHit = true;
+			break;
+		}
+	}
+
+	TWeakObjectPtr<ASATORI_AICharacter> AICharacter = Cast<ASATORI_AICharacter>(HitResult.Actor);
+	if (AICharacter.IsValid())
+	{
+		FVector EnemyPosition = AICharacter->GetActorLocation();
+		FRotator FindEnemyRotator = UKismetMathLibrary::FindLookAtRotation(StartPosition, EnemyPosition);
+		FRotator NewFaceEnemyRotator = FRotator(0.0f, FindEnemyRotator.Yaw, 0.0f);
+		this->SetActorRotation(NewFaceEnemyRotator, ETeleportType::None);
+	}
+
+	return bHit;
 }
 
 void ASATORICharacter::GrantAbilityToPlayer(FGameplayAbilitySpec Ability)

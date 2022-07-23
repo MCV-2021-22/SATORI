@@ -77,6 +77,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	float AnimactionPlayRater = 1.0f;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	float VisibleAttackLength = 200.0f;
+
 	void SetComboJumpSection(USATORI_ANS_JumpSection* JumpSection);
 
 	// Combos 
@@ -86,6 +89,9 @@ public:
 	// Ray Cast
 	UFUNCTION(BlueprintCallable)
 	bool DoRayCast();
+
+	UFUNCTION(BlueprintCallable)
+	bool IsEnemyInFrontOfAngle();
 
 	UFUNCTION()
 	void SetCharacterMask(SATORIMaskType GrantedMaskType);
