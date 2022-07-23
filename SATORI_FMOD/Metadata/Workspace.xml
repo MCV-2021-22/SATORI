@@ -1,41 +1,38 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <objects serializationModel="Studio.02.02.00">
-	<object class="Workspace" id="{a4cadc0e-8b3a-4650-9c40-cf873b5b22ad}">
+	<object class="Workspace" id="{dc622fb4-ef5a-48bd-867a-6597d06302cb}">
 		<property name="builtBanksOutputDirectory">
-			<value>../Content/FMOD</value>
-		</property>
-		<property name="builtBanksMirrorBrowserFolderHierarchy">
-			<value>true</value>
+			<value>D:/ProjectUPF/SATORI/Content/FMOD</value>
 		</property>
 		<relationship name="masterEventFolder">
-			<destination>{29630e23-c8a7-4d39-aa65-738c3cfce8b9}</destination>
+			<destination>{5fd10b50-87cf-4477-aa38-a3eec992eadd}</destination>
 		</relationship>
 		<relationship name="masterTagFolder">
-			<destination>{f17bc83d-9747-4c40-aac2-673f7f3113af}</destination>
+			<destination>{3814019a-bfcd-4ba8-9424-06c3a099540b}</destination>
 		</relationship>
 		<relationship name="masterEffectPresetFolder">
-			<destination>{8809b826-bca0-4f47-8425-17f42241bf6f}</destination>
+			<destination>{b10e48e1-169a-48f9-9d99-7142fcaecdec}</destination>
 		</relationship>
 		<relationship name="masterParameterPresetFolder">
-			<destination>{20932220-57b1-4f57-8c35-97cdc47a53f3}</destination>
+			<destination>{b18f67f1-f284-43bd-bd75-d6674f588078}</destination>
 		</relationship>
 		<relationship name="masterBankFolder">
-			<destination>{d9bb70e0-cbad-4c3b-9cbd-a8b06788ba8b}</destination>
+			<destination>{96e7af2e-6a57-40bb-b858-9a8443b52ee2}</destination>
 		</relationship>
 		<relationship name="masterSandboxFolder">
-			<destination>{e8132dfb-ba91-4bc3-b6c8-af4523f63074}</destination>
+			<destination>{ea4ce362-6075-45fb-af6a-367ef1804614}</destination>
 		</relationship>
 		<relationship name="masterAssetFolder">
-			<destination>{9cc60e12-5540-446c-9dd1-a1b09c386698}</destination>
+			<destination>{269b0b2d-b44d-4e19-a3ee-86e302406a27}</destination>
 		</relationship>
 		<relationship name="mixer">
-			<destination>{a70927d3-0312-4da6-84d2-812c82459edf}</destination>
+			<destination>{df5aefaf-dd1a-4922-8f30-968209aa8997}</destination>
 		</relationship>
 		<relationship name="profilerSessionFolder">
-			<destination>{58448850-d605-427c-8dd4-762f43d2216f}</destination>
+			<destination>{0a932da2-6e49-4982-83f5-bc769a4c9514}</destination>
 		</relationship>
 		<relationship name="platforms">
-			<destination>{431a913f-b4c0-4feb-bf65-8acf1e6923bc}</destination>
+			<destination>{14662071-a8b7-4e4f-b29a-3368e84eaff5}</destination>
 		</relationship>
 	</object>
 </objects>

@@ -29,5 +29,9 @@
 			"Name": "FMODStudio",
 			"Enabled": true
 		}
+	],
+	"TargetPlatforms": [
+		"AllDesktop",
+		"WindowsNoEditor"
 	]
 }
