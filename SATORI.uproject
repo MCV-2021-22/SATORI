@@ -27,7 +27,11 @@
 		},
 		{
 			"Name": "FMODStudio",
-			"Enabled": false
+			"Enabled": true
 		}
+	],
+	"TargetPlatforms": [
+		"AllDesktop",
+		"WindowsNoEditor"
 	]
 }
