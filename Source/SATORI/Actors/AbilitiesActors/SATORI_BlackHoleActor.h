@@ -32,16 +32,16 @@ public:
 	USphereComponent* CollisionSphereComponent = nullptr;
 
 	UPROPERTY(EditDefaultsOnly, Category = "BlackHole")
-	UStaticMeshComponent* StaticMeshComponentInner = nullptr;
+	UStaticMeshComponent* StaticMeshComponent = nullptr;
 
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "BlackHole")
-	UNiagaraComponent* NiagaraComponent;
+	//UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "BlackHole")
+	//UNiagaraComponent* NiagaraComponent;
 
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "BlackHole")
-	UNiagaraSystem* NiagaraSystemExplode;
+	//UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "BlackHole")
+	//UNiagaraSystem* NiagaraSystemExplode;
 
-	UPROPERTY(EditDefaultsOnly, Category = "BlackHole")
-	URadialForceComponent* RadialForceComponent = nullptr;
+	//UPROPERTY(EditDefaultsOnly, Category = "BlackHole")
+	//URadialForceComponent* RadialForceComponent = nullptr;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "BlackHole")
 	UProjectileMovementComponent* ProjectileMovementComponent = nullptr;
@@ -90,6 +90,21 @@ public:
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Debug")
 	float RotationSpeed = 90.0f;
+
+
+	//Test
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Debug")
+	float SpeedRotation = 5.0f;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Debug")
+	float AngleAxis = 1.0f;
+
+	UPROPERTY(EditAnywhere, Category = Movement)
+	FVector Dimensions = FVector(300, 0, 0);
+
+	UPROPERTY(EditAnywhere, Category = Movement)
+	FVector AxisVector = FVector(0, 0, 1);
+
 
 	UFUNCTION(BlueprintCallable, Category = "BlackHole")
 	void OnOverlapCollisionSphere(

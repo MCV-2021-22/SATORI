@@ -16,24 +16,24 @@ ASATORI_BlackHoleActor::ASATORI_BlackHoleActor()
 
 	RootComponent = CreateDefaultSubobject<USceneComponent>(TEXT("RootComponent"));
 
-	StaticMeshComponentInner = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("StaticMeshInner"));
-	StaticMeshComponentInner->SetupAttachment(RootComponent);
-	StaticMeshComponentInner->SetCollisionProfileName(UCollisionProfile::NoCollision_ProfileName);
+	StaticMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("StaticMeshInner"));
+	StaticMeshComponent->SetupAttachment(RootComponent);
+	StaticMeshComponent->SetCollisionProfileName(UCollisionProfile::NoCollision_ProfileName);
 
 	CollisionSphereComponent = CreateDefaultSubobject<USphereComponent>(TEXT("CollisionSphere"));
 	CollisionSphereComponent->SetCollisionProfileName(FName(TEXT("PlayerAbility")));
-	CollisionSphereComponent->SetupAttachment(StaticMeshComponentInner);
+	CollisionSphereComponent->SetupAttachment(RootComponent);
 	CollisionSphereComponent->SetGenerateOverlapEvents(true);
 	CollisionSphereComponent->OnComponentBeginOverlap.AddDynamic(this, &ASATORI_BlackHoleActor::OnOverlapCollisionSphere);
 
-	NiagaraComponent = CreateDefaultSubobject<UNiagaraComponent>(TEXT("Niagara"));
-	NiagaraComponent->SetupAttachment(RootComponent);
+	//NiagaraComponent = CreateDefaultSubobject<UNiagaraComponent>(TEXT("Niagara"));
+	//NiagaraComponent->SetupAttachment(RootComponent);
 
-	RadialForceComponent = CreateDefaultSubobject<URadialForceComponent>(TEXT("RadialForce"));
-	RadialForceComponent->SetupAttachment(CollisionSphereComponent);
-	RadialForceComponent->Radius = 512.0f;
-	RadialForceComponent->Falloff = ERadialImpulseFalloff::RIF_Linear;
-	RadialForceComponent->ForceStrength = -1000000.0f;
+	//RadialForceComponent = CreateDefaultSubobject<URadialForceComponent>(TEXT("RadialForce"));
+	//RadialForceComponent->SetupAttachment(CollisionSphereComponent);
+	//RadialForceComponent->Radius = 512.0f;
+	//RadialForceComponent->Falloff = ERadialImpulseFalloff::RIF_Linear;
+	//RadialForceComponent->ForceStrength = -1000000.0f;
 
 	ProjectileMovementComponent = CreateDefaultSubobject<UProjectileMovementComponent>("ProjectileMovement");
 	ProjectileMovementComponent->InitialSpeed = 500.0f;
@@ -66,16 +66,18 @@ void ASATORI_BlackHoleActor::OnOverlapCollisionSphere(UPrimitiveComponent* Overl
 
 void ASATORI_BlackHoleActor::DestroyMyself()
 {
-	SetActorTickEnabled(false);
-	StaticMeshComponentInner->SetVisibility(false);
-	NiagaraComponent->Deactivate();
+	//SetActorTickEnabled(false);
+	//StaticMeshComponent->SetVisibility(false);
+	//NiagaraComponent->Deactivate();
 
-	NiagaraComponent = UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), NiagaraSystemExplode, GetRootComponent()->GetComponentLocation());
-	NiagaraComponent->Activate();
+	//NiagaraComponent = UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), NiagaraSystemExplode, GetRootComponent()->GetComponentLocation());
+	//NiagaraComponent->Activate();
 
-	FScriptDelegate Delegate;
-	Delegate.BindUFunction(this, TEXT("OnNiagaraFinished"));
-	NiagaraComponent->OnSystemFinished.AddUnique(Delegate);
+	//FScriptDelegate Delegate;
+	//Delegate.BindUFunction(this, TEXT("OnNiagaraFinished"));
+	//NiagaraComponent->OnSystemFinished.AddUnique(Delegate);
+
+	Destroy();
 }
 
 void ASATORI_BlackHoleActor::OnNiagaraFinished()
@@ -93,8 +95,8 @@ void ASATORI_BlackHoleActor::StopGrowing()
 void ASATORI_BlackHoleActor::StopAttraction()
 {
 	bShouldAttract = false;
-	RadialForceComponent->Radius = 64.0f;
-	RadialForceComponent->ForceStrength = 500000.0f;
+	//RadialForceComponent->Radius = 64.0f;
+	//RadialForceComponent->ForceStrength = 500000.0f;
 
 	CollisionSphereComponent->SetCollisionProfileName(UCollisionProfile::NoCollision_ProfileName);
 	
@@ -108,12 +110,12 @@ void ASATORI_BlackHoleActor::StopAttraction()
 			Character->sendDamage(DamageDone);
 
 			//Return to normal size
-			Actor->SetActorScale3D(FVector(1.0f, 1.0f, 1.0f));
+			//Actor->SetActorScale3D(FVector(1.0f, 1.0f, 1.0f));
 
 			//Sometimes they get stuck together, trying this to fix it
-			FVector PrecautionMeasure = FMath::VRand();
-			PrecautionMeasure.Z = 0.0f;
-			Actor->AddActorLocalOffset(PrecautionMeasure * 400);
+			//FVector PrecautionMeasure = FMath::VRand();
+			//PrecautionMeasure.Z = 0.0f;
+			//Actor->AddActorLocalOffset(PrecautionMeasure * 400);
 
 			Character->RemoveGameplayTag(TrappedTag);
 		}
@@ -126,7 +128,9 @@ void ASATORI_BlackHoleActor::BeginPlay()
 {
 	Super::BeginPlay();
 
-	SetActorScale3D(ScaleGrowing);
+	AngleAxis = 0;
+
+	//SetActorScale3D(ScaleGrowing);
 	GetWorldTimerManager().SetTimer(TimerHandleGrowing, this, &ASATORI_BlackHoleActor::StopGrowing, TimeToStopGrowing, false);
 }
 
@@ -134,13 +138,13 @@ void ASATORI_BlackHoleActor::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	if (bGrowing)
-	{
-		//Starts small, grows along thew way
-		ScaleGrowing = ScaleGrowing + (Increment * DeltaTime);
-		SetActorScale3D(ScaleGrowing);
+	//if (bGrowing)
+	//{
+	//	//Starts small, grows along thew way
+	//	ScaleGrowing = ScaleGrowing + (Increment * DeltaTime);
+	//	SetActorScale3D(ScaleGrowing);
 
-		//Stay grounded calculation
+	//	//Stay grounded calculation
 		FVector ActorPosition = GetActorLocation();
 		FVector End = ActorPosition;
 		End.Z -= TraceDistanceToFloor;
@@ -155,7 +159,7 @@ void ASATORI_BlackHoleActor::Tick(float DeltaTime)
 				SetActorLocation(ActorPosition);
 			}
 		}
-	}
+	//}
 
 	if (bShouldAttract)
 	{
@@ -164,26 +168,41 @@ void ASATORI_BlackHoleActor::Tick(float DeltaTime)
 
 			if (IsValid(Actor))
 			{
-				//This first part sometimes causes problems
+
 				FVector CenterPosition = GetActorLocation();
-				FVector VectorToCenter = Actor->GetActorLocation() - CenterPosition;
+				AngleAxis += SpeedRotation * DeltaTime;
+				if (AngleAxis >= 360) AngleAxis = 0;
+				
 
-				FVector Rotation = VectorToCenter.RotateAngleAxis(DeltaTime * RotationSpeed, CenterPosition);
-				Rotation.Normalize();
+				FVector RotateValue = Dimensions.RotateAngleAxis(AngleAxis, AxisVector);
 
-				Actor->AddActorWorldOffset(Rotation);
+				CenterPosition.X += RotateValue.X;
+				CenterPosition.Y += RotateValue.Y;
+				CenterPosition.Z += RotateValue.Z;
+
+				Actor->SetActorLocation(CenterPosition, false, 0, ETeleportType::None);
+
+
+				//This first part sometimes causes problems
+				//FVector CenterPosition = GetActorLocation();
+				//FVector VectorToCenter = Actor->GetActorLocation() - CenterPosition;
+
+				//FVector Rotation = VectorToCenter.RotateAngleAxis(DeltaTime * RotationSpeed, CenterPosition);
+				//Rotation.Normalize();
+
+				//Actor->AddActorWorldOffset(Rotation);
 
 				//This part is necesary for correct behavior
-				FVector ActorPosition = Actor->GetActorLocation();
+/*				FVector ActorPosition = Actor->GetActorLocation();
 				VectorToCenter = ActorPosition - GetActorLocation();
 
-				Actor->SetActorLocation(ActorPosition - (VectorToCenter * DeltaTime * 5)); // 5 Little bit or risk of weird behavior // 10 Not weird behavior, but less random attraction...
+				Actor->SetActorLocation(ActorPosition - (VectorToCenter * DeltaTime * 5));*/ // 5 Little bit or risk of weird behavior // 10 Not weird behavior, but less random attraction...
 
 				//Scale down enemies
-				FVector Scale = Actor->GetActorScale3D();
-				FVector NewScale = Scale - (Scale * DeltaTime * Decrement);
+				//FVector Scale = Actor->GetActorScale3D();
+				//FVector NewScale = Scale - (Scale * DeltaTime * Decrement);
 
-				Actor->SetActorScale3D(NewScale);
+				//Actor->SetActorScale3D(NewScale);
 
 				//Damage Calculation
 				ASATORI_AICharacter* Character = Cast<ASATORI_AICharacter>(Actor);
@@ -194,8 +213,8 @@ void ASATORI_BlackHoleActor::Tick(float DeltaTime)
 	}
 	else
 	{
-		CollisionSphereComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-		ScaleGrowing = ScaleGrowing + (Increment * ExplosionSize * DeltaTime);
-		SetActorScale3D(ScaleGrowing);
+		//CollisionSphereComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+		//ScaleGrowing = ScaleGrowing + (Increment * ExplosionSize * DeltaTime);
+		//SetActorScale3D(ScaleGrowing);
 	}
 }
