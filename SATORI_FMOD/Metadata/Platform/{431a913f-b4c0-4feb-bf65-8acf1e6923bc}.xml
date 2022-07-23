@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <objects serializationModel="Studio.02.02.00">
-	<object class="Platform" id="{6282b257-837f-42f0-b0fa-a57b07a2470d}">
+	<object class="Platform" id="{431a913f-b4c0-4feb-bf65-8acf1e6923bc}">
 		<property name="hardwareType">
 			<value>0</value>
 		</property>
@@ -11,7 +11,7 @@
 			<value>Desktop</value>
 		</property>
 		<property name="speakerFormat">
-			<value>5</value>
+			<value>1</value>
 		</property>
 	</object>
 </objects>
