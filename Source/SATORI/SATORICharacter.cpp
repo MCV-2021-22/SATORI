@@ -92,7 +92,7 @@ ASATORICharacter::ASATORICharacter()
 		AttackingCollision->SetCapsuleSize(20.f, 60.f, true);
 		AttackingCollision->SetCollisionProfileName("Pawn");
 		AttackingCollision->SetGenerateOverlapEvents(false);
-		AttackingCollision->AttachTo(SwordComponent);
+		AttackingCollision->AttachToComponent(SwordComponent, AttachmentRules);
 
 		AttackingCollision->OnComponentBeginOverlap.AddDynamic(this, &ASATORICharacter::OnWeaponOverlapBegin);
 		AttackingCollision->OnComponentEndOverlap.AddDynamic(this, &ASATORICharacter::OnWeaponOverlapEnd);
@@ -261,13 +261,13 @@ bool ASATORICharacter::IsEnemyInFrontOfAngle()
 	Params.AddIgnoredActor(RootComponent->GetOwner());
 
 	FVector delta = EndPosition - StartPosition;
-	TWeakObjectPtr<AActor> NewActor;
+	TArray<TWeakObjectPtr<AActor>> NewActors;
 
 	bool bHit = false;
-	for (int i = -6; i <= 6; i++)
+	for (int i = -5; i <= 5; i++)
 	{
 		FVector Axis = FVector::ZAxisVector;
-		float rad = FMath::DegreesToRadians(i * 6);
+		float rad = FMath::DegreesToRadians(i * VisibleAttackAngle);
 		FQuat quaternion = FQuat(Axis, rad);
 		FRotator rotator = FRotator(quaternion);
 		FVector newDelta = rotator.RotateVector(delta);
@@ -285,22 +285,48 @@ bool ASATORICharacter::IsEnemyInFrontOfAngle()
 		::DrawDebugLine(World, StartPosition, newEndPos, newHit ? FColor::Green : FColor::Red, false, 1.0f);
 		if (newHit)
 		{
-			NewActor = HitResult.Actor;
+			NewActors.Add(HitResult.Actor);
 			bHit = true;
 			break;
 		}
 	}
 
-	TWeakObjectPtr<ASATORI_AICharacter> AICharacter = Cast<ASATORI_AICharacter>(HitResult.Actor);
+	TWeakObjectPtr<AActor> HitActor = FindNearestEnemy(NewActors);
+
+	TWeakObjectPtr<ASATORI_AICharacter> AICharacter = Cast<ASATORI_AICharacter>(HitActor);
 	if (AICharacter.IsValid())
 	{
 		FVector EnemyPosition = AICharacter->GetActorLocation();
+		FRotator EnemyRotation = AICharacter->GetActorRotation();
 		FRotator FindEnemyRotator = UKismetMathLibrary::FindLookAtRotation(StartPosition, EnemyPosition);
 		FRotator NewFaceEnemyRotator = FRotator(0.0f, FindEnemyRotator.Yaw, 0.0f);
-		this->SetActorRotation(NewFaceEnemyRotator, ETeleportType::None);
+		FRotator RInterpRotator = FMath::RInterpTo(StartRotation, NewFaceEnemyRotator, World->GetTimeSeconds(), 0.1f);
+		this->SetActorRotation(RInterpRotator);
 	}
 
 	return bHit;
+}
+
+TWeakObjectPtr<AActor> ASATORICharacter::FindNearestEnemy(TArray<TWeakObjectPtr<AActor>> ActorsHit)
+{
+	if (ActorsHit.Num() == 0)
+	{
+		return nullptr;
+	}
+
+	float ClosestDistance = VisibleAttackLength;
+	TWeakObjectPtr<AActor> Target = nullptr;
+	for (TWeakObjectPtr<AActor> Actor : ActorsHit)
+	{
+		const float Distance = this->GetDistanceTo(Actor.Get());
+		if (Distance < ClosestDistance)
+		{
+			ClosestDistance = Distance;
+			Target = Actor;
+		}
+	}
+
+	return Target;
 }
 
 void ASATORICharacter::GrantAbilityToPlayer(FGameplayAbilitySpec Ability)

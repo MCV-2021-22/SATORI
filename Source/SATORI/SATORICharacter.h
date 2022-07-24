@@ -77,8 +77,11 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	float AnimactionPlayRater = 1.0f;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Attack Setting")
 	float VisibleAttackLength = 200.0f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Attack Setting")
+	float VisibleAttackAngle = 8.0f;
 
 	void SetComboJumpSection(USATORI_ANS_JumpSection* JumpSection);
 
@@ -125,6 +128,7 @@ protected:
 	void GrantAbilityToPlayer(FGameplayAbilitySpec Ability);
 	void InitializePassiveAttributes();
 
+	TWeakObjectPtr<AActor> FindNearestEnemy(TArray<TWeakObjectPtr<AActor>> Actors);
 protected:
 
 	// The core ActorComponent for interfacing with the GameplayAbilities System
