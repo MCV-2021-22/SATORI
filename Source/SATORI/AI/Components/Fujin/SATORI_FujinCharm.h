@@ -6,6 +6,8 @@
 #include "GameplayFramework/SATORI_GameInstance.h"
 #include "SATORI_FujinCharm.generated.h"
 
+class ASATORICharacter;
+class ASATORI_Fujin;
 class UGameplayEffect;
 class UStaticMeshComponent;
 class USphereComponent;
@@ -49,11 +51,14 @@ public:
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Meta = (ExposeOnSpawn = true), Category = "Missile")
 		TSubclassOf<UGameplayEffect> DamageGameplayEffect;
 
-	
+	float ReturnToFujin = false;
+
+	ASATORI_Fujin* Fujin = nullptr;
 
 protected:
 
-
+	ASATORICharacter* Player = nullptr;
+	
 
 	//UFUNCTION()
 	//void OnComponentHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);

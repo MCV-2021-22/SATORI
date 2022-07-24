@@ -8,7 +8,7 @@
 #include "GameplayTagAssetInterface.h"
 #include "GAS/SATORI_GameplayAbility.h"
 #include "SATORI/AbilityTask/SATORI_PlayMontageandWaitNotify.h"
-#include "AI/Components/Raijin/SATORI_RaijinRayo.h"
+#include "AI/Components/Fujin/SATORI_FujinCharm.h"
 #include "SATORI_Charm.generated.h"
 
 
@@ -35,9 +35,12 @@ public:
 
 
 	UPROPERTY(BlueprintReadOnly, EditAnywhere)
-		TSubclassOf<ASATORI_RaijinRayo> ProjectileClass;
+		TSubclassOf<ASATORI_FujinCharm> Charm;
 
-	
+	UPROPERTY(BlueprintReadOnly, EditAnywhere)
+		bool IsClone;
+	UPROPERTY(BlueprintReadOnly, EditAnywhere)
+		float damage;
 
 protected:
 

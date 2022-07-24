@@ -6,10 +6,13 @@
 #include "GameFramework/ProjectileMovementComponent.h"
 #include "GameFramework/Actor.h"
 #include "Kismet/GameplayStatics.h"
+#include "AI/Character/Fujin/SATORI_Fujin.h"
+
+
 
 ASATORI_FujinCharm::ASATORI_FujinCharm()
 {
-
+	
 	PrimaryActorTick.bCanEverTick = true;
 
 	SphereComponent = CreateDefaultSubobject<USphereComponent>(TEXT("Sphere"));
@@ -85,6 +88,12 @@ void ASATORI_FujinCharm::Tick(float DeltaTime)
 
 		
 	}
+	if(ReturnToFujin)
+	{
+		Player->SetActorLocation(GetActorLocation());
+	}
+
+
 
 	
 }
@@ -133,19 +142,34 @@ void ASATORI_FujinCharm::OnComponentBeginOverlap(
 	const FHitResult& SweepResult)
 {
 
-	ASATORI_FujinCharm* Choque = Cast<ASATORI_FujinCharm>(OtherActor);
+	ASATORICharacter* Player1 = Cast<ASATORICharacter>(OtherActor);
+	if(Player1 && !ReturnToFujin && Fujin)
+	{
+		ReturnToFujin = true;
+		
+		FVector dest = Fujin->GetActorLocation();
+		//FVector dest = FVector(0, 0, 0);
+		//float dmg_done= USATORI_BlueprintLibrary::ApplyGameplayEffectDamage(OtherActor, damage, OtherActor, DamageGameplayEffect);
 
-	if(Choque)
-	{
-		ASATORICharacter* Player = Cast<ASATORICharacter>(OtherActor);
+		FVector newForward = dest - GetActorLocation();
+		newForward.Normalize();
+		
+		setDirection(newForward * 40);
+		Player = Player1;
+	
+
 	}
-	else if (!Choque || inmunity <= 0 || LifeTime <= 0)
+	if(ReturnToFujin)
 	{
-		ASATORICharacter* Player = Cast<ASATORICharacter>(OtherActor);
-		if(Player)
+		ASATORI_Fujin* Fujin1 = Cast<ASATORI_Fujin>(OtherActor);
+
+		if(Fujin1)
 		{
-			float dmg_done= USATORI_BlueprintLibrary::ApplyGameplayEffectDamage(OtherActor, damage, OtherActor, DamageGameplayEffect);
+			Destroy();
 		}
-		Destroy();
 	}
+
+
+	
+	
 }
