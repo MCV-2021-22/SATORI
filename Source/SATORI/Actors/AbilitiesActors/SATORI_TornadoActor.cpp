@@ -26,6 +26,7 @@ ASATORI_TornadoActor::ASATORI_TornadoActor()
 
 	ProjectileMovementComponent = CreateDefaultSubobject<UProjectileMovementComponent>("ProjectileMovement");
 	ProjectileMovementComponent->InitialSpeed = Speed;
+	ProjectileMovementComponent->ProjectileGravityScale = 0.0f;
 
 	//Debug
 	CollisionSphereComponent->bHiddenInGame = false;
