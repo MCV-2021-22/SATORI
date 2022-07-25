@@ -59,8 +59,7 @@ void ASATORI_BlackHoleActor::OnOverlapCollisionSphere(UPrimitiveComponent* Overl
 
 	if (Character->HasMatchingGameplayTag(EnemyTag) && !Character->HasMatchingGameplayTag(TrappedTag))
 	{
-		Character->AddGameplayTag(TrappedTag);
-		ArrayActorsTrapped.AddUnique(OtherActor);
+		 
 	}
 }
 
