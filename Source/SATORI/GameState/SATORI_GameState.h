@@ -9,6 +9,7 @@
 
 class ASATORI_Portal;
 class USATORI_PortalPassiveDataAsset;
+class USATORI_PortalGrantedAbilityAsset;
 
 
 UCLASS()
@@ -30,8 +31,14 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Portal")
 	USATORI_PortalPassiveDataAsset* PassiveDataAsset;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Portal")
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Portal")
+	USATORI_PortalGrantedAbilityAsset* GrantedAbilityDataAsset;
+
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = "Portal")
 	TArray<FSATORI_DoorPassiveReward> PortalEffectsToApply;
+
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = "Portal")
+	TArray<FSATORI_PortalAbilitiesDatasReward> PortalGrantedAbilityToApply;
 
 	//EnemyActors
 
@@ -53,5 +60,8 @@ private:
 
 	int GenerateRandomNumberForPortal();
 
+	// Fill datas assets
 	void FillPortalGameplayEffectWithData();
+
+	void FillPortalGrantedAbilityWithData();
 };
