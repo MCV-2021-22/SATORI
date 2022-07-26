@@ -6,6 +6,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "GameplayEffect.h"
 #include "Data/SATORI_PortalPassiveDataAsset.h"
+#include "Data/SATORI_PortalGrantedAbilityAsset.h"
 
 ASATORI_GameState::ASATORI_GameState()
 {
@@ -30,7 +31,9 @@ void ASATORI_GameState::BeginPlay()
         }
     }
 
+    // Fill datas
     FillPortalGameplayEffectWithData();
+    FillPortalGrantedAbilityWithData();
 
     for (int i = 0; i < InstancePortals.Num(); i++)
     {
@@ -57,6 +60,28 @@ void ASATORI_GameState::FillPortalGameplayEffectWithData()
                 PassiveReward.PassiveIcon = Data.PassiveIcon;
                 PassiveReward.Description = Data.Description;
                 PortalEffectsToApply.Add(PassiveReward);
+            }
+        }
+    }
+}
+
+void ASATORI_GameState::FillPortalGrantedAbilityWithData()
+{
+    if (GrantedAbilityDataAsset)
+    {
+        for (const FPortalGrantedAbilityDatas Data : GrantedAbilityDataAsset->GrantedAbilities)
+        {
+            FString CurrentName = Data.PortalGrantedAbilityName.ToString();
+            FName LocalAbilityName = FName(*CurrentName);
+
+            if (LocalAbilityName.IsValid() && Data.PortalGrantedAbility)
+            {
+                FSATORI_PortalAbilitiesDatasReward GrantedAbility;
+                GrantedAbility.AbilitiyIcon = Data.PortalGrantedAbilitiyIcon;
+                GrantedAbility.CurrentAbility = Data.PortalGrantedAbility;
+                GrantedAbility.AbilityName = Data.PortalGrantedAbilityName;
+                GrantedAbility.isUpgrated = Data.isUpgrated;
+                PortalGrantedAbilityToApply.Add(GrantedAbility);
             }
         }
     }

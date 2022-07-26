@@ -41,6 +41,7 @@ ASATORI_Portal::ASATORI_Portal()
 
 	WidgetComponent = CreateDefaultSubobject<UWidgetComponent>(TEXT("WidgetComponent"));
 	WidgetComponent->SetupAttachment(RootComponent);
+
 	// Hide interaction
 	WidgetComponent->SetVisibility(false, true);
 
@@ -91,20 +92,9 @@ void ASATORI_Portal::OnComponentBeginOverlap(UPrimitiveComponent* OverlappedComp
 
 	if (Character)
 	{
-		//DoorInteractUI = CreateWidget<USATORI_DoorInteractUI>(GetGameInstance(), SATORIMainUI);
-		//if (DoorInteractUI)
-		//{
-		//	//DoorInteractUI->AddToViewport();
-		//}
-		
-		// TODO
-
-		
-
 		ApplyEffectToPlayer(Character);
 
 		ChangeLevel(Character);
-
 	}
 }
 
@@ -136,8 +126,6 @@ TSubclassOf<UGameplayEffect> ASATORI_Portal::GetCurrentGameplayEffect()
 	return PortalEffectsToApply.PassiveEffect;
 }
 
-
-
 void ASATORI_Portal::SetCurrentGameplayEffectData(FSATORI_DoorPassiveReward CurrentEffectData)
 {
 	PortalEffectsToApply = CurrentEffectData;
@@ -154,12 +142,10 @@ void ASATORI_Portal::ActivatePortal()
 	SphereComponent->SetCollisionProfileName(FName("IgnoreAllOverlapOnlyPlayer"));
 
 	PortalIconTexture->SetSprite(PortalEffectsToApply.PassiveIcon);
-
 }
 
 void ASATORI_Portal::ChangeLevel(ASATORICharacter* Character)
 {
-
 	FString CurrentLevel = GetWorld()->GetMapName();
 	CurrentLevel.RemoveFromStart(GetWorld()->StreamingLevelsPrefix);
 

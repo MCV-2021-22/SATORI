@@ -20,6 +20,23 @@ class UBillboardComponent;
 class UWidgetComponent;
 
 USTRUCT(BlueprintType)
+struct FSATORI_PortalAbilitiesDatasReward
+{
+	GENERATED_BODY()
+
+	TSubclassOf<USATORI_GameplayAbility> CurrentAbility;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	UTexture2D* AbilitiyIcon;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	FText AbilityName;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	bool isUpgrated;
+};
+
+USTRUCT(BlueprintType)
 struct FSATORI_DoorPassiveReward
 {
 	GENERATED_BODY()
@@ -73,8 +90,9 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "GameplayEffect")
 	FSATORI_DoorPassiveReward PortalEffectsToApply;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	FGameplayTag PlayerTag;
+	// Ability adding to player
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "GameplayAbility")
+	FSATORI_PortalAbilitiesDatasReward PortalAbilityToApply;
 
 	// Widgets
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "UI")

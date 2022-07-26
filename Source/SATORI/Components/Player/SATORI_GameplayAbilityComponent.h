@@ -65,6 +65,10 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Abilities")
 	UDataTable* AbilitiesIconDatas;
 
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	UTexture2D* EmptyAbilitiyIcon;
+
 	// ----------------- // ----------------------------------------
 	TMap<FName, FSATORI_AbilitiesDatas> PlayerGameplayAbility;
 
