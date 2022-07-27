@@ -133,9 +133,14 @@ TSubclassOf<USATORI_GameplayAbility> USATORI_GameplayAbilityComponent::GetCurren
 }
 
 
-void USATORI_GameplayAbilityComponent::AddEnabledAbility()
+void USATORI_GameplayAbilityComponent::AddNormalAbilities(FSATORI_AbilitiesDatas AbilityData)
 {
+	NormalAbilities.Add(AbilityData);
+}
 
+void USATORI_GameplayAbilityComponent::AddUpgratedAbilities(FSATORI_AbilitiesDatas AbilityData)
+{
+	UpgratedAbilities.Add(AbilityData);
 }
 
 void USATORI_GameplayAbilityComponent::RemoveEnabledAbility()

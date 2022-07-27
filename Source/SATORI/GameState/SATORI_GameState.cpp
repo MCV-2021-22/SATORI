@@ -35,12 +35,8 @@ void ASATORI_GameState::BeginPlay()
     FillPortalGameplayEffectWithData();
     FillPortalGrantedAbilityWithData();
 
-    for (int i = 0; i < InstancePortals.Num(); i++)
-    {
-        int RandomNumber = GenerateRandomNumberForPortal();
-        FSATORI_DoorPassiveReward EffectToApply = PortalEffectsToApply[RandomNumber];
-        InstancePortals[i]->SetCurrentGameplayEffectData(EffectToApply);
-    }
+    GeneratedRandomPassiveEffect();
+    GeneratedRandomPlayerAbility();
 }
 
 void ASATORI_GameState::FillPortalGameplayEffectWithData()
@@ -97,6 +93,38 @@ int ASATORI_GameState::GenerateRandomNumberForPortal()
     const int EffectSize = PortalEffectsToApply.Num() - 1;
     int number = FMath::RandRange(0, EffectSize);
     return number;
+}
+
+void ASATORI_GameState::GeneratedRandomPassiveEffect()
+{
+    if (InstancePortals.Num() == 1)
+        return;
+
+    for (int i = 1; i < InstancePortals.Num(); i++)
+    {
+        int RandomNumber = GenerateRandomNumberForPortal();
+        FSATORI_DoorPassiveReward EffectToApply = PortalEffectsToApply[RandomNumber];
+        InstancePortals[i]->SetCurrentGameplayEffectData(EffectToApply);
+    }
+
+    // IF no more ability left
+    if (PortalGrantedAbilityToApply.Num() < 0)
+    {
+        int RandomNumber = GenerateRandomNumberForPortal();
+        FSATORI_DoorPassiveReward EffectToApply = PortalEffectsToApply[RandomNumber];
+        InstancePortals[InstancePortals.Num()]->SetCurrentGameplayEffectData(EffectToApply);
+    }
+}
+
+void ASATORI_GameState::GeneratedRandomPlayerAbility()
+{
+    if (PortalGrantedAbilityToApply.Num() > 0)
+    {
+        int Size = PortalGrantedAbilityToApply.Num() - 1;
+        FSATORI_PortalAbilitiesDatasReward Reward = PortalGrantedAbilityToApply[Size];
+        InstancePortals[0]->SetCurrentGameplayAbilityData(Reward);
+        PortalGrantedAbilityToApply.RemoveAt(PortalGrantedAbilityToApply.Num() - 1);
+    }
 }
 
 //void ASATORI_GameState::AddEnemyActor(AActor* Enemy)

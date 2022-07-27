@@ -11,7 +11,6 @@ class ASATORI_Portal;
 class USATORI_PortalPassiveDataAsset;
 class USATORI_PortalGrantedAbilityAsset;
 
-
 UCLASS()
 class SATORI_API ASATORI_GameState : public AGameState
 {
@@ -57,11 +56,13 @@ private:
 
 	//UPROPERTY()
 	//TArray < AActor* > EnemyActors;
-
 	int GenerateRandomNumberForPortal();
 
 	// Fill datas assets
 	void FillPortalGameplayEffectWithData();
-
 	void FillPortalGrantedAbilityWithData();
+
+	// Generated Random Effect o Granted Random Ability
+	void GeneratedRandomPassiveEffect();
+	void GeneratedRandomPlayerAbility();
 };

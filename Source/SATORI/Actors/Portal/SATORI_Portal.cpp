@@ -17,6 +17,7 @@
 #include "SATORIGameMode.h"
 #include "GameplayFramework/SATORI_GameInstance.h"
 #include "Components/WidgetComponent.h"
+#include "Components/Player/SATORI_GameplayAbilityComponent.h"
 
 // Sets default values
 ASATORI_Portal::ASATORI_Portal()
@@ -52,25 +53,6 @@ void ASATORI_Portal::BeginPlay()
 {
 	Super::BeginPlay();
 	
-	//if (PassiveDataAsset)
-	//{
-	//	for (const FSATORI_DoorPassiveDatas Data : PassiveDataAsset->PassiveRewards)
-	//	{
-	//		FString CurrentName = Data.Desciption.ToString();
-	//		FName LocalAbilityName = FName(*CurrentName);
-
-	//		if (LocalAbilityName.IsValid() && Data.PassiveEffect)
-	//		{
-	//			// Adding datas to map
-	//			FSATORI_DoorPassiveReward PassiveReward;
-	//			PassiveReward.PassiveEffect = Data.PassiveEffect;
-	//			PassiveReward.PassiveIcon = Data.PassiveIcon;
-	//			PassiveReward.Desciption = Data.Desciption;
-	//			PortalEffectsToApply.Add(PassiveReward);
-	//		}
-	//	}
-	//}
-
 	GetWorld()->GetAuthGameMode<ASATORIGameMode>()->AddPortalActor(this);
 }
 
@@ -92,15 +74,22 @@ void ASATORI_Portal::OnComponentBeginOverlap(UPrimitiveComponent* OverlappedComp
 
 	if (Character)
 	{
-		ApplyEffectToPlayer(Character);
+		if (CurrentGameplayEffect.Get())
+		{
+			ApplyEffectToPlayer(Character);
+		}
 
+		else if(CurrentAbility.Get())
+		{
+			GrantedAbilityToPlayer(Character);
+		}
+		
 		ChangeLevel(Character);
 	}
 }
 
-void ASATORI_Portal::ApplyEffectToPlayer(AActor* PlayerActor)
+void ASATORI_Portal::ApplyEffectToPlayer(ASATORICharacter* PlayerCharacter)
 {
-	ASATORICharacter* PlayerCharacter = Cast<ASATORICharacter>(PlayerActor);
 	if (PlayerCharacter)
 	{
 		UAbilitySystemComponent* AbilitySystemComponent = PlayerCharacter->GetAbilitySystemComponent();
@@ -121,6 +110,24 @@ void ASATORI_Portal::ApplyEffectToPlayer(AActor* PlayerActor)
 	}
 }
 
+void ASATORI_Portal::GrantedAbilityToPlayer(ASATORICharacter* PlayerCharacter)
+{
+	FSATORI_AbilitiesDatas AbilityData;
+	AbilityData.AbilitiyIcon = PortalAbilityToApply.AbilitiyIcon;
+	AbilityData.AbilityName = PortalAbilityToApply.AbilityName;
+	AbilityData.CurrentAbility = PortalAbilityToApply.CurrentAbility;
+	AbilityData.isUpgrated = PortalAbilityToApply.isUpgrated;
+
+	if (PlayerCharacter && PlayerCharacter->GetIsAbilityUpgrated())
+	{
+		PlayerCharacter->GetPlayerAbilityComponent()->AddUpgratedAbilities(AbilityData);
+	}
+	else
+	{
+		PlayerCharacter->GetPlayerAbilityComponent()->AddUpgratedAbilities(AbilityData);
+	}
+}
+
 TSubclassOf<UGameplayEffect> ASATORI_Portal::GetCurrentGameplayEffect()
 {
 	return PortalEffectsToApply.PassiveEffect;
@@ -132,6 +139,12 @@ void ASATORI_Portal::SetCurrentGameplayEffectData(FSATORI_DoorPassiveReward Curr
 	CurrentGameplayEffect = PortalEffectsToApply.PassiveEffect;
 }
 
+void ASATORI_Portal::SetCurrentGameplayAbilityData(FSATORI_PortalAbilitiesDatasReward CurrentAbilityData)
+{
+	PortalAbilityToApply = CurrentAbilityData;
+	CurrentAbility = PortalAbilityToApply.CurrentAbility;
+}
+
 void ASATORI_Portal::ActivatePortal()
 {
 	Active = true;
@@ -141,7 +154,15 @@ void ASATORI_Portal::ActivatePortal()
 
 	SphereComponent->SetCollisionProfileName(FName("IgnoreAllOverlapOnlyPlayer"));
 
-	PortalIconTexture->SetSprite(PortalEffectsToApply.PassiveIcon);
+	if (PortalEffectsToApply.PassiveIcon)
+	{
+		PortalIconTexture->SetSprite(PortalEffectsToApply.PassiveIcon);
+	}
+	else if (PortalAbilityToApply.AbilitiyIcon)
+	{
+		PortalIconTexture->SetSprite(PortalAbilityToApply.AbilitiyIcon);
+	}
+	
 }
 
 void ASATORI_Portal::ChangeLevel(ASATORICharacter* Character)

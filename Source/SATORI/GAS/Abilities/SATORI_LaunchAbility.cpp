@@ -15,7 +15,7 @@ void USATORI_LaunchAbility::ActivateAbility(const FGameplayAbilitySpecHandle Han
 
 	if (Player)
 	{
-		USATORI_GameplayAbilityComponent* CurrentAbilityComponent = Player->PlayerGameplayAbilityComponent;
+		USATORI_GameplayAbilityComponent* CurrentAbilityComponent = Player->GetPlayerAbilityComponent();
 		if (CurrentAbilityComponent)
 		{
 			TSubclassOf<USATORI_GameplayAbility> NextAbility = CurrentAbilityComponent->GetCurrentSatoriAbility();

@@ -26,7 +26,7 @@ struct FSATORI_AbilitiesDatas
 	FText AbilityName;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	bool isActive = false;
+	bool isUpgrated = false;
 };
 
 USTRUCT(BlueprintType)
@@ -62,13 +62,6 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "ChooseAbilities")
 	USATORI_ChooseAbilitiesDatas* ChoosesAbilities;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Abilities")
-	UDataTable* AbilitiesIconDatas;
-
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	UTexture2D* EmptyAbilitiyIcon;
-
 	// ----------------- // ----------------------------------------
 	TMap<FName, FSATORI_AbilitiesDatas> PlayerGameplayAbility;
 
@@ -77,6 +70,9 @@ public:
 	TArray<FName> PlayerAbilitiesNames;
 
 	TArray<FName> PlayerAbilitiesNamesDissabled;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	UTexture2D* EmptyAbilitiyIcon;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	int CurrentAbilityValue = 0;
@@ -115,9 +111,14 @@ private:
 	FName AbilityName;
 	TSubclassOf<USATORI_GameplayAbility> CurrentGameplayAbility;
 
+	// Abilities
+	TArray<FSATORI_AbilitiesDatas> NormalAbilities;
+	TArray<FSATORI_AbilitiesDatas> UpgratedAbilities;
+
 public:
 
-	void AddEnabledAbility();
+	void AddNormalAbilities(FSATORI_AbilitiesDatas AbilityData);
+	void AddUpgratedAbilities(FSATORI_AbilitiesDatas AbilityData);
 
 	void RemoveEnabledAbility();
 

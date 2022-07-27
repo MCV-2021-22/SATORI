@@ -105,17 +105,21 @@ public:
 	USATORI_PortalPassiveDataAsset* PassiveDataAsset;*/
 
 	void SetCurrentGameplayEffectData(FSATORI_DoorPassiveReward CurrentEffecData);
+	void SetCurrentGameplayAbilityData(FSATORI_PortalAbilitiesDatasReward CurrentAbilityData);
 public:
 	UFUNCTION()
 	void OnComponentBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
 			UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
-	void ApplyEffectToPlayer(AActor* PlayerCharacter);
+	void ApplyEffectToPlayer(ASATORICharacter* PlayerCharacter);
+	void GrantedAbilityToPlayer(ASATORICharacter* PlayerCharacter);
 
 	TSubclassOf<UGameplayEffect> GetCurrentGameplayEffect();
 
 private:
 	TSubclassOf<UGameplayEffect> CurrentGameplayEffect;
+
+	TSubclassOf<USATORI_GameplayAbility> CurrentAbility;
 
 public:
 
