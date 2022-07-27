@@ -63,23 +63,27 @@ void ASATORI_TornadoActor::DestroyMyself()
 
 		if (IsValid(Actor))
 		{
-			ASATORI_AICharacter* Character = Cast<ASATORI_AICharacter>(Actor);
-			Character->RemoveGameplayTag(TrappedTag);
-
-			Actor->SetActorLocation(GetActorLocation());
-
-			FVector RandomDirection = FMath::VRand();
-			RandomDirection.Z = 0.0f;
-			Actor->AddActorLocalOffset(RandomDirection * RandomDirectionOffset);
-
-			FVector LaunchDirection = Actor->GetActorLocation() - GetActorLocation();
-			LaunchDirection.Normalize();
-			Character->LaunchCharacter(LaunchDirection * LaunchForce, false, false);
-
+			FinalActions(Actor);
 		}
 	}
 
 	Destroy();
+}
+
+void ASATORI_TornadoActor::FinalActions(AActor* Actor)
+{
+	ASATORI_AICharacter* Character = Cast<ASATORI_AICharacter>(Actor);
+	Character->RemoveGameplayTag(TrappedTag);
+
+	Actor->SetActorLocation(GetActorLocation());
+
+	FVector RandomDirection = FMath::VRand();
+	RandomDirection.Z = 0.0f;
+	Actor->AddActorLocalOffset(RandomDirection * RandomDirectionOffset);
+
+	FVector LaunchDirection = Actor->GetActorLocation() - GetActorLocation();
+	LaunchDirection.Normalize();
+	Character->LaunchCharacter(LaunchDirection * LaunchForce, false, false);
 }
 
 void ASATORI_TornadoActor::BeginPlay()

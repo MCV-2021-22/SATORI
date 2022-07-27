@@ -119,4 +119,6 @@ private:
 
 	void MoveTrappedEnemies(float DeltaTime, AActor* Actor);
 
+	void FinalActions(AActor* Actor);
+
 };
