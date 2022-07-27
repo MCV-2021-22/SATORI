@@ -12,11 +12,9 @@ ASATORI_TornadoActor::ASATORI_TornadoActor()
 {
 	PrimaryActorTick.bCanEverTick = true;
 
-	RootComponent = CreateDefaultSubobject<USceneComponent>(TEXT("RootComponent"));
-
 	StaticMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("StaticMesh"));
-	StaticMeshComponent->SetupAttachment(RootComponent);
-	StaticMeshComponent->SetCollisionProfileName(UCollisionProfile::NoCollision_ProfileName);
+	StaticMeshComponent->SetVisibility(false);
+	RootComponent = StaticMeshComponent;
 
 	CollisionSphereComponent = CreateDefaultSubobject<USphereComponent>(TEXT("CollisionSphere"));
 	CollisionSphereComponent->SetCollisionProfileName(FName(TEXT("PlayerAbility")));
@@ -27,6 +25,7 @@ ASATORI_TornadoActor::ASATORI_TornadoActor()
 	ProjectileMovementComponent = CreateDefaultSubobject<UProjectileMovementComponent>("ProjectileMovement");
 	ProjectileMovementComponent->InitialSpeed = Speed;
 	ProjectileMovementComponent->ProjectileGravityScale = 0.0f;
+	ProjectileMovementComponent->bRotationFollowsVelocity = true;
 
 	//Debug
 	CollisionSphereComponent->bHiddenInGame = false;
@@ -40,9 +39,8 @@ void ASATORI_TornadoActor::OnOverlapCollisionSphere(UPrimitiveComponent* Overlap
 
 	ASATORI_AICharacter* Character = Cast<ASATORI_AICharacter>(OtherActor);
 
-	if (!Character) 
+	if (!Character)
 	{
-		ProjectileMovementComponent->StopMovementImmediately();
 		return;
 	}
 
@@ -50,6 +48,12 @@ void ASATORI_TornadoActor::OnOverlapCollisionSphere(UPrimitiveComponent* Overlap
 	{
 		Character->AddGameplayTag(TrappedTag);
 		ArrayActorsTrapped.AddUnique(OtherActor);
+
+		if (ArrayActorsTrapped.Num() == 2)
+		{
+			SpeedRotation = SpeedRotation / 2;
+		}
+
 	}
 }
 
@@ -61,6 +65,17 @@ void ASATORI_TornadoActor::DestroyMyself()
 		{
 			ASATORI_AICharacter* Character = Cast<ASATORI_AICharacter>(Actor);
 			Character->RemoveGameplayTag(TrappedTag);
+
+			Actor->SetActorLocation(GetActorLocation());
+
+			FVector RandomDirection = FMath::VRand();
+			RandomDirection.Z = 0.0f;
+			Actor->AddActorLocalOffset(RandomDirection * RandomDirectionOffset);
+
+			FVector LaunchDirection = Actor->GetActorLocation() - GetActorLocation();
+			LaunchDirection.Normalize();
+			Character->LaunchCharacter(LaunchDirection * LaunchForce, false, false);
+
 		}
 	}
 
@@ -106,7 +121,7 @@ void ASATORI_TornadoActor::StayGrounded(float DeltaTime)
 			ActorPosition.Z += HeightChange * DeltaTime;
 			SetActorLocation(ActorPosition);
 		}
-		if (OutHit.Distance > DistanceToGround) {
+		if (OutHit.Distance > DistanceToGround + 25) {
 			ActorPosition.Z -= HeightChange * DeltaTime;
 			SetActorLocation(ActorPosition);
 		}

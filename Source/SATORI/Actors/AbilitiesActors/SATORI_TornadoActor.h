@@ -26,6 +26,9 @@ public:
 	USphereComponent* CollisionSphereComponent = nullptr;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Tornado")
+	USphereComponent* CollisionSphereWallsComponent = nullptr;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Tornado")
 	UStaticMeshComponent* StaticMeshComponent = nullptr;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Tornado")
@@ -39,6 +42,25 @@ public:
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Meta = (ExposeOnSpawn = true), Category = "Tornado")
 	float TimeToFinish;
+
+	//Rotation 
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Tornado")
+	float SpeedRotation = 5.0f;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Tornado")
+	float AngleAxis = 1.0f;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Tornado")
+	FVector Dimensions = FVector(300, 0, 0);
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Tornado")
+	FVector AxisVector = FVector(0, 0, 1);
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Tornado")
+	float RandomDirectionOffset = 200.0f;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Tornado")
+	float LaunchForce = 200.0f;
 
 	//Movement
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Movement")
@@ -56,19 +78,6 @@ public:
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Stay Grounded")
 	bool bDrawDebug = false;
-
-	//Rotation 
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Debug")
-	float SpeedRotation = 5.0f;
-
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Debug")
-	float AngleAxis = 1.0f;
-
-	UPROPERTY(EditAnywhere, Category = Movement)
-	FVector Dimensions = FVector(300, 0, 0);
-
-	UPROPERTY(EditAnywhere, Category = Movement)
-	FVector AxisVector = FVector(0, 0, 1);
 
 	UFUNCTION(BlueprintCallable, Category = "Tornado")
 	void OnOverlapCollisionSphere(
