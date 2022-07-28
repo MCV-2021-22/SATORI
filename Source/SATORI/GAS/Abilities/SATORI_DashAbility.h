@@ -25,7 +25,16 @@ public:
 	USATORI_DashAbility();
 
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Ability")
-		UAnimMontage* AnimMontage;
+		UAnimMontage* AnimMontageDashForward;
+
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Ability")
+		UAnimMontage* AnimMontageDashBackwards;
+
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Ability")
+		UAnimMontage* AnimMontageDashRight;
+
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Ability")
+		UAnimMontage* AnimMontageDashLeft;
 
 	virtual void ActivateAbility(
 		const FGameplayAbilitySpecHandle Handle,
@@ -67,7 +76,8 @@ protected:
 
 private:
 
-	FVector Direction = FVector::FVector(1.0f, 0.0f, 0.0f); //It just works
+	FVector DirectionDash;
+	FVector Direction = FVector::FVector(1.0f, 0.0f, 0.0f);
 
 	//Tick implementation
 private:
@@ -75,6 +85,8 @@ private:
 	const bool bStopWhenAbilityEnds = true;
 
 	ASATORI_CharacterBase* Character;
+
+	UCapsuleComponent* CapsuleComponent;
 
 public:
 

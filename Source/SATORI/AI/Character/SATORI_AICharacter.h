@@ -46,6 +46,8 @@ public:
 	// Ray Cast
 	UFUNCTION(BlueprintCallable)
 	bool CheckPlayerWithRayCast();
+
+	
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -169,5 +171,8 @@ public: //Character Death
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Tag")
 	FGameplayTagContainer   BlockTags;
+
+	UFUNCTION(BlueprintCallable)
+	void SetBurstingFalse();
 
 };
