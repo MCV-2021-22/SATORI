@@ -7,6 +7,7 @@
 #include "GAS/Attributes/SATORI_AttributeSet.h"
 #include "Savegame/SATORI_SaveGame.h"
 #include "Character/Mask/SATORI_AbilityMask.h"
+#include "Components/Player/SATORI_GameplayAbilityComponent.h"
 #include "SATORI_GameInstance.generated.h"
 
 /**
@@ -34,6 +35,8 @@ public:
 
 	void RegisterActorToSave();
 	void UnRegisterActorToSave();
+
+	void SavePortalAbilitiesData();
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float Health = 0.0f;
@@ -72,6 +75,10 @@ public:
 	bool TimeStop = false;
 
 	bool isInteractWithMaskVendor = false;
+
+	// Abilities
+	TArray<FSATORI_AbilitiesDatas> NormalAbilities;
+	TArray<FSATORI_AbilitiesDatas> UpgratedAbilities;
 private:
 	void InitSaveGame();
 
@@ -80,4 +87,5 @@ private:
 
 	UPROPERTY()
 	FString SaveSlotName = "MCVSaveData";
+
 };

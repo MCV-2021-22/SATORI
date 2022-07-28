@@ -130,6 +130,8 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Levels")
 	TArray < FString > LevelNames;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Levels")
+	bool IsFirstLevel = false;
 private:
 
 	bool Active = false;

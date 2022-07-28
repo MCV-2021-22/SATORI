@@ -36,8 +36,8 @@ ASATORI_Portal::ASATORI_Portal()
 	SphereComponent = CreateDefaultSubobject<USphereComponent>(TEXT("SphereComponent"));
 	SphereComponent->SetupAttachment(RootComponent);
 	SphereComponent->SetSphereRadius(120.0f);
+	//SphereComponent->SetCollisionProfileName(FName("IgnoreAllOverlapOnlyPlayer"));
 	SphereComponent->SetCollisionProfileName(UCollisionProfile::NoCollision_ProfileName);
-
 	SphereComponent->OnComponentBeginOverlap.AddUniqueDynamic(this, &ASATORI_Portal::OnComponentBeginOverlap);
 
 	WidgetComponent = CreateDefaultSubobject<UWidgetComponent>(TEXT("WidgetComponent"));
@@ -54,6 +54,11 @@ void ASATORI_Portal::BeginPlay()
 	Super::BeginPlay();
 	
 	GetWorld()->GetAuthGameMode<ASATORIGameMode>()->AddPortalActor(this);
+
+	if (IsFirstLevel)
+	{
+		ActivatePortal();
+	}
 }
 
 void ASATORI_Portal::OnConstruction(const FTransform& Transform)
@@ -118,9 +123,9 @@ void ASATORI_Portal::GrantedAbilityToPlayer(ASATORICharacter* PlayerCharacter)
 	AbilityData.CurrentAbility = PortalAbilityToApply.CurrentAbility;
 	AbilityData.isUpgrated = PortalAbilityToApply.isUpgrated;
 
-	if (PlayerCharacter && PlayerCharacter->GetIsAbilityUpgrated())
+	if (PlayerCharacter && !PlayerCharacter->GetIsAbilityUpgrated())
 	{
-		PlayerCharacter->GetPlayerAbilityComponent()->AddUpgratedAbilities(AbilityData);
+		PlayerCharacter->GetPlayerAbilityComponent()->AddNormalAbilities(AbilityData);
 	}
 	else
 	{
@@ -182,6 +187,8 @@ void ASATORI_Portal::ChangeLevel(ASATORICharacter* Character)
 		GameInstanceRef->Attack = Character->GetAttack();
 		GameInstanceRef->MoveSpeed = Character->GetMoveSpeed();
 		GameInstanceRef->Gold = Character->GetGold();
+		GameInstanceRef->NormalAbilities = Character->GetPlayerAbilityComponent()->GetNormalAbilities();
+		GameInstanceRef->UpgratedAbilities = Character->GetPlayerAbilityComponent()->GetUpgratedAbilities();
 	}
 
 	if (LevelNames.Num() != 0)

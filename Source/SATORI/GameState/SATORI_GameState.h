@@ -39,6 +39,12 @@ public:
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = "Portal")
 	TArray<FSATORI_PortalAbilitiesDatasReward> PortalGrantedAbilityToApply;
 
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = "Portal")
+	TArray<FSATORI_PortalAbilitiesDatasReward> PortalGrantedUpgratedAbilityToApply;
+
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = "Portal")
+	TArray<FSATORI_PortalAbilitiesDatasReward> PortalGrantedNormalAbilityToApply;
+
 	//EnemyActors
 
 	//TArray < AActor* >& GetEnemyActorsRef() { return EnemyActors; };

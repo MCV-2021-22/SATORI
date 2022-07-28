@@ -139,11 +139,13 @@ void ASATORICharacter::PossessedBy(AController* NewController)
 			SetMana(GetMaxMana());
 			GameInstanceRef->PlayerStart = false;
 			StatsComponent->InitializeStatsAttributes(PS);
+			PlayerGameplayAbilityComponent->SetSavedAbilitiesWithGameInstance(GameInstanceRef);
 		}
 		else
 		{
 			StatsComponent->InitializeStatsAttributesByInstance(PS, GameInstanceRef);
 			SATORIAbilityMaskComponent->GrantedMaskEffects(GameInstanceRef->MaskType);
+			PlayerGameplayAbilityComponent->SetSavedAbilitiesWithGameInstance(GameInstanceRef);
 		}
 
 		// Set Health to Max Health Value

@@ -35,8 +35,8 @@ void ASATORI_GameState::BeginPlay()
     FillPortalGameplayEffectWithData();
     FillPortalGrantedAbilityWithData();
 
-    GeneratedRandomPassiveEffect();
     GeneratedRandomPlayerAbility();
+    GeneratedRandomPassiveEffect();
 }
 
 void ASATORI_GameState::FillPortalGameplayEffectWithData()
@@ -65,7 +65,7 @@ void ASATORI_GameState::FillPortalGrantedAbilityWithData()
 {
     if (GrantedAbilityDataAsset)
     {
-        for (const FPortalGrantedAbilityDatas Data : GrantedAbilityDataAsset->GrantedAbilities)
+        for (const FPortalGrantedAbilityDatas& Data : GrantedAbilityDataAsset->GrantedAbilities)
         {
             FString CurrentName = Data.PortalGrantedAbilityName.ToString();
             FName LocalAbilityName = FName(*CurrentName);
@@ -77,7 +77,14 @@ void ASATORI_GameState::FillPortalGrantedAbilityWithData()
                 GrantedAbility.CurrentAbility = Data.PortalGrantedAbility;
                 GrantedAbility.AbilityName = Data.PortalGrantedAbilityName;
                 GrantedAbility.isUpgrated = Data.isUpgrated;
-                PortalGrantedAbilityToApply.Add(GrantedAbility);
+                if (GrantedAbility.isUpgrated)
+                {
+                    PortalGrantedUpgratedAbilityToApply.Add(GrantedAbility);
+                }
+                else 
+                {
+                    PortalGrantedNormalAbilityToApply.Add(GrantedAbility);
+                }
             }
         }
     }
@@ -112,18 +119,33 @@ void ASATORI_GameState::GeneratedRandomPassiveEffect()
     {
         int RandomNumber = GenerateRandomNumberForPortal();
         FSATORI_DoorPassiveReward EffectToApply = PortalEffectsToApply[RandomNumber];
-        InstancePortals[InstancePortals.Num()]->SetCurrentGameplayEffectData(EffectToApply);
+        InstancePortals[0]->SetCurrentGameplayEffectData(EffectToApply);
     }
 }
 
 void ASATORI_GameState::GeneratedRandomPlayerAbility()
 {
-    if (PortalGrantedAbilityToApply.Num() > 0)
+    ASATORICharacter* Character = Cast<ASATORICharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
+    if (Character)
     {
-        int Size = PortalGrantedAbilityToApply.Num() - 1;
-        FSATORI_PortalAbilitiesDatasReward Reward = PortalGrantedAbilityToApply[Size];
-        InstancePortals[0]->SetCurrentGameplayAbilityData(Reward);
-        PortalGrantedAbilityToApply.RemoveAt(PortalGrantedAbilityToApply.Num() - 1);
+        if (Character->GetIsAbilityUpgrated() && PortalGrantedUpgratedAbilityToApply.Num() >= 0)
+        {
+            int Size = PortalGrantedUpgratedAbilityToApply.Num() - 1;
+            FSATORI_PortalAbilitiesDatasReward Reward = PortalGrantedUpgratedAbilityToApply[Size];
+            InstancePortals[0]->SetCurrentGameplayAbilityData(Reward);
+            UE_LOG(LogTemp, Display, TEXT(" Player Normal Upgrated Size : [%d] "), Size);
+            //PortalGrantedUpgratedAbilityToApply.RemoveAt(PortalGrantedUpgratedAbilityToApply.Num() - 1);
+            //PortalGrantedUpgratedAbilityToApply.Remove(Reward);
+        }
+        else if (PortalGrantedNormalAbilityToApply.Num() >= 0)
+        {
+            int Size = PortalGrantedNormalAbilityToApply.Num() - 1;
+            FSATORI_PortalAbilitiesDatasReward Reward = PortalGrantedNormalAbilityToApply[Size];
+            InstancePortals[0]->SetCurrentGameplayAbilityData(Reward);
+            UE_LOG(LogTemp, Display, TEXT(" Player Normal Abilities Size : [%d] "), Size);
+            PortalGrantedNormalAbilityToApply.RemoveAt(PortalGrantedNormalAbilityToApply.Num() - 1);
+            //PortalGrantedNormalAbilityToApply.Remove(Reward);
+        }
     }
 }
 

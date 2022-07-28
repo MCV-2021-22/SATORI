@@ -11,6 +11,7 @@ class USATORI_ChooseAbilitiesDatas;
 class USATORI_AbilityDataAsset;
 class USATORI_ChangeAbilitiesWidget;
 class UDataTable;
+class USATORI_GameInstance;
 
 USTRUCT(BlueprintType)
 struct FSATORI_AbilitiesDatas
@@ -84,6 +85,8 @@ public:
 	int PrevAbilityValue;
 	// Getters
 	TSubclassOf<USATORI_GameplayAbility> GetCurrentAbility();
+	TArray<FSATORI_AbilitiesDatas> GetNormalAbilities() { return NormalAbilities; }
+	TArray<FSATORI_AbilitiesDatas> GetUpgratedAbilities() { return UpgratedAbilities; }
 
 	UPROPERTY(BlueprintAssignable)
 	FSATORIChangeAbilityIcon AbilityIconChange;
@@ -102,6 +105,7 @@ public:
 
 	TSubclassOf<USATORI_GameplayAbility> GetCurrentSatoriAbility();
 
+	void SetSavedAbilitiesWithGameInstance(USATORI_GameInstance* GameInstance);
 protected:
 	
 	virtual void BeginPlay() override;
