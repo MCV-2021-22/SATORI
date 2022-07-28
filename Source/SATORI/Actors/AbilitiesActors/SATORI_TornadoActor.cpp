@@ -33,10 +33,6 @@ ASATORI_TornadoActor::ASATORI_TornadoActor()
 
 void ASATORI_TornadoActor::OnOverlapCollisionSphere(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	// Tornado possible collisions : 
-	// Enemies
-	// Objects?
-
 	ASATORI_AICharacter* Character = Cast<ASATORI_AICharacter>(OtherActor);
 
 	if (!Character)
@@ -44,17 +40,26 @@ void ASATORI_TornadoActor::OnOverlapCollisionSphere(UPrimitiveComponent* Overlap
 		return;
 	}
 
-	if (Character->HasMatchingGameplayTag(EnemyTag) && !Character->HasMatchingGameplayTag(TrappedTag) && ArrayActorsTrapped.Num() < 2)
+	if (Character->HasMatchingGameplayTag(EnemyTag) && !Character->HasMatchingGameplayTag(TrappedTag) && ArrayActorsTrapped.Num() < MaxEnemies)
 	{
 		Character->AddGameplayTag(TrappedTag);
 		ArrayActorsTrapped.AddUnique(OtherActor);
-
-		if (ArrayActorsTrapped.Num() == 2)
-		{
-			SpeedRotation = SpeedRotation / 2;
-		}
-
+		CalculateAngle(OtherActor);
 	}
+}
+
+void ASATORI_TornadoActor::CalculateAngle(AActor* Actor) 
+{
+	FVector A = GetActorForwardVector();
+	A.Z = 0;
+	A.Normalize();
+	FVector B = Actor->GetActorLocation() - GetActorLocation();
+	B.Z = 0;
+	B.Normalize();
+	float  Dot = FVector::DotProduct(A, B);
+	float Angle = FMath::Acos(Dot);
+
+	ArrayAngleAxis.Add(Angle);
 }
 
 void ASATORI_TornadoActor::DestroyMyself()
@@ -75,22 +80,21 @@ void ASATORI_TornadoActor::FinalActions(AActor* Actor)
 	ASATORI_AICharacter* Character = Cast<ASATORI_AICharacter>(Actor);
 	Character->RemoveGameplayTag(TrappedTag);
 
-	Actor->SetActorLocation(GetActorLocation());
-
-	FVector RandomDirection = FMath::VRand();
-	RandomDirection.Z = 0.0f;
-	Actor->AddActorLocalOffset(RandomDirection * RandomDirectionOffset);
-
 	FVector LaunchDirection = Actor->GetActorLocation() - GetActorLocation();
+	LaunchDirection.Z = ZLaunching;
 	LaunchDirection.Normalize();
-	Character->LaunchCharacter(LaunchDirection * LaunchForce, false, false);
+
+	Character->LaunchCharacter(LaunchDirection * LaunchForce, true, true);
+
 }
 
 void ASATORI_TornadoActor::BeginPlay()
 {
+	
 	Super::BeginPlay();
 
-	GetWorldTimerManager().SetTimer(TimerHandleFinish, this, &ASATORI_TornadoActor::DestroyMyself, TimeToFinish, false);
+	FTimerHandle TimerHandle;
+	GetWorldTimerManager().SetTimer(TimerHandle, this, &ASATORI_TornadoActor::DestroyMyself, TimeToFinish, false);
 }
 
 void ASATORI_TornadoActor::Tick(float DeltaTime)
@@ -99,12 +103,15 @@ void ASATORI_TornadoActor::Tick(float DeltaTime)
 
 	StayGrounded(DeltaTime);
 
+	float Num = 0;
+
 	for (AActor* Actor : ArrayActorsTrapped)
 	{
 		if (IsValid(Actor))
 		{
 			DamageTrappedEnemies(DeltaTime, Actor);
-			MoveTrappedEnemies(DeltaTime, Actor);
+			MoveTrappedEnemies(DeltaTime, Actor, Num);
+			Num++;
 		}
 	}
 }
@@ -112,6 +119,8 @@ void ASATORI_TornadoActor::Tick(float DeltaTime)
 //Stay grounded calculation
 void ASATORI_TornadoActor::StayGrounded(float DeltaTime)
 {
+	FHitResult OutHit;
+	FCollisionQueryParams CollisionParams;
 	FVector ActorPosition = GetActorLocation();
 	FVector Ground = ActorPosition;
 	Ground.Z -= TraceDistanceToGround;
@@ -140,14 +149,15 @@ void ASATORI_TornadoActor::DamageTrappedEnemies(float DeltaTime, AActor* Actor)
 	Character->sendDamage(DamageDone);
 }
 
-//Movement Calculations
-void ASATORI_TornadoActor::MoveTrappedEnemies(float DeltaTime, AActor* Actor)
+//Rotation of enemies movement calculations
+void ASATORI_TornadoActor::MoveTrappedEnemies(float DeltaTime, AActor* Actor, int Num)
 {
 	FVector CenterPosition = GetActorLocation();
-	AngleAxis += SpeedRotation * DeltaTime;
-	if (AngleAxis >= 360) AngleAxis = 0;
 
-	FVector RotateValue = Dimensions.RotateAngleAxis(AngleAxis, AxisVector);
+	ArrayAngleAxis[Num] += SpeedRotation * DeltaTime * (Num + 1)/RotationDifference;
+	if (ArrayAngleAxis[Num] >= 360) ArrayAngleAxis[Num] = 0;
+
+	FVector RotateValue = Dimensions.RotateAngleAxis(ArrayAngleAxis[Num], AxisVector);
 
 	CenterPosition.X += RotateValue.X;
 	CenterPosition.Y += RotateValue.Y;

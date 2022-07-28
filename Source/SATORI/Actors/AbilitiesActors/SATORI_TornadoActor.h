@@ -43,6 +43,9 @@ public:
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Meta = (ExposeOnSpawn = true), Category = "Tornado")
 	float TimeToFinish;
 
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Tornado")
+	int MaxEnemies = 2;
+
 	//Rotation 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Tornado")
 	float SpeedRotation = 5.0f;
@@ -56,11 +59,17 @@ public:
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Tornado")
 	FVector AxisVector = FVector(0, 0, 1);
 
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Tornado")
-	float RandomDirectionOffset = 200.0f;
+	//UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Tornado")
+	//float RandomDirectionOffset = 200.0f;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Tornado")
 	float LaunchForce = 200.0f;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Tornado")
+	float ZLaunching = 100.0f;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Tornado")
+	float RotationDifference = 2.0f;
 
 	//Movement
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Movement")
@@ -106,18 +115,18 @@ private:
 
 	void DestroyMyself();
 
-	FTimerHandle TimerHandleFinish;
-
 	UPROPERTY()
 	TArray<AActor*> ArrayActorsTrapped;
+	UPROPERTY()
+	TArray<float> ArrayAngleAxis;
 
 	void StayGrounded(float DeltaTime);
-	FHitResult OutHit;
-	FCollisionQueryParams CollisionParams;
 
 	void  DamageTrappedEnemies(float DeltaTime, AActor* Actor);
 
-	void MoveTrappedEnemies(float DeltaTime, AActor* Actor);
+	void MoveTrappedEnemies(float DeltaTime, AActor* Actor, int Num);
+
+	void CalculateAngle(AActor* Actor);
 
 	void FinalActions(AActor* Actor);
 
