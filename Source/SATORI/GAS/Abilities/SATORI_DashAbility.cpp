@@ -64,7 +64,7 @@ void USATORI_DashAbility::ActivateAbility(
 
 	float DotProduct = FVector::DotProduct(Direction, DirectionDash);
 
-	GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Green, FString::Printf(TEXT("Angle: %f"), DotProduct));
+	//GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Green, FString::Printf(TEXT("Angle: %f"), DotProduct));
 
 	if (DotProduct > 0.5f)
 	{
