@@ -26,6 +26,9 @@ ASATORI_TornadoActor::ASATORI_TornadoActor()
 	ProjectileMovementComponent->InitialSpeed = Speed;
 	ProjectileMovementComponent->ProjectileGravityScale = 0.0f;
 	ProjectileMovementComponent->bRotationFollowsVelocity = true;
+	ProjectileMovementComponent->bConstrainToPlane = true;
+	ProjectileMovementComponent->ConstrainNormalToPlane(FVector(0, 0, 1));
+	ProjectileMovementComponent->bShouldBounce = true;
 
 	//Debug
 	CollisionSphereComponent->bHiddenInGame = false;
@@ -85,12 +88,10 @@ void ASATORI_TornadoActor::FinalActions(AActor* Actor)
 	LaunchDirection.Normalize();
 
 	Character->LaunchCharacter(LaunchDirection * LaunchForce, true, true);
-
 }
 
 void ASATORI_TornadoActor::BeginPlay()
 {
-	
 	Super::BeginPlay();
 
 	FTimerHandle TimerHandle;
@@ -154,7 +155,7 @@ void ASATORI_TornadoActor::MoveTrappedEnemies(float DeltaTime, AActor* Actor, in
 {
 	FVector CenterPosition = GetActorLocation();
 
-	ArrayAngleAxis[Num] += SpeedRotation * DeltaTime * (Num + 1)/RotationDifference;
+	ArrayAngleAxis[Num] += SpeedRotation * DeltaTime * FMath::Log2(Num + DifferenceRotationSpeed);
 	if (ArrayAngleAxis[Num] >= 360) ArrayAngleAxis[Num] = 0;
 
 	FVector RotateValue = Dimensions.RotateAngleAxis(ArrayAngleAxis[Num], AxisVector);

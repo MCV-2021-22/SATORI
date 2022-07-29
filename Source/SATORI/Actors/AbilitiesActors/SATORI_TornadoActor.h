@@ -34,13 +34,13 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Tornado")
 	UProjectileMovementComponent* ProjectileMovementComponent = nullptr;
 
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Meta = (ExposeOnSpawn = true), Category = "Tornado")
+	UPROPERTY(BlueprintReadOnly, Meta = (ExposeOnSpawn = true), Category = "Tornado")
 	TSubclassOf<UGameplayEffect> DamageGameplayEffect;
 
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Meta = (ExposeOnSpawn = true), Category = "Tornado")
+	UPROPERTY(BlueprintReadOnly, Meta = (ExposeOnSpawn = true), Category = "Tornado")
 	float Damage;
 
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Meta = (ExposeOnSpawn = true), Category = "Tornado")
+	UPROPERTY(BlueprintReadOnly, Meta = (ExposeOnSpawn = true), Category = "Tornado")
 	float TimeToFinish;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Tornado")
@@ -48,28 +48,26 @@ public:
 
 	//Rotation 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Tornado")
-	float SpeedRotation = 5.0f;
+	float SpeedRotation = 200.0f;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Tornado")
 	float AngleAxis = 1.0f;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Tornado")
-	FVector Dimensions = FVector(300, 0, 0);
+	FVector Dimensions = FVector(200, 0, 0);
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Tornado")
 	FVector AxisVector = FVector(0, 0, 1);
 
-	//UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Tornado")
-	//float RandomDirectionOffset = 200.0f;
+	//Debug rotation
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (UIMin = "1"), Category = "Tornado")
+	float DifferenceRotationSpeed = 4;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Tornado")
-	float LaunchForce = 200.0f;
+	float LaunchForce = 800.0f;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Tornado")
-	float ZLaunching = 100.0f;
-
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Tornado")
-	float RotationDifference = 2.0f;
+	float ZLaunching = 80.0f;
 
 	//Movement
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Movement")
@@ -77,10 +75,10 @@ public:
 
 	//Stay Grounded
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Stay Grounded")
-	float TraceDistanceToGround = 300.0f;
+	float TraceDistanceToGround = 500.0f;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Stay Grounded")
-	float DistanceToGround = 100.0f;
+	float DistanceToGround = 200.0f;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Stay Grounded")
 	float HeightChange = 100.0f;
