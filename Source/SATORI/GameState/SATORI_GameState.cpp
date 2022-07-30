@@ -34,14 +34,7 @@ void ASATORI_GameState::BeginPlay()
 
     // Fill datas
     FillPortalGameplayEffectWithData();
-    // FillPortalGrantedAbilityWithData();
-
-    GameInstanceRef = Cast<USATORI_GameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
-    if (GameInstanceRef)
-    {
-        PortalGrantedUpgratedAbilityToApply = GameInstanceRef->GetPortalGrantedUpgratedAbility();
-        PortalGrantedNormalAbilityToApply = GameInstanceRef->GetPortalGrantedNormalAbility();
-    }
+    FillPortalGrantedAbilityWithData();
 
     GeneratedRandomPlayerAbility();
     GeneratedRandomPassiveEffect();
@@ -71,30 +64,11 @@ void ASATORI_GameState::FillPortalGameplayEffectWithData()
 
 void ASATORI_GameState::FillPortalGrantedAbilityWithData()
 {
-    if (GrantedAbilityDataAsset)
+    GameInstanceRef = Cast<USATORI_GameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
+    if (GameInstanceRef)
     {
-        for (const FPortalGrantedAbilityDatas& Data : GrantedAbilityDataAsset->GrantedAbilities)
-        {
-            FString CurrentName = Data.PortalGrantedAbilityName.ToString();
-            FName LocalAbilityName = FName(*CurrentName);
-
-            if (LocalAbilityName.IsValid() && Data.PortalGrantedAbility)
-            {
-                FSATORI_PortalAbilitiesDatasReward GrantedAbility;
-                GrantedAbility.AbilitiyIcon = Data.PortalGrantedAbilitiyIcon;
-                GrantedAbility.CurrentAbility = Data.PortalGrantedAbility;
-                GrantedAbility.AbilityName = Data.PortalGrantedAbilityName;
-                GrantedAbility.isUpgrated = Data.isUpgrated;
-                if (GrantedAbility.isUpgrated)
-                {
-                    PortalGrantedUpgratedAbilityToApply.Add(GrantedAbility);
-                }
-                else 
-                {
-                    PortalGrantedNormalAbilityToApply.Add(GrantedAbility);
-                }
-            }
-        }
+        PortalGrantedUpgratedAbilityToApply = GameInstanceRef->GetPortalGrantedUpgratedAbility();
+        PortalGrantedNormalAbilityToApply = GameInstanceRef->GetPortalGrantedNormalAbility();
     }
 }
 
@@ -123,7 +97,7 @@ void ASATORI_GameState::GeneratedRandomPassiveEffect()
     }
 
     // IF no more ability left
-    if (PortalGrantedAbilityToApply.Num() < 0)
+    if (PortalGrantedUpgratedAbilityToApply.Num() <= 0 || PortalGrantedNormalAbilityToApply.Num() <= 0)
     {
         int RandomNumber = GenerateRandomNumberForPortal();
         FSATORI_DoorPassiveReward EffectToApply = PortalEffectsToApply[RandomNumber];
