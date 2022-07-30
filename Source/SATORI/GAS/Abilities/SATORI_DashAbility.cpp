@@ -64,11 +64,11 @@ void USATORI_DashAbility::ActivateAbility(
 
 	float DotProduct = FVector::DotProduct(Direction, DirectionDash);
 
-	GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Green, FString::Printf(TEXT("Angle: %f"), DotProduct));
+	//GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Green, FString::Printf(TEXT("Angle: %f"), DotProduct));
 
 	if (DotProduct > 0.5f)
 	{
-		GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, TEXT("Forward"));
+		//GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, TEXT("Forward"));
 		USATORI_PlayMontageAndWaitEvent* Task = USATORI_PlayMontageAndWaitEvent::PlayMontageAndWaitForEvent(this, NAME_None, AnimMontageDashForward, FGameplayTagContainer(), 1.0f, NAME_None, bStopWhenAbilityEnds, 1.0f);
 		Task->OnBlendOut.AddDynamic(this, &USATORI_DashAbility::OnCompleted);
 		Task->OnCompleted.AddDynamic(this, &USATORI_DashAbility::OnCompleted);
@@ -79,8 +79,8 @@ void USATORI_DashAbility::ActivateAbility(
 	}
 	else if (DotProduct < -0.5f)
 	{
-		GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, TEXT("Backwards"));
-		USATORI_PlayMontageAndWaitEvent* Task = USATORI_PlayMontageAndWaitEvent::PlayMontageAndWaitForEvent(this, NAME_None, AnimMontageDashForward, FGameplayTagContainer(), 1.0f, NAME_None, bStopWhenAbilityEnds, 1.0f);
+		//GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, TEXT("Backwards"));
+		USATORI_PlayMontageAndWaitEvent* Task = USATORI_PlayMontageAndWaitEvent::PlayMontageAndWaitForEvent(this, NAME_None, AnimMontageDashBackwards, FGameplayTagContainer(), 1.0f, NAME_None, bStopWhenAbilityEnds, 1.0f);
 		Task->OnBlendOut.AddDynamic(this, &USATORI_DashAbility::OnCompleted);
 		Task->OnCompleted.AddDynamic(this, &USATORI_DashAbility::OnCompleted);
 		Task->OnInterrupted.AddDynamic(this, &USATORI_DashAbility::OnCancelled);
@@ -90,7 +90,7 @@ void USATORI_DashAbility::ActivateAbility(
 	}
 	else if (DirectionDash.Y > 0 )
 	{
-		GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, TEXT("Right"));
+		//GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, TEXT("Right"));
 		USATORI_PlayMontageAndWaitEvent* Task = USATORI_PlayMontageAndWaitEvent::PlayMontageAndWaitForEvent(this, NAME_None, AnimMontageDashRight, FGameplayTagContainer(), 1.0f, NAME_None, bStopWhenAbilityEnds, 1.0f);
 		Task->OnBlendOut.AddDynamic(this, &USATORI_DashAbility::OnCompleted);
 		Task->OnCompleted.AddDynamic(this, &USATORI_DashAbility::OnCompleted);
@@ -101,7 +101,7 @@ void USATORI_DashAbility::ActivateAbility(
 	}
 	else if (DirectionDash.Y < 0)
 	{
-		GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, TEXT("Left"));
+		//GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, TEXT("Left"));
 		USATORI_PlayMontageAndWaitEvent* Task = USATORI_PlayMontageAndWaitEvent::PlayMontageAndWaitForEvent(this, NAME_None, AnimMontageDashLeft, FGameplayTagContainer(), 1.0f, NAME_None, bStopWhenAbilityEnds, 1.0f);
 		Task->OnBlendOut.AddDynamic(this, &USATORI_DashAbility::OnCompleted);
 		Task->OnCompleted.AddDynamic(this, &USATORI_DashAbility::OnCompleted);

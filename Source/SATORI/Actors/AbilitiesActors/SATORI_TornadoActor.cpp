@@ -1,0 +1,168 @@
+//
+
+#include "Actors/AbilitiesActors/SATORI_TornadoActor.h"
+#include "Components/SphereComponent.h"
+#include "GameFramework/ProjectileMovementComponent.h"
+#include "SATORI/FunctionLibrary/SATORI_BlueprintLibrary.h"
+#include "SATORI/AI/Character/SATORI_AICharacter.h"
+//Debug
+#include "DrawDebugHelpers.h"
+
+ASATORI_TornadoActor::ASATORI_TornadoActor()
+{
+	PrimaryActorTick.bCanEverTick = true;
+
+	StaticMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("StaticMesh"));
+	StaticMeshComponent->SetVisibility(false);
+	RootComponent = StaticMeshComponent;
+
+	CollisionSphereComponent = CreateDefaultSubobject<USphereComponent>(TEXT("CollisionSphere"));
+	CollisionSphereComponent->SetCollisionProfileName(FName(TEXT("PlayerAbility")));
+	CollisionSphereComponent->SetupAttachment(RootComponent);
+	CollisionSphereComponent->SetGenerateOverlapEvents(true);
+	CollisionSphereComponent->OnComponentBeginOverlap.AddDynamic(this, &ASATORI_TornadoActor::OnOverlapCollisionSphere);
+
+	ProjectileMovementComponent = CreateDefaultSubobject<UProjectileMovementComponent>("ProjectileMovement");
+	ProjectileMovementComponent->InitialSpeed = Speed;
+	ProjectileMovementComponent->ProjectileGravityScale = 0.0f;
+	ProjectileMovementComponent->bRotationFollowsVelocity = true;
+	ProjectileMovementComponent->bConstrainToPlane = true;
+	ProjectileMovementComponent->ConstrainNormalToPlane(FVector(0, 0, 1));
+	ProjectileMovementComponent->bShouldBounce = true;
+
+	//Debug
+	CollisionSphereComponent->bHiddenInGame = false;
+}
+
+void ASATORI_TornadoActor::OnOverlapCollisionSphere(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	ASATORI_AICharacter* Character = Cast<ASATORI_AICharacter>(OtherActor);
+
+	if (!Character)
+	{
+		return;
+	}
+
+	if (Character->HasMatchingGameplayTag(EnemyTag) && !Character->HasMatchingGameplayTag(TrappedTag) && ArrayActorsTrapped.Num() < MaxEnemies)
+	{
+		Character->AddGameplayTag(TrappedTag);
+		ArrayActorsTrapped.AddUnique(OtherActor);
+		CalculateAngle(OtherActor);
+	}
+}
+
+void ASATORI_TornadoActor::CalculateAngle(AActor* Actor) 
+{
+	FVector A = GetActorForwardVector();
+	A.Z = 0;
+	A.Normalize();
+	FVector B = Actor->GetActorLocation() - GetActorLocation();
+	B.Z = 0;
+	B.Normalize();
+	float  Dot = FVector::DotProduct(A, B);
+	float Angle = FMath::Acos(Dot);
+
+	ArrayAngleAxis.Add(Angle);
+}
+
+void ASATORI_TornadoActor::DestroyMyself()
+{
+	for (AActor* Actor : ArrayActorsTrapped) {
+
+		if (IsValid(Actor))
+		{
+			FinalActions(Actor);
+		}
+	}
+
+	Destroy();
+}
+
+void ASATORI_TornadoActor::FinalActions(AActor* Actor)
+{
+	ASATORI_AICharacter* Character = Cast<ASATORI_AICharacter>(Actor);
+	Character->RemoveGameplayTag(TrappedTag);
+
+	FVector LaunchDirection = Actor->GetActorLocation() - GetActorLocation();
+	LaunchDirection.Z = ZLaunching;
+	LaunchDirection.Normalize();
+
+	Character->LaunchCharacter(LaunchDirection * LaunchForce, true, true);
+}
+
+void ASATORI_TornadoActor::BeginPlay()
+{
+	Super::BeginPlay();
+
+	FTimerHandle TimerHandle;
+	GetWorldTimerManager().SetTimer(TimerHandle, this, &ASATORI_TornadoActor::DestroyMyself, TimeToFinish, false);
+}
+
+void ASATORI_TornadoActor::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
+
+	StayGrounded(DeltaTime);
+
+	float Num = 0;
+
+	for (AActor* Actor : ArrayActorsTrapped)
+	{
+		if (IsValid(Actor))
+		{
+			DamageTrappedEnemies(DeltaTime, Actor);
+			MoveTrappedEnemies(DeltaTime, Actor, Num);
+			Num++;
+		}
+	}
+}
+
+//Stay grounded calculation
+void ASATORI_TornadoActor::StayGrounded(float DeltaTime)
+{
+	FHitResult OutHit;
+	FCollisionQueryParams CollisionParams;
+	FVector ActorPosition = GetActorLocation();
+	FVector Ground = ActorPosition;
+	Ground.Z -= TraceDistanceToGround;
+	bool bHitAnything = GetWorld()->LineTraceSingleByProfile(OutHit, ActorPosition, Ground, FName("BlockOnlyStatic"), CollisionParams);
+	if (bDrawDebug)
+	{
+		DrawDebugLine(GetWorld(), ActorPosition, Ground, bHitAnything ? FColor::Green : FColor::Red, false, 1.0f);
+	}
+	if (bHitAnything) {
+		if (OutHit.Distance < DistanceToGround) {
+			ActorPosition.Z += HeightChange * DeltaTime;
+			SetActorLocation(ActorPosition);
+		}
+		if (OutHit.Distance > DistanceToGround + 25) {
+			ActorPosition.Z -= HeightChange * DeltaTime;
+			SetActorLocation(ActorPosition);
+		}
+	}
+}
+
+//Damage Calculation
+void ASATORI_TornadoActor::DamageTrappedEnemies(float DeltaTime, AActor* Actor)
+{
+	ASATORI_AICharacter* Character = Cast<ASATORI_AICharacter>(Actor);
+	float DamageDone = USATORI_BlueprintLibrary::ApplyGameplayEffectDamage(Actor, Damage, Actor, DamageGameplayEffect);
+	Character->sendDamage(DamageDone);
+}
+
+//Rotation of enemies movement calculations
+void ASATORI_TornadoActor::MoveTrappedEnemies(float DeltaTime, AActor* Actor, int Num)
+{
+	FVector CenterPosition = GetActorLocation();
+
+	ArrayAngleAxis[Num] += SpeedRotation * DeltaTime * FMath::Log2(Num + DifferenceRotationSpeed);
+	if (ArrayAngleAxis[Num] >= 360) ArrayAngleAxis[Num] = 0;
+
+	FVector RotateValue = Dimensions.RotateAngleAxis(ArrayAngleAxis[Num], AxisVector);
+
+	CenterPosition.X += RotateValue.X;
+	CenterPosition.Y += RotateValue.Y;
+	CenterPosition.Z += RotateValue.Z;
+
+	Actor->SetActorLocation(CenterPosition, false, 0, ETeleportType::None);
+}

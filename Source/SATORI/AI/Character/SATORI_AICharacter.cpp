@@ -435,7 +435,11 @@ void ASATORI_AICharacter::CharacterDeath()
 	if (AIController)
 	{
 		FString Death = "Dying";
-		AIController->GetBrainComponent()->StopLogic(Death);
+		UBrainComponent* BrainComponent = AIController->GetBrainComponent();
+		if(BrainComponent)
+		{ 
+			AIController->GetBrainComponent()->StopLogic(Death);
+		}
 	}
 	
 
