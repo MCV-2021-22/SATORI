@@ -132,6 +132,9 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Levels")
 	bool IsFirstLevel = false;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Levels")
+	bool IsActiveForTest= false;
 private:
 
 	bool Active = false;

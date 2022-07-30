@@ -10,6 +10,7 @@
 class ASATORI_Portal;
 class USATORI_PortalPassiveDataAsset;
 class USATORI_PortalGrantedAbilityAsset;
+class USATORI_GameInstance;
 
 UCLASS()
 class SATORI_API ASATORI_GameState : public AGameState
@@ -71,4 +72,6 @@ private:
 	// Generated Random Effect o Granted Random Ability
 	void GeneratedRandomPassiveEffect();
 	void GeneratedRandomPlayerAbility();
+
+	USATORI_GameInstance* GameInstanceRef = nullptr;
 };

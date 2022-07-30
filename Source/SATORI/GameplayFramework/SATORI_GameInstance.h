@@ -8,7 +8,10 @@
 #include "Savegame/SATORI_SaveGame.h"
 #include "Character/Mask/SATORI_AbilityMask.h"
 #include "Components/Player/SATORI_GameplayAbilityComponent.h"
+#include "Actors/Portal/SATORI_Portal.h"
 #include "SATORI_GameInstance.generated.h"
+
+class USATORI_PortalGrantedAbilityAsset;
 
 /**
  * 
@@ -23,6 +26,9 @@ public:
 
 	void Init() override;
 	void Shutdown() override;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Portal")
+	USATORI_PortalGrantedAbilityAsset* GrantedAbilityDataAsset;
 
 	UFUNCTION(BlueprintCallable)
 	USATORI_SaveGame* GetSATORISaveGame() { return SaveGame; }
@@ -79,8 +85,17 @@ public:
 	// Abilities
 	TArray<FSATORI_AbilitiesDatas> NormalAbilities;
 	TArray<FSATORI_AbilitiesDatas> UpgratedAbilities;
+
+	// Getters
+	TArray<FSATORI_PortalAbilitiesDatasReward> GetPortalGrantedUpgratedAbility() { return PortalGrantedUpgratedAbilityToApply; }
+	TArray<FSATORI_PortalAbilitiesDatasReward> GetPortalGrantedNormalAbility() { return PortalGrantedNormalAbilityToApply; }
+
+	void RemoveElementonFromNormalAbilities();
+	void RemoveElementonFromUpgratedAbilities();
 private:
 	void InitSaveGame();
+
+	void FillPortalGrantedAbilityWithData();
 
 	UPROPERTY()
 	USATORI_SaveGame* SaveGame = nullptr;
@@ -88,4 +103,9 @@ private:
 	UPROPERTY()
 	FString SaveSlotName = "MCVSaveData";
 
+	// Portal Rewards Abilities
+	// Upgrated
+	TArray<FSATORI_PortalAbilitiesDatasReward> PortalGrantedUpgratedAbilityToApply;
+	// Normal
+	TArray<FSATORI_PortalAbilitiesDatasReward> PortalGrantedNormalAbilityToApply;
 };

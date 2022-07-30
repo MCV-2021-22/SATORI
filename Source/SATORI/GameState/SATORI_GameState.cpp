@@ -7,6 +7,7 @@
 #include "GameplayEffect.h"
 #include "Data/SATORI_PortalPassiveDataAsset.h"
 #include "Data/SATORI_PortalGrantedAbilityAsset.h"
+#include "GameplayFramework/SATORI_GameInstance.h"
 
 ASATORI_GameState::ASATORI_GameState()
 {
@@ -33,7 +34,14 @@ void ASATORI_GameState::BeginPlay()
 
     // Fill datas
     FillPortalGameplayEffectWithData();
-    FillPortalGrantedAbilityWithData();
+    // FillPortalGrantedAbilityWithData();
+
+    GameInstanceRef = Cast<USATORI_GameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
+    if (GameInstanceRef)
+    {
+        PortalGrantedUpgratedAbilityToApply = GameInstanceRef->GetPortalGrantedUpgratedAbility();
+        PortalGrantedNormalAbilityToApply = GameInstanceRef->GetPortalGrantedNormalAbility();
+    }
 
     GeneratedRandomPlayerAbility();
     GeneratedRandomPassiveEffect();
@@ -128,22 +136,29 @@ void ASATORI_GameState::GeneratedRandomPlayerAbility()
     ASATORICharacter* Character = Cast<ASATORICharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
     if (Character)
     {
-        if (Character->GetIsAbilityUpgrated() && PortalGrantedUpgratedAbilityToApply.Num() >= 0)
+        if (Character->GetIsAbilityUpgrated() && PortalGrantedUpgratedAbilityToApply.Num() > 0)
         {
             int Size = PortalGrantedUpgratedAbilityToApply.Num() - 1;
             FSATORI_PortalAbilitiesDatasReward Reward = PortalGrantedUpgratedAbilityToApply[Size];
             InstancePortals[0]->SetCurrentGameplayAbilityData(Reward);
-            UE_LOG(LogTemp, Display, TEXT(" Player Normal Upgrated Size : [%d] "), Size);
-            //PortalGrantedUpgratedAbilityToApply.RemoveAt(PortalGrantedUpgratedAbilityToApply.Num() - 1);
-            //PortalGrantedUpgratedAbilityToApply.Remove(Reward);
+            UE_LOG(LogTemp, Display, TEXT(" Player Upgrated Ability Size : [%d] "), Size);
+            if (GameInstanceRef)
+            {
+                GameInstanceRef->RemoveElementonFromUpgratedAbilities();
+            }
         }
-        else if (PortalGrantedNormalAbilityToApply.Num() >= 0)
+        else if (PortalGrantedNormalAbilityToApply.Num() > 0)
         {
             int Size = PortalGrantedNormalAbilityToApply.Num() - 1;
             FSATORI_PortalAbilitiesDatasReward Reward = PortalGrantedNormalAbilityToApply[Size];
             InstancePortals[0]->SetCurrentGameplayAbilityData(Reward);
             UE_LOG(LogTemp, Display, TEXT(" Player Normal Abilities Size : [%d] "), Size);
-            PortalGrantedNormalAbilityToApply.RemoveAt(PortalGrantedNormalAbilityToApply.Num() - 1);
+            FString AbilityString = Reward.AbilityName.ToString();
+            UE_LOG(LogTemp, Warning, TEXT(" Player Normal Ability Name : %s "), *AbilityString);
+            if (GameInstanceRef)
+            {
+                GameInstanceRef->RemoveElementonFromNormalAbilities();
+            }
             //PortalGrantedNormalAbilityToApply.Remove(Reward);
         }
     }

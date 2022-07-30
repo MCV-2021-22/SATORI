@@ -55,7 +55,7 @@ void ASATORI_Portal::BeginPlay()
 	
 	GetWorld()->GetAuthGameMode<ASATORIGameMode>()->AddPortalActor(this);
 
-	if (IsFirstLevel)
+	if (IsFirstLevel || IsActiveForTest)
 	{
 		ActivatePortal();
 	}
