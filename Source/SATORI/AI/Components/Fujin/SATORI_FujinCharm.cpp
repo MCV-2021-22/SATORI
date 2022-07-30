@@ -154,9 +154,10 @@ void ASATORI_FujinCharm::OnComponentBeginOverlap(
 		FVector newForward = dest - GetActorLocation();
 		newForward.Normalize();
 		
-		setDirection(newForward * 40);
+		setDirection(newForward * 60);
 		Player = Player1;
-	
+
+		Player->AddGameplayTag(FGameplayTag::RequestGameplayTag("State.Charmed"));
 
 	}
 	if(ReturnToFujin)
@@ -165,6 +166,7 @@ void ASATORI_FujinCharm::OnComponentBeginOverlap(
 
 		if(Fujin1)
 		{
+			Player->RemoveGameplayTag(FGameplayTag::RequestGameplayTag("State.Charmed"));
 			Destroy();
 		}
 	}
