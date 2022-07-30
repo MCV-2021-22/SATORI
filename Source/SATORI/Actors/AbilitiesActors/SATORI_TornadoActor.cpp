@@ -38,11 +38,15 @@ void ASATORI_TornadoActor::OnOverlapCollisionSphere(UPrimitiveComponent* Overlap
 {
 	ASATORI_AICharacter* Character = Cast<ASATORI_AICharacter>(OtherActor);
 
+	//Possible collisions : 
+
+	//Objects
 	if (!Character)
 	{
 		return;
 	}
 
+	//Enemies
 	if (Character->HasMatchingGameplayTag(EnemyTag) && !Character->HasMatchingGameplayTag(TrappedTag) && ArrayActorsTrapped.Num() < MaxEnemies)
 	{
 		Character->AddGameplayTag(TrappedTag);
@@ -110,7 +114,7 @@ void ASATORI_TornadoActor::Tick(float DeltaTime)
 	{
 		if (IsValid(Actor))
 		{
-			DamageTrappedEnemies(DeltaTime, Actor);
+			DamageEnemy(Actor);
 			MoveTrappedEnemies(DeltaTime, Actor, Num);
 			Num++;
 		}
@@ -120,8 +124,6 @@ void ASATORI_TornadoActor::Tick(float DeltaTime)
 //Stay grounded calculation
 void ASATORI_TornadoActor::StayGrounded(float DeltaTime)
 {
-	FHitResult OutHit;
-	FCollisionQueryParams CollisionParams;
 	FVector ActorPosition = GetActorLocation();
 	FVector Ground = ActorPosition;
 	Ground.Z -= TraceDistanceToGround;
@@ -131,11 +133,11 @@ void ASATORI_TornadoActor::StayGrounded(float DeltaTime)
 		DrawDebugLine(GetWorld(), ActorPosition, Ground, bHitAnything ? FColor::Green : FColor::Red, false, 1.0f);
 	}
 	if (bHitAnything) {
-		if (OutHit.Distance < DistanceToGround) {
+		if (OutHit.Distance < MinDistanceToGround) {
 			ActorPosition.Z += HeightChange * DeltaTime;
 			SetActorLocation(ActorPosition);
 		}
-		if (OutHit.Distance > DistanceToGround + 25) {
+		if (OutHit.Distance > MaxDistanceToGround) {
 			ActorPosition.Z -= HeightChange * DeltaTime;
 			SetActorLocation(ActorPosition);
 		}
@@ -143,7 +145,7 @@ void ASATORI_TornadoActor::StayGrounded(float DeltaTime)
 }
 
 //Damage Calculation
-void ASATORI_TornadoActor::DamageTrappedEnemies(float DeltaTime, AActor* Actor)
+void ASATORI_TornadoActor::DamageEnemy(AActor* Actor)
 {
 	ASATORI_AICharacter* Character = Cast<ASATORI_AICharacter>(Actor);
 	float DamageDone = USATORI_BlueprintLibrary::ApplyGameplayEffectDamage(Actor, Damage, Actor, DamageGameplayEffect);
@@ -164,5 +166,5 @@ void ASATORI_TornadoActor::MoveTrappedEnemies(float DeltaTime, AActor* Actor, in
 	CenterPosition.Y += RotateValue.Y;
 	CenterPosition.Z += RotateValue.Z;
 
-	Actor->SetActorLocation(CenterPosition, false, 0, ETeleportType::None);
+	Actor->SetActorLocation(CenterPosition, false, 0, ETeleportType::TeleportPhysics);
 }

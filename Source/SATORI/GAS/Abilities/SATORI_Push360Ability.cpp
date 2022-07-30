@@ -113,8 +113,7 @@ void USATORI_Push360Ability::EventReceived(FGameplayTag EventTag, FGameplayEvent
 			Push->DamageGameplayEffect = DamageGameplayEffect;
 			Push->Damage = Damage;
 			Push->Speed = Speed;
-			Push->PushForce = PushForce;
-			Push->TimeToDestroy = TimeToDestroy;
+			Push->TimeToFinish = TimeToDestroy;
 			Push->FinishSpawning(SpawnTransform);
 
 			RotationOfSpawn.Yaw += IncrementAngle;

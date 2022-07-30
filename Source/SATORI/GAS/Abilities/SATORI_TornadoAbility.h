@@ -40,16 +40,13 @@ public:
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Ability|Tags")
 	FGameplayTag TagSpawnAbility;
 
-	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Ability|Tags")
-	FGameplayTag TagEndAbility;
-
 protected:
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (UIMin = "0.0"), Category = "Ability|Tornado")
 	float Damage = 0.1f;
 
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (UIMin = "0.0"), Category = "Ability|Tornado")
-	float TimeToEndAbility;
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (UIMin = "0.1"), Category = "Ability|Tornado")
+	float TimeToEndAbility = 0.1f;
 
 	UFUNCTION()
 	void FinishWaitingForEnd();
@@ -67,6 +64,4 @@ private:
 
 	const bool bStopWhenAbilityEnds = true;
 
-	FTimerHandle TimerHandleEndAbility;
-	
 };
