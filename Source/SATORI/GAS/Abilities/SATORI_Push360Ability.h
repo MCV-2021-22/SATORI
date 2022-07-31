@@ -6,12 +6,9 @@
 #include "GAS/SATORI_GameplayAbility.h"
 #include "GameplayEffect.h"
 #include "SATORI/AbilityTask/SATORI_PlayMontageAndWaitEvent.h"
-#include "Actors/AbilitiesActors/SATORI_PushActor.h"
+#include "Actors/AbilitiesActors/SATORI_Push360Actor.h"
 #include "SATORI_Push360Ability.generated.h"
 
-/**
- * 
- */
 UCLASS()
 class SATORI_API USATORI_Push360Ability : public USATORI_GameplayAbility
 {
@@ -20,14 +17,15 @@ class SATORI_API USATORI_Push360Ability : public USATORI_GameplayAbility
 public:
 
 	USATORI_Push360Ability();
-	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Ability")
-		UAnimMontage* AnimMontage;
 
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Ability")
-		TSubclassOf<ASATORI_PushActor> PushActor;
+	UAnimMontage* AnimMontage;
+
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Ability")
+	TSubclassOf<ASATORI_Push360Actor> Push360Actor;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Ability")
-		TSubclassOf<UGameplayEffect> DamageGameplayEffect;
+	TSubclassOf<UGameplayEffect> DamageGameplayEffect;
 
 	virtual void ActivateAbility(
 		const FGameplayAbilitySpecHandle Handle,
@@ -37,30 +35,19 @@ public:
 		override;
 
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Ability|Tags")
-		FGameplayTag TagSpawnAbility;
-
-	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Ability|Tags")
-		FGameplayTag TagEndAbility;
-
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (UIMin = "0.0"), Category = "Ability|Push")
-	float Damage = 5.0f;
-
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (UIMin = "0.0"), Category = "Ability|Push")
-	float Speed = 6000.0f;
-
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (UIMin = "0.0"), Category = "Ability|Push")
-	float PushForce = 6000.0f;
-
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (UIMin = "0.0"), Category = "Ability|Push")
-	float TimeToDestroy = 0.2f;
-
-	UPROPERTY(BlueprintReadOnly, EditAnywhere, meta = (UIMin = "100.0", UIMax = "10000.0"), Category = "Ability|Push")
-	float Range = 3000.0f;
-
-	UPROPERTY(BlueprintReadOnly, EditAnywhere, meta = (UIMin = "16.0", UIMax = "128.0"), Category = "Ability|Push")
-	float SphereRadius = 32.0f;
+	FGameplayTag TagSpawnAbility;
 
 protected:
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (UIMin = "0.0"), Category = "Ability|Push360")
+	float Damage = 0.1f;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (UIMin = "0.1"), Category = "Ability|Push360")
+	float TimeToEndAbility = 0.1f;
+
+	UFUNCTION()
+	void FinishWaitingForEnd();
+
 
 	UFUNCTION()
 	void OnCancelled(FGameplayTag EventTag, FGameplayEventData EventData);

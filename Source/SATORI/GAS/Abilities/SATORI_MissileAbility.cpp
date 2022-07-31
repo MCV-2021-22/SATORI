@@ -29,7 +29,7 @@ void USATORI_MissileAbility::ActivateAbility(
 		return;
 	}
 	
-	if (!TagSpawnAbility.IsValid() || !TagEndAbility.IsValid())
+	if (!TagSpawnAbility.IsValid())
 	{
 		UE_LOG(LogTemp, Display, TEXT("[%s] USATORI_MissileAbility: Tag is not valid ... "), *GetName());
 	}
@@ -51,26 +51,24 @@ void USATORI_MissileAbility::OnCancelled(FGameplayTag EventTag, FGameplayEventDa
 
 void USATORI_MissileAbility::OnCompleted(FGameplayTag EventTag, FGameplayEventData EventData)
 {
+	FTimerHandle TimerHandleEndAbility;
+	GetWorld()->GetTimerManager().SetTimer(TimerHandleEndAbility, this, &USATORI_MissileAbility::FinishWaitingForEnd, TimeToEndAbility, false);
+}
+
+void USATORI_MissileAbility::FinishWaitingForEnd()
+{
 	Super::EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, false);
 }
 
 void USATORI_MissileAbility::EventReceived(FGameplayTag EventTag, FGameplayEventData EventData)
 {
-
-	if (EventTag == TagEndAbility)
-	{
-		Super::EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, false);
-		return;
-	}
-
 	if (EventTag == TagSpawnAbility)
 	{
-
 		ASATORICharacter* Character = Cast<ASATORICharacter>(GetAvatarActorFromActorInfo());
 		if (!Character)
 		{
 			UE_LOG(LogTemp, Display, TEXT("[%s] USATORI_MissileAbility: Cannot Cast ASATORICharacter ... "), *GetName());
-			EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true);
+			Super::EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true);
 		}
 
 		//No need to aim it
@@ -85,8 +83,7 @@ void USATORI_MissileAbility::EventReceived(FGameplayTag EventTag, FGameplayEvent
 			Character, ESpawnActorCollisionHandlingMethod::AlwaysSpawn);
 		Missile->DamageGameplayEffect = DamageGameplayEffect;
 		Missile->Damage = Damage;
-		Missile->Range = Range;
-		Missile->TimeToDestroy = TimeToDestroy;
+		Missile->TimeToFinish = TimeToEndAbility;
 		Missile->FinishSpawning(SpawnTransform);
 	}
 }

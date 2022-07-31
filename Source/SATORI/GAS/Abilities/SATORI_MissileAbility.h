@@ -8,9 +8,6 @@
 #include "Actors/AbilitiesActors/SATORI_MissileActor.h"
 #include "SATORI_MissileAbility.generated.h"
 
-/**
- * 
- */
 UCLASS()
 class SATORI_API USATORI_MissileAbility : public USATORI_GameplayAbility
 {
@@ -39,19 +36,16 @@ public:
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Ability|Tags")
 	FGameplayTag TagSpawnAbility;
 
-	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Ability|Tags")
-	FGameplayTag TagEndAbility;
-
 protected:
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (UIMin = "0.0"), Category = "Ability|Missile")
 	float Damage = 20.0f;
 
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (UIMin = "1.0"), Category = "Ability|Missile")
-	float Range = 2000.0f;
-
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (UIMin = "0.0"), Category = "Ability|Missile")
-	float TimeToDestroy = 1.0f;
+	float TimeToEndAbility = 1.0f;
+
+	UFUNCTION()
+	void FinishWaitingForEnd();
 
 	UFUNCTION()
 	void OnCancelled(FGameplayTag EventTag, FGameplayEventData EventData);

@@ -9,9 +9,6 @@
 #include "Actors/AbilitiesActors/SATORI_DecoyActor.h"
 #include "SATORI_DecoyAbility.generated.h"
 
-/**
- * 
- */
 UCLASS()
 class SATORI_API USATORI_DecoyAbility : public USATORI_GameplayAbility
 {
@@ -40,16 +37,13 @@ public:
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Ability|Tags")
 	FGameplayTag TagSpawnAbility;
 
-	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Ability|Tags")
-	FGameplayTag TagEndAbility;
-
 protected:
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (UIMin = "0.0"), Category = "Ability|Decoy")
-	float Damage = 1.0f;
+	float TimeToEndAbility = 1.0f;
 
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (UIMin = "0.0"), Category = "Ability|Decoy")
-	float TimeToDestroy = 1.0f;
+	UFUNCTION()
+	void FinishWaitingForEnd();
 
 	UFUNCTION()
 	void OnCancelled(FGameplayTag EventTag, FGameplayEventData EventData);

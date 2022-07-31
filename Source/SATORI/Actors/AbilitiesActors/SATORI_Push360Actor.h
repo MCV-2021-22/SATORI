@@ -6,21 +6,20 @@
 #include "GameFramework/Actor.h"
 #include "GameplayTagContainer.h"
 #include "GameplayEffect.h"
-#include "NiagaraComponent.h"
 #include "AI/Character/SATORI_AICharacter.h"
-#include "SATORI_PushActor.generated.h"
+#include "SATORI_Push360Actor.generated.h"
 
 class USphereComponent;
 class UStaticMeshComponent;
 
 UCLASS()
-class SATORI_API ASATORI_PushActor : public AActor
+class SATORI_API ASATORI_Push360Actor : public AActor
 {
 	GENERATED_BODY()
 	
 public:	
 
-	ASATORI_PushActor();
+	ASATORI_Push360Actor();
 
 	UPROPERTY(EditDefaultsOnly, Category = "Push")
 	USphereComponent* CollisionSphereComponent = nullptr;
@@ -34,36 +33,12 @@ public:
 	UPROPERTY(BlueprintReadOnly, Meta = (ExposeOnSpawn = true), Category = "Push")
 	float TimeToFinish;
 
-	//Movement
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Movement")
-	float Speed = 6000.0f;
-
 	//Final launch
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Push")
 	float LaunchForce = 800.0f;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Push")
 	float ZLaunching = 80.0f;
-
-	//Debug movement
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Push")
-	float HeightCorrection = 100.0f;
-
-	//Stay Grounded
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Stay Grounded")
-	float TraceDistanceToGround = 300.0f;
-
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Stay Grounded")
-	float MinDistanceToGround = 30.0f;
-
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Stay Grounded")
-	float MaxDistanceToGround = 50.0f;
-
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Stay Grounded")
-	float HeightChange = 1000.0f;
-
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Stay Grounded")
-	bool bDrawDebug = false;
 
 	UFUNCTION(BlueprintCallable, Category = "Push")
 	void OnOverlapCollisionSphere(
@@ -84,21 +59,12 @@ protected:
 
 	virtual void BeginPlay() override;
 
-public:
-	
-	virtual void Tick(float DeltaTime) override;
-
 private:
 
-	AActor* Pushed;
-	bool Pushing = false;
+	TArray<AActor*> ArrayPushed;
 
-	FHitResult OutHit;
-	FCollisionQueryParams CollisionParams;
-
+	void LaunchEnemy(AActor* Actor);
 	void DestroyMyself();
-	void FinalActions(AActor* Actor);
-	void StayGrounded(float DeltaTime);
 	void DamageEnemy(AActor* Actor);
 
 };

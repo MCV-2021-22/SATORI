@@ -9,9 +9,6 @@
 #include "Actors/AbilitiesActors/SATORI_TornadoActor.h"
 #include "SATORI_TornadoAbility.generated.h"
 
-/**
- * 
- */
 UCLASS()
 class SATORI_API USATORI_TornadoAbility : public USATORI_GameplayAbility
 {

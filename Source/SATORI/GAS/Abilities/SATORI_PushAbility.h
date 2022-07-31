@@ -45,9 +45,6 @@ protected:
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (UIMin = "0.1"), Category = "Ability|Push")
 	float TimeToEndAbility = 0.1f;
 
-	UFUNCTION()
-	void FinishWaitingForEnd();
-
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, meta = (UIMin = "100.0", UIMax = "10000.0"), Category = "Ability|Push|Debug")
 	float Range = 3000.0f;
 
@@ -56,6 +53,9 @@ protected:
 
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, meta = (UIMin = "16.0", UIMax = "128.0"), Category = "Ability|Push|Debug")
 	float SphereRadius = 32.0f;
+	
+	UFUNCTION()
+	void FinishWaitingForEnd();
 
 	UFUNCTION()
 	void OnCancelled(FGameplayTag EventTag, FGameplayEventData EventData);

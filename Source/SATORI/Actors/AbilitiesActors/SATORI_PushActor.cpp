@@ -6,7 +6,6 @@
 #include "SATORI/FunctionLibrary/SATORI_BlueprintLibrary.h"
 //Debug
 #include "DrawDebugHelpers.h"
-#include "Components/CapsuleComponent.h"
 
 ASATORI_PushActor::ASATORI_PushActor()
 {
@@ -40,19 +39,17 @@ void ASATORI_PushActor::OnOverlapCollisionSphere(UPrimitiveComponent* Overlapped
 	//Enemies
 	if(Character->HasMatchingGameplayTag(EnemyTag) && !Character->HasMatchingGameplayTag(PushedTag) && !Pushing)
 	{	
-		ArrayPushed.AddUnique(OtherActor);
+		Pushed = OtherActor;
 		Character->AddGameplayTag(PushedTag);
 		Pushing = true;
 	}
 }
 
 void ASATORI_PushActor::DestroyMyself()
-{	
-	for (AActor* Actor : ArrayPushed) {
-		if (IsValid(Actor))
-		{
-			FinalActions(Actor);
-		}
+{
+	if (IsValid(Pushed))
+	{
+		FinalActions(Pushed);
 	}
 
 	Destroy();
@@ -93,16 +90,14 @@ void ASATORI_PushActor::Tick(float DeltaTime)
 
 	StayGrounded(DeltaTime);
 	
-	for (AActor* Actor : ArrayPushed) {
-		if (IsValid(Actor))
-		{
-			//Move enemies
-			HeightCorrection += DeltaTime;
-			ActorPosition.Z += HeightCorrection;
-			Actor->SetActorLocation(ActorPosition, false, 0, ETeleportType::TeleportPhysics);
+	if (IsValid(Pushed))
+	{
+		//Move enemy
+		HeightCorrection += DeltaTime;
+		ActorPosition.Z += HeightCorrection;
+		Pushed->SetActorLocation(ActorPosition, false, 0, ETeleportType::TeleportPhysics);
 
-			DamageEnemy(Actor);
-		}
+		DamageEnemy(Pushed);
 	}
 }
 
