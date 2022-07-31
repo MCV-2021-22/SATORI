@@ -27,6 +27,7 @@
 #include "Character/SATORI_PlayerController.h"
 #include "FunctionLibrary/SATORI_BlueprintLibrary.h"
 #include "GAS/Effects/SATORI_ManaRecoverEffect.h"
+#include "Kismet/KismetMathLibrary.h"
 //Cheat related include
 #include "Kismet/GameplayStatics.h"
 #include "Components/Player/SATORI_InteractComponent.h"
@@ -91,7 +92,7 @@ ASATORICharacter::ASATORICharacter()
 		AttackingCollision->SetCapsuleSize(20.f, 60.f, true);
 		AttackingCollision->SetCollisionProfileName("Pawn");
 		AttackingCollision->SetGenerateOverlapEvents(false);
-		AttackingCollision->AttachTo(SwordComponent);
+		AttackingCollision->AttachToComponent(SwordComponent, AttachmentRules);
 
 		AttackingCollision->OnComponentBeginOverlap.AddDynamic(this, &ASATORICharacter::OnWeaponOverlapBegin);
 		AttackingCollision->OnComponentEndOverlap.AddDynamic(this, &ASATORICharacter::OnWeaponOverlapEnd);
@@ -138,11 +139,13 @@ void ASATORICharacter::PossessedBy(AController* NewController)
 			SetMana(GetMaxMana());
 			GameInstanceRef->PlayerStart = false;
 			StatsComponent->InitializeStatsAttributes(PS);
+			PlayerGameplayAbilityComponent->SetSavedAbilitiesWithGameInstance(GameInstanceRef);
 		}
 		else
 		{
 			StatsComponent->InitializeStatsAttributesByInstance(PS, GameInstanceRef);
 			SATORIAbilityMaskComponent->GrantedMaskEffects(GameInstanceRef->MaskType);
+			PlayerGameplayAbilityComponent->SetSavedAbilitiesWithGameInstance(GameInstanceRef);
 		}
 
 		// Set Health to Max Health Value
@@ -246,6 +249,86 @@ bool ASATORICharacter::DoRayCast()
 		}	
 	}
 	return false;
+}
+
+bool ASATORICharacter::IsEnemyInFrontOfAngle()
+{
+	const FVector StartPosition = GetActorLocation();
+	const FRotator StartRotation = GetActorRotation();
+	const FVector EndPosition = StartPosition + (StartRotation.Vector() * VisibleAttackLength);
+
+	UWorld* World = GetWorld();
+	FHitResult HitResult;
+	FCollisionQueryParams Params = FCollisionQueryParams(FName("LineTraceSingle"));
+	Params.AddIgnoredActor(RootComponent->GetOwner());
+
+	FVector delta = EndPosition - StartPosition;
+	TArray<TWeakObjectPtr<AActor>> NewActors;
+
+	bool bHit = false;
+	for (int i = -5; i <= 5; i++)
+	{
+		FVector Axis = FVector::ZAxisVector;
+		float rad = FMath::DegreesToRadians(i * VisibleAttackAngle);
+		FQuat quaternion = FQuat(Axis, rad);
+		FRotator rotator = FRotator(quaternion);
+		FVector newDelta = rotator.RotateVector(delta);
+
+		FVector newEndPos = newDelta + StartPosition;
+
+		bool newHit = GetWorld()->LineTraceSingleByChannel(
+			HitResult,
+			StartPosition,
+			newEndPos,
+			ECollisionChannel::ECC_Pawn,
+			Params
+		);
+
+		::DrawDebugLine(World, StartPosition, newEndPos, newHit ? FColor::Green : FColor::Red, false, 1.0f);
+		if (newHit)
+		{
+			NewActors.Add(HitResult.Actor);
+			bHit = true;
+			break;
+		}
+	}
+
+	TWeakObjectPtr<AActor> HitActor = FindNearestEnemy(NewActors);
+
+	TWeakObjectPtr<ASATORI_AICharacter> AICharacter = Cast<ASATORI_AICharacter>(HitActor);
+	if (AICharacter.IsValid())
+	{
+		FVector EnemyPosition = AICharacter->GetActorLocation();
+		FRotator EnemyRotation = AICharacter->GetActorRotation();
+		FRotator FindEnemyRotator = UKismetMathLibrary::FindLookAtRotation(StartPosition, EnemyPosition);
+		FRotator NewFaceEnemyRotator = FRotator(0.0f, FindEnemyRotator.Yaw, 0.0f);
+		FRotator RInterpRotator = FMath::RInterpTo(StartRotation, NewFaceEnemyRotator, World->GetTimeSeconds(), 0.1f);
+		this->SetActorRotation(RInterpRotator);
+	}
+
+	return bHit;
+}
+
+TWeakObjectPtr<AActor> ASATORICharacter::FindNearestEnemy(TArray<TWeakObjectPtr<AActor>> ActorsHit)
+{
+	if (ActorsHit.Num() == 0)
+	{
+		return nullptr;
+	}
+
+	float ClosestDistance = VisibleAttackLength;
+	TWeakObjectPtr<AActor> Target = nullptr;
+	for (TWeakObjectPtr<AActor> Actor : ActorsHit)
+	{
+		const float Distance = this->GetDistanceTo(Actor.Get());
+		if (Distance < ClosestDistance)
+		{
+			ClosestDistance = Distance;
+			Target = Actor;
+		}
+	}
+
+	return Target;
 }
 
 void ASATORICharacter::GrantAbilityToPlayer(FGameplayAbilitySpec Ability)
