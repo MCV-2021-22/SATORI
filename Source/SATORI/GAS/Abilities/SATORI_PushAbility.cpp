@@ -15,7 +15,7 @@ void USATORI_PushAbility::ActivateAbility(
 	const FGameplayAbilityActivationInfo ActivationInfo,
 	const FGameplayEventData* TriggerEventData)
 {
-		Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
+	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
 
 	if (!IsValid(AnimMontage))
 	{
@@ -29,7 +29,7 @@ void USATORI_PushAbility::ActivateAbility(
 		return;
 	}
 
-	if(!TagSpawnAbility.IsValid() || !TagEndAbility.IsValid())
+	if(!TagSpawnAbility.IsValid())
 	{
 		UE_LOG(LogTemp, Display, TEXT("[%s] USATORI_PushAbility: Tag is not valid ... "), *GetName());
 	}
@@ -42,7 +42,6 @@ void USATORI_PushAbility::ActivateAbility(
 	Task->OnCancelled.AddDynamic(this, &USATORI_PushAbility::OnCancelled);
 	Task->EventReceived.AddDynamic(this, &USATORI_PushAbility::EventReceived);
 	Task->ReadyForActivation();
-
 }
 
 void USATORI_PushAbility::OnCancelled(FGameplayTag EventTag, FGameplayEventData EventData)
@@ -52,26 +51,24 @@ void USATORI_PushAbility::OnCancelled(FGameplayTag EventTag, FGameplayEventData 
 
 void USATORI_PushAbility::OnCompleted(FGameplayTag EventTag, FGameplayEventData EventData)
 {
+	FTimerHandle TimerHandleEndAbility;
+	GetWorld()->GetTimerManager().SetTimer(TimerHandleEndAbility, this, &USATORI_PushAbility::FinishWaitingForEnd, TimeToEndAbility, false);
+}
+
+void USATORI_PushAbility::FinishWaitingForEnd()
+{
 	Super::EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, false);
 }
 
 void USATORI_PushAbility::EventReceived(FGameplayTag EventTag, FGameplayEventData EventData)
 {
-
-	if (EventTag == TagEndAbility)
-	{
-		Super::EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, false);
-		return;
-	}
-
 	if (EventTag == TagSpawnAbility)
 	{
-
 		ASATORICharacter* Character = Cast<ASATORICharacter>(GetAvatarActorFromActorInfo());
 		if (!Character)
 		{
 			UE_LOG(LogTemp, Display, TEXT("[%s] USATORI_PushAbility: Cannot Cast ASATORICharacter ... "), *GetName());
-			EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true);
+			Super::EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true);
 		}
 
 		FTransform SpawnTransform = Character->HandComponent->GetComponentTransform();
@@ -112,9 +109,7 @@ void USATORI_PushAbility::EventReceived(FGameplayTag EventTag, FGameplayEventDat
 				Character, ESpawnActorCollisionHandlingMethod::AlwaysSpawn);
 			Push->DamageGameplayEffect = DamageGameplayEffect;
 			Push->Damage = Damage;
-			Push->Speed = Speed;
-			Push->PushForce = PushForce;
-			Push->TimeToDestroy = TimeToDestroy;
+			Push->TimeToFinish = TimeToEndAbility;
 			Push->FinishSpawning(SpawnTransform);
 			
 			RotationOfSpawn.Yaw += IncrementAngle;

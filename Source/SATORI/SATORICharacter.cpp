@@ -507,9 +507,12 @@ void ASATORICharacter::OnWeaponOverlapBegin(UPrimitiveComponent* OverlappedComp,
 		ASATORI_AICharacter* EnemyCharacter = Cast<ASATORI_AICharacter>(OtherActor);
 		if (EnemyCharacter)
 		{
-			float Damage_Values = USATORI_BlueprintLibrary::ApplyGameplayEffectDamage(EnemyCharacter, 40, this, DamageEffect);
+			float Damage_Values = USATORI_BlueprintLibrary::ApplyGameplayEffectDamage(EnemyCharacter, WeaponDamage, this, DamageEffect);
 			AbilitySystemComponent->ApplyGameplayEffectToSelf(ManaRecoverGameplayEffect, 1.0f, AbilitySystemComponent->MakeEffectContext());
-			AttackingCollision->SetGenerateOverlapEvents(false);
+			if (!bMultipleHit)
+			{
+				AttackingCollision->SetGenerateOverlapEvents(false);
+			}
 			EnemyCharacter->sendDamage(Damage_Values);
 			AnimactionPlayRater = 0.5f;
 			UGameplayStatics::SetGlobalTimeDilation(GetWorld(), AnimactionPlayRater);

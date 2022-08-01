@@ -31,7 +31,7 @@ void USATORI_TornadoAbility::ActivateAbility(
 		return;
 	}
 
-	if (!TagSpawnAbility.IsValid() || !TagEndAbility.IsValid())
+	if (!TagSpawnAbility.IsValid())
 	{
 		UE_LOG(LogTemp, Display, TEXT("[%s] USATORI_TornadoAbility: Tag is not valid ... "), *GetName());
 	}
@@ -44,7 +44,6 @@ void USATORI_TornadoAbility::ActivateAbility(
 	Task->OnCancelled.AddDynamic(this, &USATORI_TornadoAbility::OnCancelled);
 	Task->EventReceived.AddDynamic(this, &USATORI_TornadoAbility::EventReceived);
 	Task->ReadyForActivation();
-
 }
 
 void USATORI_TornadoAbility::OnCancelled(FGameplayTag EventTag, FGameplayEventData EventData)
@@ -54,6 +53,7 @@ void USATORI_TornadoAbility::OnCancelled(FGameplayTag EventTag, FGameplayEventDa
 
 void USATORI_TornadoAbility::OnCompleted(FGameplayTag EventTag, FGameplayEventData EventData)
 {
+	FTimerHandle TimerHandleEndAbility;
 	GetWorld()->GetTimerManager().SetTimer(TimerHandleEndAbility, this, &USATORI_TornadoAbility::FinishWaitingForEnd, TimeToEndAbility, false);
 }
 
@@ -64,10 +64,8 @@ void USATORI_TornadoAbility::FinishWaitingForEnd()
 
 void USATORI_TornadoAbility::EventReceived(FGameplayTag EventTag, FGameplayEventData EventData)
 {
-
 	if (EventTag == TagSpawnAbility)
 	{
-
 		ASATORICharacter* Character = Cast<ASATORICharacter>(GetAvatarActorFromActorInfo());
 		if (!Character)
 		{

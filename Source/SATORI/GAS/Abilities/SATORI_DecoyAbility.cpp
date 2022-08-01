@@ -30,7 +30,7 @@ void USATORI_DecoyAbility::ActivateAbility(
 		return;
 	}
 
-	if (!TagSpawnAbility.IsValid() || !TagEndAbility.IsValid())
+	if (!TagSpawnAbility.IsValid())
 	{
 		UE_LOG(LogTemp, Display, TEXT("[%s] USATORI_DecoyAbility: Tag is not valid ... "), *GetName());
 	}
@@ -53,44 +53,29 @@ void USATORI_DecoyAbility::OnCancelled(FGameplayTag EventTag, FGameplayEventData
 
 void USATORI_DecoyAbility::OnCompleted(FGameplayTag EventTag, FGameplayEventData EventData)
 {
+	FTimerHandle TimerHandleEndAbility;
+	GetWorld()->GetTimerManager().SetTimer(TimerHandleEndAbility, this, &USATORI_DecoyAbility::FinishWaitingForEnd, TimeToEndAbility, false);
+}
+
+void USATORI_DecoyAbility::FinishWaitingForEnd()
+{
 	Super::EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, false);
 }
 
 void USATORI_DecoyAbility::EventReceived(FGameplayTag EventTag, FGameplayEventData EventData)
 {
-
-	if (EventTag == TagEndAbility)
-	{
-		Super::EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, false);
-		return;
-	}
-
 	if (EventTag == TagSpawnAbility)
 	{
-
 		ASATORICharacter* Character = Cast<ASATORICharacter>(GetAvatarActorFromActorInfo());
 		if (!Character)
 		{
 			UE_LOG(LogTemp, Display, TEXT("[%s] USATORI_DecoyAbility: Cannot Cast ASATORICharacter ... "), *GetName());
-			EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true);
+			Super::EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true);
 		}
 
 		FTransform SpawnTransform = Character->HandComponent->GetComponentTransform();
 		FRotator Rotation;
-
-		//Aiming when Targeting Enemy
-		if (Character->GetTargetSystemComponent()->IsLocked())
-		{
-			FVector Target = Character->GetTargetSystemComponent()->GetLockedOnTargetActor()->GetActorLocation();
-			FVector Position = GetAvatarActorFromActorInfo()->GetActorLocation();
-			Rotation = FRotationMatrix::MakeFromX(Target - Position).Rotator();
-		}
-		//Aiming when not targeting
-		else
-		{
-			Rotation = Character->GetActorRotation();
-		}
-
+		Rotation = Character->GetActorRotation();
 		Rotation.Pitch = 0.0f;
 		SpawnTransform.SetRotation(Rotation.Quaternion());
 
@@ -98,8 +83,7 @@ void USATORI_DecoyAbility::EventReceived(FGameplayTag EventTag, FGameplayEventDa
 		ASATORI_DecoyActor* Decoy = GetWorld()->SpawnActorDeferred<ASATORI_DecoyActor>(DecoyActor, SpawnTransform, GetOwningActorFromActorInfo(),
 			Character, ESpawnActorCollisionHandlingMethod::AlwaysSpawn);
 		Decoy->DamageGameplayEffect = DamageGameplayEffect;
-		Decoy->Damage = Damage;
-		Decoy->TimeToDestroy = TimeToDestroy;
+		Decoy->TimeToFinish = TimeToEndAbility;
 		Decoy->FinishSpawning(SpawnTransform);
 	}
 }

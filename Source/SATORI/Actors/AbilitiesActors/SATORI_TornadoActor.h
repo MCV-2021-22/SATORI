@@ -26,9 +26,6 @@ public:
 	USphereComponent* CollisionSphereComponent = nullptr;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Tornado")
-	USphereComponent* CollisionSphereWallsComponent = nullptr;
-
-	UPROPERTY(EditDefaultsOnly, Category = "Tornado")
 	UStaticMeshComponent* StaticMeshComponent = nullptr;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Tornado")
@@ -78,7 +75,10 @@ public:
 	float TraceDistanceToGround = 500.0f;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Stay Grounded")
-	float DistanceToGround = 200.0f;
+	float MinDistanceToGround = 200.0f;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Stay Grounded")
+	float MaxDistanceToGround = 250.0f;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Stay Grounded")
 	float HeightChange = 100.0f;
@@ -111,21 +111,19 @@ public:
 
 private:
 
-	void DestroyMyself();
-
 	UPROPERTY()
 	TArray<AActor*> ArrayActorsTrapped;
 	UPROPERTY()
 	TArray<float> ArrayAngleAxis;
 
-	void StayGrounded(float DeltaTime);
-
-	void  DamageTrappedEnemies(float DeltaTime, AActor* Actor);
-
-	void MoveTrappedEnemies(float DeltaTime, AActor* Actor, int Num);
+	FHitResult OutHit;
+	FCollisionQueryParams CollisionParams;
 
 	void CalculateAngle(AActor* Actor);
-
+	void StayGrounded(float DeltaTime);
+	void DamageEnemy(AActor* Actor);
+	void MoveTrappedEnemies(float DeltaTime, AActor* Actor, int Num);
 	void FinalActions(AActor* Actor);
+	void DestroyMyself();
 
 };

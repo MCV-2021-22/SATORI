@@ -11,49 +11,25 @@ ASATORI_PushActor::ASATORI_PushActor()
 {
 	PrimaryActorTick.bCanEverTick = true;
 
-	float SphereRadius = 32.0f;
-
 	RootComponent = CreateDefaultSubobject<USceneComponent>(TEXT("RootComponent"));
 
 	CollisionSphereComponent = CreateDefaultSubobject<USphereComponent>(TEXT("Sphere"));
-	CollisionSphereComponent->SetSphereRadius(SphereRadius);
 	CollisionSphereComponent->SetCollisionProfileName(FName(TEXT("PlayerAbility")));
 	CollisionSphereComponent->SetupAttachment(RootComponent);
 	CollisionSphereComponent->SetGenerateOverlapEvents(true);
-	CollisionSphereComponent->OnComponentBeginOverlap.AddDynamic(this, &ASATORI_PushActor::OnOverlapSphere);
-
-	NiagaraComponent = CreateDefaultSubobject<UNiagaraComponent>(TEXT("Niagara"));
-	NiagaraComponent->SetupAttachment(RootComponent);
-
-	FScriptDelegate Delegate;
-	Delegate.BindUFunction(this, TEXT("OnNiagaraFinished"));
-	NiagaraComponent->OnSystemFinished.AddUnique(Delegate);
-
-	MeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Mesh"));
-	MeshComponent->SetupAttachment(RootComponent);
-	MeshComponent->SetCollisionProfileName(UCollisionProfile::NoCollision_ProfileName);
+	CollisionSphereComponent->OnComponentBeginOverlap.AddDynamic(this, &ASATORI_PushActor::OnOverlapCollisionSphere);
 
 	//Debug
 	CollisionSphereComponent->bHiddenInGame = false;
 }
 
-void ASATORI_PushActor::OnOverlapSphere(
-	UPrimitiveComponent* OverlappedComp, 
-	AActor* OtherActor, 
-	UPrimitiveComponent* OtherComp, 
-	int32 OtherBodyIndex, 
-	bool bFromSweep, 
-	const FHitResult& SweepResult)
+void ASATORI_PushActor::OnOverlapCollisionSphere(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	//Missile possible collisions : 
-	// Enemies
-	// Walls
-	// Enemy Proyectiles?
-	// Objects?
+	//Possible collisions : 
 
 	ASATORI_AICharacter* Character = Cast<ASATORI_AICharacter>(OtherActor);
 
-	//Walls //EnemyProyectiles? //Objects?
+	//Walls other objects
 	if (!Character) 
 	{
 		DestroyMyself();
@@ -61,39 +37,37 @@ void ASATORI_PushActor::OnOverlapSphere(
 	}
 
 	//Enemies
-	if(Character->HasMatchingGameplayTag(EnemyTag) && !Character->HasMatchingGameplayTag(PushedTag))
+	if(Character->HasMatchingGameplayTag(EnemyTag) && !Character->HasMatchingGameplayTag(PushedTag) && !Pushing)
 	{	
-		ArrayPushed.AddUnique(OtherActor);
+		Pushed = OtherActor;
 		Character->AddGameplayTag(PushedTag);
+		Pushing = true;
 	}
-}
-
-void ASATORI_PushActor::OnNiagaraFinished()
-{
-	Destroy();
 }
 
 void ASATORI_PushActor::DestroyMyself()
-{	
-
-	CollisionSphereComponent->SetCollisionProfileName(UCollisionProfile::NoCollision_ProfileName);
-
-	for (AActor* Actor : ArrayPushed) {
-		if (IsValid(Actor))
-		{
-			ASATORI_AICharacter* Character = Cast<ASATORI_AICharacter>(Actor);
-			Character->RemoveGameplayTag(PushedTag);
-		}
+{
+	if (IsValid(Pushed))
+	{
+		FinalActions(Pushed);
 	}
 
-	SetActorTickEnabled(false);
-	MeshComponent->SetVisibility(false);
-	NiagaraComponent->Deactivate();
+	Destroy();
+}
+
+void ASATORI_PushActor::FinalActions(AActor* Actor)
+{
+	ASATORI_AICharacter* Character = Cast<ASATORI_AICharacter>(Actor);
+	Character->RemoveGameplayTag(PushedTag);
+
+	FVector LaunchDirection = Actor->GetActorLocation() - GetWorld()->GetFirstPlayerController()->GetPawn()->GetActorLocation();
+	LaunchDirection.Z = ZLaunching;
+	LaunchDirection.Normalize();
+	Character->LaunchCharacter(LaunchDirection * LaunchForce, true, true);
 }
 
 void ASATORI_PushActor::BeginPlay() 
 {
-
 	Super::BeginPlay();
 
 	if(!EnemyTag.IsValid())
@@ -101,8 +75,8 @@ void ASATORI_PushActor::BeginPlay()
 		UE_LOG(LogTemp, Display, TEXT("[%s] ASATORI_PushActor: Tag is not valid ... "), *GetName());
 	}
 
-	//Set max time before auto destruc if not collides
-	GetWorldTimerManager().SetTimer(TimerHandleDestroy, this, &ASATORI_PushActor::DestroyMyself, TimeToDestroy, false);
+	FTimerHandle TimerHandleDestroy;
+	GetWorldTimerManager().SetTimer(TimerHandleDestroy, this, &ASATORI_PushActor::DestroyMyself, TimeToFinish, false);
 }
 
 void ASATORI_PushActor::Tick(float DeltaTime)
@@ -114,36 +88,46 @@ void ASATORI_PushActor::Tick(float DeltaTime)
 	FVector ActorForward = GetActorForwardVector();
 	SetActorLocation(ActorPosition + ActorForward * Speed * DeltaTime);
 
-	//Pushing
-	for (AActor* Actor : ArrayPushed) {
-		if (IsValid(Actor))
-		{
-			Actor->SetActorLocation(Actor->GetActorLocation() + ActorForward * PushForce * DeltaTime);
-			//Damage Calculation
-			ASATORI_AICharacter* Character = Cast<ASATORI_AICharacter>(Actor);
-			float DamageDone = USATORI_BlueprintLibrary::ApplyGameplayEffectDamage(Actor, Damage, Actor, DamageGameplayEffect);
-			Character->sendDamage(DamageDone);
-		}
-	}
+	StayGrounded(DeltaTime);
+	
+	if (IsValid(Pushed))
+	{
+		//Move enemy
+		HeightCorrection += DeltaTime;
+		ActorPosition.Z += HeightCorrection;
+		Pushed->SetActorLocation(ActorPosition, false, 0, ETeleportType::TeleportPhysics);
 
-	//Stay grounded calculation
-	ActorPosition = GetActorLocation();
+		DamageEnemy(Pushed);
+	}
+}
+
+//Stay grounded calculation
+void ASATORI_PushActor::StayGrounded(float DeltaTime)
+{
+	FVector ActorPosition = GetActorLocation();
 	FVector End = ActorPosition;
-	End.Z -= TraceDistanceToFloor;
+	End.Z -= TraceDistanceToGround;
 	bool bHitAnything = GetWorld()->LineTraceSingleByProfile(OutHit, ActorPosition, End, FName("BlockOnlyStatic"), CollisionParams);
 	if (bDrawDebug)
 	{
 		DrawDebugLine(GetWorld(), ActorPosition, End, bHitAnything ? FColor::Green : FColor::Red, false, 1.0f);
 	}
 	if (bHitAnything) {
-		if (OutHit.Distance > MaxHeight) {
-			ActorPosition.Z -= HeightChange * DeltaTime;
-			SetActorLocation(ActorPosition);
-		}
-		if (OutHit.Distance < MinHeight) {
+		if (OutHit.Distance < MinDistanceToGround) {
 			ActorPosition.Z += HeightChange * DeltaTime;
 			SetActorLocation(ActorPosition);
 		}
+		if (OutHit.Distance > MaxDistanceToGround) {
+			ActorPosition.Z -= HeightChange * DeltaTime;
+			SetActorLocation(ActorPosition);
+		}
 	}
+}
 
+//Damage Calculation
+void ASATORI_PushActor::DamageEnemy(AActor* Actor)
+{
+	ASATORI_AICharacter* Character = Cast<ASATORI_AICharacter>(Actor);
+	float DamageDone = USATORI_BlueprintLibrary::ApplyGameplayEffectDamage(Actor, Damage, Actor, DamageGameplayEffect);
+	Character->sendDamage(DamageDone);
 }
