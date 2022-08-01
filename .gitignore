@@ -80,3 +80,14 @@ DerivedDataCache/*
 
 # Don't ignore fmod binary files
 !Plugins/FMODStudio/*
+
+# Fmod Project
+SATORI_FMOD/.user/
+SATORI_FMOD/.unsaved/
+SATORI_FMOD/.cache/
+SATORI_FMOD/.restore/
+SATORI_FMOD/user/
+SATORI_FMOD/unsaved/
+SATORI_FMOD/restore/
+SATORI_FMOD/fmod.log
+SATORI_FMOD/fmod_editor.log
