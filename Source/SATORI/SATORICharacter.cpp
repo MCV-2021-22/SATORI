@@ -514,8 +514,8 @@ void ASATORICharacter::OnWeaponOverlapBegin(UPrimitiveComponent* OverlappedComp,
 				AttackingCollision->SetGenerateOverlapEvents(false);
 			}
 			EnemyCharacter->sendDamage(Damage_Values);
-			AnimactionPlayRater = 0.5f;
-			UGameplayStatics::SetGlobalTimeDilation(GetWorld(), AnimactionPlayRater);
+			/*AnimactionPlayRater = 0.5f;
+			UGameplayStatics::SetGlobalTimeDilation(GetWorld(), AnimactionPlayRater);*/
 		}
 	}
 }
@@ -523,11 +523,11 @@ void ASATORICharacter::OnWeaponOverlapBegin(UPrimitiveComponent* OverlappedComp,
 void ASATORICharacter::OnWeaponOverlapEnd(class UPrimitiveComponent* OverlappedComp,
 	class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
 {
-	if (OtherActor && (OtherActor != this))
-	{
-		AnimactionPlayRater = 1.0f;
-		UGameplayStatics::SetGlobalTimeDilation(GetWorld(), AnimactionPlayRater);
-	}
+	//if (OtherActor && (OtherActor != this))
+	//{
+	//	AnimactionPlayRater = 1.0f;
+	//	UGameplayStatics::SetGlobalTimeDilation(GetWorld(), AnimactionPlayRater);
+	//}
 }
 
 //////////////////////////////////////////////////////////////////////////
