@@ -456,7 +456,6 @@ void ASATORI_AICharacter::CharacterDeath()
 		float TimeToEnd = PlayAnimMontage(DeathMontage);
 		FTimerHandle TimerHandleDestroy;
 		GetWorldTimerManager().SetTimer(TimerHandleDestroy, this, &ASATORI_AICharacter::DestroyMyself, TimeToEnd, false);
-
 	}
 	else
 	{
