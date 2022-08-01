@@ -29,6 +29,7 @@ class ASATORICharacter : public ASATORI_CharacterBase
 	GENERATED_BODY()
 
 public:
+
 	ASATORICharacter();
 
 	// For player controlled characters where the ASC lives on the Pawn
@@ -68,6 +69,12 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Weapon")
 	USceneComponent* HandComponent;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Weapon")
+	float WeaponDamage = 40.0f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Weapon")
+	bool bMultipleHit = false;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Gameply Effect")
 	TSubclassOf<UGameplayEffect> DamageEffect;
