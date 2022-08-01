@@ -266,30 +266,40 @@ bool ASATORICharacter::IsEnemyInFrontOfAngle()
 	TArray<TWeakObjectPtr<AActor>> NewActors;
 
 	bool bHit = false;
-	for (int i = -5; i <= 5; i++)
+
+	if (IsEnemyInFront(StartPosition, EndPosition, HitResult))
 	{
-		FVector Axis = FVector::ZAxisVector;
-		float rad = FMath::DegreesToRadians(i * VisibleAttackAngle);
-		FQuat quaternion = FQuat(Axis, rad);
-		FRotator rotator = FRotator(quaternion);
-		FVector newDelta = rotator.RotateVector(delta);
-
-		FVector newEndPos = newDelta + StartPosition;
-
-		bool newHit = GetWorld()->LineTraceSingleByChannel(
-			HitResult,
-			StartPosition,
-			newEndPos,
-			ECollisionChannel::ECC_Pawn,
-			Params
-		);
-
-		::DrawDebugLine(World, StartPosition, newEndPos, newHit ? FColor::Green : FColor::Red, false, 1.0f);
-		if (newHit)
+		NewActors.Add(HitResult.Actor);
+		UE_LOG(LogTemp, Warning, TEXT("Enemigo in front !!! "));
+		bHit = true;
+	}
+	else
+	{
+		for (int i = -5; i <= 5; i++)
 		{
-			NewActors.Add(HitResult.Actor);
-			bHit = true;
-			break;
+			FVector Axis = FVector::ZAxisVector;
+			float rad = FMath::DegreesToRadians(i * VisibleAttackAngle);
+			FQuat quaternion = FQuat(Axis, rad);
+			FRotator rotator = FRotator(quaternion);
+			FVector newDelta = rotator.RotateVector(delta);
+
+			FVector newEndPos = newDelta + StartPosition;
+
+			bool newHit = GetWorld()->LineTraceSingleByChannel(
+				HitResult,
+				StartPosition,
+				newEndPos,
+				ECollisionChannel::ECC_Pawn,
+				Params
+			);
+
+			::DrawDebugLine(World, StartPosition, newEndPos, newHit ? FColor::Green : FColor::Red, false, 1.0f);
+			if (newHit)
+			{
+				NewActors.Add(HitResult.Actor);
+				bHit = true;
+				break;
+			}
 		}
 	}
 
@@ -307,6 +317,47 @@ bool ASATORICharacter::IsEnemyInFrontOfAngle()
 	}
 
 	return bHit;
+}
+
+bool ASATORICharacter::IsEnemyInFront(const FVector StartPosition, const FVector EndPosition, FHitResult& LocalHitResult)
+{
+	bool newHit = false;
+
+	UWorld* World = GetWorld();
+	FHitResult HitResult;
+	FCollisionQueryParams Params = FCollisionQueryParams(FName("LineTraceSingle"));
+	Params.AddIgnoredActor(RootComponent->GetOwner());
+
+	FVector delta = EndPosition - StartPosition;
+
+	for (int i = -1; i <= 1; i++)
+	{
+		FVector Axis = FVector::ZAxisVector;
+		float rad = FMath::DegreesToRadians(i * VisibleAttackAngle);
+		FQuat quaternion = FQuat(Axis, rad);
+		FRotator rotator = FRotator(quaternion);
+		FVector newDelta = rotator.RotateVector(delta);
+
+		FVector newEndPos = newDelta + StartPosition;
+
+		newHit = GetWorld()->LineTraceSingleByChannel(
+			HitResult,
+			StartPosition,
+			newEndPos,
+			ECollisionChannel::ECC_Pawn,
+			Params
+		);
+
+		::DrawDebugLine(World, StartPosition, newEndPos, newHit ? FColor::Green : FColor::Red, false, 1.0f);
+
+		if (newHit)
+		{
+			LocalHitResult = HitResult;
+			break;
+		}
+	}
+
+	return newHit;
 }
 
 TWeakObjectPtr<AActor> ASATORICharacter::FindNearestEnemy(TArray<TWeakObjectPtr<AActor>> ActorsHit)

@@ -133,6 +133,8 @@ protected:
 	void GrantAbilityToPlayer(FGameplayAbilitySpec Ability);
 	void InitializePassiveAttributes();
 
+	bool IsEnemyInFront(const FVector StartPosition, const FVector EndPosition, FHitResult& LocalHitResult);
+
 	TWeakObjectPtr<AActor> FindNearestEnemy(TArray<TWeakObjectPtr<AActor>> Actors);
 protected:
 
