@@ -10,7 +10,7 @@
 #include "AI/Character/SATORI_AICharacter.h"
 #include "SATORI_PushActor.generated.h"
 
-class USphereComponent;
+class UBoxComponent;
 class UStaticMeshComponent;
 
 UCLASS()
@@ -23,7 +23,7 @@ public:
 	ASATORI_PushActor();
 
 	UPROPERTY(EditDefaultsOnly, Category = "Push")
-	USphereComponent* CollisionSphereComponent = nullptr;
+	UBoxComponent* CollisionBoxComponent = nullptr;
 
 	UPROPERTY(BlueprintReadOnly, Meta = (ExposeOnSpawn = true), Category = "Push")
 	TSubclassOf<UGameplayEffect> DamageGameplayEffect;
@@ -66,7 +66,7 @@ public:
 	bool bDrawDebug = false;
 
 	UFUNCTION(BlueprintCallable, Category = "Push")
-	void OnOverlapCollisionSphere(
+	void OnOverlapCollisionBox(
 			UPrimitiveComponent* OverlappedComp,
 			AActor* OtherActor,
 			UPrimitiveComponent* OtherComp,
@@ -79,6 +79,9 @@ public:
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Push|Tags")
 	FGameplayTag  PushedTag;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Push|Tags")
+	FGameplayTag  LaunchTag;
 
 protected:
 

@@ -52,7 +52,7 @@ protected:
 	float AngleRange = 20.0f;
 
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, meta = (UIMin = "16.0", UIMax = "128.0"), Category = "Ability|Push|Debug")
-	float SphereRadius = 32.0f;
+	float BoxRadius = 32.0f;
 	
 	UFUNCTION()
 	void FinishWaitingForEnd();

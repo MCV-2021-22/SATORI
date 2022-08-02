@@ -101,6 +101,9 @@ public:
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Tornado|Tags")
 	FGameplayTag  EnemyTag;
 
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Tornado|Tags")
+	FGameplayTag  LaunchTag;
+
 protected:
 
 	virtual void BeginPlay() override;
