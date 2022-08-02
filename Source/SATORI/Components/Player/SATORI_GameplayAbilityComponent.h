@@ -96,6 +96,7 @@ public:
 	
 	void NotifyAbilityChanged();
 	
+	void ResetCurrentPlayerAbilities();
 public:
 	UFUNCTION(BlueprintCallable)
 	bool TryChangeAbility();

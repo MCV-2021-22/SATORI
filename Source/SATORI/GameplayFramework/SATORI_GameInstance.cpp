@@ -66,10 +66,12 @@ void USATORI_GameInstance::FillPortalGrantedAbilityWithData()
                 if (GrantedAbility.isUpgrated)
                 {
                     PortalGrantedUpgratedAbilityToApply.Add(GrantedAbility);
+                    PortalRecicledUpgratedAbility.Add(GrantedAbility);
                 }
                 else
                 {
                     PortalGrantedNormalAbilityToApply.Add(GrantedAbility);
+                    PortalRecicledNormalAbility.Add(GrantedAbility);
                 }
             }
         }
@@ -96,4 +98,15 @@ void USATORI_GameInstance::RemoveElementonFromUpgratedAbilities()
         UE_LOG(LogTemp, Warning, TEXT(" Player Upgrated Ability Name : %s "), *AbilityString);
         PortalGrantedNormalAbilityToApply.RemoveAt(Size);
     }
+}
+
+void USATORI_GameInstance::ResetPortalRewardAbilities()
+{
+    // Clear the Array
+    PortalGrantedUpgratedAbilityToApply.Empty();
+    PortalGrantedNormalAbilityToApply.Empty();
+
+    // Allocate the recicled Array elements to portal Array
+    PortalGrantedUpgratedAbilityToApply = PortalRecicledUpgratedAbility;
+    PortalGrantedNormalAbilityToApply = PortalRecicledNormalAbility;
 }
