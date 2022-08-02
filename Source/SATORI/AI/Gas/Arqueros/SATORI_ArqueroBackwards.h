@@ -48,6 +48,12 @@ public:
 	UPROPERTY(BlueprintReadOnly, EditAnywhere)
 		float damage;
 
+
+	FTimerDelegate TimerDelegate;
+	FTimerHandle TimerHandle;
+
+	void OnTimerFinished(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo);
+
 protected:
 	UFUNCTION()
 		void OnCancelled(FGameplayTag EventTag, FGameplayEventData EventData);

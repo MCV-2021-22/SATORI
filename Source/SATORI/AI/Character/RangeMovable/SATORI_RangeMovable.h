@@ -23,6 +23,10 @@ public:
 
 	bool moveBackwards = false;
 
+	bool moveRight = false;
+
+	bool moveLeft = false;
+
 	float getDistAttack();
 
 protected:

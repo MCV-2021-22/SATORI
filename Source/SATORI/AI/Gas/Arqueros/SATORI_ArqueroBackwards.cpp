@@ -5,7 +5,7 @@
 
 #include "SATORICharacter.h"
 #include "AbilityTask/SATORI_PlayMontageAndWaitEvent.h"
-
+#include "AI/Character/RangeMovable/SATORI_RangeMovable.h"
 #include "Kismet/GameplayStatics.h"
 #include "Widgets/Text/ISlateEditableTextWidget.h"
 
@@ -90,14 +90,50 @@ void USATORI_ArqueroBackwards::ActivateAbility(const FGameplayAbilitySpecHandle 
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
 
 	//Handling of events
-	USATORI_PlayMontageAndWaitEvent* Task = USATORI_PlayMontageAndWaitEvent::PlayMontageAndWaitForEvent(this, NAME_None, AnimMontage, FGameplayTagContainer(), 1.0f, NAME_None, bStopWhenAbilityEnds, 1.0f);
+	/*USATORI_PlayMontageAndWaitEvent* Task = USATORI_PlayMontageAndWaitEvent::PlayMontageAndWaitForEvent(this, NAME_None, AnimMontage, FGameplayTagContainer(), 1.0f, NAME_None, bStopWhenAbilityEnds, 1.0f);
 	Task->OnBlendOut.AddDynamic(this, &USATORI_ArqueroBackwards::OnCompleted);
 	Task->OnCompleted.AddDynamic(this, &USATORI_ArqueroBackwards::OnCompleted);
 	Task->OnInterrupted.AddDynamic(this, &USATORI_ArqueroBackwards::OnCancelled);
 	Task->OnCancelled.AddDynamic(this, &USATORI_ArqueroBackwards::OnCancelled);
 	Task->EventReceived.AddDynamic(this, &USATORI_ArqueroBackwards::EventReceived);
-	Task->ReadyForActivation();
+	Task->ReadyForActivation();*/
+
+	ASATORI_RangeMovable* Character = Cast<ASATORI_RangeMovable>(GetAvatarActorFromActorInfo());
+	if (Character)
+	{
+		Character->RemoveGameplayTag(FGameplayTag::RequestGameplayTag("State.Burst"));
+		Character->moveBackwards = true;
+	}
+	TimerDelegate = FTimerDelegate::CreateUObject(this, &USATORI_ArqueroBackwards::OnTimerFinished, CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo);
+	GetWorld()->GetTimerManager().SetTimer(TimerHandle, TimerDelegate, 0.5f, false);
+	
+
 }
 
 
 
+void USATORI_ArqueroBackwards::OnTimerFinished(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo)
+{
+	
+	ASATORI_RangeMovable* Character = Cast<ASATORI_RangeMovable>(GetAvatarActorFromActorInfo());
+
+	//GetWorld()->GetTimerManager().ClearTimer(TimerHandle);
+	FRotator RotationOfIA = ActorInfo->AvatarActor->GetActorRotation();
+	FActorSpawnParameters SpawnParams;
+	SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+
+	ASATORI_ArcherProjectile* Sphere = GetWorld()->SpawnActor<ASATORI_ArcherProjectile>(ProjectileClass,
+		ActorInfo->AvatarActor->GetActorLocation() + ActorInfo->AvatarActor->GetActorForwardVector() * 100,
+		RotationOfIA);
+	
+			//ASATORI_RangeMovable* Character = Cast<ASATORI_RangeMovable>(GetAvatarActorFromActorInfo());
+	Character->moveBackwards = false;
+		
+	
+
+	GetWorld()->GetTimerManager().ClearTimer(TimerHandle);
+	
+	EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true);
+
+	
+}
