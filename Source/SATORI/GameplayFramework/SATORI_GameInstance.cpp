@@ -102,6 +102,10 @@ void USATORI_GameInstance::RemoveElementonFromUpgratedAbilities()
 
 void USATORI_GameInstance::ResetPortalRewardAbilities()
 {
+    // Clear the player Abilities
+    NormalAbilities.Empty();
+    UpgratedAbilities.Empty();
+
     // Clear the Array
     PortalGrantedUpgratedAbilityToApply.Empty();
     PortalGrantedNormalAbilityToApply.Empty();

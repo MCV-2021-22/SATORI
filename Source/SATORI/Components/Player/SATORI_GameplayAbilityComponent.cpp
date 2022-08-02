@@ -23,7 +23,7 @@ USATORI_GameplayAbilityComponent::USATORI_GameplayAbilityComponent()
 void USATORI_GameplayAbilityComponent::BeginPlay()
 {
 	Super::BeginPlay();
-
+	PlayerCharacter = Cast<ASATORICharacter>(GetOwner());
 	if (ChoosesAbilities)
 	{
 		for (FAbilitiesChooseDatas Ability : ChoosesAbilities->Abilities)
@@ -46,14 +46,39 @@ void USATORI_GameplayAbilityComponent::BeginPlay()
 		}
 	}
 
-	PrevAbilityValue = PlayerAbilitiesNames.Num() - 1;
+	//PrevAbilityValue = PlayerAbilitiesNames.Num() - 1;
 	
+	if (PlayerCharacter && !PlayerCharacter->GetIsAbilityUpgrated())
+	{
+		if (NormalAbilities.Num() < 0)
+		{
+			PrevAbilityValue = 0;
+			NextAbilityValue = 0;
+		}
+		else if (NormalAbilities.Num() == 0)
+		{
+			PrevAbilityValue = UpgratedAbilities.Num();
+			NextAbilityValue = 0;
+		}
+	}
+	else if (PlayerCharacter && PlayerCharacter->GetIsAbilityUpgrated())
+	{
+		if (UpgratedAbilities.Num() < 0)
+		{
+			PrevAbilityValue = 0;
+			NextAbilityValue = 0;
+		}
+		else if (UpgratedAbilities.Num() == 0)
+		{
+			PrevAbilityValue = UpgratedAbilities.Num();
+			NextAbilityValue = 0;
+		}
+	}
 	NotifyAbilityChanged();
 }
 
 bool USATORI_GameplayAbilityComponent::TryChangeAbility()
 {
-	ASATORICharacter* PlayerCharacter = Cast<ASATORICharacter>(GetOwner());
 	if (PlayerCharacter)
 	{
 		FGameplayTag TagToActivate;
@@ -158,19 +183,49 @@ bool USATORI_GameplayAbilityComponent::IsAbilityEnabled() const
 
 void USATORI_GameplayAbilityComponent::NotifyAbilityChanged()
 {
-	const FSATORI_AbilitiesDatas* CurrentAbilityData = PlayerGameplayAbility.Find(PlayerAbilitiesNames[CurrentAbilityValue]);
-
-	const FSATORI_AbilitiesDatas* NextAbilityData = PlayerGameplayAbility.Find(PlayerAbilitiesNames[NextAbilityValue]);
-
-	const FSATORI_AbilitiesDatas* PrevAbilityData = PlayerGameplayAbility.Find(PlayerAbilitiesNames[PrevAbilityValue]);
-
-	if (!CurrentAbilityData && !NextAbilityData && !PrevAbilityData)
-		return;
+	const FSATORI_AbilitiesDatas* CurrentAbilityData = nullptr;
+	const FSATORI_AbilitiesDatas* NextAbilityData = nullptr;
+	const FSATORI_AbilitiesDatas* PrevAbilityData = nullptr;
 
 	FSATORI_AbilitiesIconsDatas AbilityIconToChange;
-	AbilityIconToChange.CurrentAbilitiyIcon = CurrentAbilityData->AbilitiyIcon;
-	AbilityIconToChange.NextAbilitiyIcon = NextAbilityData->AbilitiyIcon;
-	AbilityIconToChange.PrevAbilitiyIcon = PrevAbilityData->AbilitiyIcon;
+
+	// Check if it is normal abilities
+	if (PlayerCharacter && !PlayerCharacter->GetIsAbilityUpgrated())
+	{
+		if (NormalAbilities.Num() > 0)
+		{
+			CurrentAbilityData = &NormalAbilities[CurrentAbilityValue];
+			NextAbilityData = &NormalAbilities[NextAbilityValue];
+			PrevAbilityData = &NormalAbilities[PrevAbilityValue];
+			
+			if (NormalAbilities.Num() == 1)
+			{
+				AbilityIconToChange.CurrentAbilitiyIcon = CurrentAbilityData->AbilitiyIcon;
+				AbilityIconToChange.NextAbilitiyIcon = NextAbilityData->AbilitiyIcon;
+				AbilityIconToChange.PrevAbilitiyIcon = PrevAbilityData->AbilitiyIcon;
+			}
+		}
+		else if (NormalAbilities.Num() == 0)
+		{
+			AbilityIconToChange.CurrentAbilitiyIcon = EmptyAbilitiyIcon;
+			AbilityIconToChange.NextAbilitiyIcon = EmptyAbilitiyIcon;
+			AbilityIconToChange.PrevAbilitiyIcon = EmptyAbilitiyIcon;
+		}
+	}
+	// Check if it is upgrated abilities
+	else
+	{
+		CurrentAbilityData = &UpgratedAbilities[CurrentAbilityValue];
+		NextAbilityData = &UpgratedAbilities[NextAbilityValue];
+		PrevAbilityData = &UpgratedAbilities[PrevAbilityValue];
+	}
+
+	/*const FSATORI_AbilitiesDatas* CurrentAbilityData = PlayerGameplayAbility.Find(PlayerAbilitiesNames[CurrentAbilityValue]);
+	const FSATORI_AbilitiesDatas* NextAbilityData = PlayerGameplayAbility.Find(PlayerAbilitiesNames[NextAbilityValue]);
+	const FSATORI_AbilitiesDatas* PrevAbilityData = PlayerGameplayAbility.Find(PlayerAbilitiesNames[PrevAbilityValue]);*/
+
+	/*if (!CurrentAbilityData && !NextAbilityData && !PrevAbilityData)
+		return;*/
 
 	//AbilityIconChange.Broadcast(*AbilityData);
 

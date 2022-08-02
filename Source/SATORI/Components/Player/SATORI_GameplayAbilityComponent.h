@@ -120,6 +120,7 @@ private:
 	TArray<FSATORI_AbilitiesDatas> NormalAbilities;
 	TArray<FSATORI_AbilitiesDatas> UpgratedAbilities;
 
+	ASATORICharacter* PlayerCharacter = nullptr;
 public:
 
 	void AddNormalAbilities(FSATORI_AbilitiesDatas AbilityData);
