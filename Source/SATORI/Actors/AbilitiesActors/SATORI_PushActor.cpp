@@ -1,7 +1,7 @@
 //
 
 #include "Actors/AbilitiesActors/SATORI_PushActor.h"
-#include "Components/SphereComponent.h"
+#include "Components/BoxComponent.h"
 #include "SATORI/AI/Character/SATORI_AICharacter.h"
 #include "SATORI/FunctionLibrary/SATORI_BlueprintLibrary.h"
 //Debug
@@ -13,17 +13,17 @@ ASATORI_PushActor::ASATORI_PushActor()
 
 	RootComponent = CreateDefaultSubobject<USceneComponent>(TEXT("RootComponent"));
 
-	CollisionSphereComponent = CreateDefaultSubobject<USphereComponent>(TEXT("Sphere"));
-	CollisionSphereComponent->SetCollisionProfileName(FName(TEXT("PlayerAbility")));
-	CollisionSphereComponent->SetupAttachment(RootComponent);
-	CollisionSphereComponent->SetGenerateOverlapEvents(true);
-	CollisionSphereComponent->OnComponentBeginOverlap.AddDynamic(this, &ASATORI_PushActor::OnOverlapCollisionSphere);
+	CollisionBoxComponent = CreateDefaultSubobject<UBoxComponent>(TEXT("Collision"));
+	CollisionBoxComponent->SetCollisionProfileName(FName(TEXT("PlayerAbility")));
+	CollisionBoxComponent->SetupAttachment(RootComponent);
+	CollisionBoxComponent->SetGenerateOverlapEvents(true);
+	CollisionBoxComponent->OnComponentBeginOverlap.AddDynamic(this, &ASATORI_PushActor::OnOverlapCollisionBox);
 
 	//Debug
-	CollisionSphereComponent->bHiddenInGame = false;
+	CollisionBoxComponent->bHiddenInGame = false;
 }
 
-void ASATORI_PushActor::OnOverlapCollisionSphere(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+void ASATORI_PushActor::OnOverlapCollisionBox(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 	//Possible collisions : 
 
@@ -64,6 +64,8 @@ void ASATORI_PushActor::FinalActions(AActor* Actor)
 	LaunchDirection.Z = ZLaunching;
 	LaunchDirection.Normalize();
 	Character->LaunchCharacter(LaunchDirection * LaunchForce, true, true);
+
+	Character->AddGameplayTag(LaunchTag);
 }
 
 void ASATORI_PushActor::BeginPlay() 

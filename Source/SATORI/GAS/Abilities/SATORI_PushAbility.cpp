@@ -3,6 +3,8 @@
 #include "GAS/Abilities/SATORI_PushAbility.h"
 #include "AbilitySystemComponent.h"
 #include "SATORICharacter.h"
+//Debug
+#include "DrawDebugHelpers.h"
 
 USATORI_PushAbility::USATORI_PushAbility ()
 {
@@ -93,25 +95,35 @@ void USATORI_PushAbility::EventReceived(FGameplayTag EventTag, FGameplayEventDat
 		//This calcs are for designing parameters for the ability
 		// 
 		//Calc for number of spheres to spawn to cover all range
-		int NumberOfSpheresToSpawn = (FMath::Tan(FMath::DegreesToRadians(AngleRange))) * Range * 2 / (SphereRadius * 2);
-	
+		int QuantityToSpawn = (FMath::Tan(FMath::DegreesToRadians(AngleRange))) * Range * 2 / (BoxRadius * 2) / 2;
+
 		//Calc for cone spawning
 		FRotator RotationOfSpawn = SpawnTransform.GetRotation().Rotator();
-		RotationOfSpawn.Yaw -= AngleRange / 2;
-		float IncrementAngle = AngleRange / NumberOfSpheresToSpawn;
-
+		float IncrementAngle = AngleRange / QuantityToSpawn;
 		SpawnTransform.SetRotation(RotationOfSpawn.Quaternion());
 
 		//Push Actor creation
-		for (int i = 0; i < NumberOfSpheresToSpawn + 1; i++) 
+		for (int i = 0; i < QuantityToSpawn + 1; i++)
 		{
-			ASATORI_PushActor* Push = GetWorld()->SpawnActorDeferred<ASATORI_PushActor>(PushActor, SpawnTransform, GetOwningActorFromActorInfo(),
+			ASATORI_PushActor* PushR = GetWorld()->SpawnActorDeferred<ASATORI_PushActor>(PushActor, SpawnTransform, GetOwningActorFromActorInfo(),
 				Character, ESpawnActorCollisionHandlingMethod::AlwaysSpawn);
-			Push->DamageGameplayEffect = DamageGameplayEffect;
-			Push->Damage = Damage;
-			Push->TimeToFinish = TimeToEndAbility;
-			Push->FinishSpawning(SpawnTransform);
-			
+			PushR->DamageGameplayEffect = DamageGameplayEffect;
+			PushR->Damage = Damage;
+			PushR->TimeToFinish = TimeToEndAbility;
+			PushR->FinishSpawning(SpawnTransform);
+
+			FTransform SpawnTransformMirror = SpawnTransform;
+			FRotator RotationOfSpawMirror = RotationOfSpawn;
+			RotationOfSpawMirror.Yaw = RotationOfSpawMirror.Yaw - IncrementAngle * i * 2;
+			SpawnTransformMirror.SetRotation(RotationOfSpawMirror.Quaternion());
+
+			ASATORI_PushActor* PushL = GetWorld()->SpawnActorDeferred<ASATORI_PushActor>(PushActor, SpawnTransformMirror, GetOwningActorFromActorInfo(),
+				Character, ESpawnActorCollisionHandlingMethod::AlwaysSpawn);
+			PushL->DamageGameplayEffect = DamageGameplayEffect;
+			PushL->Damage = Damage;
+			PushL->TimeToFinish = TimeToEndAbility;
+			PushL->FinishSpawning(SpawnTransformMirror);
+
 			RotationOfSpawn.Yaw += IncrementAngle;
 			SpawnTransform.SetRotation(RotationOfSpawn.Quaternion());
 		}

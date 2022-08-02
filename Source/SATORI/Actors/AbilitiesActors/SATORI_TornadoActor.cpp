@@ -92,6 +92,8 @@ void ASATORI_TornadoActor::FinalActions(AActor* Actor)
 	LaunchDirection.Normalize();
 
 	Character->LaunchCharacter(LaunchDirection * LaunchForce, true, true);
+
+	Character->AddGameplayTag(LaunchTag);
 }
 
 void ASATORI_TornadoActor::BeginPlay()

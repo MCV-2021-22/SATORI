@@ -101,7 +101,7 @@ public:
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Tornado|Tags")
 	FGameplayTag  EnemyTag;
 
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Tornado|Tags")
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Push|Tags")
 	FGameplayTag  LaunchTag;
 
 protected:
