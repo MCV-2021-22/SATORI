@@ -30,46 +30,32 @@ public:
 	USphereComponent* CollisionSphereComponent = nullptr;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Decoy")
-	USphereComponent* ExplosionSphereComponent = nullptr;
-
-	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category = "Decoy")
 	UStaticMeshComponent* StaticMeshComponent = nullptr;
-
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Decoy")
-	UNiagaraComponent* NiagaraComponent;
-
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Decoy")
-	UNiagaraSystem* NiagaraSystemExplode;
-
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Decoy")
-	UNiagaraSystem* NiagaraSystemExplodePart2;
-
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Decoy")
-	UMaterialInterface* MaterialBright;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Decoy")
 	UProjectileMovementComponent* ProjectileMovementComponent = nullptr;
 
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Meta = (ExposeOnSpawn = true), Category = "Decoy")
+	UPROPERTY(BlueprintReadOnly, Meta = (ExposeOnSpawn = true), Category = "Decoy")
 	TSubclassOf<UGameplayEffect> DamageGameplayEffect;
 
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Meta = (ExposeOnSpawn = true), Category = "Decoy")
+	UPROPERTY(BlueprintReadOnly, Meta = (ExposeOnSpawn = true), Category = "Decoy")
 	float Damage;
 
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Meta = (ExposeOnSpawn = true), Category = "Decoy")
-	float TimeToDestroy;
+	UPROPERTY(BlueprintReadOnly, Meta = (ExposeOnSpawn = true), Category = "Decoy")
+	float TimeToFinish;
+
+	//Movement Calculations
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Debug")
+	float TraceDistanceToGround = 800.0f;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Debug")
-	float TraceDistanceToFloor = 800.0f;
+	float MinDistanceToGround = 200.0f;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Debug")
+	float MaxDistanceToGround = 300.0f;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Debug")
 	float HeightChange = 50.0f;
-
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Debug")
-	float MaxHeight = 300.0f;
-
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Debug")
-	float MinHeight = 200.0f;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Debug")
 	float GravityAscending = -0.3f;
@@ -92,20 +78,6 @@ public:
 			bool bFromSweep,
 			const FHitResult& SweepResult);
 
-
-	UFUNCTION(BlueprintCallable, Category = "Decoy")
-		void OnOverlapExplosionSphere(
-			UPrimitiveComponent* OverlappedComp,
-			AActor* OtherActor,
-			UPrimitiveComponent* OtherComp,
-			int32 OtherBodyIndex,
-			bool bFromSweep,
-			const FHitResult& SweepResult);
-
-
-	UFUNCTION(BlueprintCallable, Category = "Decoy")
-	void OnNiagaraFinished();
-
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Decoy|Tags")
 	FGameplayTag  EnemyTag;
 
@@ -124,14 +96,11 @@ private:
 
 	TArray<AActor*> ArrayLured;
 
-	FTimerHandle TimerHandleDestroy;
-	FTimerHandle TimerHandleDestroyWait;
-
 	FHitResult OutHit;
 	FCollisionQueryParams CollisionParams;
 
-	void Explode();
 	void DestroyMyself();
+	void StayGrounded(float DeltaTime);
 	void ChangeDirection(bool ChangeDirection);
 	bool bChangedDirection = false;
 

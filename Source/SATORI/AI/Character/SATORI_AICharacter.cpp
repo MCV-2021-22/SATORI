@@ -427,7 +427,8 @@ void ASATORI_AICharacter::CharacterDeath()
 	GetWorld()->GetAuthGameMode<ASATORIGameMode>()->RemoveEnemyActor(this);
 	//GetWorld()->GetGameState<ASATORI_GameState>()->RemoveEnemyActor(this);
 
-	SetActorEnableCollision(ECollisionEnabled::NoCollision);
+	//GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::PhysicsOnly);
+	//SetActorEnableCollision(ECollisionEnabled::NoCollision);
 	GetCharacterMovement()->Velocity = FVector(0);
 	GetCharacterMovement()->RotationRate = FRotator(0.0f, 0.0f, 0.0f);
 
@@ -435,7 +436,11 @@ void ASATORI_AICharacter::CharacterDeath()
 	if (AIController)
 	{
 		FString Death = "Dying";
-		AIController->GetBrainComponent()->StopLogic(Death);
+		UBrainComponent* BrainComponent = AIController->GetBrainComponent();
+		if(BrainComponent)
+		{ 
+			AIController->GetBrainComponent()->StopLogic(Death);
+		}
 	}
 	
 
@@ -453,6 +458,7 @@ void ASATORI_AICharacter::CharacterDeath()
 
 	if (DeathMontage)
 	{
+		DeathMontage->bEnableAutoBlendOut = false;
 		float TimeToEnd = PlayAnimMontage(DeathMontage);
 		FTimerHandle TimerHandleDestroy;
 		GetWorldTimerManager().SetTimer(TimerHandleDestroy, this, &ASATORI_AICharacter::DestroyMyself, TimeToEnd, false);

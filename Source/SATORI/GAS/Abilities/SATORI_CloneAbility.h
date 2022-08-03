@@ -8,9 +8,6 @@
 #include "SATORI/AI/Character/Clone/Satori_CloneCharacter.h"
 #include "SATORI_CloneAbility.generated.h"
 
-/**
- * 
- */
 UCLASS()
 class SATORI_API USATORI_CloneAbility : public USATORI_GameplayAbility
 {
@@ -36,10 +33,13 @@ public:
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Ability|Tags")
 	FGameplayTag TagSpawnAbility;
 
-	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Ability|Tags")
-	FGameplayTag TagEndAbility;
-
 protected:
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (UIMin = "0.1"), Category = "Ability|Clone")
+	float TimeToEndAbility = 10.0f;
+
+	UFUNCTION()
+	void FinishWaitingForEnd();
 
 	UFUNCTION()
 		void OnCancelled(FGameplayTag EventTag, FGameplayEventData EventData);

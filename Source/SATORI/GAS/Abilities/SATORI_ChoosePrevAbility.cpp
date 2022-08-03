@@ -17,7 +17,7 @@ void USATORI_ChoosePrevAbility::ActivateAbility(const FGameplayAbilitySpecHandle
 
 	if (Player)
 	{
-		USATORI_GameplayAbilityComponent* CurrentAbilityComponent = Player->PlayerGameplayAbilityComponent;
+		USATORI_GameplayAbilityComponent* CurrentAbilityComponent = Player->GetPlayerAbilityComponent();
 		if (CurrentAbilityComponent)
 		{
 			CurrentAbilityComponent->SetPrevAbility();

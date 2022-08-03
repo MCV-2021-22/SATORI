@@ -8,17 +8,12 @@
 #include "SATORI/FunctionLibrary/SATORI_BlueprintLibrary.h"
 #include "SATORICharacter.h"
 #include "SATORIGameMode.h"
-//#include "GameState/SATORI_GameState.h"
 
 ASATORI_MissileActor::ASATORI_MissileActor()
 {
 	PrimaryActorTick.bCanEverTick = false;
 
 	RootComponent = CreateDefaultSubobject<USceneComponent>(TEXT("RootComponent"));
-
-	StaticMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("StaticMesh"));
-	StaticMeshComponent->SetCollisionProfileName(UCollisionProfile::NoCollision_ProfileName);
-	StaticMeshComponent->SetupAttachment(RootComponent);
 	
 	//If collides will explode
 	CollisionSphereComponent = CreateDefaultSubobject<USphereComponent>(TEXT("CollisionSphere"));
@@ -26,9 +21,6 @@ ASATORI_MissileActor::ASATORI_MissileActor()
 	CollisionSphereComponent->SetupAttachment(RootComponent);
 	CollisionSphereComponent->SetGenerateOverlapEvents(true);
 	CollisionSphereComponent->OnComponentBeginOverlap.AddDynamic(this, &ASATORI_MissileActor::OnOverlapCollisionSphere);
-
-	//NiagaraComponent = CreateDefaultSubobject<UNiagaraComponent>(TEXT("Niagara"));
-	//NiagaraComponent->SetupAttachment(RootComponent);
 
 	ProjectileMovementComponent = CreateDefaultSubobject<UProjectileMovementComponent>("ProjectileMovement");
 	ProjectileMovementComponent->bIsHomingProjectile = true;
@@ -41,11 +33,8 @@ ASATORI_MissileActor::ASATORI_MissileActor()
 void ASATORI_MissileActor::OnOverlapCollisionSphere(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 	//Missile possible collisions : 
-	// Enemies
-	// Walls
 
 	CollisionSphereComponent->SetCollisionProfileName(UCollisionProfile::NoCollision_ProfileName);
-
 	ASATORI_AICharacter* Character = Cast<ASATORI_AICharacter>(OtherActor);
 
 	// Walls
@@ -58,23 +47,30 @@ void ASATORI_MissileActor::OnOverlapCollisionSphere(UPrimitiveComponent* Overlap
 	// Enemies
 	if (Character->HasMatchingGameplayTag(EnemyTag))
 	{
-		float DamageDone = USATORI_BlueprintLibrary::ApplyGameplayEffectDamage(OtherActor, Damage, OtherActor, DamageGameplayEffect);
-		Character->sendDamage(DamageDone);
+		DamageEnemy(OtherActor);
 	}
+
 	DestroyMyself();
 }
 
 void ASATORI_MissileActor::DestroyMyself()
 {
-	ProjectileMovementComponent->StopMovementImmediately();
-	ProjectileMovementComponent->HomingTargetComponent = nullptr;
-	StaticMeshComponent->SetVisibility(false);
+	Destroy();
 }
 
 void ASATORI_MissileActor::BeginPlay()
 {
 	Super::BeginPlay();
 
+	FindTarget();
+
+	//Set max time before auto destruc if not collides
+	FTimerHandle TimerHandleDestroy;
+	GetWorldTimerManager().SetTimer(TimerHandleDestroy, this, &ASATORI_MissileActor::DestroyMyself, TimeToFinish, false);
+}
+
+void ASATORI_MissileActor::FindTarget()
+{
 	ProjectileMovementComponent->HomingTargetComponent = nullptr;
 
 	ASATORICharacter* Player = Cast<ASATORICharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
@@ -89,7 +85,6 @@ void ASATORI_MissileActor::BeginPlay()
 	else
 	{
 		TArray < AActor* >& AllEnemies = GetWorld()->GetAuthGameMode<ASATORIGameMode>()->GetEnemyActorsRef();
-		//TArray < AActor* >& AllEnemies = GetWorld()->GetGameState<ASATORI_GameState>()->GetEnemyActorsRef();
 
 		for (AActor* Actor : AllEnemies)
 		{
@@ -106,8 +101,12 @@ void ASATORI_MissileActor::BeginPlay()
 	{
 		ProjectileMovementComponent->HomingTargetComponent = Target->GetRootComponent();
 	}
-
-	//Set max time before auto destruc if not collides
-	GetWorldTimerManager().SetTimer(TimerHandleDestroy, this, &ASATORI_MissileActor::DestroyMyself, TimeToDestroy, false);
 }
 
+//Damage Calculation
+void ASATORI_MissileActor::DamageEnemy(AActor* Actor)
+{
+	ASATORI_AICharacter* Character = Cast<ASATORI_AICharacter>(Actor);
+	float DamageDone = USATORI_BlueprintLibrary::ApplyGameplayEffectDamage(Actor, Damage, Actor, DamageGameplayEffect);
+	Character->sendDamage(DamageDone);
+}

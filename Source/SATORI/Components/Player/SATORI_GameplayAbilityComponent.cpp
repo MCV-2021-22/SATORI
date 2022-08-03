@@ -11,6 +11,7 @@
 #include "Data/SATORI_DT_AbilitiesTypes.h"
 #include "UI/SATORI_MainUI.h"
 #include "UI/Abilities/SATORI_ChangeAbilitiesWidget.h"
+#include "GameplayFramework/SATORI_GameInstance.h"
 
 // Sets default values for this component's properties
 USATORI_GameplayAbilityComponent::USATORI_GameplayAbilityComponent()
@@ -133,9 +134,16 @@ TSubclassOf<USATORI_GameplayAbility> USATORI_GameplayAbilityComponent::GetCurren
 }
 
 
-void USATORI_GameplayAbilityComponent::AddEnabledAbility()
+void USATORI_GameplayAbilityComponent::AddNormalAbilities(FSATORI_AbilitiesDatas AbilityData)
 {
+	NormalAbilities.Add(AbilityData);
+	UE_LOG(LogTemp, Display, TEXT(" Player Normal Abilities Numb : [%d] "), NormalAbilities.Num());
+}
 
+void USATORI_GameplayAbilityComponent::AddUpgratedAbilities(FSATORI_AbilitiesDatas AbilityData)
+{
+	UpgratedAbilities.Add(AbilityData);
+	UE_LOG(LogTemp, Display, TEXT(" Player Upgrated Abilities Numb : [%d] "), UpgratedAbilities.Num());
 }
 
 void USATORI_GameplayAbilityComponent::RemoveEnabledAbility()
@@ -167,6 +175,18 @@ void USATORI_GameplayAbilityComponent::NotifyAbilityChanged()
 	//AbilityIconChange.Broadcast(*AbilityData);
 
 	AllAbilityIconChange.Broadcast(AbilityIconToChange);
+}
+
+void USATORI_GameplayAbilityComponent::SetSavedAbilitiesWithGameInstance(USATORI_GameInstance* GameInstance)
+{
+	NormalAbilities = GameInstance->NormalAbilities;
+	UpgratedAbilities = GameInstance->UpgratedAbilities;
+}
+
+void USATORI_GameplayAbilityComponent::ResetCurrentPlayerAbilities()
+{
+	NormalAbilities.Empty(); 
+	UpgratedAbilities.Empty(); 
 }
 
 /*if (AbilitiesIconDatas)

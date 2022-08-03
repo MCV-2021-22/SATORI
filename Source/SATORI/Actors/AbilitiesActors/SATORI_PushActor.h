@@ -10,8 +10,7 @@
 #include "AI/Character/SATORI_AICharacter.h"
 #include "SATORI_PushActor.generated.h"
 
-class USphereComponent;
-class UNiagaraComponent;
+class UBoxComponent;
 class UStaticMeshComponent;
 
 UCLASS()
@@ -24,46 +23,50 @@ public:
 	ASATORI_PushActor();
 
 	UPROPERTY(EditDefaultsOnly, Category = "Push")
-	USphereComponent* CollisionSphereComponent = nullptr;
+	UBoxComponent* CollisionBoxComponent = nullptr;
 
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Meta = (ExposeOnSpawn = true), Category = "Push")
+	UPROPERTY(BlueprintReadOnly, Meta = (ExposeOnSpawn = true), Category = "Push")
 	TSubclassOf<UGameplayEffect> DamageGameplayEffect;
 
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Push")
-	UNiagaraComponent* NiagaraComponent;
-
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Push")
-	UStaticMeshComponent* MeshComponent;
-
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Meta = (ExposeOnSpawn = true), Category = "Push")
+	UPROPERTY(BlueprintReadOnly, Meta = (ExposeOnSpawn = true), Category = "Push")
 	float Damage;
 
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Meta = (ExposeOnSpawn = true), Category = "Push")
-	float Speed;
+	UPROPERTY(BlueprintReadOnly, Meta = (ExposeOnSpawn = true), Category = "Push")
+	float TimeToFinish;
 
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Meta = (ExposeOnSpawn = true), Category = "Push")
-	float PushForce;
+	//Movement
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Movement")
+	float Speed = 6000.0f;
 
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Meta = (ExposeOnSpawn = true), Category = "Push")
-	float TimeToDestroy;
+	//Final launch
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Push")
+	float LaunchForce = 800.0f;
 
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Debug")
-	float TraceDistanceToFloor = 250.0f;
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Push")
+	float ZLaunching = 80.0f;
 
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Debug")
+	//Debug movement
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Push")
+	float HeightCorrection = 100.0f;
+
+	//Stay Grounded
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Stay Grounded")
+	float TraceDistanceToGround = 300.0f;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Stay Grounded")
+	float MinDistanceToGround = 30.0f;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Stay Grounded")
+	float MaxDistanceToGround = 50.0f;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Stay Grounded")
 	float HeightChange = 1000.0f;
 
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Debug")
-	float MaxHeight = 50.0f;
-
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Debug")
-	float MinHeight = 30.0f;
-
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Debug")
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Stay Grounded")
 	bool bDrawDebug = false;
 
 	UFUNCTION(BlueprintCallable, Category = "Push")
-	void OnOverlapSphere(
+	void OnOverlapCollisionBox(
 			UPrimitiveComponent* OverlappedComp,
 			AActor* OtherActor,
 			UPrimitiveComponent* OtherComp,
@@ -71,14 +74,14 @@ public:
 			bool bFromSweep,
 			const FHitResult& SweepResult);
 
-	UFUNCTION(BlueprintCallable, Category = "Push")
-	void OnNiagaraFinished();
-
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Push|Tags")
 	FGameplayTag  EnemyTag;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Push|Tags")
 	FGameplayTag  PushedTag;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Push|Tags")
+	FGameplayTag  LaunchTag;
 
 protected:
 
@@ -90,13 +93,15 @@ public:
 
 private:
 
-	TArray<AActor*> ArrayPushed;
-
-	FTimerHandle TimerHandleDestroy;
+	AActor* Pushed;
+	bool Pushing = false;
 
 	FHitResult OutHit;
 	FCollisionQueryParams CollisionParams;
 
 	void DestroyMyself();
+	void FinalActions(AActor* Actor);
+	void StayGrounded(float DeltaTime);
+	void DamageEnemy(AActor* Actor);
 
 };
