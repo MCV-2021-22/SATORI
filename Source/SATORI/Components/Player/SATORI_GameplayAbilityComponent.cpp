@@ -50,15 +50,15 @@ void USATORI_GameplayAbilityComponent::BeginPlay()
 	
 	if (PlayerCharacter && !PlayerCharacter->GetIsAbilityUpgrated())
 	{
-		if (NormalAbilities.Num() < 0)
+		if (NormalAbilities.Num() == 2)
 		{
-			PrevAbilityValue = 0;
-			NextAbilityValue = 0;
+			PrevAbilityValue = NormalAbilities.Num() - 1;
+			NextAbilityValue = 1;
 		}
-		else if (NormalAbilities.Num() == 0)
+		else if (NormalAbilities.Num() == 3)
 		{
-			PrevAbilityValue = UpgratedAbilities.Num();
-			NextAbilityValue = 0;
+			PrevAbilityValue = NormalAbilities.Num() - 1;
+			NextAbilityValue = CurrentAbilityValue + 1;
 		}
 	}
 	else if (PlayerCharacter && PlayerCharacter->GetIsAbilityUpgrated())
@@ -70,7 +70,7 @@ void USATORI_GameplayAbilityComponent::BeginPlay()
 		}
 		else if (UpgratedAbilities.Num() == 0)
 		{
-			PrevAbilityValue = UpgratedAbilities.Num();
+			PrevAbilityValue = UpgratedAbilities.Num() - 1;
 			NextAbilityValue = 0;
 		}
 	}
@@ -183,41 +183,11 @@ bool USATORI_GameplayAbilityComponent::IsAbilityEnabled() const
 
 void USATORI_GameplayAbilityComponent::NotifyAbilityChanged()
 {
-	const FSATORI_AbilitiesDatas* CurrentAbilityData = nullptr;
-	const FSATORI_AbilitiesDatas* NextAbilityData = nullptr;
-	const FSATORI_AbilitiesDatas* PrevAbilityData = nullptr;
-
 	FSATORI_AbilitiesIconsDatas AbilityIconToChange;
 
-	// Check if it is normal abilities
-	if (PlayerCharacter && !PlayerCharacter->GetIsAbilityUpgrated())
+	if (PlayerCharacter)
 	{
-		if (NormalAbilities.Num() > 0)
-		{
-			CurrentAbilityData = &NormalAbilities[CurrentAbilityValue];
-			NextAbilityData = &NormalAbilities[NextAbilityValue];
-			PrevAbilityData = &NormalAbilities[PrevAbilityValue];
-			
-			if (NormalAbilities.Num() == 1)
-			{
-				AbilityIconToChange.CurrentAbilitiyIcon = CurrentAbilityData->AbilitiyIcon;
-				AbilityIconToChange.NextAbilitiyIcon = NextAbilityData->AbilitiyIcon;
-				AbilityIconToChange.PrevAbilitiyIcon = PrevAbilityData->AbilitiyIcon;
-			}
-		}
-		else if (NormalAbilities.Num() == 0)
-		{
-			AbilityIconToChange.CurrentAbilitiyIcon = EmptyAbilitiyIcon;
-			AbilityIconToChange.NextAbilitiyIcon = EmptyAbilitiyIcon;
-			AbilityIconToChange.PrevAbilitiyIcon = EmptyAbilitiyIcon;
-		}
-	}
-	// Check if it is upgrated abilities
-	else
-	{
-		CurrentAbilityData = &UpgratedAbilities[CurrentAbilityValue];
-		NextAbilityData = &UpgratedAbilities[NextAbilityValue];
-		PrevAbilityData = &UpgratedAbilities[PrevAbilityValue];
+		CheckAbilitiesStatus(PlayerCharacter->GetIsAbilityUpgrated(), AbilityIconToChange);
 	}
 
 	/*const FSATORI_AbilitiesDatas* CurrentAbilityData = PlayerGameplayAbility.Find(PlayerAbilitiesNames[CurrentAbilityValue]);
@@ -230,6 +200,56 @@ void USATORI_GameplayAbilityComponent::NotifyAbilityChanged()
 	//AbilityIconChange.Broadcast(*AbilityData);
 
 	AllAbilityIconChange.Broadcast(AbilityIconToChange);
+}
+
+void USATORI_GameplayAbilityComponent::CheckAbilitiesStatus(bool isUpgrated, FSATORI_AbilitiesIconsDatas& AbilitiesDatas)
+{
+	// Normal Abilities
+	if (!isUpgrated)
+	{
+		if (NormalAbilities.Num() > 0)
+		{
+			CurrentAbilityData = &NormalAbilities[CurrentAbilityValue];
+			NextAbilityData = &NormalAbilities[NextAbilityValue];
+			PrevAbilityData = &NormalAbilities[PrevAbilityValue];
+
+			if (NormalAbilities.Num() == 1)
+			{
+				AbilitiesDatas.CurrentAbilitiyIcon = CurrentAbilityData->AbilitiyIcon;
+				AbilitiesDatas.NextAbilitiyIcon = EmptyAbilitiyIcon;
+				AbilitiesDatas.PrevAbilitiyIcon = EmptyAbilitiyIcon;
+			}
+			else if (NormalAbilities.Num() == 2)
+			{
+				AbilitiesDatas.CurrentAbilitiyIcon = CurrentAbilityData->AbilitiyIcon;
+				AbilitiesDatas.NextAbilitiyIcon = NextAbilityData->AbilitiyIcon;
+				AbilitiesDatas.PrevAbilitiyIcon = EmptyAbilitiyIcon;
+			}
+			else
+			{
+				AbilitiesDatas.CurrentAbilitiyIcon = CurrentAbilityData->AbilitiyIcon;
+				AbilitiesDatas.NextAbilitiyIcon = NextAbilityData->AbilitiyIcon;
+				AbilitiesDatas.PrevAbilitiyIcon = PrevAbilityData->AbilitiyIcon;
+			}
+		}
+		else if (NormalAbilities.Num() == 0)
+		{
+			AbilitiesDatas.CurrentAbilitiyIcon = EmptyAbilitiyIcon;
+			AbilitiesDatas.NextAbilitiyIcon = EmptyAbilitiyIcon;
+			AbilitiesDatas.PrevAbilitiyIcon = EmptyAbilitiyIcon;
+		}
+	}
+	// Upgrated Abilities
+	else
+	{
+		CurrentAbilityData = &UpgratedAbilities[CurrentAbilityValue];
+		NextAbilityData = &UpgratedAbilities[NextAbilityValue];
+		PrevAbilityData = &UpgratedAbilities[PrevAbilityValue];
+
+		AbilitiesDatas.CurrentAbilitiyIcon = CurrentAbilityData->AbilitiyIcon;
+		AbilitiesDatas.NextAbilitiyIcon = NextAbilityData->AbilitiyIcon;
+		AbilitiesDatas.PrevAbilitiyIcon = PrevAbilityData->AbilitiyIcon;
+	}
 }
 
 void USATORI_GameplayAbilityComponent::SetSavedAbilitiesWithGameInstance(USATORI_GameInstance* GameInstance)

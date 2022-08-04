@@ -79,10 +79,10 @@ public:
 	int CurrentAbilityValue = 0;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
-	int NextAbilityValue = 1;
+	int NextAbilityValue = 0;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
-	int PrevAbilityValue;
+	int PrevAbilityValue = 0;
 	// Getters
 	TSubclassOf<USATORI_GameplayAbility> GetCurrentAbility();
 	TArray<FSATORI_AbilitiesDatas> GetNormalAbilities() { return NormalAbilities; }
@@ -121,6 +121,11 @@ private:
 	TArray<FSATORI_AbilitiesDatas> UpgratedAbilities;
 
 	ASATORICharacter* PlayerCharacter = nullptr;
+
+	// Abilites Datas
+	const FSATORI_AbilitiesDatas* CurrentAbilityData = nullptr;
+	const FSATORI_AbilitiesDatas* NextAbilityData = nullptr;
+	const FSATORI_AbilitiesDatas* PrevAbilityData = nullptr;
 public:
 
 	void AddNormalAbilities(FSATORI_AbilitiesDatas AbilityData);
@@ -129,4 +134,6 @@ public:
 	void RemoveEnabledAbility();
 
 	bool IsAbilityEnabled() const;
+
+	void CheckAbilitiesStatus(bool isUpgrated, FSATORI_AbilitiesIconsDatas& AbilitiesDatas);
 };

@@ -82,6 +82,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Stats")
 	USATORI_EnemyStatComponent* EnemyStatComponent;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Reward")
+	TSubclassOf<UGameplayEffect> GoldRewardGameplayEffect;
+
 	bool GetIsInFront() const { return isInFrontPlayer; }
 
 	UFUNCTION(BlueprintCallable)

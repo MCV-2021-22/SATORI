@@ -113,6 +113,9 @@ public:
 	UFUNCTION(BlueprintCallable)
 	bool PlayerActiveAbilityWithTag(FGameplayTag TagName);
 
+	UFUNCTION(BlueprintCallable)
+	void ApplyGameplayeEffectToPlayerWithParam(TSubclassOf<UGameplayEffect> GameplayEffect);
+
 	UFUNCTION(BlueprintImplementableEvent)
 	void ShowDeathWidget();
 

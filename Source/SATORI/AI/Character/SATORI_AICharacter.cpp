@@ -421,7 +421,6 @@ void ASATORI_AICharacter::RegisterInTargetableArray_Implementation()
 
 void ASATORI_AICharacter::CharacterDeath()
 {
-	
 	RemoveCharacterAbilities();
 
 	GetWorld()->GetAuthGameMode<ASATORIGameMode>()->RemoveEnemyActor(this);
@@ -443,6 +442,12 @@ void ASATORI_AICharacter::CharacterDeath()
 		}
 	}
 	
+	// Apply Gold to player
+	ASATORICharacter* PlayerCharacter = Cast<ASATORICharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
+	if (PlayerCharacter && GoldRewardGameplayEffect)
+	{
+		PlayerCharacter->ApplyGameplayeEffectToPlayerWithParam(GoldRewardGameplayEffect);
+	}
 
 	if (AbilitySystemComponent.IsValid())
 	{
