@@ -238,7 +238,12 @@ float ASATORI_AICharacter::getMaxRangeDist()
 
 void ASATORI_AICharacter::SetBurstingFalse()
 {
-	bursting = false;
+	Bursting = false;
+}
+
+bool ASATORI_AICharacter::GetBurstingState()
+{
+	return Bursting;
 }
 
 bool ASATORI_AICharacter::CheckPlayerWithRayCast()
@@ -301,13 +306,21 @@ bool ASATORI_AICharacter::CheckPlayerWithRayCast()
 
 void ASATORI_AICharacter::Tick(float DeltaSeconds)
 {
-	if(bursting)
+	if(Bursting)
 	{
 		time_burst -= DeltaSeconds;
 		if(time_burst <= 0.f)
 		{
-			bursting = false;
-			RemoveGameplayTag(FGameplayTag::RequestGameplayTag("State.Burst"));
+			Bursting = false;
+		}
+	}
+
+	if (Stunning)
+	{
+		time_stun -= DeltaSeconds;
+		if (time_stun <= 0.f)
+		{
+			Stunning = false;
 		}
 	}
 
@@ -316,30 +329,41 @@ void ASATORI_AICharacter::Tick(float DeltaSeconds)
 
 void ASATORI_AICharacter::sendDamage(float dmg)
 {
-	if(!bursting)
+	float max_health_possible = GetMaxHealth();
+	
+	if(!Bursting)
 	{
 		time_burst = 5.f;
 		dmg_burst = 0.f;
-		bursting = true;
+		Bursting = true;
 	}
 
 	dmg_burst += dmg;
 
-
-	float max_health_possible = GetMaxHealth();
-	UE_LOG(LogTemp, Display, TEXT("La max health es: %f"), max_health_possible);
-	UE_LOG(LogTemp, Display, TEXT("Damage dealt: %f"), dmg);
-	UE_LOG(LogTemp, Display, TEXT("Damage burst: %f"), dmg_burst);
-
-	if(dmg_burst>= max_health_possible*0.2f)
+	if(dmg_burst>= max_health_possible*0.6f && !HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag(("State.Burst"))))
 	{
+		AddGameplayTag(FGameplayTag::RequestGameplayTag("State.Burst"));
+	}
 
-		ASATORI_CharacterBase* pryeba = Cast<ASATORI_CharacterBase>(this);
-		if(!HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag(("State.Burst"))))
+	if (!Stunning)
+	{
+		time_stun = 5.f;
+		dmg_stun = 0.f;
+		Stunning = true;
+	}
+
+	dmg_stun += dmg;
+
+
+	if (dmg_stun >= max_health_possible * 0.2f && !HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag(("State.Stunned"))))
+	{
+		RemoveGameplayTag(FGameplayTag::RequestGameplayTag("Ability.Testing"));
+		UAnimMontage* AnimMontage = GetCurrentMontage();
+		if (IsValid(AnimMontage))
 		{
-			AddGameplayTag(FGameplayTag::RequestGameplayTag("State.Burst"));
+			StopAnimMontage(AnimMontage);
 		}
-		//AbilitySystemComponent->AddLooseGameplayTag(FGameplayTag::RequestGameplayTag("State.Burst"));
+		AddGameplayTag(FGameplayTag::RequestGameplayTag("State.Stunned"));
 	}
 	
 	float life = GetHealth();

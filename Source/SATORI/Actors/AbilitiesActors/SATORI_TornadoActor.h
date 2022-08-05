@@ -104,6 +104,9 @@ public:
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Tornado|Tags")
 	FGameplayTag  LaunchTag;
 
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Tornado|Tags")
+	FGameplayTag  AbilityTag;
+
 protected:
 
 	virtual void BeginPlay() override;
@@ -122,11 +125,13 @@ private:
 	FHitResult OutHit;
 	FCollisionQueryParams CollisionParams;
 
+	void StopAction(ASATORI_AICharacter* Character);
+	void LaunchEnemy(AActor* Actor);
 	void CalculateAngle(AActor* Actor);
+	void MoveTrappedEnemies(float DeltaTime, AActor* Actor, int Num);
+	void RotateEnemy(AActor* Actor);
 	void StayGrounded(float DeltaTime);
 	void DamageEnemy(AActor* Actor);
-	void MoveTrappedEnemies(float DeltaTime, AActor* Actor, int Num);
-	void FinalActions(AActor* Actor);
 	void DestroyMyself();
 
 };

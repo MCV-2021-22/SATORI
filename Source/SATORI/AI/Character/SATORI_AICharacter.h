@@ -138,7 +138,13 @@ protected:
 
 	float time_burst = 5.f;
 
-	bool bursting = false;
+	bool Bursting = false;
+
+	float dmg_stun = 0.f;
+
+	float time_stun = 5.f;
+
+	bool Stunning = false;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	class USphereComponent* HeadComponent;
@@ -171,6 +177,9 @@ public: //Character Death
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Tag")
 	FGameplayTagContainer   BlockTags;
+
+	UFUNCTION(BlueprintCallable)
+	bool GetBurstingState();
 
 	UFUNCTION(BlueprintCallable)
 	void SetBurstingFalse();
