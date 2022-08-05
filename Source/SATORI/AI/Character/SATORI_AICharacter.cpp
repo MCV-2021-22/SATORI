@@ -81,17 +81,19 @@ void ASATORI_AICharacter::BeginPlay()
 		InitializeAttributes();
 		AddAICharacterAbilities();
 
+		AddGameplayTag(FGameplayTag::RequestGameplayTag("State.PlayerNonSeen"));
+
 		//Needed for abilities actors (Nacho)
 		AddGameplayTag(EnemyTag);
 	}
 
-	ASATORI_CharacterBase* Character = Cast<ASATORI_CharacterBase>(this);
-	if (Character)
-	{
-		FGameplayTagContainer TagContainer;
-		Character->GetOwnedGameplayTags(TagContainer);
-		AbilitySystemComponent->AddLooseGameplayTags(TagContainer);
-	}
+	//ASATORI_CharacterBase* Character = Cast<ASATORI_CharacterBase>(this);
+	//if (Character)
+	//{
+	//	FGameplayTagContainer TagContainer;
+	//	Character->GetOwnedGameplayTags(TagContainer);
+	//	AbilitySystemComponent->AddLooseGameplayTags(TagContainer);
+	//}
 
 	//Needed for targeting system (Nacho)
 	if (bIsTargetable) {
@@ -211,7 +213,7 @@ void ASATORI_AICharacter::PossessedBy(AController* NewController)
 
 		AAIController* controller = Cast<AAIController>(NewController);
 
-		AddGameplayTag(FGameplayTag::RequestGameplayTag("State.PlayerNonSeen"));
+		//AddGameplayTag(FGameplayTag::RequestGameplayTag("State.PlayerNonSeen"));
 		
 
 		AttributeSetBase = AttributeSet;
@@ -342,6 +344,12 @@ void ASATORI_AICharacter::sendDamage(float dmg)
 
 	if(dmg_burst>= max_health_possible*0.6f && !HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag(("State.Burst"))))
 	{
+		RemoveGameplayTag(FGameplayTag::RequestGameplayTag("Ability.Testing"));
+		UAnimMontage* AnimMontage = GetCurrentMontage();
+		if (IsValid(AnimMontage))
+		{
+			StopAnimMontage(AnimMontage);
+		}
 		AddGameplayTag(FGameplayTag::RequestGameplayTag("State.Burst"));
 	}
 
@@ -355,7 +363,7 @@ void ASATORI_AICharacter::sendDamage(float dmg)
 	dmg_stun += dmg;
 
 
-	if (dmg_stun >= max_health_possible * 0.2f && !HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag(("State.Stunned"))))
+	if (dmg_stun >= max_health_possible * 0.2f && !HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag(("State.Stunned"))) && !HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag(("State.Burst"))))
 	{
 		RemoveGameplayTag(FGameplayTag::RequestGameplayTag("Ability.Testing"));
 		UAnimMontage* AnimMontage = GetCurrentMontage();

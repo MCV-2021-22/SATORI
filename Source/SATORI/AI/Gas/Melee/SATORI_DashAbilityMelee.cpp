@@ -60,7 +60,7 @@ void USATORI_DashAbilityMelee::EndAbility(
 	bool bReplicateEndAbility,
 	bool bWasCancelled)
 {
-	Melee->RemoveGameplayTag(FGameplayTag::RequestGameplayTag("State.PlayerNonSeen"));
+	//Melee->RemoveGameplayTag(FGameplayTag::RequestGameplayTag("State.PlayerNonSeen"));
 	Super::EndAbility(Handle, ActorInfo, ActivationInfo, bReplicateEndAbility, bWasCancelled);
 }
 
