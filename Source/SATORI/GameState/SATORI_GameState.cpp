@@ -36,8 +36,9 @@ void ASATORI_GameState::BeginPlay()
     FillPortalGameplayEffectWithData();
     FillPortalGrantedAbilityWithData();
 
-    GeneratedRandomPlayerAbility();
-    GeneratedRandomPassiveEffect();
+   /* GeneratedRandomPlayerAbility();
+    GeneratedRandomPassiveEffect();*/
+    GenerateRandomPassiveEffectAndAbilities();
 }
 
 void ASATORI_GameState::FillPortalGameplayEffectWithData()
@@ -84,10 +85,55 @@ int ASATORI_GameState::GenerateRandomNumberForPortal()
     return number;
 }
 
+void ASATORI_GameState::GenerateRandomPassiveEffectAndAbilities()
+{
+    if (InstancePortals.Num() == 1)
+        return;
+
+    ASATORICharacter* Character = Cast<ASATORICharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
+
+    if (Character)
+    {
+        for (int i = 0; i < InstancePortals.Num(); i++)
+        {
+            // Generate random gameplayEffect
+            int RandomNumber = GenerateRandomNumberForPortal();
+            FSATORI_DoorPassiveReward EffectToApply = PortalEffectsToApply[RandomNumber];
+            InstancePortals[i]->SetCurrentGameplayEffectData(EffectToApply);
+
+            // Generate random abilities
+            // Check if there have more abilities
+            if (PortalGrantedUpgratedAbilityToApply.Num() > 0 || PortalGrantedNormalAbilityToApply.Num() > 0)
+            {
+                // Upgrated Abilities
+                if (Character->GetIsAbilityUpgrated())
+                {
+                    int Size = PortalGrantedUpgratedAbilityToApply.Num() - 1;
+                    FSATORI_PortalAbilitiesDatasReward Reward = PortalGrantedUpgratedAbilityToApply[Size];
+                    InstancePortals[i]->SetCurrentGameplayAbilityData(Reward);
+                    UE_LOG(LogTemp, Display, TEXT(" Player Upgrated Ability Size : [%d] "), Size);
+                }
+                // Normal Abilities
+                else
+                {
+                    int Size = PortalGrantedNormalAbilityToApply.Num() - 1;
+                    FSATORI_PortalAbilitiesDatasReward Reward = PortalGrantedNormalAbilityToApply[Size];
+                    InstancePortals[i]->SetCurrentGameplayAbilityData(Reward);
+                    UE_LOG(LogTemp, Display, TEXT(" Player Normal Abilities Size : [%d] "), Size);
+                    FString AbilityString = Reward.AbilityName.ToString();
+                    UE_LOG(LogTemp, Warning, TEXT(" Player Normal Ability Name : %s "), *AbilityString);
+                }
+            }
+        }
+    }
+}
+
 void ASATORI_GameState::GeneratedRandomPassiveEffect()
 {
     if (InstancePortals.Num() == 1)
         return;
+
+    ASATORICharacter* Character = Cast<ASATORICharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
 
     for (int i = 1; i < InstancePortals.Num(); i++)
     {
@@ -107,7 +153,7 @@ void ASATORI_GameState::GeneratedRandomPassiveEffect()
 
 void ASATORI_GameState::GeneratedRandomPlayerAbility()
 {
-    ASATORICharacter* Character = Cast<ASATORICharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
+    /*ASATORICharacter* Character = Cast<ASATORICharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
     if (Character)
     {
         if (Character->GetIsAbilityUpgrated() && PortalGrantedUpgratedAbilityToApply.Num() > 0)
@@ -118,10 +164,10 @@ void ASATORI_GameState::GeneratedRandomPlayerAbility()
             UE_LOG(LogTemp, Display, TEXT(" Player Upgrated Ability Size : [%d] "), Size);
             if (GameInstanceRef)
             {
-                GameInstanceRef->RemoveElementonFromUpgratedAbilities();
+                GameInstanceRef->RemoveElementonFromUpgratedAbilities(1);
             }
         }
-        else if (PortalGrantedNormalAbilityToApply.Num() > 0)
+        else (PortalGrantedNormalAbilityToApply.Num() > 0)
         {
             int Size = PortalGrantedNormalAbilityToApply.Num() - 1;
             FSATORI_PortalAbilitiesDatasReward Reward = PortalGrantedNormalAbilityToApply[Size];
@@ -131,11 +177,10 @@ void ASATORI_GameState::GeneratedRandomPlayerAbility()
             UE_LOG(LogTemp, Warning, TEXT(" Player Normal Ability Name : %s "), *AbilityString);
             if (GameInstanceRef)
             {
-                GameInstanceRef->RemoveElementonFromNormalAbilities();
+                GameInstanceRef->RemoveElementonFromNormalAbilities(1);
             }
-            //PortalGrantedNormalAbilityToApply.Remove(Reward);
         }
-    }
+    }*/
 }
 
 //void ASATORI_GameState::AddEnemyActor(AActor* Enemy)

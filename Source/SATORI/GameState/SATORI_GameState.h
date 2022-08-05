@@ -73,5 +73,7 @@ private:
 	void GeneratedRandomPassiveEffect();
 	void GeneratedRandomPlayerAbility();
 
+	void GenerateRandomPassiveEffectAndAbilities();
+
 	USATORI_GameInstance* GameInstanceRef = nullptr;
 };

@@ -90,8 +90,8 @@ public:
 	TArray<FSATORI_PortalAbilitiesDatasReward> GetPortalGrantedUpgratedAbility() { return PortalGrantedUpgratedAbilityToApply; }
 	TArray<FSATORI_PortalAbilitiesDatasReward> GetPortalGrantedNormalAbility() { return PortalGrantedNormalAbilityToApply; }
 
-	void RemoveElementonFromNormalAbilities();
-	void RemoveElementonFromUpgratedAbilities();
+	void RemoveElementonFromNormalAbilities(int Id);
+	void RemoveElementonFromUpgratedAbilities(int Id);
 
 	void ResetPortalRewardAbilities();
 private:

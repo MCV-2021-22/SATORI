@@ -85,8 +85,7 @@ public:
 	int PrevAbilityValue = 0;
 	// Getters
 	TSubclassOf<USATORI_GameplayAbility> GetCurrentAbility();
-	TArray<FSATORI_AbilitiesDatas> GetNormalAbilities() { return NormalAbilities; }
-	TArray<FSATORI_AbilitiesDatas> GetUpgratedAbilities() { return UpgratedAbilities; }
+	TArray<FSATORI_AbilitiesDatas> GetCharacterAbilities() { return PortalRewardAbilities; }
 
 	UPROPERTY(BlueprintAssignable)
 	FSATORIChangeAbilityIcon AbilityIconChange;
@@ -117,8 +116,7 @@ private:
 	TSubclassOf<USATORI_GameplayAbility> CurrentGameplayAbility;
 
 	// Abilities
-	TArray<FSATORI_AbilitiesDatas> NormalAbilities;
-	TArray<FSATORI_AbilitiesDatas> UpgratedAbilities;
+	TArray<FSATORI_AbilitiesDatas> PortalRewardAbilities;
 
 	ASATORICharacter* PlayerCharacter = nullptr;
 
@@ -128,12 +126,11 @@ private:
 	const FSATORI_AbilitiesDatas* PrevAbilityData = nullptr;
 public:
 
-	void AddNormalAbilities(FSATORI_AbilitiesDatas AbilityData);
-	void AddUpgratedAbilities(FSATORI_AbilitiesDatas AbilityData);
+	void AddPortalAbilities(FSATORI_AbilitiesDatas AbilityData);
 
 	void RemoveEnabledAbility();
 
 	bool IsAbilityEnabled() const;
 
-	void CheckAbilitiesStatus(bool isUpgrated, FSATORI_AbilitiesIconsDatas& AbilitiesDatas);
+	void CheckAbilitiesStatus(FSATORI_AbilitiesIconsDatas& AbilitiesDatas);
 };
