@@ -102,7 +102,9 @@ public:
 	virtual void RemoveCharacterAbilities() {};
 
 	//Tag 
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Tags")
 	FGameplayTag DeadTag;
+
 	FGameplayTag EffectRemoveOnDeathTag;
 
 	UFUNCTION(BlueprintCallable, Category = "Player|Attributes")

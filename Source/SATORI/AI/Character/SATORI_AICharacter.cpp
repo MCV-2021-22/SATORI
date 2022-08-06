@@ -454,52 +454,55 @@ void ASATORI_AICharacter::RegisterInTargetableArray_Implementation()
 void ASATORI_AICharacter::CharacterDeath()
 {
 	
-	RemoveCharacterAbilities();
+	//RemoveCharacterAbilities();
 
-	GetWorld()->GetAuthGameMode<ASATORIGameMode>()->RemoveEnemyActor(this);
+	//GetWorld()->GetAuthGameMode<ASATORIGameMode>()->RemoveEnemyActor(this);
 	//GetWorld()->GetGameState<ASATORI_GameState>()->RemoveEnemyActor(this);
 
 	//GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::PhysicsOnly);
 	//SetActorEnableCollision(ECollisionEnabled::NoCollision);
-	GetCharacterMovement()->Velocity = FVector(0);
-	GetCharacterMovement()->RotationRate = FRotator(0.0f, 0.0f, 0.0f);
+	//GetCharacterMovement()->Velocity = FVector(0);
+	//GetCharacterMovement()->RotationRate = FRotator(0.0f, 0.0f, 0.0f);
 
-	AAIController* AIController = Cast<AAIController>(GetController());
-	if (AIController)
-	{
-		FString Death = "Dying";
-		UBrainComponent* BrainComponent = AIController->GetBrainComponent();
-		if(BrainComponent)
-		{ 
-			AIController->GetBrainComponent()->StopLogic(Death);
-		}
-	}
+	//AAIController* AIController = Cast<AAIController>(GetController());
+	//if (AIController)
+	//{
+	//	FString Death = "Dying";
+	//	UBrainComponent* BrainComponent = AIController->GetBrainComponent();
+	//	if(BrainComponent)
+	//	{ 
+	//		AIController->GetBrainComponent()->StopLogic(Death);
+	//	}
+	//}
 	
+	AddGameplayTag(DeadTag);
+	
+	//if (AbilitySystemComponent.IsValid())
+	//{
+		//AbilitySystemComponent->CancelAllAbilities();
 
-	if (AbilitySystemComponent.IsValid())
-	{
-		AbilitySystemComponent->CancelAllAbilities();
+		//FGameplayTagContainer EffectTagsToRemove;
+		//EffectTagsToRemove.AddTag(EffectRemoveOnDeathTag);
+		//int32 NumEffectsRemoved = AbilitySystemComponent->RemoveActiveEffectsWithTags(EffectTagsToRemove);
 
-		FGameplayTagContainer EffectTagsToRemove;
-		EffectTagsToRemove.AddTag(EffectRemoveOnDeathTag);
-		int32 NumEffectsRemoved = AbilitySystemComponent->RemoveActiveEffectsWithTags(EffectTagsToRemove);
+		//AbilitySystemComponent->AddLooseGameplayTag(DeadTag);
 
-		AbilitySystemComponent->AddLooseGameplayTag(DeadTag);
+		//AbilitySystemComponent->activateability
 
-	}
+	//}
 
-	if (DeathMontage)
-	{
-		DeathMontage->bEnableAutoBlendOut = false;
-		float TimeToEnd = PlayAnimMontage(DeathMontage);
-		FTimerHandle TimerHandleDestroy;
-		GetWorldTimerManager().SetTimer(TimerHandleDestroy, this, &ASATORI_AICharacter::DestroyMyself, TimeToEnd, false);
+	//if (DeathMontage)
+	//{
+	//	DeathMontage->bEnableAutoBlendOut = false;
+	//	float TimeToEnd = PlayAnimMontage(DeathMontage);
+	//	FTimerHandle TimerHandleDestroy;
+	//	GetWorldTimerManager().SetTimer(TimerHandleDestroy, this, &ASATORI_AICharacter::DestroyMyself, TimeToEnd, false);
 
-	}
-	else
-	{
-		DestroyMyself();
-	}
+	//}
+	//else
+	//{
+		//DestroyMyself();
+	//}
 
 }
 
