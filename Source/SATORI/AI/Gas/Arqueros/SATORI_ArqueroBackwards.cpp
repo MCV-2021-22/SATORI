@@ -101,7 +101,7 @@ void USATORI_ArqueroBackwards::ActivateAbility(const FGameplayAbilitySpecHandle 
 	ASATORI_RangeMovable* Character = Cast<ASATORI_RangeMovable>(GetAvatarActorFromActorInfo());
 	if (Character)
 	{
-		Character->RemoveGameplayTag(FGameplayTag::RequestGameplayTag("State.Burst"));
+		
 		Character->moveBackwards = true;
 	}
 	TimerDelegate = FTimerDelegate::CreateUObject(this, &USATORI_ArqueroBackwards::OnTimerFinished, CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo);

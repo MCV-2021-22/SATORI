@@ -24,23 +24,13 @@ public:
 
 	USATORI_ArqueroRotate();
 
-	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Ability")
-		UAnimMontage* AnimMontage;
-
-	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Ability|Tags")
-		FGameplayTag TagSpawnAbility;
-
-	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Ability|Tags")
-		FGameplayTag TagEndAbility;
-
-
 	
-	virtual void ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, 
+
+	virtual void ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo,
 		const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData) override;
 
 
-	UPROPERTY(BlueprintReadOnly, EditAnywhere)
-		TSubclassOf<ASATORI_ArcherProjectile> ProjectileClass;
+
 
 	UPROPERTY(BlueprintReadOnly, EditAnywhere)
 		bool IsClone;
@@ -48,15 +38,13 @@ public:
 	UPROPERTY(BlueprintReadOnly, EditAnywhere)
 		float damage;
 
-protected:
-	UFUNCTION()
-		void OnCancelled(FGameplayTag EventTag, FGameplayEventData EventData);
 
-	UFUNCTION()
-		void OnCompleted(FGameplayTag EventTag, FGameplayEventData EventData);
+	FTimerDelegate TimerDelegate;
+	FTimerHandle TimerHandle;
 
-	UFUNCTION()
-		void EventReceived(FGameplayTag EventTag, FGameplayEventData EventData);
+	void OnTimerFinished(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo);
+
+
 
 private:
 
