@@ -39,6 +39,12 @@ void ASATORI_GameState::BeginPlay()
    /* GeneratedRandomPlayerAbility();
     GeneratedRandomPassiveEffect();*/
     GenerateRandomPassiveEffectAndAbilities();
+
+    // Check if it is first level
+    if (InstancePortals.Num() == 1 && InstancePortals[0]->IsFirstLevel)
+    {
+        InstancePortals[0]->ActivatePortal();
+    }
 }
 
 void ASATORI_GameState::FillPortalGameplayEffectWithData()
@@ -87,11 +93,7 @@ int ASATORI_GameState::GenerateRandomNumberForPortal()
 
 void ASATORI_GameState::GenerateRandomPassiveEffectAndAbilities()
 {
-    if (InstancePortals.Num() == 1)
-        return;
-
     ASATORICharacter* Character = Cast<ASATORICharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
-
     if (Character)
     {
         for (int i = 0; i < InstancePortals.Num(); i++)
@@ -109,19 +111,29 @@ void ASATORI_GameState::GenerateRandomPassiveEffectAndAbilities()
                 if (Character->GetIsAbilityUpgrated())
                 {
                     int Size = PortalGrantedUpgratedAbilityToApply.Num() - 1;
-                    FSATORI_PortalAbilitiesDatasReward Reward = PortalGrantedUpgratedAbilityToApply[Size];
+                    int CurrentId = i;
+                    // Size - CurrentId because we want last elment of the array and the penultimate element 
+                    // So, the array will get Size - 0 and Size - 1 element (we only hace 2 portal per run)
+                    FSATORI_PortalAbilitiesDatasReward Reward = PortalGrantedUpgratedAbilityToApply[Size - CurrentId];
                     InstancePortals[i]->SetCurrentGameplayAbilityData(Reward);
                     UE_LOG(LogTemp, Display, TEXT(" Player Upgrated Ability Size : [%d] "), Size);
+                    // I + 1 Make sure i != 0, and the we can remove from last element from the Game Instance Array
+                    // Call RemoveElementonFromNormalAbilities from Game Instance                
+                    InstancePortals[i]->SetCurrentId(CurrentId + 1);
                 }
                 // Normal Abilities
                 else
                 {
                     int Size = PortalGrantedNormalAbilityToApply.Num() - 1;
-                    FSATORI_PortalAbilitiesDatasReward Reward = PortalGrantedNormalAbilityToApply[Size];
+                    int CurrentId = i;
+                    // Size - CurrentId because we want last elment of the array and the penultimate element 
+                    // So, the array will get Size - 0 and Size - 1 element (we only hace 2 portal per run)
+                    FSATORI_PortalAbilitiesDatasReward Reward = PortalGrantedNormalAbilityToApply[Size - CurrentId];
                     InstancePortals[i]->SetCurrentGameplayAbilityData(Reward);
                     UE_LOG(LogTemp, Display, TEXT(" Player Normal Abilities Size : [%d] "), Size);
                     FString AbilityString = Reward.AbilityName.ToString();
                     UE_LOG(LogTemp, Warning, TEXT(" Player Normal Ability Name : %s "), *AbilityString);
+                    InstancePortals[i]->SetCurrentId(CurrentId + 1);
                 }
             }
         }

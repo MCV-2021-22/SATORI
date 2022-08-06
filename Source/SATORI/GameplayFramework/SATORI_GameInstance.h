@@ -99,6 +99,8 @@ private:
 
 	void FillPortalGrantedAbilityWithData();
 
+	void ShuffleArray(TArray<FSATORI_PortalAbilitiesDatasReward>& myArray);
+
 	UPROPERTY()
 	USATORI_SaveGame* SaveGame = nullptr;
 

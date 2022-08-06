@@ -30,12 +30,17 @@ ASATORI_Portal::ASATORI_Portal()
 	TextRenderComponent = CreateDefaultSubobject<UTextRenderComponent>(TEXT("TextRenderComponent"));
 	TextRenderComponent->SetupAttachment(RootComponent);
 
+	// BillboardComponent
 	PortalAbilityIconTexture = CreateDefaultSubobject<UBillboardComponent>(TEXT("PortalAbilityIcon"));
 	PortalAbilityIconTexture->SetupAttachment(RootComponent);
 
 	PortalEffectIconTexture = CreateDefaultSubobject<UBillboardComponent>(TEXT("PortalEffectIcon"));
 	PortalEffectIconTexture->SetupAttachment(RootComponent);
 
+	PortalEffectIconTexture->SetVisibility(false);
+	PortalAbilityIconTexture->SetVisibility(false);
+
+	// Collision Component
 	SphereComponent = CreateDefaultSubobject<USphereComponent>(TEXT("SphereComponent"));
 	SphereComponent->SetupAttachment(RootComponent);
 	SphereComponent->SetSphereRadius(120.0f);
@@ -57,11 +62,6 @@ void ASATORI_Portal::BeginPlay()
 	Super::BeginPlay();
 	
 	GetWorld()->GetAuthGameMode<ASATORIGameMode>()->AddPortalActor(this);
-
-	if (IsFirstLevel || IsActiveForTest)
-	{
-		ActivatePortal();
-	}
 }
 
 void ASATORI_Portal::OnConstruction(const FTransform& Transform)
@@ -161,6 +161,8 @@ void ASATORI_Portal::ActivatePortal()
 
 	if (PortalEffectsToApply.PassiveIcon && PortalAbilityToApply.AbilitiyIcon)
 	{
+		PortalEffectIconTexture->SetVisibility(true);
+		PortalAbilityIconTexture->SetVisibility(true);
 		PortalAbilityIconTexture->SetSprite(PortalEffectsToApply.PassiveIcon);
 		PortalEffectIconTexture->SetSprite(PortalAbilityToApply.AbilitiyIcon);
 	}	
