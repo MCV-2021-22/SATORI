@@ -16,23 +16,26 @@ void USATORI_DecoyAbility::ActivateAbility(
 	const FGameplayAbilityActivationInfo ActivationInfo,
 	const FGameplayEventData* TriggerEventData)
 {
-	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
 
 	if (!IsValid(AnimMontage))
 	{
 		UE_LOG(LogTemp, Warning, TEXT("[%s] USATORI_DecoyAbility: Cannot get Animation Montage ... "), *GetName());
-		return;
-	}
-
-	if (!IsValid(DamageGameplayEffect))
-	{
-		UE_LOG(LogTemp, Warning, TEXT("[%s] USATORI_DecoyAbility: Cannot get Damage Gameplay Effect Montage ... "), *GetName());
+		Super::EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true);
 		return;
 	}
 
 	if (!TagSpawnAbility.IsValid())
 	{
 		UE_LOG(LogTemp, Display, TEXT("[%s] USATORI_DecoyAbility: Tag is not valid ... "), *GetName());
+		Super::EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true);
+		return;
+	}
+
+	if (!CommitAbility(Handle, ActorInfo, ActivationInfo))
+	{
+		UE_LOG(LogTemp, Display, TEXT("[%s] USATORI_DecoyAbility: Failed commit ability ... "), *GetName());
+		Super::EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true);
+		return;
 	}
 
 	//Handling of events
@@ -82,7 +85,6 @@ void USATORI_DecoyAbility::EventReceived(FGameplayTag EventTag, FGameplayEventDa
 		//Decoy Actor creation
 		ASATORI_DecoyActor* Decoy = GetWorld()->SpawnActorDeferred<ASATORI_DecoyActor>(DecoyActor, SpawnTransform, GetOwningActorFromActorInfo(),
 			Character, ESpawnActorCollisionHandlingMethod::AlwaysSpawn);
-		Decoy->DamageGameplayEffect = DamageGameplayEffect;
 		Decoy->TimeToFinish = TimeToEndAbility;
 		Decoy->FinishSpawning(SpawnTransform);
 	}

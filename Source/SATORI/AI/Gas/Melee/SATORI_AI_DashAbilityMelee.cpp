@@ -1,6 +1,6 @@
 //
 
-#include "AI/Gas/Melee/SATORI_DashAbilityMelee.h"
+#include "AI/Gas/Melee/SATORI_AI_DashAbilityMelee.h"
 #include "AbilitySystemComponent.h"
 #include "SATORICharacter.h"
 #include "Actors/AbilitiesActors/SATORI_DashMeleeActor.h"
@@ -9,30 +9,29 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetMathLibrary.h"
+//
+#include "Blueprint/AIBlueprintHelperLibrary.h"
+#include "BehaviorTree/BlackboardComponent.h"
 
-
-USATORI_DashAbilityMelee::USATORI_DashAbilityMelee()
+USATORI_AI_DashAbilityMelee::USATORI_AI_DashAbilityMelee()
 {
 	InstancingPolicy = EGameplayAbilityInstancingPolicy::InstancedPerActor;
-
 	bDashing = false;
-
 	bIsCreateOnRunning = GIsRunning;
 }
 
-void USATORI_DashAbilityMelee::ActivateAbility(
+void USATORI_AI_DashAbilityMelee::ActivateAbility(
 	const FGameplayAbilitySpecHandle Handle,
 	const FGameplayAbilityActorInfo* ActorInfo,
 	const FGameplayAbilityActivationInfo ActivationInfo,
 	const FGameplayEventData* TriggerEventData)
 {
-	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
-
 	bDashing = false;
 
 	if (!IsValid(AnimMontage))
 	{
-		UE_LOG(LogTemp, Warning, TEXT("[%s] USATORI_DashAbilityMelee: Cannot get Animation Montage ... "), *GetName());
+		UE_LOG(LogTemp, Warning, TEXT("[%s] USATORI_AI_AttackAbilityMelee: Cannot get Animation Montage ... "), *GetName());
+		EndAbility(Handle, ActorInfo, ActivationInfo, true, true);
 		return;
 	}
 
@@ -41,40 +40,40 @@ void USATORI_DashAbilityMelee::ActivateAbility(
 	{
 		UE_LOG(LogTemp, Display, TEXT("[%s] USATORI_DashAbilityMelee: Cannot Cast ASATORICharacter ... "), *GetName());
 		EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true);
+		return;
 	}
 
 	//Handling of events
 	USATORI_PlayMontageAndWaitEvent* Task = USATORI_PlayMontageAndWaitEvent::PlayMontageAndWaitForEvent(this, NAME_None, AnimMontage, FGameplayTagContainer(), 1.0f, NAME_None, bStopWhenAbilityEnds, 1.0f);
-	Task->OnBlendOut.AddDynamic(this, &USATORI_DashAbilityMelee::OnCompleted);
-	Task->OnCompleted.AddDynamic(this, &USATORI_DashAbilityMelee::OnCompleted);
-	Task->OnInterrupted.AddDynamic(this, &USATORI_DashAbilityMelee::OnCancelled);
-	Task->OnCancelled.AddDynamic(this, &USATORI_DashAbilityMelee::OnCancelled);
-	Task->EventReceived.AddDynamic(this, &USATORI_DashAbilityMelee::EventReceived);
+	Task->OnBlendOut.AddDynamic(this, &USATORI_AI_DashAbilityMelee::OnCompleted);
+	Task->OnCompleted.AddDynamic(this, &USATORI_AI_DashAbilityMelee::OnCompleted);
+	Task->OnInterrupted.AddDynamic(this, &USATORI_AI_DashAbilityMelee::OnCancelled);
+	Task->OnCancelled.AddDynamic(this, &USATORI_AI_DashAbilityMelee::OnCancelled);
+	Task->EventReceived.AddDynamic(this, &USATORI_AI_DashAbilityMelee::EventReceived);
 	Task->ReadyForActivation();
 }
 
-void USATORI_DashAbilityMelee::EndAbility(
+void USATORI_AI_DashAbilityMelee::EndAbility(
 	const FGameplayAbilitySpecHandle Handle,
 	const FGameplayAbilityActorInfo* ActorInfo,
 	const FGameplayAbilityActivationInfo ActivationInfo,
 	bool bReplicateEndAbility,
 	bool bWasCancelled)
 {
-	//Melee->RemoveGameplayTag(FGameplayTag::RequestGameplayTag("State.PlayerNonSeen"));
 	Super::EndAbility(Handle, ActorInfo, ActivationInfo, bReplicateEndAbility, bWasCancelled);
 }
 
-void USATORI_DashAbilityMelee::OnCancelled(FGameplayTag EventTag, FGameplayEventData EventData)
+void USATORI_AI_DashAbilityMelee::OnCancelled(FGameplayTag EventTag, FGameplayEventData EventData)
 {
 	EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, false);
 }
 
-void USATORI_DashAbilityMelee::OnCompleted(FGameplayTag EventTag, FGameplayEventData EventData)
+void USATORI_AI_DashAbilityMelee::OnCompleted(FGameplayTag EventTag, FGameplayEventData EventData)
 {
 	EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, false);
 }
 
-void USATORI_DashAbilityMelee::EventReceived(FGameplayTag EventTag, FGameplayEventData EventData)
+void USATORI_AI_DashAbilityMelee::EventReceived(FGameplayTag EventTag, FGameplayEventData EventData)
 {
 	if (EventTag == TagEndAbility)
 	{
@@ -89,37 +88,38 @@ void USATORI_DashAbilityMelee::EventReceived(FGameplayTag EventTag, FGameplayEve
 
 	if (EventTag == TagSpawnAbility)
 	{
-		ASATORI_CharacterBase* Enemy = nullptr;
-		if (IsClone)
+		UBlackboardComponent* Blackboard = UAIBlueprintHelperLibrary::GetBlackboard(GetAvatarActorFromActorInfo());
+		
+		if (IsValid(Blackboard))
 		{
-			TArray< AActor* > enemigos;
-			UGameplayStatics::GetAllActorsWithTag(GetWorld(), FName("Character.Clone"), enemigos);
+			FName Clone = "Clone";
+			FName Player = "Target";
+			
+			ASATORI_CharacterBase* Target = nullptr;
+			Target = Cast<ASATORI_CharacterBase>(Blackboard->GetValueAsObject(Clone));
 
-			for (AActor* Actor : enemigos)
+			//Check clone
+			if (IsValid(Target))
 			{
-				if (Cast<ASATORI_CharacterBase>(Actor) != nullptr)
+				EnemyPosition = Target->GetActorLocation();
+				SpawnActor();
+			}
+			//If clone fails then checks for player
+			else
+			{
+				Target = Cast<ASATORI_CharacterBase>(Blackboard->GetValueAsObject(Player));
+
+				if (IsValid(Target))
 				{
-					Enemy = Cast<ASATORI_CharacterBase>(Actor);
-					
-					
+					EnemyPosition = Target->GetActorLocation();
+					SpawnActor();
 				}
 			}
 		}
-		else
-		{
-			Enemy = Cast<ASATORI_CharacterBase>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
-			
-		}
-		EnemyPosition = Enemy->GetActorLocation();
-
-		SpawnActor();
-		
-
-		
 	}
 }
 
-void USATORI_DashAbilityMelee::SpawnActor()
+void USATORI_AI_DashAbilityMelee::SpawnActor()
 {
 	SpawnTransform.SetLocation(EnemyPosition);
 
@@ -132,7 +132,7 @@ void USATORI_DashAbilityMelee::SpawnActor()
 	DashActor->FinishSpawning(SpawnTransform);
 }
 
-void USATORI_DashAbilityMelee::Tick(float DeltaTime)
+void USATORI_AI_DashAbilityMelee::Tick(float DeltaTime)
 {
 	if(bDashing)
 	{
@@ -150,17 +150,17 @@ void USATORI_DashAbilityMelee::Tick(float DeltaTime)
 	}
 }
 
-bool USATORI_DashAbilityMelee::IsTickable() const
+bool USATORI_AI_DashAbilityMelee::IsTickable() const
 {
 	return IsActive();
 }
 
-bool USATORI_DashAbilityMelee::IsAllowedToTick() const
+bool USATORI_AI_DashAbilityMelee::IsAllowedToTick() const
 {
 	return true;
 }
 
-TStatId USATORI_DashAbilityMelee::GetStatId() const
+TStatId USATORI_AI_DashAbilityMelee::GetStatId() const
 {
 	return UObject::GetStatID();
 }

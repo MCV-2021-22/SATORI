@@ -7,22 +7,18 @@
 #include "GAS/SATORI_GameplayAbility.h"
 #include "SATORI/AbilityTask/SATORI_PlayMontageAndWaitEvent.h"
 #include "SATORI/Character/SATORI_CharacterBase.h"
-#include "SATORI_DashAbilityMelee.generated.h"
-
-/**
- * 
- */
+#include "SATORI_AI_DashAbilityMelee.generated.h"
 
 class UCharacterMovementComponent;
 
 UCLASS()
-class SATORI_API USATORI_DashAbilityMelee : public USATORI_GameplayAbility, public FTickableGameObject
+class SATORI_API USATORI_AI_DashAbilityMelee : public USATORI_GameplayAbility, public FTickableGameObject
 {
 	GENERATED_BODY()
 
 public:
 
-	USATORI_DashAbilityMelee();
+	USATORI_AI_DashAbilityMelee();
 
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Ability")
 	UAnimMontage* AnimMontage;
@@ -57,7 +53,7 @@ public:
 	FGameplayTag TagEndAbility;
 
 	UPROPERTY(BlueprintReadOnly, EditAnywhere)
-		bool IsClone;
+	bool IsClone;
 
 protected:
 

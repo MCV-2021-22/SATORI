@@ -3,26 +3,21 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Actors/AbilitiesActors/SATORI_DashMeleeActor.h"
 #include "GAS/SATORI_GameplayAbility.h"
-#include "SATORI/AbilityTask/SATORI_PlayMontageAndWaitEvent.h"
-#include "SATORI/Character/SATORI_CharacterBase.h"
-#include "SATORI_Attack01Melee.generated.h"
-
-/**
- * 
- */
+#include "AbilityTask/SATORI_PlayMontageAndWaitEvent.h"
+#include "AI/Character/SATORI_AICharacter.h"
+#include "SATORI_AI_AttackAbilityMelee.generated.h"
 
 class UCharacterMovementComponent;
 
 UCLASS()
-class SATORI_API USATORI_Attack01Melee : public USATORI_GameplayAbility
+class SATORI_API USATORI_AI_AttackAbilityMelee : public USATORI_GameplayAbility
 {
 	GENERATED_BODY()
 
 public:
 
-	USATORI_Attack01Melee();
+	USATORI_AI_AttackAbilityMelee();
 
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Ability")
 	UAnimMontage* AnimMontage;
@@ -41,12 +36,6 @@ public:
 		bool bReplicateEndAbility,
 		bool bWasCancelled) override;
 
-	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Ability|Tags")
-	FGameplayTag TagSpawnAbility;
-
-	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Ability|Tags")
-	FGameplayTag TagEndAbility;
-
 protected:
 
 	UFUNCTION()
@@ -55,10 +44,7 @@ protected:
 	UFUNCTION()
 	void OnCompleted(FGameplayTag EventTag, FGameplayEventData EventData);
 
-	UFUNCTION()
-	void EventReceived(FGameplayTag EventTag, FGameplayEventData EventData);
-
-	ASATORI_CharacterBase* Melee;
+	ASATORI_AICharacter* Melee;
 
 private:
 
