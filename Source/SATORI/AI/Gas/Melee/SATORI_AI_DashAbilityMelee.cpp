@@ -30,7 +30,7 @@ void USATORI_AI_DashAbilityMelee::ActivateAbility(
 
 	if (!IsValid(AnimMontage))
 	{
-		UE_LOG(LogTemp, Warning, TEXT("[%s] USATORI_AI_AttackAbilityMelee: Cannot get Animation Montage ... "), *GetName());
+		UE_LOG(LogTemp, Warning, TEXT("[%s] USATORI_AI_DashAbilityMelee: Cannot get Animation Montage ... "), *GetName());
 		EndAbility(Handle, ActorInfo, ActivationInfo, true, true);
 		return;
 	}
