@@ -84,7 +84,7 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	int PrevAbilityValue = 0;
 	// Getters
-	TSubclassOf<USATORI_GameplayAbility> GetCurrentAbility();
+
 	TArray<FSATORI_AbilitiesDatas> GetCharacterAbilities() { return PortalRewardAbilities; }
 
 	UPROPERTY(BlueprintAssignable)

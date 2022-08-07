@@ -55,7 +55,8 @@ void USATORI_GameplayAbilityComponent::BeginPlay()
 			PrevAbilityValue = PortalRewardAbilities.Num() - 1;
 			NextAbilityValue = 1;
 		}
-		else if (PortalRewardAbilities.Num() == 3)
+
+		if (PortalRewardAbilities.Num() == 3)
 		{
 			PrevAbilityValue = PortalRewardAbilities.Num() - 1;
 			NextAbilityValue = CurrentAbilityValue + 1;
@@ -78,71 +79,77 @@ bool USATORI_GameplayAbilityComponent::TryChangeAbility()
 	return false;
 }
 
-TSubclassOf<USATORI_GameplayAbility> USATORI_GameplayAbilityComponent::GetCurrentAbility()
-{
-	FName CurrentName = PlayerAbilitiesNames[CurrentAbilityValue];
-	if (CurrentName.IsValid())
-	{
-		FSATORI_AbilitiesDatas* LocalAbilityData = PlayerGameplayAbility.Find(CurrentName);
-		CurrentGameplayAbility = LocalAbilityData->CurrentAbility;
-		if(CurrentGameplayAbility)
-		{
-			return CurrentGameplayAbility;
-		}
-	}
-	
-	FSATORI_AbilitiesDatas* FirstAbilityData = PlayerGameplayAbility.Find(PlayerAbilitiesNames[0]);
-	CurrentGameplayAbility = FirstAbilityData->CurrentAbility;
-	return CurrentGameplayAbility;
-}
-
 void USATORI_GameplayAbilityComponent::SetNextAbility()
 {
-	CurrentAbilityValue++;
-	if (CurrentAbilityValue >= PlayerAbilitiesNames.Num())
-		CurrentAbilityValue = 0;
+	// If we have more than 1 abilties
+	if (PlayerAbilitiesNames.Num() > 1)
+	{
+		CurrentAbilityValue++;
+		if (CurrentAbilityValue >= PlayerAbilitiesNames.Num())
+			CurrentAbilityValue = 0;
 
-	NextAbilityValue++;
-	if (NextAbilityValue >= PlayerAbilitiesNames.Num())
-		NextAbilityValue = 0;
+		NextAbilityValue++;
+		if (NextAbilityValue >= PlayerAbilitiesNames.Num())
+			NextAbilityValue = 0;
 
-	PrevAbilityValue++;
-	if (PrevAbilityValue >= PlayerAbilitiesNames.Num())
+		PrevAbilityValue++;
+		if (PrevAbilityValue >= PlayerAbilitiesNames.Num())
+			PrevAbilityValue = 0;
+
+	}
+	else
+	{
 		PrevAbilityValue = 0;
+		NextAbilityValue = 0;
+		CurrentAbilityValue = 0;
+	}
 
 	NotifyAbilityChanged();
 }
 
 void USATORI_GameplayAbilityComponent::SetPrevAbility()
 {
-	CurrentAbilityValue--;
-	if (CurrentAbilityValue < 0)
-		CurrentAbilityValue = PlayerAbilitiesNames.Num() - 1;
+	if (PlayerAbilitiesNames.Num() > 1)
+	{
+		CurrentAbilityValue--;
+		if (CurrentAbilityValue < 0)
+			CurrentAbilityValue = PlayerAbilitiesNames.Num() - 1;
 
-	NextAbilityValue--;
-	if (NextAbilityValue < 0)
-		NextAbilityValue = PlayerAbilitiesNames.Num() - 1;
+		NextAbilityValue--;
+		if (NextAbilityValue < 0)
+			NextAbilityValue = PlayerAbilitiesNames.Num() - 1;
 
-	PrevAbilityValue--;
-	if (PrevAbilityValue < 0)
-		PrevAbilityValue = PlayerAbilitiesNames.Num() - 1;
+		PrevAbilityValue--;
+		if (PrevAbilityValue < 0)
+			PrevAbilityValue = PlayerAbilitiesNames.Num() - 1;
+	}
+	else
+	{
+		PrevAbilityValue = 0;
+		NextAbilityValue = 0;
+		CurrentAbilityValue = 0;
+	}
 
 	NotifyAbilityChanged();
 }
 
 TSubclassOf<USATORI_GameplayAbility> USATORI_GameplayAbilityComponent::GetCurrentSatoriAbility()
 {
-	const FSATORI_AbilitiesDatas* AbilityData = PlayerGameplayAbility.Find(PlayerAbilitiesNames[CurrentAbilityValue]);
-	if (AbilityData)
+	if (PortalRewardAbilities.Num() > 0)
 	{
-		CurrentGameplayAbility = AbilityData->CurrentAbility;
-		if (CurrentGameplayAbility)
+		const FSATORI_AbilitiesDatas* AbilityData = &PortalRewardAbilities[CurrentAbilityValue];
+		if (AbilityData)
 		{
-			return CurrentGameplayAbility;
+			CurrentGameplayAbility = AbilityData->CurrentAbility;
+			if (CurrentGameplayAbility)
+			{
+				return CurrentGameplayAbility;
+			}
 		}
+
 	}
 
-	return AbilityData->CurrentAbility;
+	return nullptr;
 }
 
 
@@ -202,6 +209,12 @@ void USATORI_GameplayAbilityComponent::CheckAbilitiesStatus(FSATORI_AbilitiesIco
 			AbilitiesDatas.CurrentAbilitiyIcon = CurrentAbilityData->AbilitiyIcon;
 			AbilitiesDatas.NextAbilitiyIcon = NextAbilityData->AbilitiyIcon;
 			AbilitiesDatas.PrevAbilitiyIcon = EmptyAbilitiyIcon;
+		}
+		else if (PortalRewardAbilities.Num() == 3)
+		{
+			AbilitiesDatas.CurrentAbilitiyIcon = CurrentAbilityData->AbilitiyIcon;
+			AbilitiesDatas.NextAbilitiyIcon = NextAbilityData->AbilitiyIcon;
+			AbilitiesDatas.PrevAbilitiyIcon = PrevAbilityData->AbilitiyIcon;
 		}
 		else
 		{

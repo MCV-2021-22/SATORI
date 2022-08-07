@@ -87,7 +87,7 @@ void ASATORI_Portal::OnComponentBeginOverlap(UPrimitiveComponent* OverlappedComp
 			ApplyEffectToPlayer(Character);
 		}
 
-		else if(CurrentAbility.Get())
+		if(CurrentAbility.Get())
 		{
 			GrantedAbilityToPlayer(Character);
 		}
