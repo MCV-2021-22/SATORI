@@ -20,7 +20,7 @@ bool UBTDecorator_OutRangeMax::CalculateRawConditionValue(UBehaviorTreeComponent
 
 	ASATORI_AICharacter* AI = Cast<ASATORI_AICharacter>(Pawn);
 
-	ASATORICharacter* Player1 = Cast<ASATORICharacter>(OwnerComp.GetBlackboardComponent()->GetValueAsObject(MyBlackboardKey.SelectedKeyName));
+	ASATORI_CharacterBase* Player1 = Cast<ASATORI_CharacterBase>(OwnerComp.GetBlackboardComponent()->GetValueAsObject(MyBlackboardKey.SelectedKeyName));
 
 	float dist = AI->GetDistanceTo(Player1);
 
