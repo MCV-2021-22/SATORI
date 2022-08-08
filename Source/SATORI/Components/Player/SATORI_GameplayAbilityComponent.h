@@ -79,10 +79,13 @@ public:
 	int CurrentAbilityValue = 0;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
-	int NextAbilityValue = 0;
+	int LastAbilityValue = -1;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
-	int PrevAbilityValue = 0;
+	int MidAbilityValue = -1;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	int FirstAbilityValue = -1;
 	// Getters
 
 	TArray<FSATORI_AbilitiesDatas> GetCharacterAbilities() { return PortalRewardAbilities; }
@@ -109,7 +112,6 @@ public:
 protected:
 	
 	virtual void BeginPlay() override;
-
 private:
 
 	FName AbilityName;
@@ -121,9 +123,9 @@ private:
 	ASATORICharacter* PlayerCharacter = nullptr;
 
 	// Abilites Datas
-	const FSATORI_AbilitiesDatas* CurrentAbilityData = nullptr;
-	const FSATORI_AbilitiesDatas* NextAbilityData = nullptr;
-	const FSATORI_AbilitiesDatas* PrevAbilityData = nullptr;
+	const FSATORI_AbilitiesDatas* MidAbilityData = nullptr;
+	const FSATORI_AbilitiesDatas* LastAbilityData = nullptr;
+	const FSATORI_AbilitiesDatas* FirstAbilityData = nullptr;
 public:
 
 	void AddPortalAbilities(FSATORI_AbilitiesDatas AbilityData);
