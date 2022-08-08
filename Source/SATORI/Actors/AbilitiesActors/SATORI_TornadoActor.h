@@ -96,10 +96,10 @@ public:
 			const FHitResult& SweepResult);
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Tornado|Tags")
-	FGameplayTag  TrappedTag;
+	FGameplayTag  EnemyTag;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Tornado|Tags")
-	FGameplayTag  EnemyTag;
+	FGameplayTag  TrappedTag;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Tornado|Tags")
 	FGameplayTag  LaunchTag;

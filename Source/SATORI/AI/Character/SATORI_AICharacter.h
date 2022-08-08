@@ -140,12 +140,6 @@ protected:
 
 	bool Bursting = false;
 
-	float dmg_stun = 0.f;
-
-	float time_stun = 5.f;
-
-	bool Stunning = false;
-
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	class USphereComponent* HeadComponent;
 

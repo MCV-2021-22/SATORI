@@ -6,7 +6,7 @@
 #include "Actors/AbilitiesActors/SATORI_DashMeleeActor.h"
 #include "GAS/SATORI_GameplayAbility.h"
 #include "SATORI/AbilityTask/SATORI_PlayMontageAndWaitEvent.h"
-#include "SATORI/Character/SATORI_CharacterBase.h"
+#include "AI/Character/SATORI_AICharacter.h"
 #include "SATORI_AI_DashAbilityMelee.generated.h"
 
 class UCharacterMovementComponent;
@@ -54,11 +54,8 @@ public:
 
 protected:
 
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (UIMin = "1.0"), Category = "Ability|Dash")
-	float DashDistance = 25.0f;
-
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (UIMin = "0.001", UIMax = "1.0"), Category = "Ability|Dash")
-	float DashSpeed = 0.01f;
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (UIMin = "0.001"), Category = "Ability|Dash")
+	float DashSpeed = 5.0f;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (UIMin = "0.0"), Category = "Ability|Missile")
 	float Damage = 1.0f;
@@ -75,21 +72,21 @@ protected:
 	UFUNCTION()
 	void EventReceived(FGameplayTag EventTag, FGameplayEventData EventData);
 
-	FVector EnemyPosition;
 
-	void SpawnActor();
 
 private:
 
-	const bool bStopWhenAbilityEnds = true;
+	ASATORI_AICharacter* Melee;
+
+	bool bDashing = false;
 
 	FVector Direction = FVector::FVector(1.0f, 0.0f, 0.0f); //It just works
 
-	ASATORI_CharacterBase* Melee;
+	FVector EnemyPosition;
+	
+	void SpawnActor();
 
-	FTransform SpawnTransform;
-
-	bool bDashing = false;
+	const bool bStopWhenAbilityEnds = true;
 
 public:
 

@@ -35,7 +35,7 @@ void USATORI_AI_DashAbilityMelee::ActivateAbility(
 		return;
 	}
 
-	Melee = Cast<ASATORI_CharacterBase>(GetAvatarActorFromActorInfo());
+	Melee = Cast<ASATORI_AICharacter>(GetAvatarActorFromActorInfo());
 	if (!Melee)
 	{
 		UE_LOG(LogTemp, Display, TEXT("[%s] USATORI_DashAbilityMelee: Cannot Cast ASATORICharacter ... "), *GetName());
@@ -121,11 +121,11 @@ void USATORI_AI_DashAbilityMelee::EventReceived(FGameplayTag EventTag, FGameplay
 
 void USATORI_AI_DashAbilityMelee::SpawnActor()
 {
+	FTransform SpawnTransform;
 	SpawnTransform.SetLocation(EnemyPosition);
 
-	//Missile Actor creation
-	ASATORI_DashMeleeActor* DashActor = GetWorld()->SpawnActorDeferred<ASATORI_DashMeleeActor>(DashMeleeActor, SpawnTransform, GetOwningActorFromActorInfo(),
-		Melee, ESpawnActorCollisionHandlingMethod::AlwaysSpawn);
+	//Decal creation
+	ASATORI_DashMeleeActor* DashActor = GetWorld()->SpawnActorDeferred<ASATORI_DashMeleeActor>(DashMeleeActor, SpawnTransform, GetOwningActorFromActorInfo(), Melee, ESpawnActorCollisionHandlingMethod::AlwaysSpawn);
 	DashActor->DamageGameplayEffect = DamageGameplayEffect;
 	DashActor->Damage = Damage;
 	DashActor->TimeToDestroy = TimeToDestroy;
@@ -137,9 +137,7 @@ void USATORI_AI_DashAbilityMelee::Tick(float DeltaTime)
 	if(bDashing)
 	{
 		FVector Position = Melee->GetActorLocation();
-
-		FVector NextPos = UKismetMathLibrary::VInterpTo(Position, EnemyPosition, DeltaTime, 5.f);
-
+		FVector NextPos = UKismetMathLibrary::VInterpTo(Position, EnemyPosition, DeltaTime, DashSpeed);
 		Melee->SetActorLocation(NextPos);
 	}
 

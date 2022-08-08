@@ -317,15 +317,6 @@ void ASATORI_AICharacter::Tick(float DeltaSeconds)
 		}
 	}
 
-	if (Stunning)
-	{
-		time_stun -= DeltaSeconds;
-		if (time_stun <= 0.f)
-		{
-			Stunning = false;
-		}
-	}
-
 	Super::Tick(DeltaSeconds);
 }
 
@@ -342,37 +333,16 @@ void ASATORI_AICharacter::sendDamage(float dmg)
 
 	dmg_burst += dmg;
 
-	if(dmg_burst>= max_health_possible*0.6f && !HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag(("State.Burst"))))
-	{
-		RemoveGameplayTag(FGameplayTag::RequestGameplayTag("Ability.Testing"));
-		UAnimMontage* AnimMontage = GetCurrentMontage();
-		if (IsValid(AnimMontage))
-		{
-			StopAnimMontage(AnimMontage);
-		}
-		AddGameplayTag(FGameplayTag::RequestGameplayTag("State.Burst"));
-	}
-
-	if (!Stunning)
-	{
-		time_stun = 5.f;
-		dmg_stun = 0.f;
-		Stunning = true;
-	}
-
-	dmg_stun += dmg;
-
-
-	if (dmg_stun >= max_health_possible * 0.2f && !HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag(("State.Stunned"))) && !HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag(("State.Burst"))))
-	{
-		RemoveGameplayTag(FGameplayTag::RequestGameplayTag("Ability.Testing"));
-		UAnimMontage* AnimMontage = GetCurrentMontage();
-		if (IsValid(AnimMontage))
-		{
-			StopAnimMontage(AnimMontage);
-		}
-		AddGameplayTag(FGameplayTag::RequestGameplayTag("State.Stunned"));
-	}
+	//if(dmg_burst>= max_health_possible*0.6f && !HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag(("State.Blocking"))))
+	//{
+	//	RemoveGameplayTag(FGameplayTag::RequestGameplayTag("Ability"));
+	//	UAnimMontage* AnimMontage = GetCurrentMontage();
+	//	if (IsValid(AnimMontage))
+	//	{
+	//		StopAnimMontage(AnimMontage);
+	//	}
+	//	AddGameplayTag(FGameplayTag::RequestGameplayTag("State.Blocking"));
+	//}
 	
 	float life = GetHealth();
 
