@@ -27,6 +27,6 @@ public:
 	FGameplayTag AbilityTag;
 
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Ability|Tags")
-	FGameplayTag BurstTag;
-	
+	FGameplayTag StateTag;
+
 };
