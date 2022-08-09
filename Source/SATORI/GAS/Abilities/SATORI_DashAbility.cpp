@@ -118,7 +118,7 @@ void USATORI_DashAbility::EndAbility(
 	bool bReplicateEndAbility,
 	bool bWasCancelled)
 {
-	Character = Cast<ASATORI_CharacterBase>(GetOwningSatoriCharacter());
+	Character = Cast<ASATORI_CharacterBase>(GetAvatarActorFromActorInfo());
 	if(Character)
 	{
 		//CapsuleComponent->SetCollisionResponseToChannel(ECollisionChannel, ECollisionResponse::ECR_Overlap);
