@@ -24,7 +24,7 @@ bool UBTDecorator_InRangeBase::CalculateRawConditionValue(UBehaviorTreeComponent
 
 	float dist = AI->GetDistanceTo(Player1);
 
-	if(dist<= AI->getDistAttack())
+	if(dist <= AI->GetAttackDistance())
 	{
 		return true;
 	}

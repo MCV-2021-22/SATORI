@@ -33,5 +33,4 @@ void USATORI_AIDeathAbility::ActivateAbility(
 	{
 		Character->StopAnimMontage(AnimMontage);
 	}
-
 }

@@ -516,7 +516,7 @@ void ASATORICharacter::OnWeaponOverlapBegin(UPrimitiveComponent* OverlappedComp,
 			{
 				AttackingCollision->SetGenerateOverlapEvents(false);
 			}
-			EnemyCharacter->sendDamage(Damage_Values);
+			EnemyCharacter->CheckDamage();
 			/*AnimactionPlayRater = 0.5f;
 			UGameplayStatics::SetGlobalTimeDilation(GetWorld(), AnimactionPlayRater);*/
 		}

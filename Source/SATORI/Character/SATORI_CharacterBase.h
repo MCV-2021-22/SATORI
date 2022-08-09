@@ -20,11 +20,6 @@ class SATORI_API ASATORI_CharacterBase : public ACharacter, public IAbilitySyste
 	GENERATED_BODY()
 
 public:
-
-	//UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Tags")
-	//FGameplayTagContainer GameplayTags;
-
-public:
 	
 	ASATORI_CharacterBase();
 
@@ -68,12 +63,6 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Tags")
 	void RemoveGameplayTag(const FGameplayTag& TagToRemove);
 
-	//UFUNCTION(BlueprintCallable, Category = "Tags")
-	//void AddGameplayTagToAbilitySystem(const FGameplayTag& TagToAdd);
-
-	//UFUNCTION(BlueprintCallable, Category = "Tags")
-	//void RemoveGameplayTagFromAbilitySystem(const FGameplayTag& TagToRemove);
-
 	UFUNCTION(BlueprintCallable, Category = "Tags")
 	void BlockGameplayTag(const FGameplayTagContainer& TagsToBlock);
 
@@ -104,8 +93,6 @@ public:
 	//Tag 
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Tags")
 	FGameplayTag DeadTag;
-
-	FGameplayTag EffectRemoveOnDeathTag;
 
 	UFUNCTION(BlueprintCallable, Category = "Player|Attributes")
 	virtual void SetHealth(float Health);
@@ -142,4 +129,6 @@ protected:
 	TWeakObjectPtr<USATORI_AbilitySystemComponent> AbilitySystemComponent;
 
 	TArray<TSubclassOf<USATORI_GameplayAbility>> RemovedgameplayAbilities;
+
+	FGameplayTag EffectRemoveOnDeathTag;
 };

@@ -40,41 +40,22 @@ class SATORI_API ASATORI_AICharacter : public ASATORI_CharacterBase, public ISAT
 	GENERATED_BODY()
 
 public:
-	// Sets default values for this character's properties
+
 	ASATORI_AICharacter();
-
-	// Ray Cast
-	UFUNCTION(BlueprintCallable)
-	bool CheckPlayerWithRayCast();
-
 	
-protected:
-	// Called when the game starts or when spawned
-	virtual void BeginPlay() override;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Awareness)
+	UPawnSensingComponent* PawnSensor;
 
-	virtual void Tick(float DeltaSeconds) override;
-
-	// Initialize AI Attributes from GE
-	void InitializeAttributes();
-
-	// Adding Abilities to AI
-	virtual void AddAICharacterAbilities();
-
-	void GrantAbilityToPlayer(FGameplayAbilitySpec Ability);
-
-	virtual void PossessedBy(AController* NewController) override;
-
-	virtual void OnConstruction(const FTransform& Transform) override;
-public:
 	UPROPERTY()
 	USATORI_AttributeSet* AttributeSet;
 
 	// Character Default Abilities Asset (Contain List of Player Abilities)
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "AI|GAS")
 	USATORI_AbilityDataAsset* DefaultAbilities;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Awareness)
-	UPawnSensingComponent* PawnSensor;
+	
+	// Default attributes for a character for initializing
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Player|GameplayEffect")
+	TArray<TSubclassOf<UGameplayEffect>> PassiveGameplayEffects;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon")
 	UCapsuleComponent* AttackingCollision2;
@@ -82,26 +63,49 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Stats")
 	USATORI_EnemyStatComponent* EnemyStatComponent;
 
-	bool GetIsInFront() const { return isInFrontPlayer; }
-
+	//Ray Cast
 	UFUNCTION(BlueprintCallable)
-	void sendDamage(float dmg);
+	bool CheckPlayerWithRayCast();	
+	bool GetIsInFront() const { return isInFrontPlayer; }
+	
+	//Draw Debug
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Debug")
+	bool bDrawDebug = false;
 
-	float getDistAttack();
+protected:
 
-	float getMaxRangeDist();
+	virtual void BeginPlay() override;
+	virtual void Tick(float DeltaSeconds) override;
+	virtual void PossessedBy(AController* NewController) override;
+	virtual void OnConstruction(const FTransform& Transform) override;
 
+	// Initialize AI Attributes from GE
+	void InitializeAttributes();
+
+	// Adding Abilities to AI
+	virtual void AddAICharacterAbilities();
+
+	void GrantAbility(FGameplayAbilitySpec Ability);
+
+public:
+
+	//Deathchecking
+	UFUNCTION(BlueprintCallable)
+	void CheckDamage();
+
+	//Range
+	float GetAttackDistance();
+	float GetMaxRange();
+
+	//Health UI
 	UFUNCTION(BlueprintCallable)
 	void HealthBarProjection(UWidgetComponent* HealthBar, float ViewDistance, float RangeA, float RangeB);
-
-	// Default attributes for a character for initializing
-	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Player|GameplayEffect")
-	TArray<TSubclassOf<UGameplayEffect>> PassiveGameplayEffects;
 
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "UI")
 	TSubclassOf<USATORI_EnemyHealthBar> HealthBarUI;
 	
 protected:
+
 	// Default attributes for a character for initializing on spawn/respawn.
 	// This is an instant GE that overrides the values for attributes that get reset on spawn/respawn.
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "AI|GAS")
@@ -117,33 +121,23 @@ protected:
 	USkeletalMeshComponent* SwordComponent2;
 	
 	UPROPERTY(EditAnywhere)
-	TSoftObjectPtr <UBehaviorTree> bte;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
-	UBehaviorTree* btree;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
-	float dist_attack = 100.f;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
-	float max_range_dist = 700.f;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
-	bool isInFrontPlayer = false;
+	TSoftObjectPtr <UBehaviorTree> BehaviorTree;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	SATORIEnemyType EnemyType;
 
-	float dmg_burst = 0.f;
-
-	float time_burst = 5.f;
-
-	bool Bursting = false;
-
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	class USphereComponent* HeadComponent;
 
-	
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	float AttackDistance = 100.f;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	float MaxRange = 700.f;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	bool isInFrontPlayer = false;
+
 public: //Target System Interface related and Tag Abilities related (Nacho)
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Tag")
@@ -157,25 +151,4 @@ public: //Target System Interface related and Tag Abilities related (Nacho)
 
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "Target System")
 	void RegisterInTargetableArray();
-
-public: //Character Death
-
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Death")
-	UAnimMontage* DeathMontage;
-
-	virtual void CharacterDeath() override;
-
-	virtual void RemoveCharacterAbilities() override;
-
-	void DestroyMyself();
-
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Tag")
-	FGameplayTagContainer   BlockTags;
-
-	UFUNCTION(BlueprintCallable)
-	bool GetBurstingState();
-
-	UFUNCTION(BlueprintCallable)
-	void SetBurstingFalse();
-
 };

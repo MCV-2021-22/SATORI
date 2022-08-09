@@ -21,7 +21,7 @@ ASATORI_RangeMovable::ASATORI_RangeMovable()
 
 	//CharacterMovement->bRunPhysicsWithNoController = 3;
 
-	bte = TSoftObjectPtr <UBehaviorTree>(FSoftObjectPath(TEXT("/Game/SATORI/AI/RangeMovable/BT_RangeMovable.BT_RangeMovable")));
+	BehaviorTree = TSoftObjectPtr <UBehaviorTree>(FSoftObjectPath(TEXT("/Game/SATORI/AI/RangeMovable/BT_RangeMovable.BT_RangeMovable")));
 	
 }
 

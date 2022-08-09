@@ -24,7 +24,7 @@ bool UBTDecorator_OutRangeMax::CalculateRawConditionValue(UBehaviorTreeComponent
 
 	float dist = AI->GetDistanceTo(Player1);
 
-	if(dist > AI->getMaxRangeDist())
+	if(dist > AI->GetMaxRange())
 	{
 		return true;
 	}

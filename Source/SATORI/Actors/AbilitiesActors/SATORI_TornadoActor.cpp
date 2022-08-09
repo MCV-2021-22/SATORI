@@ -163,8 +163,8 @@ void ASATORI_TornadoActor::StayGrounded(float DeltaTime)
 void ASATORI_TornadoActor::DamageEnemy(AActor* Actor)
 {
 	ASATORI_AICharacter* Character = Cast<ASATORI_AICharacter>(Actor);
-	float DamageDone = USATORI_BlueprintLibrary::ApplyGameplayEffectDamage(Actor, Damage, Actor, DamageGameplayEffect);
-	Character->sendDamage(DamageDone);
+	USATORI_BlueprintLibrary::ApplyGameplayEffectDamage(Actor, Damage, Actor, DamageGameplayEffect);
+	Character->CheckDamage();
 }
 
 //Position of enemies calculations

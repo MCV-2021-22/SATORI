@@ -9,7 +9,7 @@ ASATORI_Melee::ASATORI_Melee()
 {
 	PrimaryActorTick.bCanEverTick = true;
 
-	bte = TSoftObjectPtr <UBehaviorTree>(FSoftObjectPath(TEXT("/Game/SATORI/AI/Melee/BT_MELEE.BT_MELEE")));
+	BehaviorTree = TSoftObjectPtr <UBehaviorTree>(FSoftObjectPath(TEXT("/Game/SATORI/AI/Melee/BT_MELEE.BT_MELEE")));
 
 	SwordComponent2 = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("Sword2"));
 	AttackingCollision2 = CreateDefaultSubobject<UCapsuleComponent>(TEXT("Sword Collision2"));
