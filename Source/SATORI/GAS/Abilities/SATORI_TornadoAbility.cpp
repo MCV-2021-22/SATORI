@@ -99,6 +99,11 @@ void USATORI_TornadoAbility::EventReceived(FGameplayTag EventTag, FGameplayEvent
 			Rotation = Character->GetActorRotation();
 		}
 
+		//Fix for not bouncing of stairs  when spawning
+		FVector HeightFixForStairs = SpawnTransform.GetLocation();
+		HeightFixForStairs.Z += 100.0f;
+		SpawnTransform.SetLocation(HeightFixForStairs);
+
 		SpawnTransform.SetRotation(Rotation.Quaternion());
 
 		//Tornado Actor creation
