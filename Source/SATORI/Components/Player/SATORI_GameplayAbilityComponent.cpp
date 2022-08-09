@@ -183,6 +183,12 @@ void USATORI_GameplayAbilityComponent::SetSavedAbilitiesWithGameInstance(USATORI
 	UpgratedAbilities = GameInstance->UpgratedAbilities;
 }
 
+void USATORI_GameplayAbilityComponent::ResetCurrentPlayerAbilities()
+{
+	NormalAbilities.Empty(); 
+	UpgratedAbilities.Empty(); 
+}
+
 /*if (AbilitiesIconDatas)
 	{
 		for (const TPair<FName, FSATORI_AbilitiesDatas>& pair : PlayerGameplayAbility)

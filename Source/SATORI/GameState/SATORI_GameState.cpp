@@ -124,11 +124,14 @@ void ASATORI_GameState::GeneratedRandomPlayerAbility()
         else if (PortalGrantedNormalAbilityToApply.Num() > 0)
         {
             int Size = PortalGrantedNormalAbilityToApply.Num() - 1;
-            FSATORI_PortalAbilitiesDatasReward Reward = PortalGrantedNormalAbilityToApply[Size];
-            InstancePortals[0]->SetCurrentGameplayAbilityData(Reward);
-            UE_LOG(LogTemp, Display, TEXT(" Player Normal Abilities Size : [%d] "), Size);
-            FString AbilityString = Reward.AbilityName.ToString();
-            UE_LOG(LogTemp, Warning, TEXT(" Player Normal Ability Name : %s "), *AbilityString);
+            if (Size > 0)
+            {
+                FSATORI_PortalAbilitiesDatasReward Reward = PortalGrantedNormalAbilityToApply[Size];
+                InstancePortals[0]->SetCurrentGameplayAbilityData(Reward);
+                UE_LOG(LogTemp, Display, TEXT(" Player Normal Abilities Size : [%d] "), Size);
+                FString AbilityString = Reward.AbilityName.ToString();
+                UE_LOG(LogTemp, Warning, TEXT(" Player Normal Ability Name : %s "), *AbilityString);
+            }
             if (GameInstanceRef)
             {
                 GameInstanceRef->RemoveElementonFromNormalAbilities();

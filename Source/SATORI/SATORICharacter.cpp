@@ -267,39 +267,21 @@ bool ASATORICharacter::IsEnemyInFrontOfAngle()
 
 	bool bHit = false;
 
+	// Check enemy is in front
 	if (IsEnemyInFront(StartPosition, EndPosition, HitResult))
 	{
 		NewActors.Add(HitResult.Actor);
 		UE_LOG(LogTemp, Warning, TEXT("Enemigo in front !!! "));
 		bHit = true;
 	}
+	// Check enemy is in front of the angle
 	else
 	{
-		for (int i = -5; i <= 5; i++)
+		bHit = IsEnemyInFront(StartPosition, EndPosition, HitResult, AttackRange);
+		if (bHit)
 		{
-			FVector Axis = FVector::ZAxisVector;
-			float rad = FMath::DegreesToRadians(i * VisibleAttackAngle);
-			FQuat quaternion = FQuat(Axis, rad);
-			FRotator rotator = FRotator(quaternion);
-			FVector newDelta = rotator.RotateVector(delta);
-
-			FVector newEndPos = newDelta + StartPosition;
-
-			bool newHit = GetWorld()->LineTraceSingleByChannel(
-				HitResult,
-				StartPosition,
-				newEndPos,
-				ECollisionChannel::ECC_Pawn,
-				Params
-			);
-
-			::DrawDebugLine(World, StartPosition, newEndPos, newHit ? FColor::Green : FColor::Red, false, 1.0f);
-			if (newHit)
-			{
-				NewActors.Add(HitResult.Actor);
-				bHit = true;
-				break;
-			}
+			NewActors.Add(HitResult.Actor);
+			UE_LOG(LogTemp, Warning, TEXT("Enemigo in front of the angle!!! "));
 		}
 	}
 
@@ -319,7 +301,7 @@ bool ASATORICharacter::IsEnemyInFrontOfAngle()
 	return bHit;
 }
 
-bool ASATORICharacter::IsEnemyInFront(const FVector StartPosition, const FVector EndPosition, FHitResult& LocalHitResult)
+bool ASATORICharacter::IsEnemyInFront(const FVector StartPosition, const FVector EndPosition, FHitResult& LocalHitResult, int RotationSize)
 {
 	bool newHit = false;
 
@@ -330,7 +312,7 @@ bool ASATORICharacter::IsEnemyInFront(const FVector StartPosition, const FVector
 
 	FVector delta = EndPosition - StartPosition;
 
-	for (int i = -1; i <= 1; i++)
+	for (int i = -RotationSize; i <= RotationSize; i++)
 	{
 		FVector Axis = FVector::ZAxisVector;
 		float rad = FMath::DegreesToRadians(i * VisibleAttackAngle);
@@ -426,10 +408,22 @@ void ASATORICharacter::CharacterDeath()
 	// Only runs on Server
 	RemoveCharacterAbilities();
 
+	// Reset portal ability rewards
+	USATORI_GameInstance* GameInstanceRef = Cast<USATORI_GameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
+	if (GameInstanceRef)
+	{
+		GameInstanceRef->ResetPortalRewardAbilities();
+	}
+
+	// Reset current player reward abilities with the portal to zero
+	this->PlayerGameplayAbilityComponent->ResetCurrentPlayerAbilities();
+
+	// Set Collision
 	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	GetCharacterMovement()->GravityScale = 0;
 	GetCharacterMovement()->Velocity = FVector(0);
 
+	// Remove all gameplay effects
 	if (AbilitySystemComponent.IsValid())
 	{
 		AbilitySystemComponent->CancelAllAbilities();
@@ -441,15 +435,18 @@ void ASATORICharacter::CharacterDeath()
 		AbilitySystemComponent->AddLooseGameplayTag(DeadTag);
 	}
 
+	// Playe Death montage
 	if (DeathMontage)
 	{
 		ASATORI_PlayerController* SatoriController = Cast<ASATORI_PlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
 		if (SatoriController)
 		{
+			// Disable all player inputs
 			DisableInput(SatoriController);
 			SatoriController->SetShowMouseCursor(true);
 			ShowDeathWidget();
 		}
+		// Play montages
 		PlayAnimMontage(DeathMontage);
 	}
 }

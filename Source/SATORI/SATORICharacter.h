@@ -97,6 +97,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Attack Setting")
 	float VisibleAttackAngle = 8.0f;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Attack Setting")
+	int AttackRange = 5;
+
 	void SetComboJumpSection(USATORI_ANS_JumpSection* JumpSection);
 
 	// Combos 
@@ -146,7 +149,7 @@ protected:
 	void GrantAbilityToPlayer(FGameplayAbilitySpec Ability);
 	void InitializePassiveAttributes();
 
-	bool IsEnemyInFront(const FVector StartPosition, const FVector EndPosition, FHitResult& LocalHitResult);
+	bool IsEnemyInFront(const FVector StartPosition, const FVector EndPosition, FHitResult& LocalHitResult, int RotationSize = 1);
 
 	TWeakObjectPtr<AActor> FindNearestEnemy(TArray<TWeakObjectPtr<AActor>> Actors);
 protected:

@@ -92,6 +92,8 @@ public:
 
 	void RemoveElementonFromNormalAbilities();
 	void RemoveElementonFromUpgratedAbilities();
+
+	void ResetPortalRewardAbilities();
 private:
 	void InitSaveGame();
 
@@ -108,4 +110,8 @@ private:
 	TArray<FSATORI_PortalAbilitiesDatasReward> PortalGrantedUpgratedAbilityToApply;
 	// Normal
 	TArray<FSATORI_PortalAbilitiesDatasReward> PortalGrantedNormalAbilityToApply;
+
+	// Recicle the portal reward abilities
+	TArray<FSATORI_PortalAbilitiesDatasReward> PortalRecicledUpgratedAbility;
+	TArray<FSATORI_PortalAbilitiesDatasReward> PortalRecicledNormalAbility;
 };
