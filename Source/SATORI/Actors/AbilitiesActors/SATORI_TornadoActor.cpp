@@ -47,11 +47,11 @@ void ASATORI_TornadoActor::OnOverlapCollisionSphere(UPrimitiveComponent* Overlap
 	}
 
 	//Enemies
-	if (Character->HasMatchingGameplayTag(EnemyTag) && !Character->HasMatchingGameplayTag(TrappedTag) && ArrayActorsTrapped.Num() < MaxEnemies)
+	if (Character->HasMatchingGameplayTag(EnemyTag) && !Character->HasMatchingGameplayTag(PushedTag) && ArrayActorsTrapped.Num() < MaxEnemies)
 	{
 		StopAction(Character);
 		ArrayActorsTrapped.AddUnique(OtherActor);
-		Character->AddGameplayTag(TrappedTag);
+		Character->AddGameplayTag(PushedTag);
 		CalculateAngle(OtherActor);
 	}
 }
@@ -59,6 +59,10 @@ void ASATORI_TornadoActor::OnOverlapCollisionSphere(UPrimitiveComponent* Overlap
 //Stops ability and  animation if active
 void ASATORI_TornadoActor::StopAction(ASATORI_AICharacter* Character)
 {
+	//Edge case tornado affects even if blocking
+	Character->RemoveGameplayTag(BlockingTag);
+	Character->RemoveGameplayTag(StunnedTag);
+
 	Character->RemoveGameplayTag(AbilityTag);
 	UAnimMontage* AnimMontage = Character->GetCurrentMontage();
 	if (IsValid(AnimMontage))
@@ -97,7 +101,7 @@ void ASATORI_TornadoActor::DestroyMyself()
 void ASATORI_TornadoActor::LaunchEnemy(AActor* Actor)
 {
 	ASATORI_AICharacter* Character = Cast<ASATORI_AICharacter>(Actor);
-	Character->RemoveGameplayTag(TrappedTag);
+	Character->RemoveGameplayTag(PushedTag);
 
 	FVector LaunchDirection = Actor->GetActorLocation() - GetActorLocation();
 	LaunchDirection.Z = ZLaunching;
@@ -111,6 +115,12 @@ void ASATORI_TornadoActor::LaunchEnemy(AActor* Actor)
 void ASATORI_TornadoActor::BeginPlay()
 {
 	Super::BeginPlay();
+
+	if (!EnemyTag.IsValid() || !PushedTag.IsValid() || !LaunchTag.IsValid() || !AbilityTag.IsValid() || !BlockingTag.IsValid() || !StunnedTag.IsValid())
+	{
+		UE_LOG(LogTemp, Warning, TEXT("[%s] USATORI_TornadoActor: Tag not valid ... "), *GetName());
+		Destroy();
+	}
 
 	FTimerHandle TimerHandle;
 	GetWorldTimerManager().SetTimer(TimerHandle, this, &ASATORI_TornadoActor::DestroyMyself, TimeToFinish, false);

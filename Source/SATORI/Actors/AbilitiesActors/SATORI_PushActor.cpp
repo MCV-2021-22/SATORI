@@ -50,6 +50,9 @@ void ASATORI_PushActor::OnOverlapCollisionBox(UPrimitiveComponent* OverlappedCom
 //Stops ability and  animation if active
 void ASATORI_PushActor::StopAction(ASATORI_AICharacter* Character)
 {
+	//Edge cases
+	Character->RemoveGameplayTag(StunnedTag);
+
 	Character->RemoveGameplayTag(AbilityTag);
 	UAnimMontage* AnimMontage = Character->GetCurrentMontage();
 	if (IsValid(AnimMontage))
@@ -95,6 +98,12 @@ void ASATORI_PushActor::LaunchEnemy(AActor* Actor, ASATORI_AICharacter* Characte
 void ASATORI_PushActor::BeginPlay() 
 {
 	Super::BeginPlay();
+
+	if (!EnemyTag.IsValid() || !PushedTag.IsValid() || !LaunchTag.IsValid() || !AbilityTag.IsValid() || !StunnedTag.IsValid())
+	{
+		UE_LOG(LogTemp, Warning, TEXT("[%s] USATORI_PushActor: Tag not valid ... "), *GetName());
+		Destroy();
+	}
 
 	FTimerHandle TimerHandleDestroy;
 	GetWorldTimerManager().SetTimer(TimerHandleDestroy, this, &ASATORI_PushActor::DestroyMyself, TimeToFinish, false);

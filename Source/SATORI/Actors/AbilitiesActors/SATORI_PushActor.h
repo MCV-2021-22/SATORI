@@ -86,6 +86,9 @@ public:
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Push|Tags")
 	FGameplayTag  AbilityTag;
 
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Push|Tags")
+	FGameplayTag  StunnedTag;
+
 protected:
 
 	virtual void BeginPlay() override;
