@@ -46,41 +46,6 @@ void USATORI_GameplayAbilityComponent::BeginPlay()
 		}
 	}
 
-	//FirstAbilityValue = PlayerAbilitiesNames.Num() - 1;
-	
-	/*if (PlayerCharacter)
-	{
-		if (PortalRewardAbilities.Num() == 2)
-		{
-			FirstAbilityValue = PortalRewardAbilities.Num() - 1;
-			LastAbilityValue = 1;
-		}
-
-		if (PortalRewardAbilities.Num() == 3)
-		{
-			FirstAbilityValue = PortalRewardAbilities.Num() - 1;
-			LastAbilityValue = CurrentAbilityValue + 1;
-		}
-	}*/
-
-	if (PortalRewardAbilities.Num() == 1)
-	{
-		FirstAbilityValue = 0;
-	}
-
-	if (PortalRewardAbilities.Num() == 2)
-	{
-		FirstAbilityValue = 0;
-		MidAbilityValue = 1;
-	}
-
-	if (PortalRewardAbilities.Num() == 3)
-	{
-		FirstAbilityValue = 0;
-		MidAbilityValue = 1;
-		LastAbilityValue = 2;
-	}
-
 	NotifyAbilityChanged();
 }
 
@@ -100,69 +65,36 @@ bool USATORI_GameplayAbilityComponent::TryChangeAbility()
 
 void USATORI_GameplayAbilityComponent::SetNextAbility()
 {
-	// If we have more than 1 abilties
-	/*if (PortalRewardAbilities.Num() >= 2)
+	// Check if we have abilities
+	if (PortalRewardAbilities.Num() >= 1)
 	{
 		CurrentAbilityValue++;
 		if (CurrentAbilityValue >= PortalRewardAbilities.Num())
 			CurrentAbilityValue = 0;
-
-		LastAbilityValue++;
-		if (LastAbilityValue >= PortalRewardAbilities.Num())
-			LastAbilityValue = 0;
-
-		FirstAbilityValue++;
-		if (FirstAbilityValue >= PortalRewardAbilities.Num())
-			FirstAbilityValue = 0;
-	}
-	else if (PortalRewardAbilities.Num() >= 3)
-	{
-		CurrentAbilityValue++;
-		if (CurrentAbilityValue >= PortalRewardAbilities.Num())
-			CurrentAbilityValue = 0;
-
-		LastAbilityValue++;
-		if (LastAbilityValue >= PortalRewardAbilities.Num())
-			LastAbilityValue = 0;
-
-		FirstAbilityValue++;
-		if (FirstAbilityValue >= PortalRewardAbilities.Num())
-			FirstAbilityValue = 0;
-
 	}
 	else
 	{
-		FirstAbilityValue = 0;
-		LastAbilityValue = 0;
 		CurrentAbilityValue = 0;
-	}*/
-
+	}
+	UE_LOG(LogTemp, Display, TEXT(" Set Next Current Ability Value : [%d] "), CurrentAbilityValue);
 	NotifyAbilityChanged();
 }
 
 void USATORI_GameplayAbilityComponent::SetPrevAbility()
 {
-	/*if (PortalRewardAbilities.Num() > 1)
+	// Check if we have abilities
+	if (PortalRewardAbilities.Num() >= 1)
 	{
 		CurrentAbilityValue--;
 		if (CurrentAbilityValue < 0)
 			CurrentAbilityValue = PortalRewardAbilities.Num() - 1;
-
-		LastAbilityValue--;
-		if (LastAbilityValue < 0)
-			LastAbilityValue = PortalRewardAbilities.Num() - 1;
-
-		FirstAbilityValue--;
-		if (FirstAbilityValue < 0)
-			FirstAbilityValue = PortalRewardAbilities.Num() - 1;
 	}
 	else
 	{
-		FirstAbilityValue = 0;
-		LastAbilityValue = 0;
 		CurrentAbilityValue = 0;
-	}*/
+	}
 
+	UE_LOG(LogTemp, Display, TEXT(" Set Prev Current Ability Value : [%d] "), CurrentAbilityValue);
 	NotifyAbilityChanged();
 }
 
@@ -211,15 +143,6 @@ void USATORI_GameplayAbilityComponent::NotifyAbilityChanged()
 		CheckAbilitiesStatus(AbilityIconToChange);
 	}
 
-	/*const FSATORI_AbilitiesDatas* MidAbilityData = PlayerGameplayAbility.Find(PlayerAbilitiesNames[CurrentAbilityValue]);
-	const FSATORI_AbilitiesDatas* LastAbilityData = PlayerGameplayAbility.Find(PlayerAbilitiesNames[LastAbilityValue]);
-	const FSATORI_AbilitiesDatas* FirstAbilityData = PlayerGameplayAbility.Find(PlayerAbilitiesNames[FirstAbilityValue]);*/
-
-	/*if (!MidAbilityData && !LastAbilityData && !FirstAbilityData)
-		return;*/
-
-	//AbilityIconChange.Broadcast(*AbilityData);
-
 	AllAbilityIconChange.Broadcast(AbilityIconToChange);
 }
 
@@ -227,51 +150,53 @@ void USATORI_GameplayAbilityComponent::CheckAbilitiesStatus(FSATORI_AbilitiesIco
 {
 	if (PortalRewardAbilities.Num() > 0)
 	{
-		/*MidAbilityData = &PortalRewardAbilities[MidAbilityValue] ? &PortalRewardAbilities[MidAbilityValue] : nullptr;
+		/*SecondAbilityData = &PortalRewardAbilities[MidAbilityValue] ? &PortalRewardAbilities[MidAbilityValue] : nullptr;
 		LastAbilityData = &PortalRewardAbilities[LastAbilityValue] ? &PortalRewardAbilities[LastAbilityValue] : nullptr;
 		FirstAbilityData = &PortalRewardAbilities[FirstAbilityValue] ? &PortalRewardAbilities[FirstAbilityValue] : nullptr;*/
 
 		if (PortalRewardAbilities.Num() == 1)
 		{
-			FirstAbilityData = &PortalRewardAbilities[FirstAbilityValue];
-			AbilitiesDatas.CurrentAbilitiyIcon = EmptyAbilitiyIcon;
-			AbilitiesDatas.NextAbilitiyIcon = EmptyAbilitiyIcon;
-			AbilitiesDatas.PrevAbilitiyIcon = FirstAbilityData->AbilitiyIcon;
+			FirstAbilityData = &PortalRewardAbilities[0];
+			// Fill the datas
+			AbilitiesDatas.FirstAbilitiyIcon = FirstAbilityData->AbilitiyIcon;;
+			AbilitiesDatas.SecondAbilitiyIcon = EmptyAbilitiyIcon;
+			AbilitiesDatas.LastAbilitiyIcon = EmptyAbilitiyIcon;
 		}
 		else if (PortalRewardAbilities.Num() == 2)
 		{
-			MidAbilityData = &PortalRewardAbilities[MidAbilityValue];
-			FirstAbilityData = &PortalRewardAbilities[FirstAbilityValue];
-			AbilitiesDatas.CurrentAbilitiyIcon = MidAbilityData->AbilitiyIcon;
-			AbilitiesDatas.NextAbilitiyIcon = EmptyAbilitiyIcon;
-			AbilitiesDatas.PrevAbilitiyIcon = FirstAbilityData->AbilitiyIcon;
+			FirstAbilityData = &PortalRewardAbilities[0];
+			SecondAbilityData = &PortalRewardAbilities[1];
+			// Fill the datas
+			AbilitiesDatas.FirstAbilitiyIcon = FirstAbilityData->AbilitiyIcon;
+			AbilitiesDatas.SecondAbilitiyIcon = SecondAbilityData->AbilitiyIcon;
+			AbilitiesDatas.LastAbilitiyIcon = EmptyAbilitiyIcon;
 		}
 		else if (PortalRewardAbilities.Num() == 3)
 		{
-			MidAbilityData = &PortalRewardAbilities[MidAbilityValue];
-			LastAbilityData = &PortalRewardAbilities[LastAbilityValue];
-			FirstAbilityData = &PortalRewardAbilities[FirstAbilityValue];
-
-			AbilitiesDatas.CurrentAbilitiyIcon = MidAbilityData->AbilitiyIcon;
-			AbilitiesDatas.NextAbilitiyIcon = LastAbilityData->AbilitiyIcon;
-			AbilitiesDatas.PrevAbilitiyIcon = FirstAbilityData->AbilitiyIcon;
+			FirstAbilityData = &PortalRewardAbilities[0];
+			SecondAbilityData = &PortalRewardAbilities[1];
+			LastAbilityData = &PortalRewardAbilities[2];
+			// Fill the datas
+			AbilitiesDatas.FirstAbilitiyIcon = FirstAbilityData->AbilitiyIcon;
+			AbilitiesDatas.SecondAbilitiyIcon = SecondAbilityData->AbilitiyIcon;
+			AbilitiesDatas.LastAbilitiyIcon = LastAbilityData->AbilitiyIcon;
 		}
 		else
 		{
-			MidAbilityData = &PortalRewardAbilities[MidAbilityValue];
-			LastAbilityData = &PortalRewardAbilities[LastAbilityValue];
-			FirstAbilityData = &PortalRewardAbilities[FirstAbilityValue];
-
-			AbilitiesDatas.CurrentAbilitiyIcon = MidAbilityData->AbilitiyIcon;
-			AbilitiesDatas.NextAbilitiyIcon = LastAbilityData->AbilitiyIcon;
-			AbilitiesDatas.PrevAbilitiyIcon = FirstAbilityData->AbilitiyIcon;
+			FirstAbilityData = &PortalRewardAbilities[0];
+			SecondAbilityData = &PortalRewardAbilities[1];
+			LastAbilityData = &PortalRewardAbilities[2];
+			// Fill the datas
+			AbilitiesDatas.FirstAbilitiyIcon = FirstAbilityData->AbilitiyIcon;
+			AbilitiesDatas.SecondAbilitiyIcon = SecondAbilityData->AbilitiyIcon;
+			AbilitiesDatas.LastAbilitiyIcon = LastAbilityData->AbilitiyIcon;
 		}
 	}
 	else if (PortalRewardAbilities.Num() == 0)
 	{
-		AbilitiesDatas.CurrentAbilitiyIcon = EmptyAbilitiyIcon;
-		AbilitiesDatas.NextAbilitiyIcon = EmptyAbilitiyIcon;
-		AbilitiesDatas.PrevAbilitiyIcon = EmptyAbilitiyIcon;
+		AbilitiesDatas.FirstAbilitiyIcon = EmptyAbilitiyIcon;
+		AbilitiesDatas.SecondAbilitiyIcon = EmptyAbilitiyIcon;
+		AbilitiesDatas.LastAbilitiyIcon = EmptyAbilitiyIcon;
 	}
 }
 
@@ -284,52 +209,3 @@ void USATORI_GameplayAbilityComponent::ResetCurrentPlayerAbilities()
 {
 	PortalRewardAbilities.Empty();
 }
-
-/*if (AbilitiesIconDatas)
-	{
-		for (const TPair<FName, FSATORI_AbilitiesDatas>& pair : PlayerGameplayAbility)
-		{
-			const FAbilitesIconDatas* ItemDetails =
-				AbilitiesIconDatas->FindRow<FAbilitesIconDatas>(pair.Key, TEXT("USATORI_GameplayAbilityComponent::BeginPlay"));
-
-			if (ItemDetails)
-			{
-				ASATORICharacter* Character = Cast<ASATORICharacter>(GetOwner());
-				if (Character)
-				{
-					ASATORI_PlayerController* PlayerController = Cast<ASATORI_PlayerController>(Character->GetController());
-					if (PlayerController)
-					{
-						USATORI_MainUI* MainUI = PlayerController->GetSatoriMainUI();
-						if (MainUI)
-						{
-							MainUI->SetAbilityIcon(ItemDetails->Icon);
-						}
-					}
-				}
-			}
-		}
-	}*/
-
-//FName CurrentName = PlayerAbilitiesNames[CurrentAbilityValue];
-//FSATORI_AbilitiesDatas* LocalAbilityData = PlayerGameplayAbility.Find(CurrentName);
-
-//if (LocalAbilityData)
-//{
-//	//AbilityIconChange.Broadcast(LocalAbilityData);
-
-//	ASATORICharacter* Character = Cast<ASATORICharacter>(GetOwner());
-//	if (Character)
-//	{
-//		ASATORI_PlayerController* PlayerController = Cast<ASATORI_PlayerController>(Character->GetController());
-//		if (PlayerController)
-//		{
-
-//			USATORI_MainUI* MainUI = PlayerController->GetSatoriMainUI();
-//			if (MainUI)
-//			{
-//				MainUI->SetAbilityIcon(LocalAbilityData->AbilitiyIcon);
-//			}
-//		}
-//	}
-//}

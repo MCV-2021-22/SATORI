@@ -36,13 +36,13 @@ struct FSATORI_AbilitiesIconsDatas
 	GENERATED_BODY()
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	UTexture2D* CurrentAbilitiyIcon;
+	UTexture2D* FirstAbilitiyIcon;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	UTexture2D* NextAbilitiyIcon;
+	UTexture2D* SecondAbilitiyIcon;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	UTexture2D* PrevAbilitiyIcon;
+	UTexture2D* LastAbilitiyIcon;
 };
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FSATORIChangeAbilityIcon, const FSATORI_AbilitiesDatas&, AbilityData);
@@ -78,14 +78,6 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	int CurrentAbilityValue = 0;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
-	int LastAbilityValue = -1;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
-	int MidAbilityValue = -1;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
-	int FirstAbilityValue = -1;
 	// Getters
 
 	TArray<FSATORI_AbilitiesDatas> GetCharacterAbilities() { return PortalRewardAbilities; }
@@ -123,7 +115,7 @@ private:
 	ASATORICharacter* PlayerCharacter = nullptr;
 
 	// Abilites Datas
-	const FSATORI_AbilitiesDatas* MidAbilityData = nullptr;
+	const FSATORI_AbilitiesDatas* SecondAbilityData = nullptr;
 	const FSATORI_AbilitiesDatas* LastAbilityData = nullptr;
 	const FSATORI_AbilitiesDatas* FirstAbilityData = nullptr;
 public:
