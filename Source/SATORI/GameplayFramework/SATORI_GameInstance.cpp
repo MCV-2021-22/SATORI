@@ -85,28 +85,28 @@ void USATORI_GameInstance::RemoveElementonFromNormalAbilities(int Id)
 {
     if (PortalGrantedNormalAbilityToApply.Num() > 0)
     {
-        int Size = PortalGrantedNormalAbilityToApply.Num() - Id;
-        if (Size < 0)
+        int Index = PortalGrantedNormalAbilityToApply.Num() - Id;
+        if (Index < 0)
         {
-            Size = 0;
+            Index = 0;
         }
         if (PortalGrantedNormalAbilityToApply.Num() == 2 && Id == 1)
         {
-            FString AbilityString = PortalGrantedNormalAbilityToApply[Size].AbilityName.ToString();
+            FString AbilityString = PortalGrantedNormalAbilityToApply[Index].AbilityName.ToString();
             UE_LOG(LogTemp, Warning, TEXT(" Player Normal Ability Name : %s "), *AbilityString);
             PortalGrantedNormalAbilityToApply.RemoveAt(0);
         }
         else if (PortalGrantedNormalAbilityToApply.Num() == 2 && Id == 2)
         {
-            FString AbilityString = PortalGrantedNormalAbilityToApply[Size].AbilityName.ToString();
+            FString AbilityString = PortalGrantedNormalAbilityToApply[Index].AbilityName.ToString();
             UE_LOG(LogTemp, Warning, TEXT(" Player Normal Ability Name : %s "), *AbilityString);
             PortalGrantedNormalAbilityToApply.RemoveAt(1);
         }
         else
         {
-            FString AbilityString = PortalGrantedNormalAbilityToApply[Size].AbilityName.ToString();
+            FString AbilityString = PortalGrantedNormalAbilityToApply[Index].AbilityName.ToString();
             UE_LOG(LogTemp, Warning, TEXT(" Player Normal Ability Name : %s "), *AbilityString);
-            PortalGrantedNormalAbilityToApply.RemoveAt(Size);
+            PortalGrantedNormalAbilityToApply.RemoveAt(Index);
         }
         ShuffleArray(PortalGrantedNormalAbilityToApply);
     }
@@ -116,28 +116,28 @@ void USATORI_GameInstance::RemoveElementonFromUpgratedAbilities(int Id)
 {
     if (PortalGrantedUpgratedAbilityToApply.Num() > 0)
     {
-        int Size = PortalGrantedUpgratedAbilityToApply.Num() - Id;
-        if (Size < 0)
+        int Index = PortalGrantedUpgratedAbilityToApply.Num() - Id;
+        if (Index < 0)
         {
-            Size = 0;
+            Index = 0;
         }
         if (PortalGrantedUpgratedAbilityToApply.Num() == 2 && Id == 1)
         {
-            FString AbilityString = PortalGrantedUpgratedAbilityToApply[Size].AbilityName.ToString();
+            FString AbilityString = PortalGrantedUpgratedAbilityToApply[Index].AbilityName.ToString();
             UE_LOG(LogTemp, Warning, TEXT(" Player Normal Ability Name : %s "), *AbilityString);
             PortalGrantedUpgratedAbilityToApply.RemoveAt(0);
         }
         else if (PortalGrantedUpgratedAbilityToApply.Num() == 2 && Id == 2)
         {
-            FString AbilityString = PortalGrantedUpgratedAbilityToApply[Size].AbilityName.ToString();
+            FString AbilityString = PortalGrantedUpgratedAbilityToApply[Index].AbilityName.ToString();
             UE_LOG(LogTemp, Warning, TEXT(" Player Normal Ability Name : %s "), *AbilityString);
             PortalGrantedUpgratedAbilityToApply.RemoveAt(1);
         }
         else
         {
-            FString AbilityString = PortalGrantedNormalAbilityToApply[Size].AbilityName.ToString();
+            FString AbilityString = PortalGrantedNormalAbilityToApply[Index].AbilityName.ToString();
             UE_LOG(LogTemp, Warning, TEXT(" Player Normal Ability Name : %s "), *AbilityString);
-            PortalGrantedNormalAbilityToApply.RemoveAt(Size);
+            PortalGrantedNormalAbilityToApply.RemoveAt(Index);
         }
         ShuffleArray(PortalGrantedUpgratedAbilityToApply);
     }
