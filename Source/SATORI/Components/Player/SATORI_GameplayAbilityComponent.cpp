@@ -203,6 +203,7 @@ void USATORI_GameplayAbilityComponent::CheckAbilitiesStatus(FSATORI_AbilitiesIco
 void USATORI_GameplayAbilityComponent::SetSavedAbilitiesWithGameInstance(USATORI_GameInstance* GameInstance)
 {
 	PortalRewardAbilities = GameInstance->NormalAbilities;
+	CurrentAbilityValue = GameInstance->CurrentPlayerAbilityId;
 }
 
 void USATORI_GameplayAbilityComponent::ResetCurrentPlayerAbilities()

@@ -18,6 +18,7 @@
 #include "GameplayFramework/SATORI_GameInstance.h"
 #include "Components/WidgetComponent.h"
 #include "Components/Player/SATORI_GameplayAbilityComponent.h"
+#include "Kismet/GameplayStatics.h"
 
 // Sets default values
 ASATORI_Portal::ASATORI_Portal()
@@ -73,7 +74,7 @@ void ASATORI_Portal::OnComponentBeginOverlap(UPrimitiveComponent* OverlappedComp
 {
 	UE_LOG(LogTemp, Warning, TEXT("On Overlap Beg %s"), *OtherActor->GetName());
 
-	ASATORICharacter* Character = Cast<ASATORICharacter>(OtherActor);
+	/*ASATORICharacter* Character = Cast<ASATORICharacter>(OtherActor);
 
 	if (!Character)
 	{
@@ -93,7 +94,7 @@ void ASATORI_Portal::OnComponentBeginOverlap(UPrimitiveComponent* OverlappedComp
 		}
 		
 		ChangeLevel(Character);
-	}
+	}*/
 }
 
 void ASATORI_Portal::ApplyEffectToPlayer(ASATORICharacter* PlayerCharacter)
@@ -187,6 +188,7 @@ void ASATORI_Portal::ChangeLevel(ASATORICharacter* Character)
 		GameInstanceRef->Gold = Character->GetGold();
 		GameInstanceRef->NormalAbilities = Character->GetPlayerAbilityComponent()->GetCharacterAbilities();
 		GameInstanceRef->UpgratedAbilities = Character->GetPlayerAbilityComponent()->GetCharacterAbilities();
+		GameInstanceRef->CurrentPlayerAbilityId = Character->GetPlayerAbilityComponent()->CurrentAbilityValue;
 		RemoveGameinstanceAbilities(GameInstanceRef, CurrentId);
 	}
 
@@ -204,7 +206,27 @@ void ASATORI_Portal::Interact(AActor* ActorInteracting)
 	UE_LOG(LogTemp, Display, TEXT("Interact With Door"));
 
 	// Todo : Interact with the player
-	// ActivatePortal();
+	ASATORICharacter* Character = Cast<ASATORICharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
+
+	if (!Character)
+	{
+		return;
+	}
+
+	if (Character)
+	{
+		if (CurrentGameplayEffect.Get())
+		{
+			ApplyEffectToPlayer(Character);
+		}
+
+		if (CurrentAbility.Get())
+		{
+			GrantedAbilityToPlayer(Character);
+		}
+
+		ChangeLevel(Character);
+	}
 }
 
 void ASATORI_Portal::StartCanInteract(AActor* ActorInteracting)

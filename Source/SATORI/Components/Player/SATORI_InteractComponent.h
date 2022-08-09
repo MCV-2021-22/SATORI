@@ -17,7 +17,7 @@ public:
 	USATORI_InteractComponent();
 
 	UPROPERTY(EditDefaultsOnly)
-	float InteractionDistance = 200.0f;
+	float InteractionDistance = 230.0f;
 
 	UPROPERTY(BlueprintReadOnly, Transient)
 	TWeakObjectPtr<AActor> CurrentActor = nullptr;

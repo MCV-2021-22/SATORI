@@ -72,6 +72,9 @@ public:
 	int PlayerAbility = 0;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int CurrentPlayerAbilityId = 0;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	SATORIMaskType MaskType = SATORIMaskType::NONE;
 
 	bool PlayerStart = true;
