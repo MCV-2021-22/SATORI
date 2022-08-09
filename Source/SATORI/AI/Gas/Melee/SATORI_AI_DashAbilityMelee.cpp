@@ -43,6 +43,13 @@ void USATORI_AI_DashAbilityMelee::ActivateAbility(
 		return;
 	}
 
+	if (!TagSpawnAbility.IsValid() || !TagEndAbility.IsValid() || !TagStartDash.IsValid())
+	{
+		UE_LOG(LogTemp, Display, TEXT("[%s] USATORI_AI_DashAbilityMelee: Tag is not valid ... "), *GetName());
+		Super::EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true);
+		return;
+	}
+
 	//Handling of events
 	USATORI_PlayMontageAndWaitEvent* Task = USATORI_PlayMontageAndWaitEvent::PlayMontageAndWaitForEvent(this, NAME_None, AnimMontage, FGameplayTagContainer(), 1.0f, NAME_None, bStopWhenAbilityEnds, 1.0f);
 	Task->OnBlendOut.AddDynamic(this, &USATORI_AI_DashAbilityMelee::OnCompleted);
