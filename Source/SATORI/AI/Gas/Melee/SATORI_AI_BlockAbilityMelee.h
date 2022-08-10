@@ -3,7 +3,6 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Actors/AbilitiesActors/SATORI_BlockMeleeActor.h"
 #include "GAS/SATORI_GameplayAbility.h"
 #include "SATORI/AbilityTask/SATORI_PlayMontageAndWaitEvent.h"
 #include "AI/Character/SATORI_AICharacter.h"
@@ -23,9 +22,6 @@ public:
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Ability")
 	UAnimMontage* AnimMontage;
 
-	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Ability")
-	TSubclassOf<ASATORI_BlockMeleeActor> BlockMeleeActor;
-
 	virtual void ActivateAbility(
 		const FGameplayAbilitySpecHandle Handle,
 		const FGameplayAbilityActorInfo* ActorInfo,
@@ -44,15 +40,15 @@ public:
 	FGameplayTag TagSpawnAbility;
 
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Ability|Tags")
-	FGameplayTag TagStartBlock;
+	FGameplayTag BlockDamageTag;
 
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Ability|Tags")
-	FGameplayTag TagEndAbility;
+	FGameplayTag BlockingTag;
 
 protected:
 
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (UIMin = "0.0"), Category = "Ability|Block")
-	float TimeToDestroy = 1.0f;
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (UIMin = "1"), Category = "Ability|Block")
+	int RotationDifference = 2;
 
 	UFUNCTION()
 	void OnCancelled(FGameplayTag EventTag, FGameplayEventData EventData);
@@ -67,9 +63,12 @@ private:
 
 	ASATORI_AICharacter* Melee;
 
+	float RotationRate;
+	
 	bool bBlocking = false;
 
 	const bool bStopWhenAbilityEnds = true;
+
 
 public:
 

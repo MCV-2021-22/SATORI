@@ -40,8 +40,10 @@ void USATORI_AI_BlockAbilityMelee::ActivateAbility(
 		EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true);
 		return;
 	}
+	
+	RotationRate = Melee->GetCharacterMovement()->RotationRate.Yaw;
 
-	if (!TagSpawnAbility.IsValid()  || !TagEndAbility.IsValid() || !TagStartBlock.IsValid())
+	if (!TagSpawnAbility.IsValid()  || !BlockDamageTag.IsValid() || !BlockingTag.IsValid())
 	{
 		UE_LOG(LogTemp, Display, TEXT("[%s] USATORI_AI_BlockAbilityMelee: Tag is not valid ... "), *GetName());
 		Super::EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true);
@@ -65,6 +67,7 @@ void USATORI_AI_BlockAbilityMelee::EndAbility(
 	bool bReplicateEndAbility,
 	bool bWasCancelled)
 {
+	Melee->GetCharacterMovement()->RotationRate.Yaw = RotationRate;
 	Super::EndAbility(Handle, ActorInfo, ActivationInfo, bReplicateEndAbility, bWasCancelled);
 }
 
@@ -80,34 +83,50 @@ void USATORI_AI_BlockAbilityMelee::OnCompleted(FGameplayTag EventTag, FGameplayE
 
 void USATORI_AI_BlockAbilityMelee::EventReceived(FGameplayTag EventTag, FGameplayEventData EventData)
 {
-
-	if (EventTag == TagEndAbility)
-	{
-		EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, false);
-		return;
-	}
-
-	if (EventTag == TagStartBlock)
-	{
-		bBlocking = true;
-	}
-
 	if (EventTag == TagSpawnAbility)
 	{
-		FTransform SpawnTransform = Melee->GetTransform();
-		FRotator Rotation = Melee->GetActorRotation();
-		SpawnTransform.SetRotation(Rotation.Quaternion());
-		SpawnTransform.SetTranslation(SpawnTransform.GetLocation() + Melee->GetActorForwardVector() * 50);
-
-		ASATORI_BlockMeleeActor* BlockActor = GetWorld()->SpawnActorDeferred<ASATORI_BlockMeleeActor>(BlockMeleeActor, SpawnTransform, GetOwningActorFromActorInfo(), Melee, ESpawnActorCollisionHandlingMethod::AlwaysSpawn);
-		BlockActor->FinishSpawning(SpawnTransform);
+		bBlocking = true;
+		Melee->GetCharacterMovement()->RotationRate.Yaw = Melee->GetCharacterMovement()->RotationRate.Yaw / RotationDifference;
 	}
-	
 }
 
 void USATORI_AI_BlockAbilityMelee::Tick(float DeltaTime)
 {
+	if (!Melee->HasMatchingGameplayTag(BlockingTag) && bBlocking)
+	{
+		bBlocking = false;
+		Melee->RemoveGameplayTag(BlockDamageTag);
 
+		if (USkeletalMeshComponent* Mesh = Melee->GetMesh())
+		{
+			if (UAnimInstance* AnimInstance = Mesh->GetAnimInstance())
+			{
+				AnimInstance->Montage_JumpToSection(FName("BlockEnd"), AnimInstance->GetCurrentActiveMontage());
+			}
+		}
+	}
+
+	if (bBlocking)
+	{
+		FRotator Rotation = GetAvatarActorFromActorInfo()->GetActorRotation();
+
+		ACharacter* PlayerCharacter = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0);
+		FRotator PlayerRotation = PlayerCharacter->GetActorRotation();
+
+		float Direction = Rotation.Yaw - PlayerRotation.Yaw;
+
+		if ((Direction > 100 || Direction < -100))
+		{
+			if (!Melee->HasMatchingGameplayTag(BlockDamageTag))
+			{
+				Melee->AddGameplayTag(BlockDamageTag);
+			}
+		}
+		else
+		{
+			Melee->RemoveGameplayTag(BlockDamageTag);
+		}
+	}
 }
 
 bool USATORI_AI_BlockAbilityMelee::IsTickable() const

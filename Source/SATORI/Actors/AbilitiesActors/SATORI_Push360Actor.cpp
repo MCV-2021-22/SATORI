@@ -59,6 +59,16 @@ void ASATORI_Push360Actor::StopAction(ASATORI_AICharacter* Character)
 	}
 }
 
+void ASATORI_Push360Actor::RotateEnemy(AActor* Actor)
+{
+	FVector RotationDirection = GetWorld()->GetFirstPlayerController()->GetPawn()->GetActorLocation() - Actor->GetActorLocation();
+	RotationDirection.Normalize();
+	FRotator Rotator = RotationDirection.Rotation();
+	Rotator.Pitch = 0;
+	Rotator.Roll = 0;
+	Actor->SetActorRotation(Rotator);
+}
+
 void ASATORI_Push360Actor::LaunchEnemy(AActor* Actor, ASATORI_AICharacter* Character)
 {
 	FVector Location = Actor->GetActorLocation();
@@ -71,16 +81,6 @@ void ASATORI_Push360Actor::LaunchEnemy(AActor* Actor, ASATORI_AICharacter* Chara
 	Character->LaunchCharacter(LaunchDirection * LaunchForce, true, true);
 
 	Character->AddGameplayTag(LaunchTag);
-}
-
-void ASATORI_Push360Actor::RotateEnemy(AActor* Actor)
-{
-	FVector RotationDirection = GetWorld()->GetFirstPlayerController()->GetPawn()->GetActorLocation() - Actor->GetActorLocation();
-	RotationDirection.Normalize();
-	FRotator Rotator = RotationDirection.Rotation();
-	Rotator.Pitch = 0;
-	Rotator.Roll = 0;
-	Actor->SetActorRotation(Rotator);
 }
 
 void ASATORI_Push360Actor::DestroyMyself()
