@@ -76,11 +76,17 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Weapon")
 	bool bMultipleHit = false;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Gameply Effect")
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Gamepaly Effect")
 	TSubclassOf<UGameplayEffect> DamageEffect;
 
 	UPROPERTY()
 	USATORI_GameplayEffect* ManaRecoverGameplayEffect;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Gamepaly Effect")
+	TSubclassOf<UGameplayEffect> BlockCountGameplayEffect;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Gamepaly Effect")
+	TSubclassOf<UGameplayEffect> StunGameplayEffect;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	float AnimactionPlayRater = 1.0f;

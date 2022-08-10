@@ -2,7 +2,7 @@
 <objects serializationModel="Studio.02.02.00">
 	<object class="Workspace" id="{dc622fb4-ef5a-48bd-867a-6597d06302cb}">
 		<property name="builtBanksOutputDirectory">
-			<value>D:/ProjectUPF/SATORI/Content/FMOD</value>
+			<value>../Content/FMOD</value>
 		</property>
 		<relationship name="masterEventFolder">
 			<destination>{5fd10b50-87cf-4477-aa38-a3eec992eadd}</destination>

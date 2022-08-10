@@ -14,7 +14,7 @@ ASATORI_RangeStatic::ASATORI_RangeStatic()
 	//AttributeSet = CreateDefaultSubobject<USATORI_AttributeSet>(TEXT("AttributeSet"));
 
 
-	bte = TSoftObjectPtr <UBehaviorTree>(FSoftObjectPath(TEXT("/Game/SATORI/AI/RangeStatic/BT_RangeStatic.BT_RangeStatic")));
+	BehaviorTree = TSoftObjectPtr <UBehaviorTree>(FSoftObjectPath(TEXT("/Game/SATORI/AI/RangeStatic/BT_RangeStatic.BT_RangeStatic")));
 
 
 	//bte = TSoftObjectPtr <UBehaviorTree>(FSoftObjectPath(TEXT("/Game/Blueprints/Satori/Player/Enemy/Enemy_BT.Enemy_BT")));

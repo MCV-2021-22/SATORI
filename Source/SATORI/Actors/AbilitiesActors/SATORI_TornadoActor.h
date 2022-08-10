@@ -96,13 +96,22 @@ public:
 			const FHitResult& SweepResult);
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Tornado|Tags")
-	FGameplayTag  TrappedTag;
-
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Tornado|Tags")
 	FGameplayTag  EnemyTag;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Tornado|Tags")
+	FGameplayTag  PushedTag;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Tornado|Tags")
 	FGameplayTag  LaunchTag;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Tornado|Tags")
+	FGameplayTag  AbilityTag;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Tornado|Tags")
+	FGameplayTag  BlockingTag;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Tornado|Tags")
+	FGameplayTag  StunnedTag;
 
 protected:
 
@@ -122,11 +131,13 @@ private:
 	FHitResult OutHit;
 	FCollisionQueryParams CollisionParams;
 
+	void StopAction(ASATORI_AICharacter* Character);
+	void LaunchEnemy(AActor* Actor);
 	void CalculateAngle(AActor* Actor);
+	void MoveTrappedEnemies(float DeltaTime, AActor* Actor, int Num);
+	void RotateEnemy(AActor* Actor);
 	void StayGrounded(float DeltaTime);
 	void DamageEnemy(AActor* Actor);
-	void MoveTrappedEnemies(float DeltaTime, AActor* Actor, int Num);
-	void FinalActions(AActor* Actor);
 	void DestroyMyself();
 
 };

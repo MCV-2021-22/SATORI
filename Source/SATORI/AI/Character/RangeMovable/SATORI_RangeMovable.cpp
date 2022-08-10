@@ -4,6 +4,7 @@
 #include "AI/Character/RangeMovable/SATORI_RangeMovable.h"
 #include "AI/Components/Arqueros/SATORI_ArcherProjectileSpawnerComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "Kismet/GameplayStatics.h"
 
 
 ASATORI_RangeMovable::ASATORI_RangeMovable()
@@ -21,7 +22,7 @@ ASATORI_RangeMovable::ASATORI_RangeMovable()
 
 	//CharacterMovement->bRunPhysicsWithNoController = 3;
 
-	bte = TSoftObjectPtr <UBehaviorTree>(FSoftObjectPath(TEXT("/Game/SATORI/AI/RangeMovable/BT_RangeMovable.BT_RangeMovable")));
+	BehaviorTree = TSoftObjectPtr <UBehaviorTree>(FSoftObjectPath(TEXT("/Game/SATORI/AI/RangeMovable/BT_RangeMovable.BT_RangeMovable")));
 	
 }
 
@@ -30,7 +31,7 @@ void ASATORI_RangeMovable::Tick(float DeltaTime)
 
 
 	Super::Tick(DeltaTime);
-	float Value = -1.0f;
+	float Value = 1.0f;
 
 
 	if ((Controller != nullptr) && (Value != 0.0f) && moveBackwards)
@@ -42,6 +43,53 @@ void ASATORI_RangeMovable::Tick(float DeltaTime)
 		// get forward vector
 		const FVector Direction = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X);
 		AddMovementInput(Direction, Value);
+	}
+	else if ((Controller != nullptr) && (Value != 0.0f) && moveLeft) {
+		// find out which way is forward
+		TArray< AActor* > enemigos;
+		UGameplayStatics::GetAllActorsWithTag(GetWorld(), FName("PossessedBy.Player"), enemigos);
+		for (AActor* Actor : enemigos)
+		{
+			if (Cast<ASATORI_CharacterBase>(Actor) != nullptr)
+			{
+
+				ASATORI_CharacterBase* Player = Cast<ASATORI_CharacterBase>(Actor);
+
+				FVector fwd = Player->GetActorLocation() - GetActorLocation();
+
+				FVector dest1 = GetActorLocation() + fwd;
+
+				//FVector newForward2 = dest - Sphere2->GetActorLocation();
+				FVector RotateValue2 = fwd.RotateAngleAxis(15.0f, FVector(0, 0, 1));
+				//RotateValue2.Normalize();
+				
+				//Sphere2->setDirection(RotateValue2 * 20);
+
+				FVector dest2 = dest1 - RotateValue2;
+
+				//const FRotator Rotation = Controller->GetControlRotation();
+				//const FRotator YawRotation(0, Rotation.Yaw + 15 , 0);
+
+
+
+
+				// get forward vector
+				//const FVector Direction = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X);
+
+				FVector dest3 = dest2 - GetActorLocation();
+
+				AddMovementInput(dest3, Value);
+				
+				break;
+
+			}
+		}
+
+		
+	}
+	else if ((Controller != nullptr) && (Value != 0.0f) && moveRight)
+	{
+		
 	}
 
 }

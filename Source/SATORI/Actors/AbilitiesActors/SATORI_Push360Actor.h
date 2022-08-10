@@ -53,7 +53,13 @@ public:
 	FGameplayTag  EnemyTag;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Push|Tags")
-	FGameplayTag  PushedTag;
+	FGameplayTag  LaunchTag;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Push|Tags")
+	FGameplayTag  AbilityTag;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Push|Tags")
+	FGameplayTag  StunnedTag;
 
 protected:
 
@@ -61,10 +67,10 @@ protected:
 
 private:
 
-	TArray<AActor*> ArrayPushed;
-
-	void LaunchEnemy(AActor* Actor);
+	void StopAction(ASATORI_AICharacter* Character);
+	void LaunchEnemy(AActor* Actor, ASATORI_AICharacter* Character);
+	void RotateEnemy(AActor* Actor);
+	void DamageEnemy(AActor* Actor, ASATORI_AICharacter* Character);
 	void DestroyMyself();
-	void DamageEnemy(AActor* Actor);
 
 };

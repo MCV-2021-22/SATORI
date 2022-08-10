@@ -47,11 +47,27 @@ void ASATORI_TornadoActor::OnOverlapCollisionSphere(UPrimitiveComponent* Overlap
 	}
 
 	//Enemies
-	if (Character->HasMatchingGameplayTag(EnemyTag) && !Character->HasMatchingGameplayTag(TrappedTag) && ArrayActorsTrapped.Num() < MaxEnemies)
+	if (Character->HasMatchingGameplayTag(EnemyTag) && !Character->HasMatchingGameplayTag(PushedTag) && ArrayActorsTrapped.Num() < MaxEnemies)
 	{
-		Character->AddGameplayTag(TrappedTag);
+		StopAction(Character);
 		ArrayActorsTrapped.AddUnique(OtherActor);
+		Character->AddGameplayTag(PushedTag);
 		CalculateAngle(OtherActor);
+	}
+}
+
+//Stops ability and  animation if active
+void ASATORI_TornadoActor::StopAction(ASATORI_AICharacter* Character)
+{
+	//Edge case tornado affects even if blocking
+	Character->RemoveGameplayTag(BlockingTag);
+	Character->RemoveGameplayTag(StunnedTag);
+
+	Character->RemoveGameplayTag(AbilityTag);
+	UAnimMontage* AnimMontage = Character->GetCurrentMontage();
+	if (IsValid(AnimMontage))
+	{
+		Character->StopAnimMontage(AnimMontage);
 	}
 }
 
@@ -75,17 +91,17 @@ void ASATORI_TornadoActor::DestroyMyself()
 
 		if (IsValid(Actor))
 		{
-			FinalActions(Actor);
+			LaunchEnemy(Actor);
 		}
 	}
 
 	Destroy();
 }
 
-void ASATORI_TornadoActor::FinalActions(AActor* Actor)
+void ASATORI_TornadoActor::LaunchEnemy(AActor* Actor)
 {
 	ASATORI_AICharacter* Character = Cast<ASATORI_AICharacter>(Actor);
-	Character->RemoveGameplayTag(TrappedTag);
+	Character->RemoveGameplayTag(PushedTag);
 
 	FVector LaunchDirection = Actor->GetActorLocation() - GetActorLocation();
 	LaunchDirection.Z = ZLaunching;
@@ -99,6 +115,12 @@ void ASATORI_TornadoActor::FinalActions(AActor* Actor)
 void ASATORI_TornadoActor::BeginPlay()
 {
 	Super::BeginPlay();
+
+	if (!EnemyTag.IsValid() || !PushedTag.IsValid() || !LaunchTag.IsValid() || !AbilityTag.IsValid() || !BlockingTag.IsValid() || !StunnedTag.IsValid())
+	{
+		UE_LOG(LogTemp, Warning, TEXT("[%s] USATORI_TornadoActor: Tag not valid ... "), *GetName());
+		Destroy();
+	}
 
 	FTimerHandle TimerHandle;
 	GetWorldTimerManager().SetTimer(TimerHandle, this, &ASATORI_TornadoActor::DestroyMyself, TimeToFinish, false);
@@ -118,6 +140,7 @@ void ASATORI_TornadoActor::Tick(float DeltaTime)
 		{
 			DamageEnemy(Actor);
 			MoveTrappedEnemies(DeltaTime, Actor, Num);
+			RotateEnemy(Actor);
 			Num++;
 		}
 	}
@@ -150,11 +173,11 @@ void ASATORI_TornadoActor::StayGrounded(float DeltaTime)
 void ASATORI_TornadoActor::DamageEnemy(AActor* Actor)
 {
 	ASATORI_AICharacter* Character = Cast<ASATORI_AICharacter>(Actor);
-	float DamageDone = USATORI_BlueprintLibrary::ApplyGameplayEffectDamage(Actor, Damage, Actor, DamageGameplayEffect);
-	Character->sendDamage(DamageDone);
+	USATORI_BlueprintLibrary::ApplyGameplayEffectDamage(Actor, Damage, Actor, DamageGameplayEffect);
+	Character->CheckDamage();
 }
 
-//Rotation of enemies movement calculations
+//Position of enemies calculations
 void ASATORI_TornadoActor::MoveTrappedEnemies(float DeltaTime, AActor* Actor, int Num)
 {
 	FVector CenterPosition = GetActorLocation();
@@ -169,4 +192,13 @@ void ASATORI_TornadoActor::MoveTrappedEnemies(float DeltaTime, AActor* Actor, in
 	CenterPosition.Z += RotateValue.Z;
 
 	Actor->SetActorLocation(CenterPosition, false, 0, ETeleportType::TeleportPhysics);
+}
+
+//Rotation of enemiescalculations
+void ASATORI_TornadoActor::RotateEnemy(AActor* Actor)
+{
+	FVector RotationDirection = GetActorLocation() - Actor->GetActorLocation();
+	RotationDirection.Normalize();
+	FRotator Rotator = RotationDirection.Rotation();
+	Actor->SetActorRotation(Rotator);
 }

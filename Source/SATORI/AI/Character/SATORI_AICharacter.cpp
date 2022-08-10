@@ -1,5 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
+//
 
 #include "AI/Character/SATORI_AICharacter.h"
 #include "GAS/Attributes/SATORI_AttributeSet.h"
@@ -22,24 +21,19 @@
 #include "AI/Components/SATORI_EnemyStatComponent.h"
 #include "Components/SphereComponent.h"
 #include "Kismet/GameplayStatics.h"
-//#include "GameState/SATORI_GameState.h"
 #include "SATORIGameMode.h"
 #include "GameFramework\CharacterMovementComponent.h"
 
-
-
-// Sets default values
 ASATORI_AICharacter::ASATORI_AICharacter()
 {
-	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
+	EnemyType = SATORIEnemyType::None;
+	
 	AbilitySystemComponent = CreateDefaultSubobject<USATORI_AbilitySystemComponent>(TEXT("AbilitySystemComponent"));
 	AbilitySystemComponent->SetIsReplicated(true);
 
 	AttributeSet = CreateDefaultSubobject<USATORI_AttributeSet>(TEXT("AttributeSet"));
-
-	//HeadComponent = CreateDefaultSubobject<USphereComponent>(TEXT("Head Position"));
 
 	PawnSensor = CreateDefaultSubobject<UPawnSensingComponent>(TEXT("Pawn Sensor"));
 	PawnSensor->SensingInterval = .25f; // 4 times per second
@@ -48,11 +42,6 @@ ASATORI_AICharacter::ASATORI_AICharacter()
 
 	// Enemy Stats
 	EnemyStatComponent = CreateDefaultSubobject<USATORI_EnemyStatComponent>(TEXT("StatComponent"));
-
-	//bte = TSoftObjectPtr <UBehaviorTree>(FSoftObjectPath(TEXT("/Game/SATORI/AI/Spawner/BT_Spawner.BT_Spawner")));
-	//btree = bte.LoadSynchronous();
-
-	EnemyType = SATORIEnemyType::None;
 
 	// Weapon Component
 	SwordComponent = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("Sword"));
@@ -70,7 +59,6 @@ ASATORI_AICharacter::ASATORI_AICharacter()
 
 }
 
-// Called when the game starts or when spawned
 void ASATORI_AICharacter::BeginPlay()
 {
 	Super::BeginPlay();
@@ -85,14 +73,6 @@ void ASATORI_AICharacter::BeginPlay()
 		AddGameplayTag(EnemyTag);
 	}
 
-	ASATORI_CharacterBase* Character = Cast<ASATORI_CharacterBase>(this);
-	if (Character)
-	{
-		FGameplayTagContainer TagContainer;
-		Character->GetOwnedGameplayTags(TagContainer);
-		AbilitySystemComponent->AddLooseGameplayTags(TagContainer);
-	}
-
 	//Needed for targeting system (Nacho)
 	if (bIsTargetable) {
 		RegisterInTargetableArray();
@@ -101,30 +81,7 @@ void ASATORI_AICharacter::BeginPlay()
 
 void ASATORI_AICharacter::OnConstruction(const FTransform& Transform)
 {
-	//if (HealthBarWidgetComponen)
-	//{
-	//	HealthBarWidgetComponen->RegisterComponent();
-	//	const FAttachmentTransformRules AttachmentRules = FAttachmentTransformRules(EAttachmentRule::KeepRelative, false);
-	//	const APlayerController* PC = UGameplayStatics::GetPlayerController(GetWorld(), 0);
-	//	UUserWidget* HealthWidget = PC ? CreateWidget(PC/*, HealthBarUI*/) : nullptr;
-	//	if (HealthWidget)
-	//	{
-	//		HealthBarWidgetComponen->SetWidget(HealthWidget);
-	//	}
-	//	HealthBarWidgetComponen->AttachToComponent(HeadComponent, AttachmentRules);
-	//	/*struct ConstructorHelpers::FClassFinder<USATORI_EnemyHealthBar> EnemyUIBar(TEXT("/Game/SATORI/UI/Enemy/"));
-	//	if (EnemyUIBar.Class != NULL)*/
-	//	/*if (HealthBarUI)
-	//	{
-	//		HealthBarWidgetComponen->SetWidgetSpace(EWidgetSpace::World);
-	//		HealthBarWidgetComponen->SetDrawSize(FVector2D(200.f, 20.f));
-	//		HealthBarWidgetComponen->SetWidgetClass(HealthBarUI);
-	//		FVector2D LocalDrawSize = FVector2D(100.0f, 20.0f);
-	//		HealthBarWidgetComponen->SetDrawSize(LocalDrawSize);
-	//		FVector2D LocalPivot = FVector2D(0.5f, 0.5f);
-	//		HealthBarWidgetComponen->SetPivot(LocalPivot);
-	//	}*/
-	//}
+
 }
 
 void ASATORI_AICharacter::InitializeAttributes()
@@ -149,8 +106,6 @@ void ASATORI_AICharacter::InitializeAttributes()
 	{
 		FActiveGameplayEffectHandle ActiveGEHandle = AbilitySystemComponent->ApplyGameplayEffectSpecToTarget(*NewHandle.Data.Get(), AbilitySystemComponent.Get());
 	}
-
-
 }
 
 void ASATORI_AICharacter::AddAICharacterAbilities()
@@ -169,14 +124,11 @@ void ASATORI_AICharacter::AddAICharacterAbilities()
 
 	for (FSATORIGameplayAbilityInfo Ability : DefaultAbilities->Abilities)
 	{
-		GrantAbilityToPlayer(FGameplayAbilitySpec(Ability.SATORIAbility, 1, static_cast<uint32>(Ability.AbilityKeys), this));
-
-		// Adding Remove Abilities, use for death, need to remove all abilities
-		RemovedgameplayAbilities.Add(Ability.SATORIAbility.Get());
+		GrantAbility(FGameplayAbilitySpec(Ability.SATORIAbility, 1, static_cast<uint32>(Ability.AbilityKeys), this));
 	}
 }
 
-void ASATORI_AICharacter::GrantAbilityToPlayer(FGameplayAbilitySpec Ability)
+void ASATORI_AICharacter::GrantAbility(FGameplayAbilitySpec Ability)
 {
 	if (!AbilitySystemComponent.IsValid())
 	{
@@ -185,7 +137,7 @@ void ASATORI_AICharacter::GrantAbilityToPlayer(FGameplayAbilitySpec Ability)
 
 	if (!Ability.Ability)
 	{
-		//UE_LOG(LogTemp, Error, TEXT("%s() Ability Not Granted for %s. Ability is not valid."), *FString(__FUNCTION__), *GetName());
+		UE_LOG(LogTemp, Error, TEXT("%s() Ability Not Granted for %s. Ability is not valid."), *FString(__FUNCTION__), *GetName());
 		return;
 	}
 
@@ -197,48 +149,32 @@ void ASATORI_AICharacter::PossessedBy(AController* NewController)
 {
 	Super::PossessedBy(NewController);
 
-	UE_LOG(LogTemp, Display, TEXT("LLEGAMOS A VER SI SE LLAMA A ESTA FUNCION PADRE"));
-
-	
-
 	if (Cast<AAIController>(NewController) != nullptr) {
 
-		
-		//AddGameplayTag(FGameplayTag::RequestGameplayTag("PossessedBy.AI"));
 		Tags.Add("PossessedBy.AI");
-
-		UE_LOG(LogTemp, Display, TEXT("EJECUTAMOS EL BT"));
-
-		AAIController* controller = Cast<AAIController>(NewController);
-
-		AddGameplayTag(FGameplayTag::RequestGameplayTag("State.PlayerNonSeen"));
-		
-
 		AttributeSetBase = AttributeSet;
-		btree = bte.LoadSynchronous();
-		controller->RunBehaviorTree(btree);
+
+		AAIController* AIController = Cast<AAIController>(NewController);
+	
+		if (AIController)
+		{
+			AIController->RunBehaviorTree(BehaviorTree.LoadSynchronous());
+		}
 
 		InitializeAttributes();
 		AddAICharacterAbilities();
 		SetHealth(GetMaxHealth());
-
 	}
-
 }
 
-float ASATORI_AICharacter::getDistAttack()
+float ASATORI_AICharacter::GetAttackDistance()
 {
-	return dist_attack;
+	return AttackDistance;
 }
 
-float ASATORI_AICharacter::getMaxRangeDist()
+float ASATORI_AICharacter::GetMaxRange()
 {
-	return max_range_dist;
-}
-
-void ASATORI_AICharacter::SetBurstingFalse()
-{
-	bursting = false;
+	return MaxRange;
 }
 
 bool ASATORI_AICharacter::CheckPlayerWithRayCast()
@@ -252,30 +188,26 @@ bool ASATORI_AICharacter::CheckPlayerWithRayCast()
 	FCollisionQueryParams Params = FCollisionQueryParams(FName("LineTraceSingle"));
 	Params.AddIgnoredActor(RootComponent->GetOwner());
 
-	FVector delta = EndPosition - StartPosition;
+	FVector Delta = EndPosition - StartPosition;
 	TWeakObjectPtr<AActor> NewActor;
 
 	bool bHit = false;
 	for (int i = -5; i <= 5; i++)
 	{
-		FVector Axis = FVector::ZAxisVector;
-		float rad = FMath::DegreesToRadians(i * 5);
-		FQuat quaternion = FQuat(Axis, rad);
-		FRotator rotator = FRotator(quaternion);
-		FVector newDelta = rotator.RotateVector(delta);
+		float Rad = FMath::DegreesToRadians(i * 5);
+		FRotator Rotator = FRotator(FQuat(FVector::ZAxisVector, Rad));
+		FVector newDelta = Rotator.RotateVector(Delta);
 
-		FVector newEndPos = newDelta + StartPosition;
+		FVector newEndPosition = newDelta + StartPosition;
 
-		bool newHit = GetWorld()->LineTraceSingleByChannel(
-			HitResult,
-			StartPosition,
-			newEndPos,
-			ECollisionChannel::ECC_Pawn,
-			Params
-		);
+		bool Hit = GetWorld()->LineTraceSingleByChannel(HitResult, StartPosition, newEndPosition, ECollisionChannel::ECC_Pawn, Params);
 
-		::DrawDebugLine(World, StartPosition, newEndPos, newHit ? FColor::Green : FColor::Red, false, 1.0f);
-		if (newHit)
+		if (bDrawDebug)
+		{
+			DrawDebugLine(World, StartPosition, newEndPosition, Hit ? FColor::Green : FColor::Red, false, 1.0f);
+		}
+
+		if (Hit)
 		{
 			NewActor = HitResult.Actor;
 			bHit = true;
@@ -284,7 +216,6 @@ bool ASATORI_AICharacter::CheckPlayerWithRayCast()
 	}
 
 	TWeakObjectPtr<ASATORICharacter> PlayerCharacter = Cast<ASATORICharacter>(HitResult.Actor);
-
 	if (bHit)
 	{
 		if (PlayerCharacter.IsValid() && EnemyType == SATORIEnemyType::Melee)
@@ -301,72 +232,23 @@ bool ASATORI_AICharacter::CheckPlayerWithRayCast()
 
 void ASATORI_AICharacter::Tick(float DeltaSeconds)
 {
-	if(bursting)
-	{
-		time_burst -= DeltaSeconds;
-		if(time_burst <= 0.f)
-		{
-			bursting = false;
-			RemoveGameplayTag(FGameplayTag::RequestGameplayTag("State.Burst"));
-		}
-	}
-
 	Super::Tick(DeltaSeconds);
 }
 
-void ASATORI_AICharacter::sendDamage(float dmg)
+void ASATORI_AICharacter::CheckDamage()
 {
-	if(!bursting)
+	//Death
+	if(GetHealth() <= 0.0f)
 	{
-		time_burst = 5.f;
-		dmg_burst = 0.f;
-		bursting = true;
-	}
-
-	dmg_burst += dmg;
-
-
-	float max_health_possible = GetMaxHealth();
-	UE_LOG(LogTemp, Display, TEXT("La max health es: %f"), max_health_possible);
-	UE_LOG(LogTemp, Display, TEXT("Damage dealt: %f"), dmg);
-	UE_LOG(LogTemp, Display, TEXT("Damage burst: %f"), dmg_burst);
-
-	if(dmg_burst>= max_health_possible*0.2f)
-	{
-
-		ASATORI_CharacterBase* pryeba = Cast<ASATORI_CharacterBase>(this);
-		if(!HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag(("State.Burst"))))
-		{
-			AddGameplayTag(FGameplayTag::RequestGameplayTag("State.Burst"));
-		}
-		//AbilitySystemComponent->AddLooseGameplayTag(FGameplayTag::RequestGameplayTag("State.Burst"));
-	}
-	
-	float life = GetHealth();
-
-	if(life <=0.0f)
-	{
-		UE_LOG(LogTemp, Display, TEXT("La vida es: %f"), life);
+		//Spawned edge case
 		ASATORI_Spawned* Spawned = Cast<ASATORI_Spawned>(this);
-		
-
 		if (Spawned != nullptr)
 		{
-			
-			//Spawned->Spawner->AddNumEnemies(1);
-			float b = Spawned->SpawnedDie();
+			Spawned->SpawnedDie();
+		}
 
-			
-			CharacterDeath();
-		}
-		else
-		{
-			CharacterDeath();
-		}
-		
+		AddGameplayTag(DeadTag);
 	}
-
-
 }
 
 void ASATORI_AICharacter::HealthBarProjection(UWidgetComponent* HealthBar, float ViewDistance, float RangeA, float RangeB)

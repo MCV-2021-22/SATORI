@@ -6,8 +6,7 @@
 
 ASATORI_CharacterBase::ASATORI_CharacterBase()
 {
-	/*DeadTag = FGameplayTag::RequestGameplayTag(FName("State.Dead"));
-	EffectRemoveOnDeathTag = FGameplayTag::RequestGameplayTag(FName("Effect.RemoveOnDeath"));*/
+
 }
 
 void ASATORI_CharacterBase::BeginPlay()

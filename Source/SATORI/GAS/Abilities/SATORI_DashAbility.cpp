@@ -18,11 +18,18 @@ void USATORI_DashAbility::ActivateAbility(
 	const FGameplayAbilityActivationInfo ActivationInfo,
 	const FGameplayEventData* TriggerEventData)
 {
-	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
 
-	if (!IsValid(AnimMontageDashForward))
+	if (!IsValid(AnimMontageDashForward) || !IsValid(AnimMontageDashBackwards) || !IsValid(AnimMontageDashRight) || !IsValid(AnimMontageDashLeft))
 	{
 		UE_LOG(LogTemp, Warning, TEXT("[%s] USATORI_DashAbility: Cannot get Animation Montage ... "), *GetName());
+		Super::EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true);
+		return;
+	}
+
+	if (!TagEndAbility.IsValid())
+	{
+		UE_LOG(LogTemp, Display, TEXT("[%s] USATORI_DashAbility: Tag is not valid ... "), *GetName());
+		Super::EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true);
 		return;
 	}
 
@@ -31,6 +38,14 @@ void USATORI_DashAbility::ActivateAbility(
 	{
 		UE_LOG(LogTemp, Display, TEXT("[%s] USATORI_DashAbility: Cannot Cast ASATORICharacter ... "), *GetName());
 		Super::EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true);
+		return;
+	}
+
+	if (!CommitAbility(Handle, ActorInfo, ActivationInfo))
+	{
+		UE_LOG(LogTemp, Display, TEXT("[%s] USATORI_DashAbility: Failed commit ability ... "), *GetName());
+		Super::EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true);
+		return;
 	}
 
 	CapsuleComponent = Character->GetCapsuleComponent();
@@ -40,11 +55,6 @@ void USATORI_DashAbility::ActivateAbility(
 	if (Controller)
 	{
 		Character->DisableInput(Controller);
-	}
-
-	if (!TagEndAbility.IsValid())
-	{
-		UE_LOG(LogTemp, Display, TEXT("[%s] USATORI_DashAbility: Tag is not valid ... "), *GetName());
 	}
 
 	DirectionDash = Direction;
@@ -108,7 +118,7 @@ void USATORI_DashAbility::EndAbility(
 	bool bReplicateEndAbility,
 	bool bWasCancelled)
 {
-	Character = Cast<ASATORI_CharacterBase>(GetOwningSatoriCharacter());
+	Character = Cast<ASATORI_CharacterBase>(GetAvatarActorFromActorInfo());
 	if(Character)
 	{
 		//CapsuleComponent->SetCollisionResponseToChannel(ECollisionChannel, ECollisionResponse::ECR_Overlap);

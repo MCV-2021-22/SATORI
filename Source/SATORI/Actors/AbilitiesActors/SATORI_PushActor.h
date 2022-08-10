@@ -83,6 +83,12 @@ public:
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Push|Tags")
 	FGameplayTag  LaunchTag;
 
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Push|Tags")
+	FGameplayTag  AbilityTag;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Push|Tags")
+	FGameplayTag  StunnedTag;
+
 protected:
 
 	virtual void BeginPlay() override;
@@ -93,15 +99,19 @@ public:
 
 private:
 
-	AActor* Pushed;
+	AActor* PushedActor;
+	ASATORI_AICharacter* PushedCharacter;
+
 	bool Pushing = false;
 
 	FHitResult OutHit;
 	FCollisionQueryParams CollisionParams;
 
-	void DestroyMyself();
-	void FinalActions(AActor* Actor);
+	void StopAction(ASATORI_AICharacter* Character);
+	void LaunchEnemy(AActor* Actor, ASATORI_AICharacter* Character);
+	void RotateEnemy(AActor* Actor);
+	void DamageEnemy(AActor* Actor, ASATORI_AICharacter* Character);
 	void StayGrounded(float DeltaTime);
-	void DamageEnemy(AActor* Actor);
+	void DestroyMyself();
 
 };

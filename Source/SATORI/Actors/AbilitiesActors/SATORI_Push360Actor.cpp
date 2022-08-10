@@ -36,37 +36,55 @@ void ASATORI_Push360Actor::OnOverlapCollisionSphere(UPrimitiveComponent* Overlap
 	}
 
 	//Enemies
-	if(Character->HasMatchingGameplayTag(EnemyTag) && !Character->HasMatchingGameplayTag(PushedTag))
+	if(Character->HasMatchingGameplayTag(EnemyTag) && !Character->HasMatchingGameplayTag(LaunchTag))
 	{	
-		ArrayPushed.AddUnique(OtherActor);
-		Character->AddGameplayTag(PushedTag);
-		LaunchEnemy(OtherActor);
-		DamageEnemy(OtherActor);
+		StopAction(Character);
+		RotateEnemy(OtherActor);
+		LaunchEnemy(OtherActor, Character);
+		DamageEnemy(OtherActor, Character);
 	}
 }
 
-void ASATORI_Push360Actor::LaunchEnemy(AActor* Actor)
+//Stops ability and  animation if active
+void ASATORI_Push360Actor::StopAction(ASATORI_AICharacter* Character)
 {
-	ASATORI_AICharacter* Character = Cast<ASATORI_AICharacter>(Actor);
+	//Edge cases
+	Character->RemoveGameplayTag(StunnedTag);
+
+	Character->RemoveGameplayTag(AbilityTag);
+	UAnimMontage* AnimMontage = Character->GetCurrentMontage();
+	if (IsValid(AnimMontage))
+	{
+		Character->StopAnimMontage(AnimMontage);
+	}
+}
+
+void ASATORI_Push360Actor::LaunchEnemy(AActor* Actor, ASATORI_AICharacter* Character)
+{
 	FVector Location = Actor->GetActorLocation();
 	Location.Z += 100;
 	Actor->SetActorLocation(Location);
+
 	FVector LaunchDirection = Actor->GetActorLocation() - GetWorld()->GetFirstPlayerController()->GetPawn()->GetActorLocation();
 	LaunchDirection.Z = ZLaunching;
 	LaunchDirection.Normalize();
 	Character->LaunchCharacter(LaunchDirection * LaunchForce, true, true);
+
+	Character->AddGameplayTag(LaunchTag);
+}
+
+void ASATORI_Push360Actor::RotateEnemy(AActor* Actor)
+{
+	FVector RotationDirection = GetWorld()->GetFirstPlayerController()->GetPawn()->GetActorLocation() - Actor->GetActorLocation();
+	RotationDirection.Normalize();
+	FRotator Rotator = RotationDirection.Rotation();
+	Rotator.Pitch = 0;
+	Rotator.Roll = 0;
+	Actor->SetActorRotation(Rotator);
 }
 
 void ASATORI_Push360Actor::DestroyMyself()
 {
-	for (AActor* Actor : ArrayPushed) {
-		if (IsValid(Actor))
-		{
-			ASATORI_AICharacter* Character = Cast<ASATORI_AICharacter>(Actor);
-			Character->RemoveGameplayTag(PushedTag);
-		}
-	}
-
 	Destroy();
 }
 
@@ -74,19 +92,18 @@ void ASATORI_Push360Actor::BeginPlay()
 {
 	Super::BeginPlay();
 
-	if(!EnemyTag.IsValid())
+	if (!EnemyTag.IsValid() || !LaunchTag.IsValid() || !AbilityTag.IsValid() || !StunnedTag.IsValid())
 	{
-		UE_LOG(LogTemp, Display, TEXT("[%s] ASATORI_Push360Actor: Tag is not valid ... "), *GetName());
+		UE_LOG(LogTemp, Warning, TEXT("[%s] USATORI_Push360Actor: Tag not valid ... "), *GetName());
+		Destroy();
 	}
 
 	FTimerHandle TimerHandleDestroy;
 	GetWorldTimerManager().SetTimer(TimerHandleDestroy, this, &ASATORI_Push360Actor::DestroyMyself, TimeToFinish, false);
 }
 
-//Damage Calculation
-void ASATORI_Push360Actor::DamageEnemy(AActor* Actor)
+void ASATORI_Push360Actor::DamageEnemy(AActor* Actor, ASATORI_AICharacter* Character)
 {
-	ASATORI_AICharacter* Character = Cast<ASATORI_AICharacter>(Actor);
-	float DamageDone = USATORI_BlueprintLibrary::ApplyGameplayEffectDamage(Actor, Damage, Actor, DamageGameplayEffect);
-	Character->sendDamage(DamageDone);
+	USATORI_BlueprintLibrary::ApplyGameplayEffectDamage(Actor, Damage, Actor, DamageGameplayEffect);
+	Character->CheckDamage();
 }

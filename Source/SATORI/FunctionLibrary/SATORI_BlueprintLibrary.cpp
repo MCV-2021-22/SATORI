@@ -37,3 +37,31 @@ float USATORI_BlueprintLibrary::ApplyGameplayEffectDamage(AActor* DamagedActor, 
 	}
 	return BaseDamage;
 }
+
+void USATORI_BlueprintLibrary::ApplyGameplayEffect(AActor* Actor, TSubclassOf<class UGameplayEffect> GameplayEffect)
+{
+	if (!GameplayEffect)
+	{
+		UE_LOG(LogTemp, Display, TEXT("USATORI_BlueprintLibrary: Failed to load GameplayEffect ... "));
+		return;
+	}
+
+	ASATORI_CharacterBase* Character = Cast<ASATORI_CharacterBase>(Actor);
+	if (!Character)
+	{
+		UE_LOG(LogTemp, Display, TEXT("USATORI_BlueprintLibrary: Failed Cast to ASATORI_CharacterBase ... "));
+		return;
+	}
+
+	UAbilitySystemComponent* AbilitySystemComponent = Character->GetAbilitySystemComponent();
+	if(!AbilitySystemComponent)
+	{
+		UE_LOG(LogTemp, Display, TEXT("USATORI_BlueprintLibrary: Failed Cast to UAbilitySystemComponent ... "));
+		return;
+	}
+
+	FGameplayEffectContextHandle ContextHandle;
+	FGameplayEffectSpecHandle SpecHandle = AbilitySystemComponent->MakeOutgoingSpec(GameplayEffect, 1.0f, ContextHandle);
+	FGameplayEffectSpec* Spec = SpecHandle.Data.Get();
+	AbilitySystemComponent->ApplyGameplayEffectSpecToSelf(*Spec);
+}

@@ -508,13 +508,16 @@ void ASATORICharacter::OnWeaponOverlapBegin(UPrimitiveComponent* OverlappedComp,
 		ASATORI_AICharacter* EnemyCharacter = Cast<ASATORI_AICharacter>(OtherActor);
 		if (EnemyCharacter)
 		{
+			UAbilitySystemComponent* EnemyAbilitySystem = EnemyCharacter->GetAbilitySystemComponent();
 			float Damage_Values = USATORI_BlueprintLibrary::ApplyGameplayEffectDamage(EnemyCharacter, WeaponDamage, this, DamageEffect);
+			USATORI_BlueprintLibrary::ApplyGameplayEffect(EnemyCharacter, BlockCountGameplayEffect);
+			USATORI_BlueprintLibrary::ApplyGameplayEffect(EnemyCharacter, StunGameplayEffect);
 			AbilitySystemComponent->ApplyGameplayEffectToSelf(ManaRecoverGameplayEffect, 1.0f, AbilitySystemComponent->MakeEffectContext());
 			if (!bMultipleHit)
 			{
 				AttackingCollision->SetGenerateOverlapEvents(false);
 			}
-			EnemyCharacter->sendDamage(Damage_Values);
+			EnemyCharacter->CheckDamage();
 			/*AnimactionPlayRater = 0.5f;
 			UGameplayStatics::SetGlobalTimeDilation(GetWorld(), AnimactionPlayRater);*/
 		}
@@ -565,53 +568,65 @@ void ASATORICharacter::SetupPlayerInputComponent(class UInputComponent* PlayerIn
 
 void ASATORICharacter::TouchStarted(ETouchIndex::Type FingerIndex, FVector Location)
 {
+	if(!HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag("State.Charmed")))
 		Jump();
 }
 
 void ASATORICharacter::TouchStopped(ETouchIndex::Type FingerIndex, FVector Location)
 {
+	if (!HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag("State.Charmed")))
 		StopJumping();
 }
 
 void ASATORICharacter::TurnAtRate(float Rate)
 {
 	// calculate delta for this frame from the rate information
-	AddControllerYawInput(Rate * BaseTurnRate * GetWorld()->GetDeltaSeconds());
+	if (!HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag("State.Charmed")))
+		AddControllerYawInput(Rate * BaseTurnRate * GetWorld()->GetDeltaSeconds());
 }
 
 void ASATORICharacter::LookUpAtRate(float Rate)
 {
 	// calculate delta for this frame from the rate information
-	AddControllerPitchInput(Rate * BaseLookUpRate * GetWorld()->GetDeltaSeconds());
+	if (!HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag("State.Charmed")))
+		AddControllerPitchInput(Rate * BaseLookUpRate * GetWorld()->GetDeltaSeconds());
 }
 
 void ASATORICharacter::MoveForward(float Value)
 {
-	if ((Controller != nullptr) && (Value != 0.0f))
+	if (!HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag("State.Charmed")))
 	{
-		// find out which way is forward
-		const FRotator Rotation = Controller->GetControlRotation();
-		const FRotator YawRotation(0, Rotation.Yaw, 0);
+		if ((Controller != nullptr) && (Value != 0.0f))
+		{
+			// find out which way is forward
+			const FRotator Rotation = Controller->GetControlRotation();
+			const FRotator YawRotation(0, Rotation.Yaw, 0);
 
-		// get forward vector
-		const FVector Direction = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X);
-		AddMovementInput(Direction, Value);
+			// get forward vector
+			const FVector Direction = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X);
+			AddMovementInput(Direction, Value);
+		}
 	}
+	
 }
 
 void ASATORICharacter::MoveRight(float Value)
 {
-	if ( (Controller != nullptr) && (Value != 0.0f) )
+	if (!HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag("State.Charmed")))
 	{
-		// find out which way is right
-		const FRotator Rotation = Controller->GetControlRotation();
-		const FRotator YawRotation(0, Rotation.Yaw, 0);
-	
-		// get right vector 
-		const FVector Direction = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y);
-		// add movement in that direction
-		AddMovementInput(Direction, Value);
+		if ((Controller != nullptr) && (Value != 0.0f))
+		{
+			// find out which way is right
+			const FRotator Rotation = Controller->GetControlRotation();
+			const FRotator YawRotation(0, Rotation.Yaw, 0);
+
+			// get right vector 
+			const FVector Direction = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y);
+			// add movement in that direction
+			AddMovementInput(Direction, Value);
+		}
 	}
+	
 }
 
 void ASATORICharacter::OnInteract()
@@ -621,47 +636,55 @@ void ASATORICharacter::OnInteract()
 
 void ASATORICharacter::SetComboJumpSection(USATORI_ANS_JumpSection* JumpSection)
 {
-	this->JumpSectionNS = JumpSection;
-
-	if (this->JumpSectionNS != nullptr)
+	if (!HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag("State.Charmed")))
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Set jump section %s"), *JumpSection->NextMontageNames[0].ToString());
+		this->JumpSectionNS = JumpSection;
+
+		if (this->JumpSectionNS != nullptr)
+		{
+			UE_LOG(LogTemp, Warning, TEXT("Set jump section %s"), *JumpSection->NextMontageNames[0].ToString());
+		}
 	}
+	
 }
 
 bool ASATORICharacter::AttackJumpSectionCombo()
 {
-	if (this->JumpSectionNS == nullptr)
+	if (!HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag("State.Charmed")))
 	{
-		UE_LOG(LogTemp, Display, TEXT("JumpSection failed : No JumpSectioNS!"));
-		return false;
+		if (this->JumpSectionNS == nullptr)
+		{
+			UE_LOG(LogTemp, Display, TEXT("JumpSection failed : No JumpSectioNS!"));
+			return false;
+		}
+
+		if (!GetMesh())
+		{
+			return false;
+		}
+
+		UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
+		if (!AnimInstance)
+		{
+			UE_LOG(LogTemp, Warning, TEXT("TriggerJumpSection failed: no anim instance!"));
+			return false;
+		}
+
+		UAnimMontage* CurrentActiveMontage = AnimInstance->GetCurrentActiveMontage();
+		if (!CurrentActiveMontage)
+		{
+			UE_LOG(LogTemp, Display, TEXT("TriggerJumpSection failed: no current montage!"));
+			return false;
+		}
+
+		const FName CurrentSectionName = AnimInstance->Montage_GetCurrentSection(CurrentActiveMontage);
+
+		const int RandInt = FMath::RandRange(0, this->JumpSectionNS->NextMontageNames.Num() - 1);
+		const FName NextSectionName = JumpSectionNS->NextMontageNames[RandInt];
+
+		AnimInstance->Montage_JumpToSection(NextSectionName, CurrentActiveMontage);
 	}
-
-	if (!GetMesh())
-	{
-		return false;
-	}
-
-	UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
-	if (!AnimInstance)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("TriggerJumpSection failed: no anim instance!"));
-		return false;
-	}
-
-	UAnimMontage* CurrentActiveMontage = AnimInstance->GetCurrentActiveMontage();
-	if (!CurrentActiveMontage)
-	{
-		UE_LOG(LogTemp, Display, TEXT("TriggerJumpSection failed: no current montage!"));
-		return false;
-	}
-
-	const FName CurrentSectionName = AnimInstance->Montage_GetCurrentSection(CurrentActiveMontage);
-
-	const int RandInt = FMath::RandRange(0, this->JumpSectionNS->NextMontageNames.Num() - 1);
-	const FName NextSectionName = JumpSectionNS->NextMontageNames[RandInt];
-
-	AnimInstance->Montage_JumpToSection(NextSectionName, CurrentActiveMontage);
+	
 
 	return true;
 }
@@ -670,12 +693,15 @@ bool ASATORICharacter::PlayerActiveAbilityWithTag(FGameplayTag TagName)
 {
 	FGameplayTagContainer TagContainer;
 	TagContainer.AddTag(TagName);
-
-	if (!AbilitySystemComponent->TryActivateAbilitiesByTag(TagContainer))
+	if (!HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag("State.Charmed")))
 	{
-		UE_LOG(LogTemp, Warning, TEXT("TryActivateAbilitiesByTag failed "));
-		return false;
+		if (!AbilitySystemComponent->TryActivateAbilitiesByTag(TagContainer))
+		{
+			UE_LOG(LogTemp, Warning, TEXT("TryActivateAbilitiesByTag failed "));
+			return false;
+		}
 	}
+	
 
 	return true;
 }

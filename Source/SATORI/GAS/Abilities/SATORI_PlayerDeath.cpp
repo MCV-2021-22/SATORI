@@ -18,8 +18,9 @@ void USATORI_PlayerDeath::ActivateAbility(const FGameplayAbilitySpecHandle Handl
 
 	if (!Character)
 	{
-		UE_LOG(LogTemp, Display, TEXT("[%s] USATORI_DashAbility: Cannot Cast ASATORICharacter ... "), *GetName());
+		UE_LOG(LogTemp, Display, TEXT("[%s] USATORI_PlayerDeath: Cannot Cast ASATORICharacter ... "), *GetName());
 		Super::EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true);
+		return;
 	}
 
 	ASATORI_PlayerController* Controller = Cast<ASATORI_PlayerController>(Character->GetController());

@@ -10,7 +10,7 @@
 ASATORIGameMode::ASATORIGameMode()
 {
 	// set default pawn class to our Blueprinted character
-	static ConstructorHelpers::FClassFinder<APawn> PlayerPawnBPClass(TEXT("/Game/SATORI/SATORI_Character"));
+	static ConstructorHelpers::FClassFinder<APawn> PlayerPawnBPClass(TEXT("/Game/SATORI/Character/SATORI_Character"));
 	if (PlayerPawnBPClass.Class != NULL)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("/Game/SATORI/SATORI_Character"));

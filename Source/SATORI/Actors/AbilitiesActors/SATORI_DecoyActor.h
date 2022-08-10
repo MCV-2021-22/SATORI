@@ -36,12 +36,6 @@ public:
 	UProjectileMovementComponent* ProjectileMovementComponent = nullptr;
 
 	UPROPERTY(BlueprintReadOnly, Meta = (ExposeOnSpawn = true), Category = "Decoy")
-	TSubclassOf<UGameplayEffect> DamageGameplayEffect;
-
-	UPROPERTY(BlueprintReadOnly, Meta = (ExposeOnSpawn = true), Category = "Decoy")
-	float Damage;
-
-	UPROPERTY(BlueprintReadOnly, Meta = (ExposeOnSpawn = true), Category = "Decoy")
 	float TimeToFinish;
 
 	//Movement Calculations
