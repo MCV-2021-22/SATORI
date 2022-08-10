@@ -230,7 +230,7 @@ bool ASATORICharacter::DoRayCast()
 		bool isInFront = AICharacter->CheckPlayerWithRayCast();
 		if (isInFront)
 		{
-			if (AICharacter->GetAbilitySystemComponent()->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag(FName("State.Lured"))))
+			if (AICharacter->GetAbilitySystemComponent()->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag(FName("State.CanEnemyParry"))))
 			{
 				UE_LOG(LogTemp, Warning, TEXT("Enemy"));
 
@@ -390,18 +390,22 @@ void ASATORICharacter::InitializePassiveAttributes()
 	// Now apply passives
 	for (TSubclassOf<UGameplayEffect>& GameplayEffect : PassiveGameplayEffects)
 	{
-		FGameplayEffectContextHandle EffectContext = AbilitySystemComponent->MakeEffectContext();
-		EffectContext.AddSourceObject(this);
-
-		FGameplayEffectSpecHandle NewHandle = AbilitySystemComponent->MakeOutgoingSpec(GameplayEffect, GetCharacterLevel(), EffectContext);
-		if (NewHandle.IsValid())
-		{
-			FActiveGameplayEffectHandle ActiveGEHandle = AbilitySystemComponent->ApplyGameplayEffectSpecToTarget(*NewHandle.Data.Get(),
-				AbilitySystemComponent.Get());
-		}
+		ApplyGameplayeEffectToPlayerWithParam(GameplayEffect);
 	}
 }
 
+void ASATORICharacter::ApplyGameplayeEffectToPlayerWithParam(TSubclassOf<UGameplayEffect> GameplayEffect)
+{
+	FGameplayEffectContextHandle EffectContext = AbilitySystemComponent->MakeEffectContext();
+	EffectContext.AddSourceObject(this);
+
+	FGameplayEffectSpecHandle NewHandle = AbilitySystemComponent->MakeOutgoingSpec(GameplayEffect, GetCharacterLevel(), EffectContext);
+	if (NewHandle.IsValid())
+	{
+		FActiveGameplayEffectHandle ActiveGEHandle = AbilitySystemComponent->ApplyGameplayEffectSpecToTarget(*NewHandle.Data.Get(),
+			AbilitySystemComponent.Get());
+	}
+}
 
 void ASATORICharacter::CharacterDeath()
 {
@@ -735,9 +739,8 @@ void ASATORICharacter::RemoveAllAbilities()
 	}
 	PlayerGameplayAbilityComponent->PlayerGameplayAbility.Empty();
 	PlayerGameplayAbilityComponent->PlayerAbilitiesNames.Empty();
+	PlayerGameplayAbilityComponent->GetCharacterAbilities().Empty();
 	PlayerGameplayAbilityComponent->CurrentAbilityValue = 0;
-	PlayerGameplayAbilityComponent->PrevAbilityValue = 0;
-	PlayerGameplayAbilityComponent->NextAbilityValue = 0;
 }
 
 void ASATORICharacter::GetAbility(FName AbilityName)

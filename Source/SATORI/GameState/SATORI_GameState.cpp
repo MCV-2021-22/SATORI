@@ -36,8 +36,15 @@ void ASATORI_GameState::BeginPlay()
     FillPortalGameplayEffectWithData();
     FillPortalGrantedAbilityWithData();
 
-    GeneratedRandomPlayerAbility();
-    GeneratedRandomPassiveEffect();
+   /* GeneratedRandomPlayerAbility();
+    GeneratedRandomPassiveEffect();*/
+    GenerateRandomPassiveEffectAndAbilities();
+
+    // Check if it is first level
+    if (InstancePortals.Num() == 1 && InstancePortals[0]->IsFirstLevel)
+    {
+        InstancePortals[0]->ActivatePortal();
+    }
 }
 
 void ASATORI_GameState::FillPortalGameplayEffectWithData()
@@ -84,10 +91,61 @@ int ASATORI_GameState::GenerateRandomNumberForPortal()
     return number;
 }
 
+void ASATORI_GameState::GenerateRandomPassiveEffectAndAbilities()
+{
+    ASATORICharacter* Character = Cast<ASATORICharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
+    if (Character)
+    {
+        for (int i = 0; i < InstancePortals.Num(); i++)
+        {
+            // Generate random gameplayEffect
+            int RandomNumber = GenerateRandomNumberForPortal();
+            FSATORI_DoorPassiveReward EffectToApply = PortalEffectsToApply[RandomNumber];
+            InstancePortals[i]->SetCurrentGameplayEffectData(EffectToApply);
+
+            // Generate random abilities
+            // Check if there have more abilities
+            if (PortalGrantedUpgratedAbilityToApply.Num() > 0 || PortalGrantedNormalAbilityToApply.Num() > 0)
+            {
+                // Upgrated Abilities
+                if (Character->GetIsAbilityUpgrated())
+                {
+                    int Size = PortalGrantedUpgratedAbilityToApply.Num() - 1;
+                    int CurrentId = i;
+                    // Size - CurrentId because we want last elment of the array and the penultimate element 
+                    // So, the array will get Size - 0 and Size - 1 element (we only hace 2 portal per run)
+                    FSATORI_PortalAbilitiesDatasReward Reward = PortalGrantedUpgratedAbilityToApply[Size - CurrentId];
+                    InstancePortals[i]->SetCurrentGameplayAbilityData(Reward);
+                    UE_LOG(LogTemp, Display, TEXT(" Player Upgrated Ability Size : [%d] "), Size);
+                    // I + 1 Make sure i != 0, and the we can remove from last element from the Game Instance Array
+                    // Call RemoveElementonFromNormalAbilities from Game Instance                
+                    InstancePortals[i]->SetCurrentId(CurrentId + 1);
+                }
+                // Normal Abilities
+                else
+                {
+                    int Size = PortalGrantedNormalAbilityToApply.Num() - 1;
+                    int CurrentId = i;
+                    // Size - CurrentId because we want last elment of the array and the penultimate element 
+                    // So, the array will get Size - 0 and Size - 1 element (we only hace 2 portal per run)
+                    FSATORI_PortalAbilitiesDatasReward Reward = PortalGrantedNormalAbilityToApply[Size - CurrentId];
+                    InstancePortals[i]->SetCurrentGameplayAbilityData(Reward);
+                    UE_LOG(LogTemp, Display, TEXT(" Player Normal Abilities Size : [%d] "), Size);
+                    FString AbilityString = Reward.AbilityName.ToString();
+                    UE_LOG(LogTemp, Warning, TEXT(" Player Normal Ability Name : %s "), *AbilityString);
+                    InstancePortals[i]->SetCurrentId(CurrentId + 1);
+                }
+            }
+        }
+    }
+}
+
 void ASATORI_GameState::GeneratedRandomPassiveEffect()
 {
     if (InstancePortals.Num() == 1)
         return;
+
+    ASATORICharacter* Character = Cast<ASATORICharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
 
     for (int i = 1; i < InstancePortals.Num(); i++)
     {
@@ -107,7 +165,7 @@ void ASATORI_GameState::GeneratedRandomPassiveEffect()
 
 void ASATORI_GameState::GeneratedRandomPlayerAbility()
 {
-    ASATORICharacter* Character = Cast<ASATORICharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
+    /*ASATORICharacter* Character = Cast<ASATORICharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
     if (Character)
     {
         if (Character->GetIsAbilityUpgrated() && PortalGrantedUpgratedAbilityToApply.Num() > 0)
@@ -118,10 +176,10 @@ void ASATORI_GameState::GeneratedRandomPlayerAbility()
             UE_LOG(LogTemp, Display, TEXT(" Player Upgrated Ability Size : [%d] "), Size);
             if (GameInstanceRef)
             {
-                GameInstanceRef->RemoveElementonFromUpgratedAbilities();
+                GameInstanceRef->RemoveElementonFromUpgratedAbilities(1);
             }
         }
-        else if (PortalGrantedNormalAbilityToApply.Num() > 0)
+        else (PortalGrantedNormalAbilityToApply.Num() > 0)
         {
             int Size = PortalGrantedNormalAbilityToApply.Num() - 1;
             if (Size > 0)
@@ -134,11 +192,10 @@ void ASATORI_GameState::GeneratedRandomPlayerAbility()
             }
             if (GameInstanceRef)
             {
-                GameInstanceRef->RemoveElementonFromNormalAbilities();
+                GameInstanceRef->RemoveElementonFromNormalAbilities(1);
             }
-            //PortalGrantedNormalAbilityToApply.Remove(Reward);
         }
-    }
+    }*/
 }
 
 //void ASATORI_GameState::AddEnemyActor(AActor* Enemy)

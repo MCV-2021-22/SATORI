@@ -76,32 +76,79 @@ void USATORI_GameInstance::FillPortalGrantedAbilityWithData()
             }
         }
     }
+
+    ShuffleArray(PortalGrantedNormalAbilityToApply);
+    ShuffleArray(PortalGrantedUpgratedAbilityToApply);
 }
 
-void USATORI_GameInstance::RemoveElementonFromNormalAbilities()
+void USATORI_GameInstance::RemoveElementonFromNormalAbilities(int Id)
 {
     if (PortalGrantedNormalAbilityToApply.Num() > 0)
     {
-        int Size = PortalGrantedNormalAbilityToApply.Num() - 1;
-        FString AbilityString = PortalGrantedNormalAbilityToApply[Size].AbilityName.ToString();
-        UE_LOG(LogTemp, Warning, TEXT(" Player Normal Ability Name : %s "), *AbilityString);
-        PortalGrantedNormalAbilityToApply.RemoveAt(Size);
+        int Index = PortalGrantedNormalAbilityToApply.Num() - Id;
+        if (Index < 0)
+        {
+            Index = 0;
+        }
+        if (PortalGrantedNormalAbilityToApply.Num() == 2 && Id == 1)
+        {
+            FString AbilityString = PortalGrantedNormalAbilityToApply[Index].AbilityName.ToString();
+            UE_LOG(LogTemp, Warning, TEXT(" Player Normal Ability Name : %s "), *AbilityString);
+            PortalGrantedNormalAbilityToApply.RemoveAt(0);
+        }
+        else if (PortalGrantedNormalAbilityToApply.Num() == 2 && Id == 2)
+        {
+            FString AbilityString = PortalGrantedNormalAbilityToApply[Index].AbilityName.ToString();
+            UE_LOG(LogTemp, Warning, TEXT(" Player Normal Ability Name : %s "), *AbilityString);
+            PortalGrantedNormalAbilityToApply.RemoveAt(1);
+        }
+        else
+        {
+            FString AbilityString = PortalGrantedNormalAbilityToApply[Index].AbilityName.ToString();
+            UE_LOG(LogTemp, Warning, TEXT(" Player Normal Ability Name : %s "), *AbilityString);
+            PortalGrantedNormalAbilityToApply.RemoveAt(Index);
+        }
+        ShuffleArray(PortalGrantedNormalAbilityToApply);
     }
 }
 
-void USATORI_GameInstance::RemoveElementonFromUpgratedAbilities()
+void USATORI_GameInstance::RemoveElementonFromUpgratedAbilities(int Id)
 {
     if (PortalGrantedUpgratedAbilityToApply.Num() > 0)
     {
-        int Size = PortalGrantedUpgratedAbilityToApply.Num() - 1;
-        FString AbilityString = PortalGrantedNormalAbilityToApply[Size].AbilityName.ToString();
-        UE_LOG(LogTemp, Warning, TEXT(" Player Upgrated Ability Name : %s "), *AbilityString);
-        PortalGrantedNormalAbilityToApply.RemoveAt(Size);
+        int Index = PortalGrantedUpgratedAbilityToApply.Num() - Id;
+        if (Index < 0)
+        {
+            Index = 0;
+        }
+        if (PortalGrantedUpgratedAbilityToApply.Num() == 2 && Id == 1)
+        {
+            FString AbilityString = PortalGrantedUpgratedAbilityToApply[Index].AbilityName.ToString();
+            UE_LOG(LogTemp, Warning, TEXT(" Player Normal Ability Name : %s "), *AbilityString);
+            PortalGrantedUpgratedAbilityToApply.RemoveAt(0);
+        }
+        else if (PortalGrantedUpgratedAbilityToApply.Num() == 2 && Id == 2)
+        {
+            FString AbilityString = PortalGrantedUpgratedAbilityToApply[Index].AbilityName.ToString();
+            UE_LOG(LogTemp, Warning, TEXT(" Player Normal Ability Name : %s "), *AbilityString);
+            PortalGrantedUpgratedAbilityToApply.RemoveAt(1);
+        }
+        else
+        {
+            FString AbilityString = PortalGrantedNormalAbilityToApply[Index].AbilityName.ToString();
+            UE_LOG(LogTemp, Warning, TEXT(" Player Normal Ability Name : %s "), *AbilityString);
+            PortalGrantedNormalAbilityToApply.RemoveAt(Index);
+        }
+        ShuffleArray(PortalGrantedUpgratedAbilityToApply);
     }
 }
 
 void USATORI_GameInstance::ResetPortalRewardAbilities()
 {
+    // Clear the player Abilities
+    NormalAbilities.Empty();
+    UpgratedAbilities.Empty();
+
     // Clear the Array
     PortalGrantedUpgratedAbilityToApply.Empty();
     PortalGrantedNormalAbilityToApply.Empty();
@@ -109,4 +156,23 @@ void USATORI_GameInstance::ResetPortalRewardAbilities()
     // Allocate the recicled Array elements to portal Array
     PortalGrantedUpgratedAbilityToApply = PortalRecicledUpgratedAbility;
     PortalGrantedNormalAbilityToApply = PortalRecicledNormalAbility;
+
+    ShuffleArray(PortalGrantedNormalAbilityToApply);
+    ShuffleArray(PortalGrantedUpgratedAbilityToApply);
+}
+
+void USATORI_GameInstance::ShuffleArray(TArray<FSATORI_PortalAbilitiesDatasReward>& myArray)
+{
+    if (myArray.Num() > 0)
+    {
+        int32 LastIndex = myArray.Num() - 1;
+        for (int32 i = 0; i <= LastIndex; ++i)
+        {
+            int32 Index = FMath::RandRange(i, LastIndex);
+            if (i != Index)
+            {
+                myArray.Swap(i, Index);
+            }
+        }
+    }
 }

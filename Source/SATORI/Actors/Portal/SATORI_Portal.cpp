@@ -18,6 +18,7 @@
 #include "GameplayFramework/SATORI_GameInstance.h"
 #include "Components/WidgetComponent.h"
 #include "Components/Player/SATORI_GameplayAbilityComponent.h"
+#include "Kismet/GameplayStatics.h"
 
 // Sets default values
 ASATORI_Portal::ASATORI_Portal()
@@ -30,9 +31,17 @@ ASATORI_Portal::ASATORI_Portal()
 	TextRenderComponent = CreateDefaultSubobject<UTextRenderComponent>(TEXT("TextRenderComponent"));
 	TextRenderComponent->SetupAttachment(RootComponent);
 
-	PortalIconTexture = CreateDefaultSubobject<UBillboardComponent>(TEXT("BillboardComponent"));
-	PortalIconTexture->SetupAttachment(RootComponent);
+	// BillboardComponent
+	PortalAbilityIconTexture = CreateDefaultSubobject<UBillboardComponent>(TEXT("PortalAbilityIcon"));
+	PortalAbilityIconTexture->SetupAttachment(RootComponent);
 
+	PortalEffectIconTexture = CreateDefaultSubobject<UBillboardComponent>(TEXT("PortalEffectIcon"));
+	PortalEffectIconTexture->SetupAttachment(RootComponent);
+
+	PortalEffectIconTexture->SetVisibility(false);
+	PortalAbilityIconTexture->SetVisibility(false);
+
+	// Collision Component
 	SphereComponent = CreateDefaultSubobject<USphereComponent>(TEXT("SphereComponent"));
 	SphereComponent->SetupAttachment(RootComponent);
 	SphereComponent->SetSphereRadius(120.0f);
@@ -54,11 +63,6 @@ void ASATORI_Portal::BeginPlay()
 	Super::BeginPlay();
 	
 	GetWorld()->GetAuthGameMode<ASATORIGameMode>()->AddPortalActor(this);
-
-	if (IsFirstLevel || IsActiveForTest)
-	{
-		ActivatePortal();
-	}
 }
 
 void ASATORI_Portal::OnConstruction(const FTransform& Transform)
@@ -70,7 +74,7 @@ void ASATORI_Portal::OnComponentBeginOverlap(UPrimitiveComponent* OverlappedComp
 {
 	UE_LOG(LogTemp, Warning, TEXT("On Overlap Beg %s"), *OtherActor->GetName());
 
-	ASATORICharacter* Character = Cast<ASATORICharacter>(OtherActor);
+	/*ASATORICharacter* Character = Cast<ASATORICharacter>(OtherActor);
 
 	if (!Character)
 	{
@@ -84,13 +88,13 @@ void ASATORI_Portal::OnComponentBeginOverlap(UPrimitiveComponent* OverlappedComp
 			ApplyEffectToPlayer(Character);
 		}
 
-		else if(CurrentAbility.Get())
+		if(CurrentAbility.Get())
 		{
 			GrantedAbilityToPlayer(Character);
 		}
 		
 		ChangeLevel(Character);
-	}
+	}*/
 }
 
 void ASATORI_Portal::ApplyEffectToPlayer(ASATORICharacter* PlayerCharacter)
@@ -123,14 +127,11 @@ void ASATORI_Portal::GrantedAbilityToPlayer(ASATORICharacter* PlayerCharacter)
 	AbilityData.CurrentAbility = PortalAbilityToApply.CurrentAbility;
 	AbilityData.isUpgrated = PortalAbilityToApply.isUpgrated;
 
-	if (PlayerCharacter && !PlayerCharacter->GetIsAbilityUpgrated())
+	if (PlayerCharacter)
 	{
-		PlayerCharacter->GetPlayerAbilityComponent()->AddNormalAbilities(AbilityData);
+		PlayerCharacter->GetPlayerAbilityComponent()->AddPortalAbilities(AbilityData);
 	}
-	else
-	{
-		PlayerCharacter->GetPlayerAbilityComponent()->AddUpgratedAbilities(AbilityData);
-	}
+
 }
 
 TSubclassOf<UGameplayEffect> ASATORI_Portal::GetCurrentGameplayEffect()
@@ -159,15 +160,13 @@ void ASATORI_Portal::ActivatePortal()
 
 	SphereComponent->SetCollisionProfileName(FName("IgnoreAllOverlapOnlyPlayer"));
 
-	if (PortalEffectsToApply.PassiveIcon)
+	if (PortalEffectsToApply.PassiveIcon && PortalAbilityToApply.AbilitiyIcon)
 	{
-		PortalIconTexture->SetSprite(PortalEffectsToApply.PassiveIcon);
-	}
-	else if (PortalAbilityToApply.AbilitiyIcon)
-	{
-		PortalIconTexture->SetSprite(PortalAbilityToApply.AbilitiyIcon);
-	}
-	
+		PortalEffectIconTexture->SetVisibility(true);
+		PortalAbilityIconTexture->SetVisibility(true);
+		PortalAbilityIconTexture->SetSprite(PortalEffectsToApply.PassiveIcon);
+		PortalEffectIconTexture->SetSprite(PortalAbilityToApply.AbilitiyIcon);
+	}	
 }
 
 void ASATORI_Portal::ChangeLevel(ASATORICharacter* Character)
@@ -187,8 +186,10 @@ void ASATORI_Portal::ChangeLevel(ASATORICharacter* Character)
 		GameInstanceRef->Attack = Character->GetAttack();
 		GameInstanceRef->MoveSpeed = Character->GetMoveSpeed();
 		GameInstanceRef->Gold = Character->GetGold();
-		GameInstanceRef->NormalAbilities = Character->GetPlayerAbilityComponent()->GetNormalAbilities();
-		GameInstanceRef->UpgratedAbilities = Character->GetPlayerAbilityComponent()->GetUpgratedAbilities();
+		GameInstanceRef->NormalAbilities = Character->GetPlayerAbilityComponent()->GetCharacterAbilities();
+		GameInstanceRef->UpgratedAbilities = Character->GetPlayerAbilityComponent()->GetCharacterAbilities();
+		GameInstanceRef->CurrentPlayerAbilityId = Character->GetPlayerAbilityComponent()->CurrentAbilityValue;
+		RemoveGameinstanceAbilities(GameInstanceRef, CurrentId);
 	}
 
 	if (LevelNames.Num() != 0)
@@ -205,7 +206,27 @@ void ASATORI_Portal::Interact(AActor* ActorInteracting)
 	UE_LOG(LogTemp, Display, TEXT("Interact With Door"));
 
 	// Todo : Interact with the player
-	// ActivatePortal();
+	ASATORICharacter* Character = Cast<ASATORICharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
+
+	if (!Character)
+	{
+		return;
+	}
+
+	if (Character)
+	{
+		if (CurrentGameplayEffect.Get())
+		{
+			ApplyEffectToPlayer(Character);
+		}
+
+		if (CurrentAbility.Get())
+		{
+			GrantedAbilityToPlayer(Character);
+		}
+
+		ChangeLevel(Character);
+	}
 }
 
 void ASATORI_Portal::StartCanInteract(AActor* ActorInteracting)
@@ -216,4 +237,17 @@ void ASATORI_Portal::StartCanInteract(AActor* ActorInteracting)
 void ASATORI_Portal::StopCanInteract(AActor* ActorInteracting)
 {
 	WidgetComponent->SetVisibility(false, true);
+}
+
+void ASATORI_Portal::SetCurrentId(int Id)
+{
+	CurrentId = Id;
+}
+
+void ASATORI_Portal::RemoveGameinstanceAbilities(USATORI_GameInstance* GameInstanceRef , int Id)
+{
+	if (Id != 0 && GameInstanceRef)
+	{
+		GameInstanceRef->RemoveElementonFromNormalAbilities(Id);
+	}
 }

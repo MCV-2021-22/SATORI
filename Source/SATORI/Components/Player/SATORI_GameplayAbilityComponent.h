@@ -36,13 +36,13 @@ struct FSATORI_AbilitiesIconsDatas
 	GENERATED_BODY()
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	UTexture2D* CurrentAbilitiyIcon;
+	UTexture2D* FirstAbilitiyIcon;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	UTexture2D* NextAbilitiyIcon;
+	UTexture2D* SecondAbilitiyIcon;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	UTexture2D* PrevAbilitiyIcon;
+	UTexture2D* LastAbilitiyIcon;
 };
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FSATORIChangeAbilityIcon, const FSATORI_AbilitiesDatas&, AbilityData);
@@ -78,15 +78,9 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	int CurrentAbilityValue = 0;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
-	int NextAbilityValue = 1;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
-	int PrevAbilityValue;
 	// Getters
-	TSubclassOf<USATORI_GameplayAbility> GetCurrentAbility();
-	TArray<FSATORI_AbilitiesDatas> GetNormalAbilities() { return NormalAbilities; }
-	TArray<FSATORI_AbilitiesDatas> GetUpgratedAbilities() { return UpgratedAbilities; }
+
+	TArray<FSATORI_AbilitiesDatas> GetCharacterAbilities() { return PortalRewardAbilities; }
 
 	UPROPERTY(BlueprintAssignable)
 	FSATORIChangeAbilityIcon AbilityIconChange;
@@ -110,22 +104,27 @@ public:
 protected:
 	
 	virtual void BeginPlay() override;
-
 private:
 
 	FName AbilityName;
 	TSubclassOf<USATORI_GameplayAbility> CurrentGameplayAbility;
 
 	// Abilities
-	TArray<FSATORI_AbilitiesDatas> NormalAbilities;
-	TArray<FSATORI_AbilitiesDatas> UpgratedAbilities;
+	TArray<FSATORI_AbilitiesDatas> PortalRewardAbilities;
 
+	ASATORICharacter* PlayerCharacter = nullptr;
+
+	// Abilites Datas
+	const FSATORI_AbilitiesDatas* SecondAbilityData = nullptr;
+	const FSATORI_AbilitiesDatas* LastAbilityData = nullptr;
+	const FSATORI_AbilitiesDatas* FirstAbilityData = nullptr;
 public:
 
-	void AddNormalAbilities(FSATORI_AbilitiesDatas AbilityData);
-	void AddUpgratedAbilities(FSATORI_AbilitiesDatas AbilityData);
+	void AddPortalAbilities(FSATORI_AbilitiesDatas AbilityData);
 
 	void RemoveEnabledAbility();
 
 	bool IsAbilityEnabled() const;
+
+	void CheckAbilitiesStatus(FSATORI_AbilitiesIconsDatas& AbilitiesDatas);
 };

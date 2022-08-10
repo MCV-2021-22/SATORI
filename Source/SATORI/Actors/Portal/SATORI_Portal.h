@@ -18,6 +18,7 @@ class USATORI_DoorInteractUI;
 class USATORI_PortalPassiveDataAsset;
 class UBillboardComponent;
 class UWidgetComponent;
+class USATORI_GameInstance;
 
 USTRUCT(BlueprintType)
 struct FSATORI_PortalAbilitiesDatasReward
@@ -84,7 +85,10 @@ public:
 	UTextRenderComponent* TextRenderComponent = nullptr;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
-	UBillboardComponent* PortalIconTexture = nullptr;
+	UBillboardComponent* PortalAbilityIconTexture = nullptr;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
+	UBillboardComponent* PortalEffectIconTexture = nullptr;
 
 	// Effect apply to player 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "GameplayEffect")
@@ -106,6 +110,7 @@ public:
 
 	void SetCurrentGameplayEffectData(FSATORI_DoorPassiveReward CurrentEffecData);
 	void SetCurrentGameplayAbilityData(FSATORI_PortalAbilitiesDatasReward CurrentAbilityData);
+	void SetCurrentId(int Id);
 public:
 	UFUNCTION()
 	void OnComponentBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
@@ -121,6 +126,11 @@ private:
 
 	TSubclassOf<USATORI_GameplayAbility> CurrentAbility;
 
+	bool Active = false;
+
+	int CurrentId = 0;
+
+	void RemoveGameinstanceAbilities(USATORI_GameInstance* GameInstanceRef, int Id);
 public:
 
 	void ActivatePortal();
@@ -133,10 +143,7 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Levels")
 	bool IsFirstLevel = false;
 
+	// Use for testing
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Levels")
 	bool IsActiveForTest= false;
-private:
-
-	bool Active = false;
-
 };

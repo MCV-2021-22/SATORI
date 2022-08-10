@@ -72,6 +72,9 @@ public:
 	int PlayerAbility = 0;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int CurrentPlayerAbilityId = 0;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	SATORIMaskType MaskType = SATORIMaskType::NONE;
 
 	bool PlayerStart = true;
@@ -90,14 +93,16 @@ public:
 	TArray<FSATORI_PortalAbilitiesDatasReward> GetPortalGrantedUpgratedAbility() { return PortalGrantedUpgratedAbilityToApply; }
 	TArray<FSATORI_PortalAbilitiesDatasReward> GetPortalGrantedNormalAbility() { return PortalGrantedNormalAbilityToApply; }
 
-	void RemoveElementonFromNormalAbilities();
-	void RemoveElementonFromUpgratedAbilities();
+	void RemoveElementonFromNormalAbilities(int Id);
+	void RemoveElementonFromUpgratedAbilities(int Id);
 
 	void ResetPortalRewardAbilities();
 private:
 	void InitSaveGame();
 
 	void FillPortalGrantedAbilityWithData();
+
+	void ShuffleArray(TArray<FSATORI_PortalAbilitiesDatasReward>& myArray);
 
 	UPROPERTY()
 	USATORI_SaveGame* SaveGame = nullptr;

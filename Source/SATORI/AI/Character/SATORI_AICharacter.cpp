@@ -297,5 +297,11 @@ void ASATORI_AICharacter::RegisterInTargetableArray_Implementation()
 	if (bIsTargetable)
 	{
 		GetWorld()->GetAuthGameMode<ASATORIGameMode>()->AddEnemyActor(this);
+		//GetWorld()->GetGameState<ASATORI_GameState>()->AddEnemyActor(this);
 	}
+}
+
+void ASATORI_AICharacter::CharacterDeath()
+{
+	
 }

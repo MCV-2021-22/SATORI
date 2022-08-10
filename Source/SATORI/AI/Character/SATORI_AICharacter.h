@@ -63,6 +63,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Stats")
 	USATORI_EnemyStatComponent* EnemyStatComponent;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Reward")
+	TSubclassOf<UGameplayEffect> GoldRewardGameplayEffect;
+
 	//Ray Cast
 	UFUNCTION(BlueprintCallable)
 	bool CheckPlayerWithRayCast();	
@@ -103,7 +106,8 @@ public:
 
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "UI")
 	TSubclassOf<USATORI_EnemyHealthBar> HealthBarUI;
-	
+
+	virtual void CharacterDeath() override;
 protected:
 
 	// Default attributes for a character for initializing on spawn/respawn.
