@@ -6,13 +6,10 @@
 #include "AI/Character/SATORI_AICharacter.h"
 #include "SATORI_CloneCharacter.generated.h"
 
-class USphereComponent;
 class USkeletalMeshComponent;
 class UCapsuleComponent;
+class UGameplayEffect;
 
-/**
- * 
- */
 UCLASS()
 class SATORI_API ASATORI_CloneCharacter : public ASATORI_AICharacter
 {
@@ -22,32 +19,39 @@ public:
 
 	ASATORI_CloneCharacter();
 
-	//UPROPERTY(EditDefaultsOnly, Category = "Clone")
-	//USphereComponent* LuringSphereComponent = nullptr;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Weapon")
+	USkeletalMeshComponent* SwordComponentClone;
 
-	//UPROPERTY(BlueprintReadWrite, EditAnywhere, Meta = (ExposeOnSpawn = true), Category = "Clone")
-	//FGameplayTag TagGrantedWhenLured;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon")
+	UCapsuleComponent* AttackingCollisionClone;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	FName WeaponSocketName;
 
-	//UFUNCTION(BlueprintCallable, Category = "Clone")
-	//	void OnOverlapLuringSphere(
-	//		UPrimitiveComponent* OverlappedComp,
-	//		AActor* OtherActor,
-	//		UPrimitiveComponent* OtherComp,
-	//		int32 OtherBodyIndex,
-	//		bool bFromSweep,
-	//		const FHitResult& SweepResult);
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Weapon")
+	float WeaponDamage = 40.0f;
 
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Clone|Tags")
-	FGameplayTag  PlayerTag;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Weapon")
+	bool bMultipleHit = false;
 
-private:
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Gamepaly Effect")
+	TSubclassOf<UGameplayEffect> DamageEffect;
 
-	AActor* Target;
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Gamepaly Effect")
+	TSubclassOf<UGameplayEffect> BlockCountGameplayEffect;
 
-	TArray<AActor*> ArrayLured;
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Gamepaly Effect")
+	TSubclassOf<UGameplayEffect> StunGameplayEffect;
+
+	// Weapon Overlap
+	UFUNCTION()
+	void OnWeaponOverlapBegin(
+		UPrimitiveComponent* OverlappedComp, 
+		AActor* OtherActor,
+		UPrimitiveComponent* OtherComp, 
+		int32 OtherBodyIndex, 
+		bool bFromSweep, 
+		const FHitResult& SweepResult);
 
 protected:
 

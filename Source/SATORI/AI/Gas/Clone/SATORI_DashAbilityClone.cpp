@@ -7,6 +7,9 @@
 #include "Character/SATORI_PlayerController.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Kismet/GameplayStatics.h"
+#include "Blueprint/AIBlueprintHelperLibrary.h"
+#include "BehaviorTree/BlackboardComponent.h"
+#include "Kismet/KismetMathLibrary.h"
 
 
 USATORI_DashAbilityClone::USATORI_DashAbilityClone()
@@ -69,15 +72,41 @@ void USATORI_DashAbilityClone::OnCompleted(FGameplayTag EventTag, FGameplayEvent
 
 void USATORI_DashAbilityClone::EventReceived(FGameplayTag EventTag, FGameplayEventData EventData)
 {
-	if (EventTag == TagEndAbility)
-	{
-		EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, false);
-		return;
-	}
+
+	FTimerHandle TimerHandleDestroy;
+	GetWorld()->GetTimerManager().SetTimer(TimerHandleDestroy, this, &USATORI_DashAbilityClone::EndDash, TimeToFinish, false);
 
 	if (EventTag == TagSpawnAbility)
 	{
-		bDashing = true;
+		UBlackboardComponent* Blackboard = UAIBlueprintHelperLibrary::GetBlackboard(GetAvatarActorFromActorInfo());
+
+		if (IsValid(Blackboard))
+		{
+			FName Enemy = "Target";
+
+			ASATORI_CharacterBase* Target = nullptr;
+			Target = Cast<ASATORI_CharacterBase>(Blackboard->GetValueAsObject(Enemy));
+
+			//Check clone
+			if (IsValid(Target))
+			{
+				EnemyPosition = Target->GetActorLocation();
+				bDashing = true;
+			}
+		}
+	}
+}
+
+void USATORI_DashAbilityClone::EndDash() 
+{
+	bDashing = false;
+
+	if (USkeletalMeshComponent* Mesh = Clone->GetMesh())
+	{
+		if (UAnimInstance* AnimInstance = Mesh->GetAnimInstance())
+		{
+			AnimInstance->Montage_JumpToSection(FName("DashEnd"), AnimInstance->GetCurrentActiveMontage());
+		}
 	}
 }
 
@@ -87,9 +116,13 @@ void USATORI_DashAbilityClone::Tick(float DeltaTime)
 	{
 		FVector Position = Clone->GetActorLocation();
 
-		FVector Forward = Clone->GetActorForwardVector();
+		if (FVector::Dist(Position, EnemyPosition) < 300)
+		{
+			EndDash();
+		}
 
-		Clone->SetActorLocation(Position + Forward * DashDistance * DeltaTime);
+		FVector NextPos = UKismetMathLibrary::VInterpTo(Position, EnemyPosition, DeltaTime, DashSpeed);
+		Clone->SetActorLocation(NextPos);
 	}
 }
 

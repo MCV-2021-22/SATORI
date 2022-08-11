@@ -9,10 +9,6 @@
 #include "SATORI/Character/SATORI_CharacterBase.h"
 #include "SATORI_DashAbilityClone.generated.h"
 
-/**
- * 
- */
-
 class UCharacterMovementComponent;
 
 UCLASS()
@@ -47,13 +43,13 @@ public:
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Ability|Tags")
 	FGameplayTag TagSpawnAbility;
 
-	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Ability|Tags")
-	FGameplayTag TagEndAbility;
-
 protected:
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (UIMin = "1.0"), Category = "Ability|Dash")
-	float DashDistance = 25.0f;
+	float DashSpeed = 25.0f;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (UIMin = "0.1"), Category = "Ability|Dash")
+	float TimeToFinish = 1.0f;
 
 	UFUNCTION()
 	void OnCancelled(FGameplayTag EventTag, FGameplayEventData EventData);
@@ -64,19 +60,18 @@ protected:
 	UFUNCTION()
 	void EventReceived(FGameplayTag EventTag, FGameplayEventData EventData);
 
-	FVector EnemyPosition;
 
 private:
 
 	const bool bStopWhenAbilityEnds = true;
 
-	FVector Direction = FVector::FVector(1.0f, 0.0f, 0.0f); //It just works
-
 	ASATORI_CharacterBase* Clone;
 
-	FTransform SpawnTransform;
-
 	bool bDashing = false;
+	
+	FVector EnemyPosition;
+
+	void EndDash();
 
 public:
 
