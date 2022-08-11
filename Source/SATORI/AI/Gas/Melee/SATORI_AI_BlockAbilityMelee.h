@@ -3,31 +3,24 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Actors/AbilitiesActors/SATORI_DashMeleeActor.h"
 #include "GAS/SATORI_GameplayAbility.h"
 #include "SATORI/AbilityTask/SATORI_PlayMontageAndWaitEvent.h"
 #include "AI/Character/SATORI_AICharacter.h"
-#include "SATORI_AI_DashAbilityMelee.generated.h"
+#include "SATORI_AI_BlockAbilityMelee.generated.h"
 
 class UCharacterMovementComponent;
 
 UCLASS()
-class SATORI_API USATORI_AI_DashAbilityMelee : public USATORI_GameplayAbility, public FTickableGameObject
+class SATORI_API USATORI_AI_BlockAbilityMelee : public USATORI_GameplayAbility, public FTickableGameObject
 {
 	GENERATED_BODY()
 
 public:
 
-	USATORI_AI_DashAbilityMelee();
+	USATORI_AI_BlockAbilityMelee();
 
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Ability")
 	UAnimMontage* AnimMontage;
-
-	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Ability")
-	TSubclassOf<ASATORI_DashMeleeActor> DashMeleeActor;
-
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Ability")
-	TSubclassOf<UGameplayEffect> DamageGameplayEffect;
 
 	virtual void ActivateAbility(
 		const FGameplayAbilitySpecHandle Handle,
@@ -47,21 +40,15 @@ public:
 	FGameplayTag TagSpawnAbility;
 
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Ability|Tags")
-	FGameplayTag TagStartDash;
+	FGameplayTag BlockDamageTag;
 
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Ability|Tags")
-	FGameplayTag TagEndAbility;
+	FGameplayTag BlockingTag;
 
 protected:
 
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (UIMin = "0.001"), Category = "Ability|Dash")
-	float DashSpeed = 5.0f;
-
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (UIMin = "0.0"), Category = "Ability|Dash")
-	float Damage = 1.0f;
-
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (UIMin = "0.0"), Category = "Ability|Dash")
-	float TimeToDestroy = 1.0f;
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (UIMin = "1"), Category = "Ability|Block")
+	int RotationDifference = 2;
 
 	UFUNCTION()
 	void OnCancelled(FGameplayTag EventTag, FGameplayEventData EventData);
@@ -72,21 +59,16 @@ protected:
 	UFUNCTION()
 	void EventReceived(FGameplayTag EventTag, FGameplayEventData EventData);
 
-
-
 private:
 
 	ASATORI_AICharacter* Melee;
 
-	bool bDashing = false;
-
-	FVector Direction = FVector::FVector(1.0f, 0.0f, 0.0f); //It just works
-
-	FVector EnemyPosition;
+	float RotationRate;
 	
-	void SpawnActor();
+	bool bBlocking = false;
 
 	const bool bStopWhenAbilityEnds = true;
+
 
 public:
 
