@@ -47,6 +47,11 @@ void USATORI_GameplayAbilityComponent::BeginPlay()
 	}
 
 	NotifyAbilityChanged();
+
+	if (IsNachoTesting)
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Red, PlayerAbilitiesNames[CurrentAbilityValue].ToString());
+	}
 }
 
 bool USATORI_GameplayAbilityComponent::TryChangeAbility()
@@ -65,16 +70,28 @@ bool USATORI_GameplayAbilityComponent::TryChangeAbility()
 
 void USATORI_GameplayAbilityComponent::SetNextAbility()
 {
-	// Check if we have abilities
-	if (PortalRewardAbilities.Num() >= 1)
+	// Only test for abilities
+	if (IsNachoTesting)
 	{
 		CurrentAbilityValue++;
-		if (CurrentAbilityValue >= PortalRewardAbilities.Num())
+		if (CurrentAbilityValue >= PlayerGameplayAbility.Num())
 			CurrentAbilityValue = 0;
+
+		GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Red, PlayerAbilitiesNames[CurrentAbilityValue].ToString());
 	}
 	else
 	{
-		CurrentAbilityValue = 0;
+		// Check if we have abilities
+		if (PortalRewardAbilities.Num() >= 1)
+		{
+			CurrentAbilityValue++;
+			if (CurrentAbilityValue >= PortalRewardAbilities.Num())
+				CurrentAbilityValue = 0;
+		}
+		else
+		{
+			CurrentAbilityValue = 0;
+		}
 	}
 	UE_LOG(LogTemp, Display, TEXT(" Set Next Current Ability Value : [%d] "), CurrentAbilityValue);
 	NotifyAbilityChanged();
@@ -82,16 +99,28 @@ void USATORI_GameplayAbilityComponent::SetNextAbility()
 
 void USATORI_GameplayAbilityComponent::SetPrevAbility()
 {
-	// Check if we have abilities
-	if (PortalRewardAbilities.Num() >= 1)
+	// Only test for abilities
+	if (IsNachoTesting)
 	{
 		CurrentAbilityValue--;
 		if (CurrentAbilityValue < 0)
-			CurrentAbilityValue = PortalRewardAbilities.Num() - 1;
+			CurrentAbilityValue = PlayerGameplayAbility.Num() - 1;
+
+		GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Red, PlayerAbilitiesNames[CurrentAbilityValue].ToString());
 	}
 	else
 	{
-		CurrentAbilityValue = 0;
+		// Check if we have abilities
+		if (PortalRewardAbilities.Num() >= 1)
+		{
+			CurrentAbilityValue--;
+			if (CurrentAbilityValue < 0)
+				CurrentAbilityValue = PortalRewardAbilities.Num() - 1;
+		}
+		else
+		{
+			CurrentAbilityValue = 0;
+		}
 	}
 
 	UE_LOG(LogTemp, Display, TEXT(" Set Prev Current Ability Value : [%d] "), CurrentAbilityValue);
@@ -100,20 +129,38 @@ void USATORI_GameplayAbilityComponent::SetPrevAbility()
 
 TSubclassOf<USATORI_GameplayAbility> USATORI_GameplayAbilityComponent::GetCurrentSatoriAbility()
 {
-	if (PortalRewardAbilities.Num() > 0)
+	if (!IsNachoTesting)
 	{
-		const FSATORI_AbilitiesDatas* AbilityData = &PortalRewardAbilities[CurrentAbilityValue];
-		if (AbilityData)
+		if (PortalRewardAbilities.Num() > 0)
 		{
-			CurrentGameplayAbility = AbilityData->CurrentAbility;
-			if (CurrentGameplayAbility)
+			const FSATORI_AbilitiesDatas* AbilityData = &PortalRewardAbilities[CurrentAbilityValue];
+			if (AbilityData)
 			{
-				return CurrentGameplayAbility;
+				CurrentGameplayAbility = AbilityData->CurrentAbility;
+				if (CurrentGameplayAbility)
+				{
+					return CurrentGameplayAbility;
+				}
+			}
+
+		}
+	}
+	// Test for Ability 
+	else
+	{
+		if (PlayerGameplayAbility.Num() > 0)
+		{
+			const FSATORI_AbilitiesDatas* AbilityData = PlayerGameplayAbility.Find(PlayerAbilitiesNames[CurrentAbilityValue]);
+			if (AbilityData)
+			{
+				CurrentGameplayAbility = AbilityData->CurrentAbility;
+				if (CurrentGameplayAbility)
+				{
+					return CurrentGameplayAbility;
+				}
 			}
 		}
-
 	}
-
 	return nullptr;
 }
 

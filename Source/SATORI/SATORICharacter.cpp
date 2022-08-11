@@ -732,11 +732,6 @@ void ASATORICharacter::GetAllAbilities()
 
 void ASATORICharacter::RemoveAllAbilities()
 {
-	for (const TPair<FName, FSATORI_AbilitiesDatas>& pair : PlayerGameplayAbilityComponent->PlayerGameplayAbility)
-	{
-		PlayerGameplayAbilityComponent->PlayerGameplayAbilityDissabled.Add(pair);
-		PlayerGameplayAbilityComponent->PlayerAbilitiesNamesDissabled.Add(pair.Key);
-	}
 	PlayerGameplayAbilityComponent->PlayerGameplayAbility.Empty();
 	PlayerGameplayAbilityComponent->PlayerAbilitiesNames.Empty();
 	PlayerGameplayAbilityComponent->GetCharacterAbilities().Empty();
