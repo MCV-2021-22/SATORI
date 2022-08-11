@@ -78,6 +78,9 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	int CurrentAbilityValue = 0;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	bool IsNachoTesting = false;
+
 	// Getters
 
 	TArray<FSATORI_AbilitiesDatas> GetCharacterAbilities() { return PortalRewardAbilities; }
