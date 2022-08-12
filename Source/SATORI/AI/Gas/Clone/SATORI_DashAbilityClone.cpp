@@ -72,10 +72,6 @@ void USATORI_DashAbilityClone::OnCompleted(FGameplayTag EventTag, FGameplayEvent
 
 void USATORI_DashAbilityClone::EventReceived(FGameplayTag EventTag, FGameplayEventData EventData)
 {
-
-	FTimerHandle TimerHandleDestroy;
-	GetWorld()->GetTimerManager().SetTimer(TimerHandleDestroy, this, &USATORI_DashAbilityClone::EndDash, TimeToFinish, false);
-
 	if (EventTag == TagSpawnAbility)
 	{
 		UBlackboardComponent* Blackboard = UAIBlueprintHelperLibrary::GetBlackboard(GetAvatarActorFromActorInfo());

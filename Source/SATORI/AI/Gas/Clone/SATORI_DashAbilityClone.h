@@ -48,9 +48,6 @@ protected:
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (UIMin = "1.0"), Category = "Ability|Dash")
 	float DashSpeed = 25.0f;
 
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (UIMin = "0.1"), Category = "Ability|Dash")
-	float TimeToFinish = 1.0f;
-
 	UFUNCTION()
 	void OnCancelled(FGameplayTag EventTag, FGameplayEventData EventData);
 
