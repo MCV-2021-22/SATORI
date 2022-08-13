@@ -67,6 +67,7 @@ public:
 	TSubclassOf<UGameplayEffect> GoldRewardGameplayEffect;
 
 	//Ray Cast
+	// Check if the player is in front of the enemy and can do the parry
 	UFUNCTION(BlueprintCallable)
 	bool CheckPlayerWithRayCast();	
 	bool GetIsInFront() const { return isInFrontPlayer; }
