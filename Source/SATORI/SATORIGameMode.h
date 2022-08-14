@@ -27,19 +27,19 @@ public:
 	//virtual void InitGame(const FString& MapName, const FString& Options, FString& ErrorMessage) override;
 
 	//EnemyActors
-	UFUNCTION()
+	UFUNCTION(BlueprintCallable)
 	TArray < AActor* >& GetEnemyActorsRef() { return EnemyActors; };
 
-	UFUNCTION()
+	UFUNCTION(BlueprintCallable)
 	void AddEnemyActor(AActor* Enemy);
 
 	UFUNCTION(BlueprintCallable)
 	void RemoveEnemyActor(AActor* Enemy);
 
-	UFUNCTION()
+	UFUNCTION(BlueprintCallable)
 	bool IsEmptyEnemyActors();
 
-	UFUNCTION()
+	UFUNCTION(BlueprintCallable)
 	int NumOfEnemyActors();
 
 	UFUNCTION()
