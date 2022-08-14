@@ -234,15 +234,15 @@ bool ASATORICharacter::DoRayCast()
 			{
 				UE_LOG(LogTemp, Warning, TEXT("Enemy"));
 
-				AICharacter->AddGameplayTag(FGameplayTag::RequestGameplayTag(FName("State.Stunned")));
+				AICharacter->AddGameplayTag(FGameplayTag::RequestGameplayTag(FName("State.Parried")));
 
 				FGameplayEventData EventData;
-				EventData.EventTag = FGameplayTag::RequestGameplayTag(FName("State.Stunned.Start"));
-				AICharacter->GetAbilitySystemComponent()->HandleGameplayEvent(FGameplayTag::RequestGameplayTag(FName("State.Stunned.Start")), &EventData);
+				EventData.EventTag = FGameplayTag::RequestGameplayTag(FName("State.Parried.Start"));
+				AICharacter->GetAbilitySystemComponent()->HandleGameplayEvent(FGameplayTag::RequestGameplayTag(FName("State.Parried.Start")), &EventData);
 
 				return true;
 			}
-			if (AICharacter->GetAbilitySystemComponent()->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag(FName("State.Stunned"))))
+			if (AICharacter->GetAbilitySystemComponent()->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag(FName("State.Parried"))))
 			{
 				return false;
 			}
