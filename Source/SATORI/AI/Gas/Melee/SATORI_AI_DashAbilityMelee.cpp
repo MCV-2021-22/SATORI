@@ -60,19 +60,16 @@ void USATORI_AI_DashAbilityMelee::ActivateAbility(
 	Task->ReadyForActivation();
 }
 
-void USATORI_AI_DashAbilityMelee::EndAbility(
-	const FGameplayAbilitySpecHandle Handle,
-	const FGameplayAbilityActorInfo* ActorInfo,
-	const FGameplayAbilityActivationInfo ActivationInfo,
-	bool bReplicateEndAbility,
-	bool bWasCancelled)
+void USATORI_AI_DashAbilityMelee::EndAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateEndAbility, bool bWasCancelled)
 {
+	Melee->RemoveGameplayTag(FGameplayTag::RequestGameplayTag("Dash.Stop"));
+	DashActor->Destroy();
 	Super::EndAbility(Handle, ActorInfo, ActivationInfo, bReplicateEndAbility, bWasCancelled);
 }
 
 void USATORI_AI_DashAbilityMelee::OnCancelled(FGameplayTag EventTag, FGameplayEventData EventData)
 {
-	EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, false);
+	EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true);
 }
 
 void USATORI_AI_DashAbilityMelee::OnCompleted(FGameplayTag EventTag, FGameplayEventData EventData)
@@ -82,15 +79,11 @@ void USATORI_AI_DashAbilityMelee::OnCompleted(FGameplayTag EventTag, FGameplayEv
 
 void USATORI_AI_DashAbilityMelee::EventReceived(FGameplayTag EventTag, FGameplayEventData EventData)
 {
-	if (EventTag == TagEndAbility)
-	{
-		EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, false);
-		return;
-	}
-
 	if (EventTag == TagStartDash)
 	{
+		bTargeting = false;
 		bDashing = true;
+		DashActorPosition = DashActor->GetActorLocation();
 	}
 
 	if (EventTag == TagSpawnAbility)
@@ -108,7 +101,7 @@ void USATORI_AI_DashAbilityMelee::EventReceived(FGameplayTag EventTag, FGameplay
 			//Check clone
 			if (IsValid(Target))
 			{
-				EnemyPosition = Target->GetActorLocation();
+				Enemy = Target;
 				SpawnActor();
 			}
 			//If clone fails then checks for player
@@ -118,7 +111,7 @@ void USATORI_AI_DashAbilityMelee::EventReceived(FGameplayTag EventTag, FGameplay
 
 				if (IsValid(Target))
 				{
-					EnemyPosition = Target->GetActorLocation();
+					Enemy = Target;
 					SpawnActor();
 				}
 			}
@@ -129,28 +122,36 @@ void USATORI_AI_DashAbilityMelee::EventReceived(FGameplayTag EventTag, FGameplay
 void USATORI_AI_DashAbilityMelee::SpawnActor()
 {
 	FTransform SpawnTransform;
-	SpawnTransform.SetLocation(EnemyPosition);
+	SpawnTransform.SetLocation(Enemy->GetActorLocation());
 
 	//Decal creation
-	ASATORI_DashMeleeActor* DashActor = GetWorld()->SpawnActorDeferred<ASATORI_DashMeleeActor>(DashMeleeActor, SpawnTransform, GetOwningActorFromActorInfo(), Melee, ESpawnActorCollisionHandlingMethod::AlwaysSpawn);
+	DashActor = GetWorld()->SpawnActorDeferred<ASATORI_DashMeleeActor>(DashMeleeActor, SpawnTransform, GetOwningActorFromActorInfo(), Melee, ESpawnActorCollisionHandlingMethod::AlwaysSpawn);
 	DashActor->DamageGameplayEffect = DamageGameplayEffect;
 	DashActor->Damage = Damage;
-	DashActor->TimeToDestroy = TimeToDestroy;
+	DashActor->OwnerMelee = GetAvatarActorFromActorInfo();
 	DashActor->FinishSpawning(SpawnTransform);
+
+	bTargeting = true;
 }
 
 void USATORI_AI_DashAbilityMelee::Tick(float DeltaTime)
 {
+	if (bTargeting)
+	{
+		FVector Position = DashActor->GetActorLocation();
+		FVector NextPosition = UKismetMathLibrary::VInterpTo(Position, Enemy->GetActorLocation(), DeltaTime, 10.0f);
+		DashActor->SetActorLocation(NextPosition);
+	}
+
 	if(bDashing)
 	{
 		FVector Position = Melee->GetActorLocation();
-		FVector NextPos = UKismetMathLibrary::VInterpTo(Position, EnemyPosition, DeltaTime, DashSpeed);
-		Melee->SetActorLocation(NextPos);
+		FVector NextPosition = UKismetMathLibrary::VInterpTo(Position, DashActorPosition, DeltaTime, DashSpeed);
+		Melee->SetActorLocation(NextPosition);
 	}
 
 	if(Melee->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag("Dash.Stop")))
 	{
-		Melee->RemoveGameplayTag(FGameplayTag::RequestGameplayTag("Dash.Stop"));
 		bDashing = false;
 	}
 }

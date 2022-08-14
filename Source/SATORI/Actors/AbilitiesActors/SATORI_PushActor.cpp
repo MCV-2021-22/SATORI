@@ -47,7 +47,7 @@ void ASATORI_PushActor::OnOverlapCollisionBox(UPrimitiveComponent* OverlappedCom
 	}
 }
 
-//Stops ability and  animation if active
+//Stops ability and animation if active
 void ASATORI_PushActor::StopAction(ASATORI_AICharacter* Character)
 {
 	//Edge cases
