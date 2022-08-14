@@ -51,7 +51,12 @@ void ASATORI_PushActor::OnOverlapCollisionBox(UPrimitiveComponent* OverlappedCom
 void ASATORI_PushActor::StopAction(ASATORI_AICharacter* Character)
 {
 	//Edge cases
+	//Stunned
 	Character->RemoveGameplayTag(StunnedTag);
+
+	FGameplayTagContainer GameplayTagContainer;
+	GameplayTagContainer.AddTag(BlockingTag);
+	USATORI_BlueprintLibrary::RemoveGameplayEffect(Character, GameplayTagContainer);
 
 	Character->RemoveGameplayTag(AbilityTag);
 	UAnimMontage* AnimMontage = Character->GetCurrentMontage();
@@ -59,6 +64,7 @@ void ASATORI_PushActor::StopAction(ASATORI_AICharacter* Character)
 	{
 		Character->StopAnimMontage(AnimMontage);
 	}
+	
 }
 
 void ASATORI_PushActor::DestroyMyself()

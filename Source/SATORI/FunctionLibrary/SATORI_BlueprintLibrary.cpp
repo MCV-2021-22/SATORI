@@ -65,3 +65,21 @@ void USATORI_BlueprintLibrary::ApplyGameplayEffect(AActor* Actor, TSubclassOf<cl
 	FGameplayEffectSpec* Spec = SpecHandle.Data.Get();
 	AbilitySystemComponent->ApplyGameplayEffectSpecToSelf(*Spec);
 }
+
+void USATORI_BlueprintLibrary::RemoveGameplayEffect(ASATORI_CharacterBase* Character, FGameplayTagContainer Tags)
+{
+	if (Tags.IsEmpty())
+	{
+		UE_LOG(LogTemp, Display, TEXT("USATORI_BlueprintLibrary: Tag container is empty ... "));
+		return;
+	}
+
+	UAbilitySystemComponent* AbilitySystemComponent = Character->GetAbilitySystemComponent();
+	if (!AbilitySystemComponent)
+	{
+		UE_LOG(LogTemp, Display, TEXT("USATORI_BlueprintLibrary: Failed Cast to UAbilitySystemComponent ... "));
+		return;
+	}
+
+	AbilitySystemComponent->RemoveActiveEffectsWithTags(Tags);
+}
