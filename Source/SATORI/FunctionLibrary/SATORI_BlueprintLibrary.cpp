@@ -81,5 +81,5 @@ void USATORI_BlueprintLibrary::RemoveGameplayEffect(ASATORI_CharacterBase* Chara
 		return;
 	}
 
-	AbilitySystemComponent->RemoveActiveEffectsWithTags(Tags);
+	AbilitySystemComponent->RemoveActiveEffectsWithTags(Tags);	
 }

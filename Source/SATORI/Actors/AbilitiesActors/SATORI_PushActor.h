@@ -90,7 +90,7 @@ public:
 	FGameplayTag  StunnedTag;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Push|Tags")
-	FGameplayTag  BlockingTag;
+	FGameplayTag  SpecialTag;
 
 protected:
 

@@ -60,9 +60,12 @@ void ASATORI_TornadoActor::OnOverlapCollisionSphere(UPrimitiveComponent* Overlap
 void ASATORI_TornadoActor::StopAction(ASATORI_AICharacter* Character)
 {
 	//Edge case tornado affects even if blocking
-	Character->RemoveGameplayTag(BlockingTag);
-	Character->RemoveGameplayTag(StunnedTag);
 	Character->RemoveGameplayTag(NoDamageTag);
+	//Edge Cases
+	FGameplayTagContainer GameplayTagContainer;
+	GameplayTagContainer.AddTag(SpecialTag);
+	GameplayTagContainer.AddTag(StunnedTag);
+	USATORI_BlueprintLibrary::RemoveGameplayEffect(Character, GameplayTagContainer);
 
 	Character->RemoveGameplayTag(AbilityTag);
 	UAnimMontage* AnimMontage = Character->GetCurrentMontage();
@@ -117,7 +120,7 @@ void ASATORI_TornadoActor::BeginPlay()
 {
 	Super::BeginPlay();
 
-	if (!EnemyTag.IsValid() || !PushedTag.IsValid() || !LaunchTag.IsValid() || !AbilityTag.IsValid() || !BlockingTag.IsValid() || !StunnedTag.IsValid() || !NoDamageTag.IsValid())
+	if (!EnemyTag.IsValid() || !PushedTag.IsValid() || !LaunchTag.IsValid() || !AbilityTag.IsValid() || !SpecialTag.IsValid() || !StunnedTag.IsValid() || !NoDamageTag.IsValid())
 	{
 		UE_LOG(LogTemp, Warning, TEXT("[%s] USATORI_TornadoActor: Tag not valid ... "), *GetName());
 		Destroy();
