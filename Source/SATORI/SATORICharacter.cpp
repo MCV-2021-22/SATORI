@@ -28,6 +28,7 @@
 #include "FunctionLibrary/SATORI_BlueprintLibrary.h"
 #include "GAS/Effects/SATORI_ManaRecoverEffect.h"
 #include "Kismet/KismetMathLibrary.h"
+#include "AI/Components/Arqueros/SATORI_ArcherProjectile.h"
 //Cheat related include
 #include "Kismet/GameplayStatics.h"
 #include "Components/Player/SATORI_InteractComponent.h"
@@ -177,7 +178,7 @@ void ASATORICharacter::ApplyDefaultAbilities()
 	}
 }
 
-bool ASATORICharacter::DoRayCast()
+bool ASATORICharacter::DoParryBlock()
 {
 	const FVector StartPosition = GetActorLocation();
 	const FRotator StartRotation = GetActorRotation();
@@ -185,43 +186,11 @@ bool ASATORICharacter::DoRayCast()
 
 	UWorld* World = GetWorld();
 	FHitResult HitResult;
-	FCollisionQueryParams Params = FCollisionQueryParams(FName("LineTraceSingle"));
-	Params.AddIgnoredActor(RootComponent->GetOwner());
-
-	FVector delta = EndPosition - StartPosition;
 	TWeakObjectPtr<AActor> NewActor;
 
-	bool bHit = false;
-	for (int i = -5; i <= 5; i++)
+	if (IsEnemyInFront(StartPosition, EndPosition, HitResult, 5))
 	{
-		FVector Axis = FVector::ZAxisVector;
-		float rad = FMath::DegreesToRadians(i * 5);
-		FQuat quaternion = FQuat(Axis, rad);
-		FRotator rotator = FRotator(quaternion);
-		FVector newDelta = rotator.RotateVector(delta);
-
-		FVector newEndPos = newDelta + StartPosition;
-
-		bool newHit = GetWorld()->LineTraceSingleByChannel(
-			HitResult,
-			StartPosition,
-			newEndPos,
-			ECollisionChannel::ECC_Pawn,
-			Params
-		);
-
-		::DrawDebugLine(World, StartPosition, newEndPos, newHit ? FColor::Green : FColor::Red, false, 1.0f);
-		if (newHit)
-		{
-			NewActor = HitResult.Actor;
-			bHit = true;
-			break;
-		}
-	}
-
-	if (bHit)
-	{
-		//GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Red, HitResult.GetActor()->GetFName().ToString());
+		NewActor = HitResult.Actor;
 	}
 
 	TWeakObjectPtr<ASATORI_AICharacter> AICharacter = Cast<ASATORI_AICharacter>(HitResult.Actor);
@@ -247,6 +216,15 @@ bool ASATORICharacter::DoRayCast()
 				return false;
 			}
 		}	
+	}
+	else if (ASATORI_ArcherProjectile* EnemyProjectiles = Cast<ASATORI_ArcherProjectile>(HitResult.Actor))
+	{
+		if (EnemyProjectiles)
+		{
+			//UE_LOG(LogTemp, Warning, TEXT("hiii projectiles !!! "));
+			EnemyProjectiles->DestroySelfByParry();
+			return true;
+		}
 	}
 	return false;
 }

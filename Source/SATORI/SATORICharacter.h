@@ -108,7 +108,7 @@ public:
 
 	// Ray Cast
 	UFUNCTION(BlueprintCallable)
-	bool DoRayCast();
+	bool DoParryBlock();
 
 	UFUNCTION(BlueprintCallable)
 	bool IsEnemyInFrontOfAngle();
