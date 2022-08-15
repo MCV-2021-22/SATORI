@@ -61,6 +61,9 @@ protected:
 	float Damage = 1.0f;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (UIMin = "0.0"), Category = "Ability|Dash")
+	float TimeToTarget = 1.0f;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (UIMin = "0.0"), Category = "Ability|Dash")
 	float TimeToDestroy = 1.0f;
 
 	UFUNCTION()
@@ -72,19 +75,19 @@ protected:
 	UFUNCTION()
 	void EventReceived(FGameplayTag EventTag, FGameplayEventData EventData);
 
-
-
 private:
 
 	ASATORI_AICharacter* Melee;
+	ASATORI_DashMeleeActor* DashActor;
+
+	void SpawnActor();
 
 	bool bDashing = false;
-
-	FVector Direction = FVector::FVector(1.0f, 0.0f, 0.0f); //It just works
-
-	FVector EnemyPosition;
+	bool bTargeting = false;
 	
-	void SpawnActor();
+	ASATORI_CharacterBase* Enemy;
+	FVector  DashActorPosition;
+	
 
 	const bool bStopWhenAbilityEnds = true;
 

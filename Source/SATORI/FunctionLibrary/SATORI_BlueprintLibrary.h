@@ -3,6 +3,8 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Character/SATORI_CharacterBase.h"
+#include "GameplayTagContainer.h"
 #include "Kismet/BlueprintFunctionLibrary.h"
 #include "SATORI_BlueprintLibrary.generated.h"
 
@@ -22,4 +24,7 @@ public:
 
 	UFUNCTION(BlueprintCallable, BlueprintAuthorityOnly)
 		static void ApplyGameplayEffect(AActor* Actor,TSubclassOf<class UGameplayEffect> GameplayEffectEffect);
+
+	UFUNCTION(BlueprintCallable, BlueprintAuthorityOnly)
+		static void RemoveGameplayEffect(ASATORI_CharacterBase* Character, FGameplayTagContainer Tags);
 };

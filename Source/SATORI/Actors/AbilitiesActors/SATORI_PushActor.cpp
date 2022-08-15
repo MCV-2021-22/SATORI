@@ -47,11 +47,14 @@ void ASATORI_PushActor::OnOverlapCollisionBox(UPrimitiveComponent* OverlappedCom
 	}
 }
 
-//Stops ability and  animation if active
+//Stops ability and animation if active
 void ASATORI_PushActor::StopAction(ASATORI_AICharacter* Character)
 {
 	//Edge cases
-	Character->RemoveGameplayTag(StunnedTag);
+	FGameplayTagContainer GameplayTagContainer;
+	GameplayTagContainer.AddTag(SpecialTag);
+	GameplayTagContainer.AddTag(StunnedTag);
+	USATORI_BlueprintLibrary::RemoveGameplayEffect(Character, GameplayTagContainer);
 
 	Character->RemoveGameplayTag(AbilityTag);
 	UAnimMontage* AnimMontage = Character->GetCurrentMontage();
@@ -59,6 +62,7 @@ void ASATORI_PushActor::StopAction(ASATORI_AICharacter* Character)
 	{
 		Character->StopAnimMontage(AnimMontage);
 	}
+	
 }
 
 void ASATORI_PushActor::DestroyMyself()
@@ -99,7 +103,7 @@ void ASATORI_PushActor::BeginPlay()
 {
 	Super::BeginPlay();
 
-	if (!EnemyTag.IsValid() || !PushedTag.IsValid() || !LaunchTag.IsValid() || !AbilityTag.IsValid() || !StunnedTag.IsValid())
+	if (!EnemyTag.IsValid() || !PushedTag.IsValid() || !LaunchTag.IsValid() || !AbilityTag.IsValid() || !StunnedTag.IsValid() || !SpecialTag.IsValid())
 	{
 		UE_LOG(LogTemp, Warning, TEXT("[%s] USATORI_PushActor: Tag not valid ... "), *GetName());
 		Destroy();

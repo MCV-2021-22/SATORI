@@ -9,6 +9,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "Blueprint/AIBlueprintHelperLibrary.h"
+#include "FunctionLibrary/SATORI_BlueprintLibrary.h"
 #include "BehaviorTree/BlackboardComponent.h"
 
 USATORI_AI_BlockAbilityMelee::USATORI_AI_BlockAbilityMelee()
@@ -87,7 +88,17 @@ void USATORI_AI_BlockAbilityMelee::EventReceived(FGameplayTag EventTag, FGamepla
 	{
 		bBlocking = true;
 		Melee->GetCharacterMovement()->RotationRate.Yaw = Melee->GetCharacterMovement()->RotationRate.Yaw / RotationDifference;
+
+		FTimerHandle TimerHandle;
+		GetWorld()->GetTimerManager().SetTimer(TimerHandle, this, &USATORI_AI_BlockAbilityMelee::EndSpecial, TimeToFinish, false);
 	}
+}
+
+void USATORI_AI_BlockAbilityMelee::EndSpecial()
+{
+	FGameplayTagContainer GameplayTagContainer;
+	GameplayTagContainer.AddTag(BlockingTag);
+	USATORI_BlueprintLibrary::RemoveGameplayEffect(Melee, GameplayTagContainer);
 }
 
 void USATORI_AI_BlockAbilityMelee::Tick(float DeltaTime)

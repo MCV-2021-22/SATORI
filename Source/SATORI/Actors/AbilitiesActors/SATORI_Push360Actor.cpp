@@ -48,8 +48,11 @@ void ASATORI_Push360Actor::OnOverlapCollisionSphere(UPrimitiveComponent* Overlap
 //Stops ability and  animation if active
 void ASATORI_Push360Actor::StopAction(ASATORI_AICharacter* Character)
 {
-	//Edge cases
-	Character->RemoveGameplayTag(StunnedTag);
+	//Edge Cases Special
+	FGameplayTagContainer GameplayTagContainer;
+	GameplayTagContainer.AddTag(SpecialTag);
+	GameplayTagContainer.AddTag(StunnedTag);
+	USATORI_BlueprintLibrary::RemoveGameplayEffect(Character, GameplayTagContainer);
 
 	Character->RemoveGameplayTag(AbilityTag);
 	UAnimMontage* AnimMontage = Character->GetCurrentMontage();
@@ -92,7 +95,7 @@ void ASATORI_Push360Actor::BeginPlay()
 {
 	Super::BeginPlay();
 
-	if (!EnemyTag.IsValid() || !LaunchTag.IsValid() || !AbilityTag.IsValid() || !StunnedTag.IsValid())
+	if (!EnemyTag.IsValid() || !LaunchTag.IsValid() || !AbilityTag.IsValid() || !StunnedTag.IsValid() || !SpecialTag.IsValid())
 	{
 		UE_LOG(LogTemp, Warning, TEXT("[%s] USATORI_Push360Actor: Tag not valid ... "), *GetName());
 		Destroy();

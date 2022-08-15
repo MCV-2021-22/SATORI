@@ -108,13 +108,14 @@ public:
 	FGameplayTag  AbilityTag;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Tornado|Tags")
-	FGameplayTag  BlockingTag;
-
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Tornado|Tags")
 	FGameplayTag  StunnedTag;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Tornado|Tags")
+	FGameplayTag  SpecialTag;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Tornado|Tags")
 	FGameplayTag  NoDamageTag;
+
 
 protected:
 

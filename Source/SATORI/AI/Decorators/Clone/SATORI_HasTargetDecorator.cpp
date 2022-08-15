@@ -12,14 +12,11 @@ bool USATORI_HasTargetDecorator::CalculateRawConditionValue(UBehaviorTreeCompone
 		return false;
 	}
 
-	uint8 keyid = OwnerComp.GetBlackboardComponent()->GetKeyID(FName("Target"));
 	AActor* Target = Cast<AActor>(OwnerComp.GetBlackboardComponent()->GetValue<UBlackboardKeyType_Object>(BlackboardKey.SelectedKeyName));
 
 	if (Target)
 	{
 		return true;
 	}
-
 	return false;
-
 }

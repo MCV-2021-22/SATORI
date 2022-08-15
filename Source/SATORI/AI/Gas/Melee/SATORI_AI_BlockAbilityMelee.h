@@ -48,6 +48,9 @@ public:
 protected:
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (UIMin = "1"), Category = "Ability|Block")
+	float TimeToFinish = 10.0f;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (UIMin = "1"), Category = "Ability|Block")
 	int RotationDifference = 2;
 
 	UFUNCTION()
@@ -63,8 +66,10 @@ private:
 
 	ASATORI_AICharacter* Melee;
 
+	void EndSpecial();
+
 	float RotationRate;
-	
+
 	bool bBlocking = false;
 
 	const bool bStopWhenAbilityEnds = true;

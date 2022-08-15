@@ -1,54 +1,49 @@
 //
 
 #include "AI/Character/Clone/SATORI_CloneCharacter.h"
-#include "Components/SphereComponent.h"
 #include "Components/SkeletalMeshComponent.h"
 #include "Components/CapsuleComponent.h"
+#include "FunctionLibrary/SATORI_BlueprintLibrary.h"
 
 ASATORI_CloneCharacter::ASATORI_CloneCharacter() 
 {
-
-	//RootComponent = CreateDefaultSubobject<USceneComponent>(TEXT("RootComponent"));
-
-	//LuringSphereComponent = CreateDefaultSubobject<USphereComponent>(TEXT("CollisionSphere"));
-	//LuringSphereComponent->SetCollisionProfileName(FName(TEXT("PlayerAbility")));
-	//LuringSphereComponent->SetupAttachment(RootComponent);
-	//LuringSphereComponent->SetGenerateOverlapEvents(true);
-	//LuringSphereComponent->OnComponentBeginOverlap.AddDynamic(this, &ASATORI_CloneCharacter::OnOverlapLuringSphere);
-
-	//Debug
-	//LuringSphereComponent->bHiddenInGame = false;
-
-	if (SwordComponent)
+	// Weapon Component
+	SwordComponentClone = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("SwordClone"));
+	AttackingCollisionClone = CreateDefaultSubobject<UCapsuleComponent>(TEXT("Sword CollisionClone"));
+	if (SwordComponentClone)
 	{
 		const FAttachmentTransformRules AttachmentRules = FAttachmentTransformRules(EAttachmentRule::KeepRelative, false);
-		SwordComponent->AttachToComponent(GetMesh(), AttachmentRules, "BoSocket");
+		SwordComponentClone->AttachToComponent(GetMesh(), AttachmentRules, "BoSocket");
 		// Sphere Collision
-		AttackingCollision->SetCapsuleSize(20.f, 60.f, true);
-		AttackingCollision->SetCollisionProfileName("Pawn");
-		AttackingCollision->SetGenerateOverlapEvents(false);
-		AttackingCollision->AttachTo(SwordComponent);
-	}
+		AttackingCollisionClone->SetCapsuleSize(20.f, 60.f, true);
+		AttackingCollisionClone->SetCollisionProfileName("Pawn");
+		AttackingCollisionClone->SetGenerateOverlapEvents(false);
+		AttackingCollisionClone->AttachToComponent(SwordComponentClone, AttachmentRules);
 
+		AttackingCollisionClone->OnComponentBeginOverlap.AddDynamic(this, &ASATORI_CloneCharacter::OnWeaponOverlapBegin);
+	}
 }
 
-//Collision for luring
-//void ASATORI_CloneCharacter::OnOverlapLuringSphere(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
-//{
-//
-//	ASATORI_CharacterBase* Character = Cast<ASATORI_CharacterBase>(OtherActor);
-//
-//	if (!Character)
-//	{
-//		return;
-//	}
-//
-//	if (Character->HasMatchingGameplayTag(EnemyTag))
-//	{
-//		Character->AddGameplayTag(TagGrantedWhenLured);
-//		ArrayLured.AddUnique(OtherActor);
-//	}
-//}
+void ASATORI_CloneCharacter::OnWeaponOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
+	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	if (OtherActor && (OtherActor != this))
+	{
+		ASATORI_AICharacter* EnemyCharacter = Cast<ASATORI_AICharacter>(OtherActor);
+		if (EnemyCharacter)
+		{
+			UAbilitySystemComponent* EnemyAbilitySystem = EnemyCharacter->GetAbilitySystemComponent();
+			float Damage_Values = USATORI_BlueprintLibrary::ApplyGameplayEffectDamage(EnemyCharacter, WeaponDamage, this, DamageEffect);
+			USATORI_BlueprintLibrary::ApplyGameplayEffect(EnemyCharacter, BlockCountGameplayEffect);
+			USATORI_BlueprintLibrary::ApplyGameplayEffect(EnemyCharacter, StunGameplayEffect);
+			if (!bMultipleHit)
+			{
+				AttackingCollision->SetGenerateOverlapEvents(false);
+			}
+			EnemyCharacter->CheckDamage();
+		}
+	}
+}
 
 void ASATORI_CloneCharacter::BeginPlay()
 {

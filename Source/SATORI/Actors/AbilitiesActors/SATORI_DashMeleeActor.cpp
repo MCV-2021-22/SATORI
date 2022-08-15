@@ -6,7 +6,6 @@
 #include "SATORI/FunctionLibrary/SATORI_BlueprintLibrary.h"
 #include "DrawDebugHelpers.h"
 #include "SATORICharacter.h"
-#include "AI/Character/Melee/SATORI_Melee.h"
 #include "Components/DecalComponent.h"
 #include "Kismet/GameplayStatics.h"
 
@@ -14,145 +13,94 @@ ASATORI_DashMeleeActor::ASATORI_DashMeleeActor()
 {
 	PrimaryActorTick.bCanEverTick = true;
 
-	float SphereRadius = 32.0f;
+	CollisionBoxComponent = CreateDefaultSubobject<UBoxComponent>(TEXT("BoxComponent"));
+	RootComponent = CollisionBoxComponent;
+	CollisionBoxComponent->SetCollisionProfileName(FName(TEXT("IgnoreAllOverlapOnlyAI")));
+	CollisionBoxComponent->SetGenerateOverlapEvents(true);
+	CollisionBoxComponent->OnComponentBeginOverlap.AddDynamic(this, &ASATORI_DashMeleeActor::OnOverlapCollisionBox);
 
-	StaticMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("StaticMesh"));
-	RootComponent = StaticMeshComponent;
-	StaticMeshComponent->SetCollisionProfileName(UCollisionProfile::NoCollision_ProfileName);
+	Decal = CreateDefaultSubobject<UDecalComponent>(TEXT("DecalComponent"));
+	Decal->SetupAttachment(RootComponent);
 
-	CollisionSphereComponent = CreateDefaultSubobject<USphereComponent>(TEXT("Sphere"));
-	CollisionSphereComponent->SetSphereRadius(SphereRadius);
-	CollisionSphereComponent->SetCollisionProfileName(FName(TEXT("IgnoreSelfOverlapsAll")));
-	CollisionSphereComponent->SetGenerateOverlapEvents(true);
+	CollisionSphereComponent = CreateDefaultSubobject<USphereComponent>(TEXT("SphereComponent"));
 	CollisionSphereComponent->SetupAttachment(RootComponent);
-	CollisionSphereComponent->OnComponentEndOverlap.AddDynamic(this, &ASATORI_DashMeleeActor::OnOverlapEnd);
-	CollisionSphereComponent->OnComponentBeginOverlap.AddDynamic(this, &ASATORI_DashMeleeActor::OnOverlapSphere);
-
-	MeleeSphereComponent = CreateDefaultSubobject<USphereComponent>(TEXT("SphereMelee"));
-	MeleeSphereComponent->SetSphereRadius(SphereRadius);
-	MeleeSphereComponent->SetCollisionProfileName(FName(TEXT("IgnoreSelfOverlapsAll")));
-	MeleeSphereComponent->SetGenerateOverlapEvents(true);
-	MeleeSphereComponent->SetupAttachment(RootComponent);
-	MeleeSphereComponent->OnComponentBeginOverlap.AddDynamic(this, &ASATORI_DashMeleeActor::OnOverlapSphereMelee);
-
+	CollisionSphereComponent->SetCollisionProfileName(FName(TEXT("IgnoreAllOverlapOnlyPlayer")));
+	CollisionSphereComponent->SetGenerateOverlapEvents(true);
+	CollisionSphereComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	CollisionSphereComponent->OnComponentBeginOverlap.AddDynamic(this, &ASATORI_DashMeleeActor::OnOverlapCollisionSphere);
 
 	//Debug
+	CollisionBoxComponent->bHiddenInGame = false;
 	CollisionSphereComponent->bHiddenInGame = false;
 }
 
-void ASATORI_DashMeleeActor::OnOverlapSphere(
-	UPrimitiveComponent* OverlappedComp, 
-	AActor* OtherActor, 
-	UPrimitiveComponent* OtherComp, 
-	int32 OtherBodyIndex, 
-	bool bFromSweep, 
-	const FHitResult& SweepResult)
+void ASATORI_DashMeleeActor::OnOverlapCollisionBox(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 
-	ASATORICharacter* Character = Cast<ASATORICharacter>(OtherActor);
-
-	if (Character)
-	{
-		DamagePlayer = true;
-		Damage = 10.f;
-	}
-	else
+	if(IsValid(OwnerMelee) && OwnerMelee == OtherActor)
 	{
 		ASATORI_Melee* Melee = Cast<ASATORI_Melee>(OtherActor);
 		if (Melee)
 		{
-			if(USkeletalMeshComponent* Mesh = Melee->GetMesh())
-			{
-				if(UAnimInstance* AnimInstance = Mesh->GetAnimInstance())
-				{
-					AnimInstance->Montage_JumpToSection(FName("ending"), AnimInstance->GetCurrentActiveMontage());
-				}
-			}
+			Melee->AddGameplayTag(DashStopTag);
 		}
 	}
 }
 
-void ASATORI_DashMeleeActor::OnOverlapEnd(
-	UPrimitiveComponent* OverlappedComp,
-	AActor* OtherActor,
-	UPrimitiveComponent* OtherComp,
-	int32 OtherBodyIndex)
+void ASATORI_DashMeleeActor::OnOverlapCollisionSphere(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 	ASATORICharacter* Character = Cast<ASATORICharacter>(OtherActor);
 
-	if(Character)
+	if (!Character)
 	{
-		DamagePlayer = false;
+		return;
 	}
-}
 
-void ASATORI_DashMeleeActor::OnOverlapSphereMelee(
-	UPrimitiveComponent* OverlappedComp,
-	AActor* OtherActor,
-	UPrimitiveComponent* OtherComp,
-	int32 OtherBodyIndex,
-	bool bFromSweep,
-	const FHitResult& SweepResult)
-{
-
-	ASATORI_Melee* Melee = Cast<ASATORI_Melee>(OtherActor);
-
-	if(Melee)
+	if (Character && !bDamagePlayer)
 	{
-		Melee->AddGameplayTag(FGameplayTag::RequestGameplayTag("Dash.Stop"));
-
-		
-		DestroyObject = true;
-		
+		bDamagePlayer = true;
+		USATORI_BlueprintLibrary::ApplyGameplayEffectDamage(Character, Damage, Character, DamageGameplayEffect);
 	}
-}
-
-void ASATORI_DashMeleeActor::DestroyMyself()
-{
-	my_decal->Destroy();
-	Destroy();
 }
 
 void ASATORI_DashMeleeActor::BeginPlay()
 {
 	Super::BeginPlay();
 
-	PrimaryActorTick.bCanEverTick = true;
-
-	ADecalActor* decal = GetWorld()->SpawnActor<ADecalActor>(GetActorLocation(), FRotator());
-
-	my_decal = decal;
-	if (my_decal)
+	if (OwnerMelee)
 	{
-		my_decal->SetDecalMaterial(MaterialDecal);
-		my_decal->SetLifeSpan(0);
-		my_decal->GetDecal()->DecalSize = FVector(300.0f, 300.0f, 300.0f);
-	}
-	else
-	{
-		UE_LOG(LogTemp, Warning, TEXT("No decal spawned"));
+		MeleeCharacter = Cast<ASATORI_Melee>(OwnerMelee);
 	}
 }
 
 void ASATORI_DashMeleeActor::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
-	if(DestroyObject)
+	
+	if (!bEndDash && FVector::Dist(OwnerMelee->GetActorLocation(), GetActorLocation()) < 150.0f)
 	{
-		ASATORICharacter* Character = Cast<ASATORICharacter>(UGameplayStatics::GetPlayerPawn(GetWorld(), 0));
-		if(Character && DamagePlayer)
+		bEndDash = true;
+
+		if (MeleeCharacter)
 		{
-			float dmg_done = USATORI_BlueprintLibrary::ApplyGameplayEffectDamage(Character, Damage, Character, DamageGameplayEffect);
+			if (USkeletalMeshComponent* Mesh = MeleeCharacter->GetMesh())
+			{
+				if (UAnimInstance* AnimInstance = Mesh->GetAnimInstance())
+				{
+					AnimInstance->Montage_JumpToSection(FName("EndDash"), AnimInstance->GetCurrentActiveMontage());
+				}
+			}
 		}
-		DestroyMyself();
 	}
 
-	if(CurrentTime >= 20.f)
+	if (bEndDash && !CollisionSphereComponent->IsCollisionEnabled())
 	{
-		DestroyMyself();
+		if (MeleeCharacter)
+		{
+			if (MeleeCharacter->HasMatchingGameplayTag(DashDamageTag))
+			{
+				CollisionSphereComponent->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+			}
+		}
 	}
-
-	CurrentTime += DeltaTime;
-
 }
