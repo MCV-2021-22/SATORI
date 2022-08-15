@@ -43,20 +43,6 @@ ASATORI_AICharacter::ASATORI_AICharacter()
 	// Enemy Stats
 	EnemyStatComponent = CreateDefaultSubobject<USATORI_EnemyStatComponent>(TEXT("StatComponent"));
 
-	// Weapon Component
-	SwordComponent = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("Sword"));
-	AttackingCollision = CreateDefaultSubobject<UCapsuleComponent>(TEXT("Sword Collision"));
-	if (SwordComponent)
-	{
-		const FAttachmentTransformRules AttachmentRules = FAttachmentTransformRules(EAttachmentRule::KeepRelative, false);
-		SwordComponent->AttachToComponent(GetMesh(), AttachmentRules, "WeaponSocket2");
-		// Sphere Collision
-		AttackingCollision->SetCapsuleSize(20.f, 60.f, true);
-		AttackingCollision->SetCollisionProfileName("Pawn");
-		AttackingCollision->SetGenerateOverlapEvents(false);
-		AttackingCollision->AttachTo(SwordComponent);
-	}
-
 }
 
 void ASATORI_AICharacter::BeginPlay()

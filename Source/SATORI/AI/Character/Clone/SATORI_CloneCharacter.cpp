@@ -9,18 +9,18 @@ ASATORI_CloneCharacter::ASATORI_CloneCharacter()
 {
 	// Weapon Component
 	SwordComponentClone = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("SwordClone"));
-	AttackingCollisionClone = CreateDefaultSubobject<UCapsuleComponent>(TEXT("Sword CollisionClone"));
+	AttackingCollision = CreateDefaultSubobject<UCapsuleComponent>(TEXT("Sword CollisionClone"));
 	if (SwordComponentClone)
 	{
 		const FAttachmentTransformRules AttachmentRules = FAttachmentTransformRules(EAttachmentRule::KeepRelative, false);
 		SwordComponentClone->AttachToComponent(GetMesh(), AttachmentRules, "BoSocket");
 		// Sphere Collision
-		AttackingCollisionClone->SetCapsuleSize(20.f, 60.f, true);
-		AttackingCollisionClone->SetCollisionProfileName("Pawn");
-		AttackingCollisionClone->SetGenerateOverlapEvents(false);
-		AttackingCollisionClone->AttachToComponent(SwordComponentClone, AttachmentRules);
+		AttackingCollision->SetCapsuleSize(20.f, 60.f, true);
+		AttackingCollision->SetCollisionProfileName("Pawn");
+		AttackingCollision->SetGenerateOverlapEvents(false);
+		AttackingCollision->AttachToComponent(SwordComponentClone, AttachmentRules);
 
-		AttackingCollisionClone->OnComponentBeginOverlap.AddDynamic(this, &ASATORI_CloneCharacter::OnWeaponOverlapBegin);
+		AttackingCollision->OnComponentBeginOverlap.AddDynamic(this, &ASATORI_CloneCharacter::OnWeaponOverlapBegin);
 	}
 }
 

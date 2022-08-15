@@ -22,12 +22,6 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Weapon")
 	USkeletalMeshComponent* SwordComponentClone;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon")
-	UCapsuleComponent* AttackingCollisionClone;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
-	FName WeaponSocketName;
-
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Weapon")
 	float WeaponDamage = 40.0f;
 

@@ -10,60 +10,20 @@ void USATORI_ANS_Combo::NotifyBegin(USkeletalMeshComponent* MeshComp, UAnimSeque
 {
 	Super::NotifyBegin(MeshComp, Animation, TotalDuration);
 
-
-	ASATORI_CharacterBase* PlayerCharacter = Cast<ASATORI_CharacterBase>(MeshComp->GetOwner());
-	if (PlayerCharacter)
+	ASATORI_CharacterBase* Character = Cast<ASATORI_CharacterBase>(MeshComp->GetOwner());
+	if (Character)
 	{
-		PlayerCharacter->AttackingCollision->SetGenerateOverlapEvents(true);
-		UE_LOG(LogTemp, Display, TEXT("ComboSection Begin"));
-
-		//USATORI_ComboSystemComponent* ComboSystem = PlayerCharacter->GetComboSystemComponent();
-		//if (ComboSystem)
-		//{
-		//	UE_LOG(LogTemp, Display, TEXT("ComboSection Begin"));
-		//	/*if (ComboState == EComboState::SafeAttack)
-		//	{
-		//		ComboSystem->lightAttackCounter += 1;
-		//	}*/
-		//	ComboSystem->isLightAttack = false;
-		//	//ComboSystem->AttackingCollision->Activate(true);
-		//}
+		Character->AttackingCollision->SetGenerateOverlapEvents(true);
 	}
-	/*
-
-	if (ComboState == EComboState::ResetAttack)
-	{
-		ComboSystem->lightAttackCounter = 0;
-		ComboSystem->HeavyAttackCounter = 0;
-	}
-
-	else if (ComboState == EComboState::SafeAttack)
-	{
-		ComboSystem->lightAttackCounter += 1;
-	}*/
 }
 
 void USATORI_ANS_Combo::NotifyEnd(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation)
 {
 	Super::NotifyEnd(MeshComp, Animation);
 
-
-	ASATORI_CharacterBase* PlayerCharacter = Cast<ASATORI_CharacterBase>(MeshComp->GetOwner());
-	if (PlayerCharacter)
+	ASATORI_CharacterBase* Character = Cast<ASATORI_CharacterBase>(MeshComp->GetOwner());
+	if (Character)
 	{
-		PlayerCharacter->AttackingCollision->SetGenerateOverlapEvents(false);
-		UE_LOG(LogTemp, Display, TEXT("ComboSection End"));
-
-		//USATORI_ComboSystemComponent* ComboSystem = PlayerCharacter->GetComboSystemComponent();
-		//if (ComboSystem)
-		//{
-		//	UE_LOG(LogTemp, Display, TEXT("ComboSection Begin"));
-		//	/*if (ComboState == EComboState::SafeAttack)
-		//	{
-		//		ComboSystem->lightAttackCounter += 1;
-		//	}*/
-		//	ComboSystem->isLightAttack = true;
-		//	//ComboSystem->AttackingCollision->Activate(false);
-		//}
+		Character->AttackingCollision->SetGenerateOverlapEvents(false);
 	}
 }

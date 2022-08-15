@@ -76,16 +76,16 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Weapon")
 	bool bMultipleHit = false;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Gamepaly Effect")
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "GameplayEffect")
 	TSubclassOf<UGameplayEffect> DamageEffect;
 
 	UPROPERTY()
 	USATORI_GameplayEffect* ManaRecoverGameplayEffect;
 
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Gamepaly Effect")
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "GameplayEffect")
 	TSubclassOf<UGameplayEffect> BlockCountGameplayEffect;
 
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Gamepaly Effect")
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "GameplayEffect")
 	TSubclassOf<UGameplayEffect> StunGameplayEffect;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)

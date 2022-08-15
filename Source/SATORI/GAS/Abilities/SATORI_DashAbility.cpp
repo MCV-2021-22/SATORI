@@ -49,7 +49,7 @@ void USATORI_DashAbility::ActivateAbility(
 	}
 
 	CapsuleComponent = Character->GetCapsuleComponent();
-	//CapsuleComponent->SetCollisionResponseToChannel(ECollisionChannel, ECollisionResponse::ECR_Ignore);
+	CapsuleComponent->SetGenerateOverlapEvents(false);
 
 	ASATORI_PlayerController* Controller = Cast<ASATORI_PlayerController>(Character->GetController());
 	if (Controller)
@@ -121,7 +121,7 @@ void USATORI_DashAbility::EndAbility(
 	Character = Cast<ASATORI_CharacterBase>(GetAvatarActorFromActorInfo());
 	if(Character)
 	{
-		//CapsuleComponent->SetCollisionResponseToChannel(ECollisionChannel, ECollisionResponse::ECR_Overlap);
+		CapsuleComponent->SetGenerateOverlapEvents(true);
 
 		ASATORI_PlayerController* Controller = Cast<ASATORI_PlayerController>(Character->GetController());
 		if (Controller)

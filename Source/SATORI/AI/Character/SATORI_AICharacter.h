@@ -57,9 +57,6 @@ public:
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Player|GameplayEffect")
 	TArray<TSubclassOf<UGameplayEffect>> PassiveGameplayEffects;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon")
-	UCapsuleComponent* AttackingCollision2;
-
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Stats")
 	USATORI_EnemyStatComponent* EnemyStatComponent;
 
@@ -118,12 +115,6 @@ protected:
 	
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "AI|GAS")
 	TArray<TSubclassOf<USATORI_GameplayAbility>> AICharacterAbilities;
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Weapon")
-	USkeletalMeshComponent* SwordComponent;
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Weapon")
-	USkeletalMeshComponent* SwordComponent2;
 	
 	UPROPERTY(EditAnywhere)
 	TSoftObjectPtr <UBehaviorTree> BehaviorTree;
