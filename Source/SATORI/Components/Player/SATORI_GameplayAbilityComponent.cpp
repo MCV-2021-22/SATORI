@@ -45,7 +45,7 @@ void USATORI_GameplayAbilityComponent::BeginPlay()
 			}
 		}
 	}
-
+	
 	NotifyAbilityChanged();
 
 	if (IsNachoTesting)
@@ -94,6 +94,7 @@ void USATORI_GameplayAbilityComponent::SetNextAbility()
 		}
 	}
 	UE_LOG(LogTemp, Display, TEXT(" Set Next Current Ability Value : [%d] "), CurrentAbilityValue);
+
 	NotifyAbilityChanged();
 }
 
@@ -124,6 +125,7 @@ void USATORI_GameplayAbilityComponent::SetPrevAbility()
 	}
 
 	UE_LOG(LogTemp, Display, TEXT(" Set Prev Current Ability Value : [%d] "), CurrentAbilityValue);
+
 	NotifyAbilityChanged();
 }
 
@@ -183,11 +185,10 @@ bool USATORI_GameplayAbilityComponent::IsAbilityEnabled() const
 
 void USATORI_GameplayAbilityComponent::NotifyAbilityChanged()
 {
-	FSATORI_AbilitiesIconsDatas AbilityIconToChange;
-
 	if (PlayerCharacter)
 	{
 		CheckAbilitiesStatus(AbilityIconToChange);
+		CheckAbilitiesBorderStatus(AbilityIconToChange);
 	}
 
 	AllAbilityIconChange.Broadcast(AbilityIconToChange);
@@ -244,6 +245,34 @@ void USATORI_GameplayAbilityComponent::CheckAbilitiesStatus(FSATORI_AbilitiesIco
 		AbilitiesDatas.FirstAbilitiyIcon = EmptyAbilitiyIcon;
 		AbilitiesDatas.SecondAbilitiyIcon = EmptyAbilitiyIcon;
 		AbilitiesDatas.LastAbilitiyIcon = EmptyAbilitiyIcon;
+	}
+}
+
+void USATORI_GameplayAbilityComponent::CheckAbilitiesBorderStatus(FSATORI_AbilitiesIconsDatas& AbilitiesDatas)
+{
+	if (PortalRewardAbilities.Num() <= 0)
+	{
+		AbilitiesDatas.AbilitiesBordesChecker.IsFirstIconAvaiable = false;
+		AbilitiesDatas.AbilitiesBordesChecker.IsSecondIconAvaiable = false;
+		AbilitiesDatas.AbilitiesBordesChecker.IsThirstIconAvaiable = false;
+	}
+	else if (CurrentAbilityValue == 0 && PortalRewardAbilities.Num() > 0)
+	{
+		AbilitiesDatas.AbilitiesBordesChecker.IsFirstIconAvaiable = true;
+		AbilitiesDatas.AbilitiesBordesChecker.IsSecondIconAvaiable = false;
+		AbilitiesDatas.AbilitiesBordesChecker.IsThirstIconAvaiable = false;
+	}
+	else if (CurrentAbilityValue == 1 && PortalRewardAbilities.Num() > 0)
+	{
+		AbilitiesDatas.AbilitiesBordesChecker.IsFirstIconAvaiable = false;
+		AbilitiesDatas.AbilitiesBordesChecker.IsSecondIconAvaiable = true;
+		AbilitiesDatas.AbilitiesBordesChecker.IsThirstIconAvaiable = false;
+	}
+	else if (CurrentAbilityValue == 2 && PortalRewardAbilities.Num() > 0)
+	{
+		AbilitiesDatas.AbilitiesBordesChecker.IsFirstIconAvaiable = false;
+		AbilitiesDatas.AbilitiesBordesChecker.IsSecondIconAvaiable = false;
+		AbilitiesDatas.AbilitiesBordesChecker.IsThirstIconAvaiable = true;
 	}
 }
 

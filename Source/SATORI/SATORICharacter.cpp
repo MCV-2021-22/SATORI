@@ -29,6 +29,7 @@
 #include "GAS/Effects/SATORI_ManaRecoverEffect.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "AI/Components/Arqueros/SATORI_ArcherProjectile.h"
+#include "Character/SATORI_PlayerCameraShake.h"
 //Cheat related include
 #include "Kismet/GameplayStatics.h"
 #include "Components/Player/SATORI_InteractComponent.h"
@@ -486,6 +487,9 @@ void ASATORICharacter::OnWeaponOverlapBegin(UPrimitiveComponent* OverlappedComp,
 		ASATORI_AICharacter* EnemyCharacter = Cast<ASATORI_AICharacter>(OtherActor);
 		if (EnemyCharacter)
 		{
+			PlayerSenseOfBlow();
+
+			// Other Stuff
 			UAbilitySystemComponent* EnemyAbilitySystem = EnemyCharacter->GetAbilitySystemComponent();
 			float Damage_Values = USATORI_BlueprintLibrary::ApplyGameplayEffectDamage(EnemyCharacter, WeaponDamage, this, DamageEffect);
 			USATORI_BlueprintLibrary::ApplyGameplayEffect(EnemyCharacter, BlockCountGameplayEffect);
@@ -510,6 +514,22 @@ void ASATORICharacter::OnWeaponOverlapEnd(class UPrimitiveComponent* OverlappedC
 	//	AnimactionPlayRater = 1.0f;
 	//	UGameplayStatics::SetGlobalTimeDilation(GetWorld(), AnimactionPlayRater);
 	//}
+}
+
+void ASATORICharacter::PlayerSenseOfBlow(float DilationTime, float WaitTime)
+{
+	// Camera shake
+	GetWorld()->GetFirstPlayerController()->PlayerCameraManager->StartCameraShake(CameraShake);
+
+	// Slow motion
+	UGameplayStatics::SetGlobalTimeDilation(GetWorld(), DilationTime);
+	FTimerHandle WaitHandle; 
+	GetWorld()->GetTimerManager().SetTimer(WaitHandle, FTimerDelegate::CreateLambda([&]()
+		{
+			UGameplayStatics::SetGlobalTimeDilation(GetWorld(), 1.0f);
+		}), WaitTime, false);
+
+	
 }
 
 //////////////////////////////////////////////////////////////////////////

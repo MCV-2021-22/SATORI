@@ -10,6 +10,7 @@
 
 class UImage;
 class UTexture2D;
+class UBorder;
 struct FSATORI_AbilitiesDatas;
 
 UCLASS()
@@ -28,4 +29,19 @@ public:
 
 	UFUNCTION(BlueprintImplementableEvent)
 	void BP_AllOnData(FSATORI_AbilitiesIconsDatas Data);
+
+	UFUNCTION(BlueprintCallable)
+	void ChangeBordersIcons(FSATORI_AbilitiesBordesChecker Data);
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	UTexture2D* BorderTexture;
+
+	UPROPERTY(meta = (BindWidget))
+	UBorder* FirstAbilityBorder;
+
+	UPROPERTY(meta = (BindWidget))
+	UBorder* SecondAbilityBorder;
+
+	UPROPERTY(meta = (BindWidget))
+	UBorder* ThirstAbilityBorder;
 };

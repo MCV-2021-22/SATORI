@@ -31,6 +31,16 @@ struct FSATORI_AbilitiesDatas
 };
 
 USTRUCT(BlueprintType)
+struct FSATORI_AbilitiesBordesChecker
+{
+	GENERATED_BODY()
+
+	bool IsFirstIconAvaiable = false;
+	bool IsSecondIconAvaiable = false;
+	bool IsThirstIconAvaiable = false;
+};
+
+USTRUCT(BlueprintType)
 struct FSATORI_AbilitiesIconsDatas
 {
 	GENERATED_BODY()
@@ -43,6 +53,9 @@ struct FSATORI_AbilitiesIconsDatas
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	UTexture2D* LastAbilitiyIcon;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	FSATORI_AbilitiesBordesChecker AbilitiesBordesChecker;
 };
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FSATORIChangeAbilityIcon, const FSATORI_AbilitiesDatas&, AbilityData);
@@ -121,6 +134,9 @@ private:
 	const FSATORI_AbilitiesDatas* SecondAbilityData = nullptr;
 	const FSATORI_AbilitiesDatas* LastAbilityData = nullptr;
 	const FSATORI_AbilitiesDatas* FirstAbilityData = nullptr;
+
+	UPROPERTY()
+	FSATORI_AbilitiesIconsDatas AbilityIconToChange;
 public:
 
 	void AddPortalAbilities(FSATORI_AbilitiesDatas AbilityData);
@@ -130,4 +146,5 @@ public:
 	bool IsAbilityEnabled() const;
 
 	void CheckAbilitiesStatus(FSATORI_AbilitiesIconsDatas& AbilitiesDatas);
+	void CheckAbilitiesBorderStatus(FSATORI_AbilitiesIconsDatas& AbilitiesDatas);
 };
