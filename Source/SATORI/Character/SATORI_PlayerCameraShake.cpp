@@ -9,9 +9,9 @@ USATORI_PlayerCameraShake::USATORI_PlayerCameraShake()
 	OscillationBlendInTime = 0.05f;
 	OscillationBlendOutTime = 0.05f;
 
-	RotOscillation.Pitch.Amplitude = FMath::RandRange(3.0f, 5.f);
-	RotOscillation.Pitch.Frequency = FMath::RandRange(15.0f, 20.f);
+	RotOscillation.Pitch.Amplitude = FMath::RandRange(0.1f, 0.5f);
+	RotOscillation.Pitch.Frequency = FMath::RandRange(1.0f, 5.f);
 
-	RotOscillation.Yaw.Amplitude = FMath::RandRange(3.0f, 5.f);
-	RotOscillation.Yaw.Frequency = FMath::RandRange(15.0f, 20.f);
+	RotOscillation.Yaw.Amplitude = FMath::RandRange(0.1f, 0.5f);
+	RotOscillation.Yaw.Frequency = FMath::RandRange(1.0f, 5.f);
 }

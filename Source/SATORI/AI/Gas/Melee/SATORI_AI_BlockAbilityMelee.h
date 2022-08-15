@@ -43,6 +43,9 @@ public:
 	FGameplayTag BlockDamageTag;
 
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Ability|Tags")
+	FGameplayTag CanBeStunnedTag;
+
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Ability|Tags")
 	FGameplayTag BlockingTag;
 
 protected:

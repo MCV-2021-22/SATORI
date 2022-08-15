@@ -44,7 +44,7 @@ void USATORI_AI_BlockAbilityMelee::ActivateAbility(
 	
 	RotationRate = Melee->GetCharacterMovement()->RotationRate.Yaw;
 
-	if (!TagSpawnAbility.IsValid()  || !BlockDamageTag.IsValid() || !BlockingTag.IsValid())
+	if (!TagSpawnAbility.IsValid()  || !BlockDamageTag.IsValid() || !CanBeStunnedTag.IsValid() || !BlockingTag.IsValid())
 	{
 		UE_LOG(LogTemp, Display, TEXT("[%s] USATORI_AI_BlockAbilityMelee: Tag is not valid ... "), *GetName());
 		Super::EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true);
@@ -68,6 +68,8 @@ void USATORI_AI_BlockAbilityMelee::EndAbility(
 	bool bReplicateEndAbility,
 	bool bWasCancelled)
 {
+	Melee->RemoveGameplayTag(BlockDamageTag);
+	Melee->RemoveGameplayTag(CanBeStunnedTag);
 	Melee->GetCharacterMovement()->RotationRate.Yaw = RotationRate;
 	Super::EndAbility(Handle, ActorInfo, ActivationInfo, bReplicateEndAbility, bWasCancelled);
 }
@@ -132,9 +134,14 @@ void USATORI_AI_BlockAbilityMelee::Tick(float DeltaTime)
 			{
 				Melee->AddGameplayTag(BlockDamageTag);
 			}
+			Melee->RemoveGameplayTag(CanBeStunnedTag);
 		}
 		else
 		{
+			if (!Melee->HasMatchingGameplayTag(CanBeStunnedTag))
+			{
+				Melee->AddGameplayTag(CanBeStunnedTag);
+			}
 			Melee->RemoveGameplayTag(BlockDamageTag);
 		}
 	}
