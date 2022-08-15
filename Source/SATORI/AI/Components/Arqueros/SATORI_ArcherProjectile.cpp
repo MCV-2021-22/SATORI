@@ -9,7 +9,6 @@
 
 ASATORI_ArcherProjectile::ASATORI_ArcherProjectile()
 {
-
 	PrimaryActorTick.bCanEverTick = true;
 
 	SphereComponent = CreateDefaultSubobject<USphereComponent>(TEXT("Sphere"));
@@ -20,23 +19,19 @@ ASATORI_ArcherProjectile::ASATORI_ArcherProjectile()
 	SphereComponent->OnComponentBeginOverlap.AddUniqueDynamic(this, &ASATORI_ArcherProjectile::OnComponentBeginOverlap);
 	//SphereComponent->SetSimulatePhysics(true);
 
-
 	RootComponent = SphereComponent;
 
 	StaticMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("StaticMesh"));
 	StaticMeshComponent->SetupAttachment(RootComponent);
 
-
 	TArray< AActor* > enemigos;
 	UGameplayStatics::GetAllActorsWithTag(GetWorld(), FName("PossessedBy.Player"), enemigos);
-
 
 	UE_LOG(LogTemp, Display, TEXT("Bala creada 222 "));
 }
 
 void ASATORI_ArcherProjectile::setDirection(FVector newDirection)
 {
-
 	this->direction = newDirection;
 }
 
@@ -46,15 +41,11 @@ void ASATORI_ArcherProjectile::BeginPlay()
 	Super::BeginPlay();
 	PrimaryActorTick.bCanEverTick = true;
 	GameInstanceRef = Cast<USATORI_GameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
-
-	
-
 }
 
 
 void ASATORI_ArcherProjectile::Tick(float DeltaTime)
 {
-
 	Super::Tick(DeltaTime);
 
 	if(!GameInstanceRef->TimeStop)
@@ -81,12 +72,7 @@ void ASATORI_ArcherProjectile::Tick(float DeltaTime)
 			inmunity -= DeltaTime;
 			LifeTime -= DeltaTime;
 		}
-
-
-		
 	}
-
-	
 }
 
 
@@ -96,13 +82,10 @@ void ASATORI_ArcherProjectile::OnComponentHit(UPrimitiveComponent* HitComponent,
 	IGameplayTagAssetInterface* InstigatorTagInterface = Cast<IGameplayTagAssetInterface>(InstigatorPawn);
 	IGameplayTagAssetInterface* OtherTagInterface = Cast<IGameplayTagAssetInterface>(OtherActor);
 
-
 	Destroy();
-
 	/*if (IsHostile(InstigatorTagInterface, OtherTagInterface)) {
 		HandleHit(OtherActor);
 	}*/
-
 }
 
 
@@ -117,8 +100,6 @@ bool ASATORI_ArcherProjectile::IsHostile(const IGameplayTagAssetInterface* Insti
 	FGameplayTag AITag = FGameplayTag::RequestGameplayTag("PossessedBy.AI");
 	FGameplayTag PlayerTag = FGameplayTag::RequestGameplayTag("PossessedBy.Player");
 
-
-
 	return (InstigatorTagInterface->HasMatchingGameplayTag(AITag) && OtherTagInterface->HasMatchingGameplayTag(PlayerTag)) ||
 		(InstigatorTagInterface->HasMatchingGameplayTag(PlayerTag) && OtherTagInterface->HasMatchingGameplayTag(AITag));
 
@@ -132,7 +113,6 @@ void ASATORI_ArcherProjectile::OnComponentBeginOverlap(
 	bool bFromSweep,
 	const FHitResult& SweepResult)
 {
-
 	ASATORI_ArcherProjectile* Choque = Cast<ASATORI_ArcherProjectile>(OtherActor);
 
 	if(Choque)
@@ -148,4 +128,10 @@ void ASATORI_ArcherProjectile::OnComponentBeginOverlap(
 		}
 		Destroy();
 	}
+}
+
+void ASATORI_ArcherProjectile::DestroySelfByParry()
+{
+	// TODO Adding Particle system here, David will do this
+	Destroy();
 }

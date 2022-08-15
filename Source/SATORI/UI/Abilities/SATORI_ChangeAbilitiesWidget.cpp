@@ -7,6 +7,7 @@
 #include "SATORICharacter.h"
 #include "Components/Player/SATORI_GameplayAbilityComponent.h"
 #include "Kismet/GameplayStatics.h"
+#include "Components/Border.h"
 
 bool USATORI_ChangeAbilitiesWidget::Initialize()
 {
@@ -46,3 +47,31 @@ void USATORI_ChangeAbilitiesWidget::NativeDestruct()
 	Super::NativeDestruct();
 }
 
+void USATORI_ChangeAbilitiesWidget::ChangeBordersIcons(FSATORI_AbilitiesBordesChecker Data)
+{
+	if (Data.IsFirstIconAvaiable && Data.IsSecondIconAvaiable && 
+		Data.IsThirstIconAvaiable)
+	{
+		FirstAbilityBorder->SetBrushFromTexture(nullptr);
+		SecondAbilityBorder->SetBrushFromTexture(nullptr);
+		ThirstAbilityBorder->SetBrushFromTexture(nullptr);
+	}
+	else if (Data.IsFirstIconAvaiable && BorderTexture)
+	{
+		FirstAbilityBorder->SetBrushFromTexture(BorderTexture);
+		SecondAbilityBorder->SetBrushFromTexture(nullptr);
+		ThirstAbilityBorder->SetBrushFromTexture(nullptr);
+	}
+	else if (Data.IsSecondIconAvaiable && BorderTexture)
+	{
+		FirstAbilityBorder->SetBrushFromTexture(nullptr);
+		SecondAbilityBorder->SetBrushFromTexture(BorderTexture);
+		ThirstAbilityBorder->SetBrushFromTexture(nullptr);
+	}
+	else if (Data.IsThirstIconAvaiable && BorderTexture)
+	{
+		FirstAbilityBorder->SetBrushFromTexture(nullptr);
+		SecondAbilityBorder->SetBrushFromTexture(nullptr);
+		ThirstAbilityBorder->SetBrushFromTexture(BorderTexture);
+	}
+}

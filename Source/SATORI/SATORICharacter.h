@@ -22,6 +22,7 @@ class USkeletalMeshComponent;
 class UCapsuleComponent;
 class USATORI_InteractComponent;
 class USATORI_GameplayAbilityComponent;
+class USATORI_PlayerCameraShake;
 
 UCLASS(config=Game)
 class ASATORICharacter : public ASATORI_CharacterBase
@@ -108,7 +109,7 @@ public:
 
 	// Ray Cast
 	UFUNCTION(BlueprintCallable)
-	bool DoRayCast();
+	bool DoParryBlock();
 
 	UFUNCTION(BlueprintCallable)
 	bool IsEnemyInFrontOfAngle();
@@ -121,6 +122,9 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void ApplyGameplayeEffectToPlayerWithParam(TSubclassOf<UGameplayEffect> GameplayEffect);
+
+	UFUNCTION(BlueprintCallable)
+	void PlayerSenseOfBlow(float DilationTime = 0.8f, float WaitTime = 0.5f);
 
 	UFUNCTION(BlueprintImplementableEvent)
 	void ShowDeathWidget();
@@ -193,6 +197,8 @@ private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 	class UCameraComponent* FollowCamera;
 
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<USATORI_PlayerCameraShake> CameraShake;
 public:
 	/** Returns CameraBoom subobject **/
 	FORCEINLINE class USpringArmComponent* GetCameraBoom() const { return CameraBoom; }

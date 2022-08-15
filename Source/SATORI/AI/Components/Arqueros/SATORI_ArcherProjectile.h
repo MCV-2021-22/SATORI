@@ -49,11 +49,8 @@ public:
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Meta = (ExposeOnSpawn = true), Category = "Missile")
 		TSubclassOf<UGameplayEffect> DamageGameplayEffect;
 
-	
-
+	void DestroySelfByParry();
 protected:
-
-
 
 	//UFUNCTION()
 	//void OnComponentHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
@@ -67,10 +64,6 @@ protected:
 	float LifeTime = 8.f;
 
 	USATORI_GameInstance* GameInstanceRef;
-
-
-	
-
 };
 
 
