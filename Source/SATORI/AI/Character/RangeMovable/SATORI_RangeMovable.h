@@ -29,8 +29,12 @@ public:
 
 	float getDistAttack();
 
+	float getCloseDist();
+
 protected:
 
 	float dist_attack = 800.0f;
+
+	float close_dist = 100.0f;
 
 };

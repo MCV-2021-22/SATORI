@@ -136,3 +136,10 @@ float ASATORI_RangeMovable::getDistAttack()
 {
 	return dist_attack;
 }
+
+
+
+float ASATORI_RangeMovable::getCloseDist()
+{
+	return close_dist;
+}
