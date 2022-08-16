@@ -1,10 +1,10 @@
 //
 
-#include "AI/Decorators/Clone/SATORI_HasTargetDecorator.h"
+#include "AI/Decorators/Clone/BTDecorator_HasTarget.h"
 #include "BehaviorTree/Blackboard/BlackboardKeyType_Object.h"
 #include "BehaviorTree/BlackboardComponent.h"
 
-bool USATORI_HasTargetDecorator::CalculateRawConditionValue(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory) const
+bool UBTDecorator_HasTarget::CalculateRawConditionValue(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory) const
 {
 	bool bSuccess = Super::CalculateRawConditionValue(OwnerComp, NodeMemory);
 	if (!bSuccess)

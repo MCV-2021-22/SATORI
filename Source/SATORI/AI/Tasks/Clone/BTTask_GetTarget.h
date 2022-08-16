@@ -4,19 +4,19 @@
 
 #include "CoreMinimal.h"
 #include "BehaviorTree/BTTaskNode.h"
-#include "SATORI_GetTargetBTTask.generated.h"
+#include "BTTask_GetTarget.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class SATORI_API USATORI_GetTargetBTTask : public UBTTaskNode
+class SATORI_API UBTTask_GetTarget: public UBTTaskNode
 {
 	GENERATED_BODY()
 
 public:
 
-	USATORI_GetTargetBTTask();
+	UBTTask_GetTarget();
 
 	virtual EBTNodeResult::Type ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory) override;
 	

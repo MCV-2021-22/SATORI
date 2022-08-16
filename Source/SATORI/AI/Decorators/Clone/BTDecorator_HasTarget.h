@@ -4,13 +4,13 @@
 
 #include "CoreMinimal.h"
 #include "BehaviorTree/BTDecorator.h"
-#include "SATORI_HasTargetDecorator.generated.h"
+#include "BTDecorator_HasTarget.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class SATORI_API USATORI_HasTargetDecorator : public UBTDecorator
+class SATORI_API UBTDecorator_HasTarget : public UBTDecorator
 {
 	GENERATED_BODY()
 

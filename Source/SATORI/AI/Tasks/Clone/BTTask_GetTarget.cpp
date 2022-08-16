@@ -1,6 +1,6 @@
 //
 
-#include "AI/Tasks/Clone/SATORI_GetTargetBTTask.h"
+#include "AI/Tasks/Clone/BTTask_GetTarget.h"
 #include "AI/Character/SATORI_AICharacter.h"
 #include "Kismet/GameplayStatics.h"
 #include "AIController.h"
@@ -9,12 +9,12 @@
 #include "SATORICharacter.h"
 #include "SATORIGameMode.h"
 
-USATORI_GetTargetBTTask::USATORI_GetTargetBTTask()
+UBTTask_GetTarget::UBTTask_GetTarget()
 {
 	bCreateNodeInstance = true;
 }
 
-EBTNodeResult::Type USATORI_GetTargetBTTask::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
+EBTNodeResult::Type UBTTask_GetTarget::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
 {
 	EBTNodeResult::Type Result = EBTNodeResult::Failed;
 
