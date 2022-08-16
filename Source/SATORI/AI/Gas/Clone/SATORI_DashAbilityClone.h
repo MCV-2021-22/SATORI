@@ -69,6 +69,7 @@ private:
 	FVector EnemyPosition;
 
 	void EndDash();
+	void GetTarget();
 
 public:
 

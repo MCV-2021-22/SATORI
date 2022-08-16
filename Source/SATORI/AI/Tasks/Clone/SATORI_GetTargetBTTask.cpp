@@ -29,9 +29,7 @@ EBTNodeResult::Type USATORI_GetTargetBTTask::ExecuteTask(UBehaviorTreeComponent&
 	}
 	else {
 
-		AAIController* AIController = OwnerComp.GetAIOwner();
-		APawn* Pawn = AIController->GetPawn();
-		FVector ClonePosition = Pawn->GetActorLocation();
+		FVector ClonePosition = OwnerComp.GetAIOwner()->GetPawn()->GetActorLocation();
 		TArray < AActor* >& AllEnemies = GetWorld()->GetAuthGameMode<ASATORIGameMode>()->GetEnemyActorsRef();
 		for (AActor* Actor : AllEnemies)
 		{

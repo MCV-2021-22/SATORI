@@ -69,7 +69,9 @@ private:
 
 	ASATORI_AICharacter* Melee;
 
-	void EndSpecial();
+	void RemoveGameplayEffect();
+	void EndBlockingAnimation();
+	void BlockDamage();
 
 	float RotationRate;
 

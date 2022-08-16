@@ -36,7 +36,7 @@ ASATORI_DashMeleeActor::ASATORI_DashMeleeActor()
 
 void ASATORI_DashMeleeActor::OnOverlapCollisionBox(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-
+	//If Melee overlaps ends dash
 	if(IsValid(OwnerMelee) && OwnerMelee == OtherActor)
 	{
 		ASATORI_Melee* Melee = Cast<ASATORI_Melee>(OtherActor);
@@ -49,8 +49,8 @@ void ASATORI_DashMeleeActor::OnOverlapCollisionBox(UPrimitiveComponent* Overlapp
 
 void ASATORI_DashMeleeActor::OnOverlapCollisionSphere(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
+	//Damage player once
 	ASATORICharacter* Character = Cast<ASATORICharacter>(OtherActor);
-
 	if (!Character)
 	{
 		return;
@@ -77,30 +77,26 @@ void ASATORI_DashMeleeActor::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 	
+	//When Melee is close enough starts attack parte of animation
 	if (!bEndDash && FVector::Dist(OwnerMelee->GetActorLocation(), GetActorLocation()) < 150.0f)
 	{
 		bEndDash = true;
 
-		if (MeleeCharacter)
+		if (USkeletalMeshComponent* Mesh = MeleeCharacter->GetMesh())
 		{
-			if (USkeletalMeshComponent* Mesh = MeleeCharacter->GetMesh())
+			if (UAnimInstance* AnimInstance = Mesh->GetAnimInstance())
 			{
-				if (UAnimInstance* AnimInstance = Mesh->GetAnimInstance())
-				{
-					AnimInstance->Montage_JumpToSection(FName("EndDash"), AnimInstance->GetCurrentActiveMontage());
-				}
+				AnimInstance->Montage_JumpToSection(FName("EndDash"), AnimInstance->GetCurrentActiveMontage());
 			}
 		}
 	}
 
+	//Enables sphere overlaps events for damaging player
 	if (bEndDash && !CollisionSphereComponent->IsCollisionEnabled())
 	{
-		if (MeleeCharacter)
+		if (MeleeCharacter->HasMatchingGameplayTag(DashDamageTag))
 		{
-			if (MeleeCharacter->HasMatchingGameplayTag(DashDamageTag))
-			{
-				CollisionSphereComponent->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
-			}
+			CollisionSphereComponent->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
 		}
 	}
 }

@@ -81,6 +81,7 @@ private:
 	ASATORI_DashMeleeActor* DashActor;
 
 	void SpawnActor();
+	void GetTarget();
 
 	bool bDashing = false;
 	bool bTargeting = false;
@@ -88,6 +89,7 @@ private:
 	ASATORI_CharacterBase* Enemy;
 	FVector  DashActorPosition;
 	
+	float TotalDistance;
 
 	const bool bStopWhenAbilityEnds = true;
 

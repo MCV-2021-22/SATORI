@@ -74,21 +74,23 @@ void USATORI_DashAbilityClone::EventReceived(FGameplayTag EventTag, FGameplayEve
 {
 	if (EventTag == TagSpawnAbility)
 	{
-		UBlackboardComponent* Blackboard = UAIBlueprintHelperLibrary::GetBlackboard(GetAvatarActorFromActorInfo());
+		GetTarget();
+	}
+}
 
-		if (IsValid(Blackboard))
+void USATORI_DashAbilityClone::GetTarget()
+{
+	UBlackboardComponent* Blackboard = UAIBlueprintHelperLibrary::GetBlackboard(GetAvatarActorFromActorInfo());
+	if (IsValid(Blackboard))
+	{
+		FName Enemy = "Target";
+		ASATORI_CharacterBase* Target = nullptr;
+		Target = Cast<ASATORI_CharacterBase>(Blackboard->GetValueAsObject(Enemy));
+
+		if (IsValid(Target))
 		{
-			FName Enemy = "Target";
-
-			ASATORI_CharacterBase* Target = nullptr;
-			Target = Cast<ASATORI_CharacterBase>(Blackboard->GetValueAsObject(Enemy));
-
-			//Check clone
-			if (IsValid(Target))
-			{
-				EnemyPosition = Target->GetActorLocation();
-				bDashing = true;
-			}
+			EnemyPosition = Target->GetActorLocation();
+			bDashing = true;
 		}
 	}
 }
@@ -110,8 +112,8 @@ void USATORI_DashAbilityClone::Tick(float DeltaTime)
 {
 	if(bDashing)
 	{
+		//Dash movement until is close enough
 		FVector Position = Clone->GetActorLocation();
-
 		if (FVector::Dist(Position, EnemyPosition) < 300)
 		{
 			EndDash();

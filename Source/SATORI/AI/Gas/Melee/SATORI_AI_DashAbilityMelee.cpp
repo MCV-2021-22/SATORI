@@ -9,7 +9,6 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetMathLibrary.h"
-//
 #include "Blueprint/AIBlueprintHelperLibrary.h"
 #include "BehaviorTree/BlackboardComponent.h"
 
@@ -79,41 +78,48 @@ void USATORI_AI_DashAbilityMelee::OnCompleted(FGameplayTag EventTag, FGameplayEv
 
 void USATORI_AI_DashAbilityMelee::EventReceived(FGameplayTag EventTag, FGameplayEventData EventData)
 {
+	if (EventTag == TagSpawnAbility)
+	{
+		GetTarget();
+	}
+
+	//Starts Dashing towards DashActor
 	if (EventTag == TagStartDash)
 	{
 		bTargeting = false;
 		bDashing = true;
 		DashActorPosition = DashActor->GetActorLocation();
 	}
+}
 
-	if (EventTag == TagSpawnAbility)
+//Targets Player/Clone
+void USATORI_AI_DashAbilityMelee::GetTarget()
+{
+	UBlackboardComponent* Blackboard = UAIBlueprintHelperLibrary::GetBlackboard(GetAvatarActorFromActorInfo());
+
+	if (IsValid(Blackboard))
 	{
-		UBlackboardComponent* Blackboard = UAIBlueprintHelperLibrary::GetBlackboard(GetAvatarActorFromActorInfo());
-		
-		if (IsValid(Blackboard))
-		{
-			FName Clone = "Clone";
-			FName Player = "Target";
-			
-			ASATORI_CharacterBase* Target = nullptr;
-			Target = Cast<ASATORI_CharacterBase>(Blackboard->GetValueAsObject(Clone));
+		FName Clone = "Clone";
+		FName Player = "Target";
 
-			//Check clone
+		ASATORI_CharacterBase* Target = nullptr;
+		Target = Cast<ASATORI_CharacterBase>(Blackboard->GetValueAsObject(Clone));
+
+		//Check clone
+		if (IsValid(Target))
+		{
+			Enemy = Target;
+			SpawnActor();
+		}
+		//If clone fails then checks for player
+		else
+		{
+			Target = Cast<ASATORI_CharacterBase>(Blackboard->GetValueAsObject(Player));
+
 			if (IsValid(Target))
 			{
 				Enemy = Target;
 				SpawnActor();
-			}
-			//If clone fails then checks for player
-			else
-			{
-				Target = Cast<ASATORI_CharacterBase>(Blackboard->GetValueAsObject(Player));
-
-				if (IsValid(Target))
-				{
-					Enemy = Target;
-					SpawnActor();
-				}
 			}
 		}
 	}
@@ -136,13 +142,19 @@ void USATORI_AI_DashAbilityMelee::SpawnActor()
 
 void USATORI_AI_DashAbilityMelee::Tick(float DeltaTime)
 {
+	//Follow for a brief moment player moment and rotate facing target
 	if (bTargeting)
 	{
 		FVector Position = DashActor->GetActorLocation();
 		FVector NextPosition = UKismetMathLibrary::VInterpTo(Position, Enemy->GetActorLocation(), DeltaTime, 10.0f);
 		DashActor->SetActorLocation(NextPosition);
+
+		FRotator MeleeRotation = (Position - Melee->GetActorLocation()).ToOrientationRotator();
+		MeleeRotation.Pitch = 0;
+		Melee->SetActorRotation(MeleeRotation);
 	}
 
+	//Dash movement
 	if(bDashing)
 	{
 		FVector Position = Melee->GetActorLocation();
@@ -150,6 +162,7 @@ void USATORI_AI_DashAbilityMelee::Tick(float DeltaTime)
 		Melee->SetActorLocation(NextPosition);
 	}
 
+	//Stop dashing - It activates when actorreaches collision box in DashActor 
 	if(Melee->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag("Dash.Stop")))
 	{
 		bDashing = false;

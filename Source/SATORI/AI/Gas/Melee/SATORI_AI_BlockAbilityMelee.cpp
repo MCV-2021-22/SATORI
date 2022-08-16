@@ -68,6 +68,7 @@ void USATORI_AI_BlockAbilityMelee::EndAbility(
 	bool bReplicateEndAbility,
 	bool bWasCancelled)
 {
+	//Security measure - remove tags 
 	Melee->RemoveGameplayTag(BlockDamageTag);
 	Melee->RemoveGameplayTag(CanBeStunnedTag);
 	Melee->GetCharacterMovement()->RotationRate.Yaw = RotationRate;
@@ -86,18 +87,20 @@ void USATORI_AI_BlockAbilityMelee::OnCompleted(FGameplayTag EventTag, FGameplayE
 
 void USATORI_AI_BlockAbilityMelee::EventReceived(FGameplayTag EventTag, FGameplayEventData EventData)
 {
+	//Starts blocking -  timer for ending
 	if (EventTag == TagSpawnAbility)
 	{
 		bBlocking = true;
 		Melee->GetCharacterMovement()->RotationRate.Yaw = Melee->GetCharacterMovement()->RotationRate.Yaw / RotationDifference;
 
 		FTimerHandle TimerHandle;
-		GetWorld()->GetTimerManager().SetTimer(TimerHandle, this, &USATORI_AI_BlockAbilityMelee::EndSpecial, TimeToFinish, false);
+		GetWorld()->GetTimerManager().SetTimer(TimerHandle, this, &USATORI_AI_BlockAbilityMelee::RemoveGameplayEffect, TimeToFinish, false);
 	}
 }
 
-void USATORI_AI_BlockAbilityMelee::EndSpecial()
+void USATORI_AI_BlockAbilityMelee::RemoveGameplayEffect()
 {
+	//Removes GE
 	FGameplayTagContainer GameplayTagContainer;
 	GameplayTagContainer.AddTag(BlockingTag);
 	USATORI_BlueprintLibrary::RemoveGameplayEffect(Melee, GameplayTagContainer);
@@ -105,45 +108,58 @@ void USATORI_AI_BlockAbilityMelee::EndSpecial()
 
 void USATORI_AI_BlockAbilityMelee::Tick(float DeltaTime)
 {
+	//If GE was removed ends blocking
 	if (!Melee->HasMatchingGameplayTag(BlockingTag) && bBlocking)
 	{
-		bBlocking = false;
-		Melee->RemoveGameplayTag(BlockDamageTag);
-
-		if (USkeletalMeshComponent* Mesh = Melee->GetMesh())
-		{
-			if (UAnimInstance* AnimInstance = Mesh->GetAnimInstance())
-			{
-				AnimInstance->Montage_JumpToSection(FName("BlockEnd"), AnimInstance->GetCurrentActiveMontage());
-			}
-		}
+		EndBlockingAnimation();
 	}
 
 	if (bBlocking)
 	{
-		FRotator Rotation = GetAvatarActorFromActorInfo()->GetActorRotation();
+		BlockDamage();
+	}
+}
 
-		ACharacter* PlayerCharacter = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0);
-		FRotator PlayerRotation = PlayerCharacter->GetActorRotation();
+void USATORI_AI_BlockAbilityMelee::EndBlockingAnimation()
+{
+	bBlocking = false;
+	Melee->RemoveGameplayTag(BlockDamageTag);
 
-		float Direction = Rotation.Yaw - PlayerRotation.Yaw;
-
-		if ((Direction > 100 || Direction < -100))
+	if (USkeletalMeshComponent* Mesh = Melee->GetMesh())
+	{
+		if (UAnimInstance* AnimInstance = Mesh->GetAnimInstance())
 		{
-			if (!Melee->HasMatchingGameplayTag(BlockDamageTag))
-			{
-				Melee->AddGameplayTag(BlockDamageTag);
-			}
-			Melee->RemoveGameplayTag(CanBeStunnedTag);
+			AnimInstance->Montage_JumpToSection(FName("BlockEnd"), AnimInstance->GetCurrentActiveMontage());
 		}
-		else
+	}
+}
+
+//If Player and actor are facing each other - Blocking Damage
+//If player is facing the back of the actor - No Blocking Damage
+void USATORI_AI_BlockAbilityMelee::BlockDamage()
+{
+	FRotator Rotation = GetAvatarActorFromActorInfo()->GetActorRotation();
+
+	ACharacter* PlayerCharacter = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0);
+	FRotator PlayerRotation = PlayerCharacter->GetActorRotation();
+
+	float Direction = Rotation.Yaw - PlayerRotation.Yaw;
+
+	if ((Direction > 100 || Direction < -100))
+	{
+		if (!Melee->HasMatchingGameplayTag(BlockDamageTag))
 		{
-			if (!Melee->HasMatchingGameplayTag(CanBeStunnedTag))
-			{
-				Melee->AddGameplayTag(CanBeStunnedTag);
-			}
-			Melee->RemoveGameplayTag(BlockDamageTag);
+			Melee->AddGameplayTag(BlockDamageTag);
 		}
+		Melee->RemoveGameplayTag(CanBeStunnedTag);
+	}
+	else
+	{
+		if (!Melee->HasMatchingGameplayTag(CanBeStunnedTag))
+		{
+			Melee->AddGameplayTag(CanBeStunnedTag);
+		}
+		Melee->RemoveGameplayTag(BlockDamageTag);
 	}
 }
 

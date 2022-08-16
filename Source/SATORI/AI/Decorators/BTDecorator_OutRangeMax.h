@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+// 
 
 #pragma once
 
@@ -16,11 +16,8 @@ class SATORI_API UBTDecorator_OutRangeMax : public UBTDecorator
 
 public:
 
-	
-
 	UPROPERTY(EditAnywhere)
-		FBlackboardKeySelector MyBlackboardKey;
-
+	FBlackboardKeySelector MyBlackboardKey;
 
 	virtual bool CalculateRawConditionValue(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory) const override;
 
