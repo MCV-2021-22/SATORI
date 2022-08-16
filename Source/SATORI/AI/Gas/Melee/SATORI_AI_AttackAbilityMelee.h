@@ -50,4 +50,8 @@ private:
 
 	const bool bStopWhenAbilityEnds = true;
 
+	void GetTarget();
+
+	ASATORI_CharacterBase* Enemy;
+
 };

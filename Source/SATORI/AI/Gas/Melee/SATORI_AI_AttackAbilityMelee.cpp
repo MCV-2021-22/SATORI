@@ -1,6 +1,8 @@
 //
 
 #include "AI/Gas/Melee/SATORI_AI_AttackAbilityMelee.h"
+#include "BehaviorTree/BlackboardComponent.h"
+#include "Blueprint/AIBlueprintHelperLibrary.h"
 
 USATORI_AI_AttackAbilityMelee::USATORI_AI_AttackAbilityMelee()
 {
@@ -36,6 +38,14 @@ void USATORI_AI_AttackAbilityMelee::ActivateAbility(
 		return;
 	}
 
+	GetTarget();
+	if (Enemy)
+	{
+		FRotator MeleeRotation = (Enemy->GetActorLocation() - Melee->GetActorLocation()).ToOrientationRotator();
+		MeleeRotation.Pitch = 0;
+		Melee->SetActorRotation(MeleeRotation);
+	}
+
 	//Handling of events
 	USATORI_PlayMontageAndWaitEvent* Task = USATORI_PlayMontageAndWaitEvent::PlayMontageAndWaitForEvent(this, NAME_None, AnimMontage, FGameplayTagContainer(), 1.0f, NAME_None, bStopWhenAbilityEnds, 1.0f);
 	Task->OnBlendOut.AddDynamic(this, &USATORI_AI_AttackAbilityMelee::OnCompleted);
@@ -63,4 +73,35 @@ void USATORI_AI_AttackAbilityMelee::OnCancelled(FGameplayTag EventTag, FGameplay
 void USATORI_AI_AttackAbilityMelee::OnCompleted(FGameplayTag EventTag, FGameplayEventData EventData)
 {
 	EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, false);
+}
+
+//Targets Player/Clone
+void USATORI_AI_AttackAbilityMelee::GetTarget()
+{
+	UBlackboardComponent* Blackboard = UAIBlueprintHelperLibrary::GetBlackboard(GetAvatarActorFromActorInfo());
+
+	if (IsValid(Blackboard))
+	{
+		FName Clone = "Clone";
+		FName Player = "Target";
+
+		ASATORI_CharacterBase* Target = nullptr;
+		Target = Cast<ASATORI_CharacterBase>(Blackboard->GetValueAsObject(Clone));
+
+		//Check clone
+		if (IsValid(Target))
+		{
+			Enemy = Target;
+		}
+		//If clone fails then checks for player
+		else
+		{
+			Target = Cast<ASATORI_CharacterBase>(Blackboard->GetValueAsObject(Player));
+
+			if (IsValid(Target))
+			{
+				Enemy = Target;
+			}
+		}
+	}
 }
