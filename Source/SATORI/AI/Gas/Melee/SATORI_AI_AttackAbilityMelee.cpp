@@ -3,10 +3,12 @@
 #include "AI/Gas/Melee/SATORI_AI_AttackAbilityMelee.h"
 #include "BehaviorTree/BlackboardComponent.h"
 #include "Blueprint/AIBlueprintHelperLibrary.h"
+#include "Kismet/KismetMathLibrary.h"
 
 USATORI_AI_AttackAbilityMelee::USATORI_AI_AttackAbilityMelee()
 {
 	InstancingPolicy = EGameplayAbilityInstancingPolicy::InstancedPerActor;
+	bIsCreateOnRunning = GIsRunning;
 }
 
 void USATORI_AI_AttackAbilityMelee::ActivateAbility(
@@ -39,12 +41,6 @@ void USATORI_AI_AttackAbilityMelee::ActivateAbility(
 	}
 
 	GetTarget();
-	if (Enemy)
-	{
-		FRotator MeleeRotation = (Enemy->GetActorLocation() - Melee->GetActorLocation()).ToOrientationRotator();
-		MeleeRotation.Pitch = 0;
-		Melee->SetActorRotation(MeleeRotation);
-	}
 
 	//Handling of events
 	USATORI_PlayMontageAndWaitEvent* Task = USATORI_PlayMontageAndWaitEvent::PlayMontageAndWaitForEvent(this, NAME_None, AnimMontage, FGameplayTagContainer(), 1.0f, NAME_None, bStopWhenAbilityEnds, 1.0f);
@@ -104,4 +100,70 @@ void USATORI_AI_AttackAbilityMelee::GetTarget()
 			}
 		}
 	}
+}
+
+void USATORI_AI_AttackAbilityMelee::RotateToTargetGradual(float DeltaTime)
+{
+	FRotator Rotation = (Enemy->GetActorLocation() - Melee->GetActorLocation()).Rotation();
+	FVector RotationDirection = Rotation.UnrotateVector(Melee->GetActorForwardVector());
+	FRotator RotationChange = RotationDirection.Rotation();
+	RotationChange.Yaw = FMath::Clamp(RotationChange.Yaw, -MaxRotationChange, MaxRotationChange);
+	RotationChange.Pitch = 0;
+	Melee->SetActorRotation(Melee->GetActorRotation() - RotationChange);
+}
+
+void USATORI_AI_AttackAbilityMelee::RotateToTargetSnap()
+{
+	FRotator Rotation = (Enemy->GetActorLocation() - Melee->GetActorLocation()).Rotation();
+	Rotation.Pitch = 0;
+	Melee->SetActorRotation(Rotation);
+}
+
+void USATORI_AI_AttackAbilityMelee::MovementToTarget(float DeltaTime)
+{
+	float Distance = FVector::Dist(Enemy->GetActorLocation(), Melee->GetActorLocation());
+	if (Distance > Melee->GetAttackDistance())
+	{
+		Melee->SetActorLocation(Melee->GetActorLocation() + Melee->GetActorForwardVector() * FMath::Clamp(Distance - Melee->GetAttackDistance(), 0.0f, ClampDistanceAttack) * MovementSpeed * DeltaTime);
+	}
+}
+
+void USATORI_AI_AttackAbilityMelee::Tick(float DeltaTime)
+{
+	//Targets smoothly player
+	if (Melee->HasMatchingGameplayTag(TargetingTag))
+	{
+		RotateToTargetGradual(DeltaTime);
+	}
+
+	//Targets Fast once and snapy, also moves
+	if (Melee->HasMatchingGameplayTag(CanMoveTag))
+	{
+		if (!RotationChanged)
+		{
+			RotateToTargetSnap();
+			RotationChanged = true;
+		}
+
+		MovementToTarget(DeltaTime);
+	}
+	else
+	{
+		RotationChanged = false;
+	}
+}
+
+bool USATORI_AI_AttackAbilityMelee::IsTickable() const
+{
+	return IsActive();
+}
+
+bool USATORI_AI_AttackAbilityMelee::IsAllowedToTick() const
+{
+	return true;
+}
+
+TStatId USATORI_AI_AttackAbilityMelee::GetStatId() const
+{
+	return UObject::GetStatID();
 }

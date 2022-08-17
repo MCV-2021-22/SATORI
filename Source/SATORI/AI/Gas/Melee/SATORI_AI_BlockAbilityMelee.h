@@ -68,6 +68,9 @@ protected:
 private:
 
 	ASATORI_AICharacter* Melee;
+	AActor* Enemy;
+
+	void GetTarget();
 
 	void RemoveGameplayEffect();
 	void EndBlockingAnimation();

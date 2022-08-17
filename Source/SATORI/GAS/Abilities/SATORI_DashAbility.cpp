@@ -61,9 +61,9 @@ void USATORI_DashAbility::ActivateAbility(
 
 	if (!Character->GetVelocity().IsNearlyZero())
 	{
-		FVector V = Character->GetVelocity();
-		FRotator R = Character->GetActorRotation();
-		DirectionDash = R.UnrotateVector(V);
+		FVector Velocity = Character->GetVelocity();
+		FRotator Rotation = Character->GetActorRotation();
+		DirectionDash = Rotation.UnrotateVector(Velocity);
 		DirectionDash.Normalize();
 	}
 

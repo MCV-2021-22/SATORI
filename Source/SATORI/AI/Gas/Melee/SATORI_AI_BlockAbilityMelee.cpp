@@ -43,6 +43,7 @@ void USATORI_AI_BlockAbilityMelee::ActivateAbility(
 	}
 	
 	RotationRate = Melee->GetCharacterMovement()->RotationRate.Yaw;
+	GetTarget();
 
 	if (!TagSpawnAbility.IsValid()  || !BlockDamageTag.IsValid() || !CanBeStunnedTag.IsValid() || !BlockingTag.IsValid())
 	{
@@ -85,6 +86,46 @@ void USATORI_AI_BlockAbilityMelee::OnCompleted(FGameplayTag EventTag, FGameplayE
 	EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, false);
 }
 
+//Targets Player/Clone/Decoy
+void USATORI_AI_BlockAbilityMelee::GetTarget()
+{
+	UBlackboardComponent* Blackboard = UAIBlueprintHelperLibrary::GetBlackboard(GetAvatarActorFromActorInfo());
+
+	if (IsValid(Blackboard))
+	{
+		FName Clone = "Clone";
+		FName Decoy = "Señuelo";
+		FName Player = "Target";
+
+		AActor* Target = nullptr;
+		Target = Cast<AActor>(Blackboard->GetValueAsObject(Clone));
+		//Check clone
+		if (IsValid(Target))
+		{
+			Enemy = Target;
+		}
+		//If clone fails then checks for Decoy, if Decoy fails checks Player
+		else
+		{
+			Target = Cast<AActor>(Blackboard->GetValueAsObject(Decoy));
+			//Check Decoy
+			if (IsValid(Target))
+			{
+				Enemy = Target;
+			}
+			else
+			{
+				Target = Cast<AActor>(Blackboard->GetValueAsObject(Player));
+				//Check Player
+				if (IsValid(Target))
+				{
+					Enemy = Target;
+				}
+			}
+		}
+	}
+}
+
 void USATORI_AI_BlockAbilityMelee::EventReceived(FGameplayTag EventTag, FGameplayEventData EventData)
 {
 	//Starts blocking -  timer for ending
@@ -117,6 +158,19 @@ void USATORI_AI_BlockAbilityMelee::Tick(float DeltaTime)
 	if (bBlocking)
 	{
 		BlockDamage();
+	}
+
+	if (!Enemy)
+	{
+		GetTarget();
+		UBlackboardComponent* Blackboard = UAIBlueprintHelperLibrary::GetBlackboard(GetAvatarActorFromActorInfo());
+		FName Player = "Target";
+		AActor* Target = Cast<AActor>(Blackboard->GetValueAsObject(Player));
+		if (Target == Enemy)
+		{
+			//TO DO: Stop Timer
+			RemoveGameplayEffect();
+		}
 	}
 }
 

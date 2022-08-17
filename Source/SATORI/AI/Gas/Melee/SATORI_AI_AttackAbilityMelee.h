@@ -11,7 +11,7 @@
 class UCharacterMovementComponent;
 
 UCLASS()
-class SATORI_API USATORI_AI_AttackAbilityMelee : public USATORI_GameplayAbility
+class SATORI_API USATORI_AI_AttackAbilityMelee : public USATORI_GameplayAbility, public FTickableGameObject
 {
 	GENERATED_BODY()
 
@@ -36,7 +36,22 @@ public:
 		bool bReplicateEndAbility,
 		bool bWasCancelled) override;
 
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Ability|Tags")
+	FGameplayTag CanMoveTag;
+
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Ability|Tags")
+	FGameplayTag TargetingTag;
+
 protected:
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (UIMin = "1.0"), Category = "Ability|AttackCombo")
+	float MovementSpeed = 15.0f;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (UIMin = "1.0"), Category = "Ability|AttackCombo")
+	float ClampDistanceAttack = 50.0f;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (UIMin = "1.0"), Category = "Ability|AttackCombo")
+	float MaxRotationChange = 10.0f;
 
 	UFUNCTION()
 	void OnCancelled(FGameplayTag EventTag, FGameplayEventData EventData);
@@ -51,7 +66,22 @@ private:
 	const bool bStopWhenAbilityEnds = true;
 
 	void GetTarget();
+	void RotateToTargetGradual(float DeltaTime);
+	void RotateToTargetSnap();
+	void MovementToTarget(float DeltaTime);
+
+	bool RotationChanged;
 
 	ASATORI_CharacterBase* Enemy;
+
+public:
+
+	bool bIsCreateOnRunning = false;
+
+	virtual void Tick(float DeltaTime) override;
+
+	virtual bool IsTickable() const override;
+	virtual bool IsAllowedToTick() const override;
+	virtual TStatId GetStatId() const override;
 
 };

@@ -15,7 +15,6 @@
 USATORI_AI_DashAbilityMelee::USATORI_AI_DashAbilityMelee()
 {
 	InstancingPolicy = EGameplayAbilityInstancingPolicy::InstancedPerActor;
-	bDashing = false;
 	bIsCreateOnRunning = GIsRunning;
 }
 
