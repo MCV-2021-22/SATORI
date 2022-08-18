@@ -47,18 +47,24 @@ public:
 		bool bWasCancelled) override;
 
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Ability|Tags")
+	FGameplayTag TagStartAbility;
+
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Ability|Tags")
 	FGameplayTag TagEndAbility;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Checkcollision")
 	TEnumAsByte<ECollisionChannel> CollisionChannel;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Checkcollision")
-	TEnumAsByte<ECollisionChannel> PlayerChannel;
-
 protected:
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (UIMin = "1.0"), Category = "Ability|Dash")
 	float DashSpeed = 1250.0f;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (UIMin = "0.0"), Category = "Ability|Dash")
+	float TimeToFinish = 1.5f;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (UIMin = "0.0"), Category = "Ability|Dash")
+	float SpeedBrakingFactor = 1.5f;
 
 	UFUNCTION()
 	void OnCancelled(FGameplayTag EventTag, FGameplayEventData EventData);
@@ -74,13 +80,21 @@ private:
 	FVector DirectionDash;
 	FVector Direction = FVector::FVector(1.0f, 0.0f, 0.0f);
 
+	bool bDashing;
+	bool bBraking;
+
+	float SpeedBraking;
+
+	void EndDash();
+
 	FHitResult HitResult;
 	FCollisionQueryParams Params = FCollisionQueryParams(FName("LineTraceSingle"));
 
 	const bool bStopWhenAbilityEnds = true;
 
 	ASATORI_CharacterBase* Character;
-
+	FHitResult OutHit;
+	FCollisionQueryParams CollisionParams;
 	UCapsuleComponent* CapsuleComponent;
 
 	//Tick implementation

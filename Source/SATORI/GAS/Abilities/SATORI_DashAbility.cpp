@@ -50,25 +50,29 @@ void USATORI_DashAbility::ActivateAbility(
 	}
 
 	CapsuleComponent = Character->GetCapsuleComponent();
-	CapsuleComponent->SetGenerateOverlapEvents(false);
-	CapsuleComponent->SetCollisionObjectType(CollisionChannel);
-
 	Params.AddIgnoredActor(GetAvatarActorFromActorInfo());
 
-	ASATORI_PlayerController* Controller = Cast<ASATORI_PlayerController>(Character->GetController());
-	if (Controller)
-	{
-		Character->DisableInput(Controller);
-	}
-
-	DirectionDash = Direction;
-
-	if (!Character->GetVelocity().IsNearlyZero())
+	if (!Character->GetVelocity().IsNearlyZero(20.0f))
 	{
 		FVector Velocity = Character->GetVelocity();
 		FRotator Rotation = Character->GetActorRotation();
 		DirectionDash = Rotation.UnrotateVector(Velocity);
 		DirectionDash.Normalize();
+	}
+	else
+	{
+		Super::EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true);
+		return;
+	}
+
+	bDashing = false;
+	bBraking = false;
+	SpeedBraking = 0;
+
+	ASATORI_PlayerController* Controller = Cast<ASATORI_PlayerController>(Character->GetController());
+	if (Controller)
+	{
+		Character->DisableInput(Controller);
 	}
 
 	float DotProduct = FVector::DotProduct(Direction, DirectionDash);
@@ -122,17 +126,12 @@ void USATORI_DashAbility::EndAbility(
 	bool bReplicateEndAbility,
 	bool bWasCancelled)
 {
-	Character = Cast<ASATORI_CharacterBase>(GetAvatarActorFromActorInfo());
-	if(Character)
-	{
-		CapsuleComponent->SetCollisionObjectType(PlayerChannel);
-		CapsuleComponent->SetGenerateOverlapEvents(true);
+	CapsuleComponent->SetGenerateOverlapEvents(true);
 
-		ASATORI_PlayerController* Controller = Cast<ASATORI_PlayerController>(Character->GetController());
-		if (Controller)
-		{
-			Character->EnableInput(Controller);
-		}
+	ASATORI_PlayerController* Controller = Cast<ASATORI_PlayerController>(Character->GetController());
+	if (Controller)
+	{
+		Character->EnableInput(Controller);
 	}
 	Super::EndAbility(Handle, ActorInfo, ActivationInfo, bReplicateEndAbility, bWasCancelled);
 }
@@ -151,23 +150,54 @@ void USATORI_DashAbility::EventReceived(FGameplayTag EventTag, FGameplayEventDat
 {
 	if (EventTag == TagEndAbility)
 	{
-		EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, false);
-		return;
+		bDashing = false;
+	}
+
+	if (EventTag == TagStartAbility)
+	{
+		CapsuleComponent->SetGenerateOverlapEvents(false);
+		bDashing = true;
+
+		FTimerHandle TimerHandle;
+		GetWorld()->GetTimerManager().SetTimer(TimerHandle, this, &USATORI_DashAbility::EndDash, TimeToFinish, false);
+	}
+
+}
+
+void USATORI_DashAbility::EndDash()
+{
+	bBraking = true;
+
+	if (USkeletalMeshComponent* Mesh = Character->GetMesh())
+	{
+		if (UAnimInstance* AnimInstance = Mesh->GetAnimInstance())
+		{
+			AnimInstance->Montage_JumpToSection(FName("EndDash"), AnimInstance->GetCurrentActiveMontage());
+		}
 	}
 }
 
 void USATORI_DashAbility::Tick(float DeltaTime)
 {
-
-	FVector Position = GetAvatarActorFromActorInfo()->GetActorLocation();
-	FVector End = Position + GetAvatarActorFromActorInfo()->GetVelocity() * 0.5f;
-	bool bHitAnything = GetWorld()->LineTraceSingleByChannel(HitResult, Position, End, CollisionChannel, Params);
-	if (bHitAnything) 
+	FVector Position = Character->GetActorLocation();
+	
+	//Movement 
+	if (bDashing)
 	{
-		EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, false);
+		FVector End = Position;
+		End.Z -= 150.0f;
+		bool bHitAnything = GetWorld()->LineTraceSingleByProfile(OutHit, Position, End, FName("BlockOnlyStatic"), CollisionParams);
+		if(bHitAnything)
+			Position.Z = Position.Z + 10.0f;
+		Character->SetActorLocation(Position);
+		Character->AddActorLocalOffset(DirectionDash * DashSpeed * DeltaTime, true);
 	}
 
-	Character->AddActorLocalOffset(DirectionDash * DashSpeed * DeltaTime);
+	if (bBraking)
+	{
+		SpeedBraking += DeltaTime * SpeedBrakingFactor;
+		Character->AddActorLocalOffset(DirectionDash * (DashSpeed/SpeedBraking) * DeltaTime, true);
+	}
 }
 
 bool USATORI_DashAbility::IsTickable() const

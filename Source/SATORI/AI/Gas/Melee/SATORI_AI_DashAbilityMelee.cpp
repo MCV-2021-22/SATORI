@@ -24,7 +24,6 @@ void USATORI_AI_DashAbilityMelee::ActivateAbility(
 	const FGameplayAbilityActivationInfo ActivationInfo,
 	const FGameplayEventData* TriggerEventData)
 {
-	bDashing = false;
 
 	if (!IsValid(AnimMontage))
 	{
@@ -47,6 +46,8 @@ void USATORI_AI_DashAbilityMelee::ActivateAbility(
 		Super::EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true);
 		return;
 	}
+	
+	bDashing = false;
 
 	//Handling of events
 	USATORI_PlayMontageAndWaitEvent* Task = USATORI_PlayMontageAndWaitEvent::PlayMontageAndWaitForEvent(this, NAME_None, AnimMontage, FGameplayTagContainer(), 1.0f, NAME_None, bStopWhenAbilityEnds, 1.0f);
@@ -85,9 +86,18 @@ void USATORI_AI_DashAbilityMelee::EventReceived(FGameplayTag EventTag, FGameplay
 	//Starts Dashing towards DashActor
 	if (EventTag == TagStartDash)
 	{
-		bTargeting = false;
-		bDashing = true;
+		bTargeting = false;		
 		DashActorPosition = DashActor->GetActorLocation();
+	
+		FHitResult HitResult;
+		FCollisionQueryParams Params = FCollisionQueryParams(FName("LineTraceSingle"));
+		Params.AddIgnoredActor(Melee);
+		bool bHit = GetWorld()->LineTraceSingleByChannel(HitResult, Melee->GetActorLocation(), DashActorPosition, ECollisionChannel::ECC_Visibility, Params);
+		if (bHit)
+		{
+			EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true);
+		}
+		bDashing = true;
 	}
 }
 
