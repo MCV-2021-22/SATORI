@@ -49,6 +49,12 @@ public:
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Ability|Tags")
 	FGameplayTag TagEndAbility;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Checkcollision")
+	TEnumAsByte<ECollisionChannel> CollisionChannel;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Checkcollision")
+	TEnumAsByte<ECollisionChannel> PlayerChannel;
+
 protected:
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (UIMin = "1.0"), Category = "Ability|Dash")
@@ -67,6 +73,9 @@ private:
 
 	FVector DirectionDash;
 	FVector Direction = FVector::FVector(1.0f, 0.0f, 0.0f);
+
+	FHitResult HitResult;
+	FCollisionQueryParams Params = FCollisionQueryParams(FName("LineTraceSingle"));
 
 	const bool bStopWhenAbilityEnds = true;
 

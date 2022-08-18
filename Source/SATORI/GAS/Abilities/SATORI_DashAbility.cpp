@@ -5,6 +5,7 @@
 #include "SATORICharacter.h"
 #include "Components/CapsuleComponent.h"
 #include "Character/SATORI_PlayerController.h"
+#include "DrawDebugHelpers.h"
 
 USATORI_DashAbility::USATORI_DashAbility()
 {
@@ -50,6 +51,9 @@ void USATORI_DashAbility::ActivateAbility(
 
 	CapsuleComponent = Character->GetCapsuleComponent();
 	CapsuleComponent->SetGenerateOverlapEvents(false);
+	CapsuleComponent->SetCollisionObjectType(CollisionChannel);
+
+	Params.AddIgnoredActor(GetAvatarActorFromActorInfo());
 
 	ASATORI_PlayerController* Controller = Cast<ASATORI_PlayerController>(Character->GetController());
 	if (Controller)
@@ -121,6 +125,7 @@ void USATORI_DashAbility::EndAbility(
 	Character = Cast<ASATORI_CharacterBase>(GetAvatarActorFromActorInfo());
 	if(Character)
 	{
+		CapsuleComponent->SetCollisionObjectType(PlayerChannel);
 		CapsuleComponent->SetGenerateOverlapEvents(true);
 
 		ASATORI_PlayerController* Controller = Cast<ASATORI_PlayerController>(Character->GetController());
@@ -153,6 +158,15 @@ void USATORI_DashAbility::EventReceived(FGameplayTag EventTag, FGameplayEventDat
 
 void USATORI_DashAbility::Tick(float DeltaTime)
 {
+
+	FVector Position = GetAvatarActorFromActorInfo()->GetActorLocation();
+	FVector End = Position + GetAvatarActorFromActorInfo()->GetVelocity() * 0.5f;
+	bool bHitAnything = GetWorld()->LineTraceSingleByChannel(HitResult, Position, End, CollisionChannel, Params);
+	if (bHitAnything) 
+	{
+		EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, false);
+	}
+
 	Character->AddActorLocalOffset(DirectionDash * DashSpeed * DeltaTime);
 }
 
