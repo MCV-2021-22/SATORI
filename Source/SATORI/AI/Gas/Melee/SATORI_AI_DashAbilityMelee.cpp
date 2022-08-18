@@ -121,6 +121,8 @@ void USATORI_AI_DashAbilityMelee::SpawnActor()
 	DashActor->FinishSpawning(SpawnTransform);
 
 	bTargeting = true;
+
+	TotalDistance = FVector::Dist(DashActor->GetActorLocation(), Melee->GetActorLocation());
 }
 
 void USATORI_AI_DashAbilityMelee::Tick(float DeltaTime)
