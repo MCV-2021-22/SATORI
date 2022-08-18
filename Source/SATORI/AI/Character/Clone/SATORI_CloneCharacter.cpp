@@ -3,10 +3,19 @@
 #include "AI/Character/Clone/SATORI_CloneCharacter.h"
 #include "Components/SkeletalMeshComponent.h"
 #include "Components/CapsuleComponent.h"
+#include "Components/SphereComponent.h"
 #include "FunctionLibrary/SATORI_BlueprintLibrary.h"
 
 ASATORI_CloneCharacter::ASATORI_CloneCharacter() 
 {
+
+	//If collides will lure enemies
+	LuringSphereComponent = CreateDefaultSubobject<USphereComponent>(TEXT("LuringRangeSphere"));
+	LuringSphereComponent->SetCollisionProfileName(FName(TEXT("PlayerAbility")));
+	LuringSphereComponent->SetupAttachment(RootComponent);
+	LuringSphereComponent->SetGenerateOverlapEvents(true);
+	LuringSphereComponent->OnComponentBeginOverlap.AddDynamic(this, &ASATORI_CloneCharacter::OnOverlapCollisionSphereLuring);
+
 	// Weapon Component
 	SwordComponentClone = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("SwordClone"));
 	AttackingCollision = CreateDefaultSubobject<UCapsuleComponent>(TEXT("Sword CollisionClone"));
@@ -24,6 +33,25 @@ ASATORI_CloneCharacter::ASATORI_CloneCharacter()
 	}
 }
 
+//Collision for luring
+void ASATORI_CloneCharacter::OnOverlapCollisionSphereLuring(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	// Clone possible collisions : 
+
+	ASATORI_AICharacter* Character = Cast<ASATORI_AICharacter>(OtherActor);
+
+	if (!Character)
+	{
+		return;
+	}
+
+	if (Character->HasMatchingGameplayTag(EnemyTag) && !Character->HasMatchingGameplayTag(LuredTag))
+	{
+		Character->AddGameplayTag(LuredTag);
+		ArrayLured.AddUnique(OtherActor);
+	}
+}
+
 void ASATORI_CloneCharacter::OnWeaponOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
 	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
@@ -34,13 +62,12 @@ void ASATORI_CloneCharacter::OnWeaponOverlapBegin(UPrimitiveComponent* Overlappe
 		{
 			UAbilitySystemComponent* EnemyAbilitySystem = EnemyCharacter->GetAbilitySystemComponent();
 			float Damage_Values = USATORI_BlueprintLibrary::ApplyGameplayEffectDamage(EnemyCharacter, WeaponDamage, this, DamageEffect);
-			USATORI_BlueprintLibrary::ApplyGameplayEffect(EnemyCharacter, BlockCountGameplayEffect);
 			USATORI_BlueprintLibrary::ApplyGameplayEffect(EnemyCharacter, StunGameplayEffect);
 			if (!bMultipleHit)
 			{
 				AttackingCollision->SetGenerateOverlapEvents(false);
 			}
-			EnemyCharacter->CheckDamage();
+			EnemyCharacter->CheckDamage(WeaponDamage);
 		}
 	}
 }

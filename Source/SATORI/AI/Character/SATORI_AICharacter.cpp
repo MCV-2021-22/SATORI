@@ -23,6 +23,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "SATORIGameMode.h"
 #include "GameFramework\CharacterMovementComponent.h"
+#include "FunctionLibrary/SATORI_BlueprintLibrary.h"
 
 ASATORI_AICharacter::ASATORI_AICharacter()
 {
@@ -221,8 +222,14 @@ void ASATORI_AICharacter::Tick(float DeltaSeconds)
 	Super::Tick(DeltaSeconds);
 }
 
-void ASATORI_AICharacter::CheckDamage()
+void ASATORI_AICharacter::CheckDamage(float Damage)
 {
+	//Bursting activation
+	for (int count = 0; count < Damage / DamageCounter; count++)
+	{
+		USATORI_BlueprintLibrary::ApplyGameplayEffect(this, CountGameplayEffect);
+	}
+
 	//Death
 	if(GetHealth() <= 0.0f)
 	{

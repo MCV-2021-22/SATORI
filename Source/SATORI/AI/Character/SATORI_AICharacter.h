@@ -63,6 +63,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Reward")
 	TSubclassOf<UGameplayEffect> GoldRewardGameplayEffect;
 
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "GameplayEffect")
+		TSubclassOf<UGameplayEffect> CountGameplayEffect;
+
 	//Ray Cast
 	// Check if the player is in front of the enemy and can do the parry
 	UFUNCTION(BlueprintCallable)
@@ -92,7 +95,7 @@ public:
 
 	//Deathchecking
 	UFUNCTION(BlueprintCallable)
-	void CheckDamage();
+	void CheckDamage(float Damage);
 
 	//Range
 	float GetAttackDistance();
@@ -130,6 +133,9 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	float MaxRange = 700.f;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	float DamageCounter = 10.f;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	bool isInFrontPlayer = false;

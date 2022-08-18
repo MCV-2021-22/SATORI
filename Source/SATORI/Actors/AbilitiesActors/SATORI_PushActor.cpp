@@ -162,5 +162,5 @@ void ASATORI_PushActor::StayGrounded(float DeltaTime)
 void ASATORI_PushActor::DamageEnemy(AActor* Actor, ASATORI_AICharacter* Character)
 {
 	USATORI_BlueprintLibrary::ApplyGameplayEffectDamage(Actor, Damage, Actor, DamageGameplayEffect);
-	Character->CheckDamage();
+	Character->CheckDamage(Damage);
 }
