@@ -54,7 +54,7 @@ void ASATORI_Melee::OnWeaponOverlapBegin(UPrimitiveComponent* OverlappedComp, AA
 		{
 			UAbilitySystemComponent* PlayerAbilitySystem = PlayerCharacter->GetAbilitySystemComponent();
 			USATORI_BlueprintLibrary::ApplyGameplayEffectDamage(PlayerCharacter, WeaponDamage, this, DamageEffect);
-			USATORI_BlueprintLibrary::ApplyGameplayEffect(PlayerCharacter, StunGameplayEffect);
+			USATORI_BlueprintLibrary::ApplyGameplayEffect(PlayerCharacter, HitGameplayEffect);
 			OverlappedComp->SetGenerateOverlapEvents(false);
 		}
 	}

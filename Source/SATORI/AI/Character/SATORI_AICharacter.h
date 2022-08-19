@@ -64,7 +64,10 @@ public:
 	TSubclassOf<UGameplayEffect> GoldRewardGameplayEffect;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "GameplayEffect")
-		TSubclassOf<UGameplayEffect> CountGameplayEffect;
+	TSubclassOf<UGameplayEffect> CountGameplayEffect;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "GameplayEffect")
+	TSubclassOf<UGameplayEffect> HitGameplayEffect;
 
 	//Ray Cast
 	// Check if the player is in front of the enemy and can do the parry

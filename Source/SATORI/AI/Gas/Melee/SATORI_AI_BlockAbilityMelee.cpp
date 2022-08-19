@@ -160,6 +160,21 @@ void USATORI_AI_BlockAbilityMelee::Tick(float DeltaTime)
 		BlockDamage();
 	}
 
+	if (Melee->HasMatchingGameplayTag(HitTag) && bBlocking)
+	{
+		FGameplayTagContainer GameplayTagContainer;
+		GameplayTagContainer.AddTag(HitTag);
+		USATORI_BlueprintLibrary::RemoveGameplayEffect(Melee, GameplayTagContainer);
+
+		if (USkeletalMeshComponent* Mesh = Melee->GetMesh())
+		{
+			if (UAnimInstance* AnimInstance = Mesh->GetAnimInstance())
+			{
+				AnimInstance->Montage_JumpToSection(FName("BlockDamage"), AnimInstance->GetCurrentActiveMontage());
+			}
+		}
+	}
+
 	if (!Enemy)
 	{
 		GetTarget();
@@ -198,6 +213,8 @@ void USATORI_AI_BlockAbilityMelee::BlockDamage()
 	FRotator PlayerRotation = PlayerCharacter->GetActorRotation();
 
 	float Direction = Rotation.Yaw - PlayerRotation.Yaw;
+
+	GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, FString::Printf(TEXT("Yaw: %f"), Direction));
 
 	if ((Direction > 100 || Direction < -100))
 	{
