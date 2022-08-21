@@ -101,7 +101,7 @@ void USATORI_ArqueroBackwards::ActivateAbility(const FGameplayAbilitySpecHandle 
 	ASATORI_RangeMovable* Character = Cast<ASATORI_RangeMovable>(GetAvatarActorFromActorInfo());
 	if (Character)
 	{
-		
+		Character->posinicial = Character->GetActorLocation();
 		Character->moveBackwards = true;
 	}
 	TimerDelegate = FTimerDelegate::CreateUObject(this, &USATORI_ArqueroBackwards::OnTimerFinished, CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo);
@@ -128,7 +128,7 @@ void USATORI_ArqueroBackwards::OnTimerFinished(const FGameplayAbilitySpecHandle 
 	
 			//ASATORI_RangeMovable* Character = Cast<ASATORI_RangeMovable>(GetAvatarActorFromActorInfo());
 	Character->moveBackwards = false;
-		
+	Character->firstmoveBackwards = true;
 	
 
 	GetWorld()->GetTimerManager().ClearTimer(TimerHandle);
