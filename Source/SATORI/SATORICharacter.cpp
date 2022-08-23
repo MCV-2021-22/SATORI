@@ -169,13 +169,14 @@ void ASATORICharacter::ApplyDefaultAbilities()
 	}
 
 	// Granting a GameplayAbility to an ASC adds it to the ASC's list of ActivatableAbilities allowing it to activate the GameplayAbility
-	for (FSATORIGameplayAbilityInfo Ability : PlayerGameplayAbilityComponent->DefaultAbilities->Abilities)
+	for (TSubclassOf<USATORI_GameplayAbility>& StartupAbility : PlayerGameplayAbilityComponent->SATORIAbilities)
 	{
 		// GameplayAbilitySpec exists on the ASC after a GameplayAbility is granted and defines the activatable GameplayAbility
-		GrantAbilityToPlayer(FGameplayAbilitySpec(Ability.SATORIAbility, 1, static_cast<uint32>(Ability.AbilityKeys), this));
+		GrantAbilityToPlayer(FGameplayAbilitySpec(StartupAbility, 1, static_cast<int32>(StartupAbility.GetDefaultObject()->AbilityInputID), 
+			this));
 
 		// Adding Remove Abilities, use for death, need to remove all abilities
-		RemovedgameplayAbilities.Add(Ability.SATORIAbility.Get());
+		RemovedgameplayAbilities.Add(StartupAbility.Get());
 	}
 }
 
