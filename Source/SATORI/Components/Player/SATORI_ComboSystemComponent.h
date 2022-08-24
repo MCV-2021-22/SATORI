@@ -9,6 +9,13 @@
 class USphereComponent;
 class USkeletalMeshComponent;
 
+USTRUCT(BlueprintType)
+struct FSATORI_AbilitiesIconsDatas
+{
+	GENERATED_BODY()
+
+};
+
 // UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
 UCLASS(BlueprintType)
 class SATORI_API USATORI_ComboSystemComponent : public UActorComponent
