@@ -27,7 +27,7 @@ struct FSATORIGameplayAbilityInfo
 /*
 * Data Asset register all player Abilities and we can activating in SATORICharacter Class
 */
-UCLASS()
+UCLASS(BlueprintType)
 class SATORI_API USATORI_AbilityDataAsset : public UDataAsset
 {
 	GENERATED_BODY()
