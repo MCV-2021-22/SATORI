@@ -13,6 +13,8 @@ USATORI_ComboSystemComponent::USATORI_ComboSystemComponent()
 	//isHeavyAttack = true;
 	// Weapon Component
 	bWantsInitializeComponent = true;
+
+	ComboType = SATORIComboType::NONE;
 }
 
 void USATORI_ComboSystemComponent::InitializeComponent()
@@ -91,4 +93,9 @@ bool USATORI_ComboSystemComponent::CanComboAttack()
 		return true;
 
 	return false;
+}
+
+void USATORI_ComboSystemComponent::SetComboType(SATORIComboType Type)
+{
+	ComboType = Type;
 }

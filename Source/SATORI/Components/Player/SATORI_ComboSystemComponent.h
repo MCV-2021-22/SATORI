@@ -9,11 +9,14 @@
 class USphereComponent;
 class USkeletalMeshComponent;
 
-USTRUCT(BlueprintType)
-struct FSATORI_AbilitiesIconsDatas
+UENUM(BlueprintType)
+enum class SATORIComboType : uint8
 {
-	GENERATED_BODY()
-
+	NONE UMETA(DisplayName = "NONE"),
+	LightCombo_1 UMETA(DisplayName = "LightCombo 1"),
+	LightCombo_2 UMETA(DisplayName = "LightCombo 2"),
+	LightCombo_3 UMETA(DisplayName = "LightCombo 3"),
+	HeavyCombo_1 UMETA(DisplayName = "HeavyCombo 1")
 };
 
 // UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
@@ -48,6 +51,9 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon")
 	USphereComponent* AttackingCollision;
+
+	UFUNCTION()
+	void SetComboType(SATORIComboType Type);
 public:
 	int lightAttackCounter = 0;
 	int HeavyAttackCounter = 0;
@@ -58,4 +64,7 @@ protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
 	virtual void InitializeComponent() override;
+
+	UPROPERTY()
+	SATORIComboType ComboType;
 };
