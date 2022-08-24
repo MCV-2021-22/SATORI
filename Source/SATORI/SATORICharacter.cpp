@@ -101,6 +101,11 @@ ASATORICharacter::ASATORICharacter()
 	}
 }
 
+void ASATORICharacter::BeginPlay()
+{
+	Super::BeginPlay();
+}
+
 void ASATORICharacter::PossessedBy(AController* NewController)
 {
 	Super::PossessedBy(NewController);
@@ -120,7 +125,7 @@ void ASATORICharacter::PossessedBy(AController* NewController)
 		Tags.Add("PossessedBy.Player");
 
 		InitializePassiveAttributes();
-		ApplyDefaultAbilities();
+		//ApplyDefaultAbilities();
 
 		ManaRecoverGameplayEffect = USATORI_ManaRecoverEffect::StaticClass()->GetDefaultObject<USATORI_GameplayEffect>();
 

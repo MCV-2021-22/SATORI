@@ -36,6 +36,9 @@ public:
 	// For player controlled characters where the ASC lives on the Pawn
 	virtual void PossessedBy(AController* NewController) override;
 
+	// Called when the game starts or when spawned
+	virtual void BeginPlay() override;
+
 	/** Base turn rate, in deg/sec. Other scaling may affect final turn rate. */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	FName WeaponSocketName;

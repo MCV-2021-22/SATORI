@@ -11,6 +11,7 @@ class ASATORI_Portal;
 class USATORI_PortalPassiveDataAsset;
 class USATORI_PortalGrantedAbilityAsset;
 class USATORI_GameInstance;
+class USATORI_AbilityDataAsset;
 
 UCLASS()
 class SATORI_API ASATORI_GameState : public AGameState
@@ -24,6 +25,10 @@ public:
 	virtual void BeginPlay() override;
 
 	virtual void Tick(float DeltaSeconds) override;
+
+	// Default abilities assets
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Abilities")
+	USATORI_AbilityDataAsset* DefaultAbilities;
 
 	// Portal 
 	TArray<ASATORI_Portal*> InstancePortals;
@@ -60,6 +65,9 @@ public:
 	//bool IsEmptyEnemyActors();
 
 private:
+
+	// Apply Abilities
+	void ApplyDefaultPlayerGameplayAbilities();
 
 	//UPROPERTY()
 	//TArray < AActor* > EnemyActors;

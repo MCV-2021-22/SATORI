@@ -7,7 +7,12 @@
 #include "GameplayEffect.h"
 #include "Data/SATORI_PortalPassiveDataAsset.h"
 #include "Data/SATORI_PortalGrantedAbilityAsset.h"
+#include "SATORICharacter.h"
 #include "GameplayFramework/SATORI_GameInstance.h"
+#include "Kismet/GameplayStatics.h"
+#include "SATORI/Data/SATORI_AbilityDataAsset.h"
+#include "AbilitySystemComponent.h"
+#include "SATORI/GAS/SATORI_AbilitySystemComponent.h"
 
 ASATORI_GameState::ASATORI_GameState()
 {
@@ -18,6 +23,10 @@ ASATORI_GameState::ASATORI_GameState()
 // Called when the game starts or when spawned
 void ASATORI_GameState::BeginPlay()
 {
+    // AbilitySystemComponent GiveAbility to player
+    ApplyDefaultPlayerGameplayAbilities();
+
+    // Portal Logics
     TSubclassOf<ASATORI_Portal> classToFind;
     classToFind = ASATORI_Portal::StaticClass();
     TArray<AActor*> FoundPortals;
@@ -160,6 +169,28 @@ void ASATORI_GameState::GeneratedRandomPassiveEffect()
         int RandomNumber = GenerateRandomNumberForPortal();
         FSATORI_DoorPassiveReward EffectToApply = PortalEffectsToApply[RandomNumber];
         InstancePortals[0]->SetCurrentGameplayEffectData(EffectToApply);
+    }
+}
+
+void ASATORI_GameState::ApplyDefaultPlayerGameplayAbilities()
+{
+    if (!DefaultAbilities)
+    {
+        UE_LOG(LogTemp, Error, TEXT("%s() Missing DefaultAbility for %s. Please fill in the character's Blueprint."), *FString(__FUNCTION__), *GetName());
+        return;
+    }
+
+    ASATORICharacter* Character = Cast<ASATORICharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
+    if (Character)
+    {
+        USATORI_AbilitySystemComponent* AbilitySystemComponent = Cast<USATORI_AbilitySystemComponent>(Character->GetAbilitySystemComponent());
+        if (AbilitySystemComponent)
+        {
+            for (FSATORIGameplayAbilityInfo Ability : DefaultAbilities->Abilities)
+            {
+                AbilitySystemComponent->GiveAbility(FGameplayAbilitySpec(Ability.SATORIAbility, 1, static_cast<uint32>(Ability.AbilityKeys), Character));
+            }
+        }
     }
 }
 
