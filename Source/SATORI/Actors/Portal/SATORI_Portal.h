@@ -6,6 +6,7 @@
 #include "GameFramework/Actor.h"
 #include "GameplayTags.h"
 #include "SATORICharacter.h"
+#include "Interfaces/SATORI_InteractInterface.h"
 #include "SATORI_Portal.generated.h"
 
 class UGameplayEffect;
@@ -16,6 +17,24 @@ class USATORI_MainUI;
 class USATORI_DoorInteractUI;
 class USATORI_PortalPassiveDataAsset;
 class UBillboardComponent;
+class UWidgetComponent;
+
+USTRUCT(BlueprintType)
+struct FSATORI_PortalAbilitiesDatasReward
+{
+	GENERATED_BODY()
+
+	TSubclassOf<USATORI_GameplayAbility> CurrentAbility;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	UTexture2D* AbilitiyIcon;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	FText AbilityName;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	bool isUpgrated;
+};
 
 USTRUCT(BlueprintType)
 struct FSATORI_DoorPassiveReward
@@ -34,7 +53,7 @@ public:
 };
 
 UCLASS()
-class SATORI_API ASATORI_Portal : public AActor
+class SATORI_API ASATORI_Portal : public AActor, public ISATORI_InteractInterface
 {
 	GENERATED_BODY()
 	
@@ -46,6 +65,14 @@ public:
 	virtual void BeginPlay() override;
 
 	virtual void OnConstruction(const FTransform& Transform) override;
+
+	// Virtual function 
+	virtual void Interact(AActor* ActorInteracting) override;
+	virtual void StartCanInteract(AActor* ActorInteracting) override;
+	virtual void StopCanInteract(AActor* ActorInteracting) override;
+
+	UPROPERTY(EditDefaultsOnly)
+	UWidgetComponent* WidgetComponent = nullptr;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
 	UStaticMeshComponent* StaticMeshComponent = nullptr;
@@ -63,8 +90,9 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "GameplayEffect")
 	FSATORI_DoorPassiveReward PortalEffectsToApply;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	FGameplayTag PlayerTag;
+	// Ability adding to player
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "GameplayAbility")
+	FSATORI_PortalAbilitiesDatasReward PortalAbilityToApply;
 
 	// Widgets
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "UI")
@@ -77,17 +105,21 @@ public:
 	USATORI_PortalPassiveDataAsset* PassiveDataAsset;*/
 
 	void SetCurrentGameplayEffectData(FSATORI_DoorPassiveReward CurrentEffecData);
+	void SetCurrentGameplayAbilityData(FSATORI_PortalAbilitiesDatasReward CurrentAbilityData);
 public:
 	UFUNCTION()
 	void OnComponentBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
 			UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
-	void ApplyEffectToPlayer(AActor* PlayerCharacter);
+	void ApplyEffectToPlayer(ASATORICharacter* PlayerCharacter);
+	void GrantedAbilityToPlayer(ASATORICharacter* PlayerCharacter);
 
 	TSubclassOf<UGameplayEffect> GetCurrentGameplayEffect();
 
 private:
 	TSubclassOf<UGameplayEffect> CurrentGameplayEffect;
+
+	TSubclassOf<USATORI_GameplayAbility> CurrentAbility;
 
 public:
 
@@ -98,6 +130,11 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Levels")
 	TArray < FString > LevelNames;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Levels")
+	bool IsFirstLevel = false;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Levels")
+	bool IsActiveForTest= false;
 private:
 
 	bool Active = false;

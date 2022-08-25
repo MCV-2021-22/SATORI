@@ -28,26 +28,17 @@ public:
 	UPROPERTY(EditDefaultsOnly, Category = "Missile")
 	USphereComponent* CollisionSphereComponent = nullptr;
 
-	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category = "Missile")
-	UStaticMeshComponent* StaticMeshComponent = nullptr;
-
-	//UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Missile")
-	//UNiagaraComponent* NiagaraComponent;
-
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Missile")
 	UProjectileMovementComponent* ProjectileMovementComponent = nullptr;
 
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Meta = (ExposeOnSpawn = true), Category = "Missile")
+	UPROPERTY(BlueprintReadOnly, Meta = (ExposeOnSpawn = true), Category = "Missile")
 	TSubclassOf<UGameplayEffect> DamageGameplayEffect;
 
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Meta = (ExposeOnSpawn = true), Category = "Missile")
+	UPROPERTY(BlueprintReadOnly, Meta = (ExposeOnSpawn = true), Category = "Missile")
 	float Damage;
 
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Meta = (ExposeOnSpawn = true), Category = "Missile")
-	float Range;
-
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Meta = (ExposeOnSpawn = true), Category = "Missile")
-	float TimeToDestroy;
+	UPROPERTY(BlueprintReadOnly, Meta = (ExposeOnSpawn = true), Category = "Missile")
+	float TimeToFinish;
 
 	UFUNCTION(BlueprintCallable, Category = "Missile")
 	void OnOverlapCollisionSphere(
@@ -62,6 +53,9 @@ public:
 	FGameplayTag  EnemyTag;
 
 protected:
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Missile")
+	float Range;
 	
 	virtual void BeginPlay() override;
 
@@ -69,8 +63,8 @@ private:
 
 	AActor* Target;
 
-	FTimerHandle TimerHandleDestroy;
-
 	void DestroyMyself();
+	void FindTarget();
+	void DamageEnemy(AActor* Actor);
 
 };

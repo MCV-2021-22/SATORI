@@ -5,6 +5,8 @@
 #include "Health/SATORI_HealthWidget.h"
 #include "Mana/SATORI_ManaWidget.h"
 #include "Currency/SATORI_CurrencyWidget.h"
+#include "WorldActor/SATORI_MaksInteractUI.h"
+#include "WorldActor/SATORI_GeneralVendorInteractUI.h"
 #include "Abilities/SATORI_ChangeAbilitiesWidget.h"
 #include "Engine/Texture2D.h"
 
@@ -13,6 +15,16 @@ bool USATORI_MainUI::Initialize()
 	bool Success = Super::Initialize();
 
 	if (!Success) { return false; }
+
+	if (MaskVendorWidget)
+	{
+		MaskVendorWidget->RemoveFromViewport();
+	}
+
+	if (GeneralVendorWidget)
+	{
+		GeneralVendorWidget->RemoveFromViewport();
+	}
 
 	return true;
 }
@@ -45,4 +57,28 @@ void USATORI_MainUI::SetCurrencyText(float currency)
 {
 	uint32 CurrencyInterger = FMath::RoundHalfFromZero(currency);
 	PlayerCurrency->SetCurrencyText(FText::FromString(FString::Printf(TEXT("%i"), CurrencyInterger)));
+}
+
+void USATORI_MainUI::SetMaskVendorVisibility(bool Vendor_Visibility)
+{
+	if (Vendor_Visibility)
+	{
+		MaskVendorWidget->AddToViewport();
+	}
+	else
+	{
+		MaskVendorWidget->RemoveFromViewport();
+	}
+}
+
+void USATORI_MainUI::SetGeneralVendorVisibility(bool Vendor_Visibility)
+{
+	if (Vendor_Visibility)
+	{
+		GeneralVendorWidget->AddToViewport();
+	}
+	else
+	{
+		GeneralVendorWidget->RemoveFromViewport();
+	}
 }

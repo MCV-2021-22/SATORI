@@ -25,8 +25,12 @@
 #include "GAS/Attributes/SATORI_AttributeSet.h"
 #include "GameplayFramework/SATORI_GameInstance.h"
 #include "Character/SATORI_PlayerController.h"
+#include "FunctionLibrary/SATORI_BlueprintLibrary.h"
+#include "GAS/Effects/SATORI_ManaRecoverEffect.h"
+#include "Kismet/KismetMathLibrary.h"
 //Cheat related include
 #include "Kismet/GameplayStatics.h"
+#include "Components/Player/SATORI_InteractComponent.h"
 #include "SATORIGameMode.h"
 
 //////////////////////////////////////////////////////////////////////////
@@ -71,6 +75,7 @@ ASATORICharacter::ASATORICharacter()
 	AbilitySystemComponent->SetIsReplicated(true);
 	PlayerGameplayAbilityComponent = CreateDefaultSubobject<USATORI_GameplayAbilityComponent>(TEXT("SATORI_GameplayAbilityComponent"));
 	TargetSystemComponent = CreateDefaultSubobject<USATORI_TargetSystemComponent>(TEXT("TargetSystemComponent"));
+	InteractComponent = CreateDefaultSubobject<USATORI_InteractComponent>(TEXT("InteractComponent"));
 
 	//Hand Component
 	HandComponent = CreateDefaultSubobject<USceneComponent>(TEXT("Hand"));
@@ -87,7 +92,10 @@ ASATORICharacter::ASATORICharacter()
 		AttackingCollision->SetCapsuleSize(20.f, 60.f, true);
 		AttackingCollision->SetCollisionProfileName("Pawn");
 		AttackingCollision->SetGenerateOverlapEvents(false);
-		AttackingCollision->AttachTo(SwordComponent);
+		AttackingCollision->AttachToComponent(SwordComponent, AttachmentRules);
+
+		AttackingCollision->OnComponentBeginOverlap.AddDynamic(this, &ASATORICharacter::OnWeaponOverlapBegin);
+		AttackingCollision->OnComponentEndOverlap.AddDynamic(this, &ASATORICharacter::OnWeaponOverlapEnd);
 	}
 }
 
@@ -109,9 +117,10 @@ void ASATORICharacter::PossessedBy(AController* NewController)
 
 		Tags.Add("PossessedBy.Player");
 
-
 		InitializePassiveAttributes();
 		ApplyDefaultAbilities();
+
+		ManaRecoverGameplayEffect = USATORI_ManaRecoverEffect::StaticClass()->GetDefaultObject<USATORI_GameplayEffect>();
 
 		ASATORI_PlayerController* SatoriPlayerController = Cast<ASATORI_PlayerController>(GetController());
 		if (SatoriPlayerController)
@@ -124,26 +133,19 @@ void ASATORICharacter::PossessedBy(AController* NewController)
 		SATORIAbilityMaskComponent->GrantedMaskEffects(MaskType);*/
 		// -------------------
 		
-
 		if(GameInstanceRef->PlayerStart)
 		{
 			SetHealth(GetMaxHealth());
 			SetMana(GetMaxMana());
 			GameInstanceRef->PlayerStart = false;
 			StatsComponent->InitializeStatsAttributes(PS);
+			PlayerGameplayAbilityComponent->SetSavedAbilitiesWithGameInstance(GameInstanceRef);
 		}
 		else
 		{
-			//SetHealth(GameInstanceRef->Health);
-			//SetMana(GameInstanceRef->Mana);
-			//SetMaxHealth(GameInstanceRef->MaxHealth);
-			//SetMaxMana(GameInstanceRef->MaxMana);
-			//SetDefense(GameInstanceRef->Defense);
-			//SetAttack(GameInstanceRef->Attack);
-			//SetMoveSpeed(GameInstanceRef->MoveSpeed);
-			//SetGold(GameInstanceRef->Gold);
-
 			StatsComponent->InitializeStatsAttributesByInstance(PS, GameInstanceRef);
+			SATORIAbilityMaskComponent->GrantedMaskEffects(GameInstanceRef->MaskType);
+			PlayerGameplayAbilityComponent->SetSavedAbilitiesWithGameInstance(GameInstanceRef);
 		}
 
 		// Set Health to Max Health Value
@@ -154,47 +156,6 @@ void ASATORICharacter::PossessedBy(AController* NewController)
 		AddGameplayTag(FGameplayTag::RequestGameplayTag("PossessedBy.Player"));
 		//AddGameplayTag(FGameplayTag::RequestGameplayTag("PossessedBy.AI"));
 	}
-}
-
-void ASATORICharacter::OnRep_PlayerState()
-{
-	Super::OnRep_PlayerState();
-
-	ASATORI_PlayerState* PS = GetPlayerState<ASATORI_PlayerState>();
-	if (PS)
-	{
-		AbilitySystemComponent = Cast<USATORI_AbilitySystemComponent>(PS->GetAbilitySystemComponent());
-
-		AbilitySystemComponent->InitAbilityActorInfo(PS, this);
-
-		AttributeSetBase = PS->GetSatoriAttributeSet();
-
-		AbilitySystemComponent->AddLooseGameplayTag(FGameplayTag::RequestGameplayTag("PossessedBy.Player"));
-
-		Tags.Add("PossessedBy.Player");
-
-
-		InitializePassiveAttributes();
-		ApplyDefaultAbilities();
-
-		// Test Mask Effect
-		/*MaskType = SATORIMaskType::Aka;
-		SATORIAbilityMaskComponent->GrantedMaskEffects(MaskType);*/
-		// -------------------
-
-		// Set Health to Max Health Value
-		SetHealth(GetMaxHealth());
-
-		ASATORI_PlayerController* SatoriPlayerController = Cast<ASATORI_PlayerController>(GetController());
-		if (SatoriPlayerController)
-		{
-			SatoriPlayerController->CreateMainHUD();
-		}
-
-		StatsComponent->InitializeStatsAttributes(PS);
-	}
-
-	AddGameplayTag(FGameplayTag::RequestGameplayTag("PossessedBy.Player"));
 }
 
 void ASATORICharacter::ApplyDefaultAbilities()
@@ -290,6 +251,119 @@ bool ASATORICharacter::DoRayCast()
 	return false;
 }
 
+bool ASATORICharacter::IsEnemyInFrontOfAngle()
+{
+	const FVector StartPosition = GetActorLocation();
+	const FRotator StartRotation = GetActorRotation();
+	const FVector EndPosition = StartPosition + (StartRotation.Vector() * VisibleAttackLength);
+
+	UWorld* World = GetWorld();
+	FHitResult HitResult;
+	FCollisionQueryParams Params = FCollisionQueryParams(FName("LineTraceSingle"));
+	Params.AddIgnoredActor(RootComponent->GetOwner());
+
+	FVector delta = EndPosition - StartPosition;
+	TArray<TWeakObjectPtr<AActor>> NewActors;
+
+	bool bHit = false;
+
+	// Check enemy is in front
+	if (IsEnemyInFront(StartPosition, EndPosition, HitResult))
+	{
+		NewActors.Add(HitResult.Actor);
+		UE_LOG(LogTemp, Warning, TEXT("Enemigo in front !!! "));
+		bHit = true;
+	}
+	// Check enemy is in front of the angle
+	else
+	{
+		bHit = IsEnemyInFront(StartPosition, EndPosition, HitResult, AttackRange);
+		if (bHit)
+		{
+			NewActors.Add(HitResult.Actor);
+			UE_LOG(LogTemp, Warning, TEXT("Enemigo in front of the angle!!! "));
+		}
+	}
+
+	TWeakObjectPtr<AActor> HitActor = FindNearestEnemy(NewActors);
+
+	TWeakObjectPtr<ASATORI_AICharacter> AICharacter = Cast<ASATORI_AICharacter>(HitActor);
+	if (AICharacter.IsValid())
+	{
+		FVector EnemyPosition = AICharacter->GetActorLocation();
+		FRotator EnemyRotation = AICharacter->GetActorRotation();
+		FRotator FindEnemyRotator = UKismetMathLibrary::FindLookAtRotation(StartPosition, EnemyPosition);
+		FRotator NewFaceEnemyRotator = FRotator(0.0f, FindEnemyRotator.Yaw, 0.0f);
+		FRotator RInterpRotator = FMath::RInterpTo(StartRotation, NewFaceEnemyRotator, World->GetTimeSeconds(), 0.1f);
+		this->SetActorRotation(RInterpRotator);
+	}
+
+	return bHit;
+}
+
+bool ASATORICharacter::IsEnemyInFront(const FVector StartPosition, const FVector EndPosition, FHitResult& LocalHitResult, int RotationSize)
+{
+	bool newHit = false;
+
+	UWorld* World = GetWorld();
+	FHitResult HitResult;
+	FCollisionQueryParams Params = FCollisionQueryParams(FName("LineTraceSingle"));
+	Params.AddIgnoredActor(RootComponent->GetOwner());
+
+	FVector delta = EndPosition - StartPosition;
+
+	for (int i = -RotationSize; i <= RotationSize; i++)
+	{
+		FVector Axis = FVector::ZAxisVector;
+		float rad = FMath::DegreesToRadians(i * VisibleAttackAngle);
+		FQuat quaternion = FQuat(Axis, rad);
+		FRotator rotator = FRotator(quaternion);
+		FVector newDelta = rotator.RotateVector(delta);
+
+		FVector newEndPos = newDelta + StartPosition;
+
+		newHit = GetWorld()->LineTraceSingleByChannel(
+			HitResult,
+			StartPosition,
+			newEndPos,
+			ECollisionChannel::ECC_Pawn,
+			Params
+		);
+
+		::DrawDebugLine(World, StartPosition, newEndPos, newHit ? FColor::Green : FColor::Red, false, 1.0f);
+
+		if (newHit)
+		{
+			LocalHitResult = HitResult;
+			break;
+		}
+	}
+
+	return newHit;
+}
+
+TWeakObjectPtr<AActor> ASATORICharacter::FindNearestEnemy(TArray<TWeakObjectPtr<AActor>> ActorsHit)
+{
+	if (ActorsHit.Num() == 0)
+	{
+		return nullptr;
+	}
+
+	float ClosestDistance = VisibleAttackLength;
+	TWeakObjectPtr<AActor> Target = nullptr;
+	for (TWeakObjectPtr<AActor> Actor : ActorsHit)
+	{
+		const float Distance = this->GetDistanceTo(Actor.Get());
+		if (Distance < ClosestDistance)
+		{
+			ClosestDistance = Distance;
+			Target = Actor;
+		}
+	}
+
+	return Target;
+}
+
 void ASATORICharacter::GrantAbilityToPlayer(FGameplayAbilitySpec Ability)
 {
 	if (!AbilitySystemComponent.IsValid())
@@ -334,10 +408,22 @@ void ASATORICharacter::CharacterDeath()
 	// Only runs on Server
 	RemoveCharacterAbilities();
 
+	// Reset portal ability rewards
+	USATORI_GameInstance* GameInstanceRef = Cast<USATORI_GameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
+	if (GameInstanceRef)
+	{
+		GameInstanceRef->ResetPortalRewardAbilities();
+	}
+
+	// Reset current player reward abilities with the portal to zero
+	this->PlayerGameplayAbilityComponent->ResetCurrentPlayerAbilities();
+
+	// Set Collision
 	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	GetCharacterMovement()->GravityScale = 0;
 	GetCharacterMovement()->Velocity = FVector(0);
 
+	// Remove all gameplay effects
 	if (AbilitySystemComponent.IsValid())
 	{
 		AbilitySystemComponent->CancelAllAbilities();
@@ -349,15 +435,18 @@ void ASATORICharacter::CharacterDeath()
 		AbilitySystemComponent->AddLooseGameplayTag(DeadTag);
 	}
 
+	// Playe Death montage
 	if (DeathMontage)
 	{
 		ASATORI_PlayerController* SatoriController = Cast<ASATORI_PlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
 		if (SatoriController)
 		{
+			// Disable all player inputs
 			DisableInput(SatoriController);
 			SatoriController->SetShowMouseCursor(true);
 			ShowDeathWidget();
 		}
+		// Play montages
 		PlayAnimMontage(DeathMontage);
 	}
 }
@@ -390,6 +479,57 @@ void ASATORICharacter::RemoveCharacterAbilities()
 	}
 }
 
+void ASATORICharacter::SetCharacterMask(SATORIMaskType GrantedMaskType)
+{
+	if (GrantedMaskType != SATORIMaskType::NONE)
+	{
+		MaskType = GrantedMaskType;
+		SATORIAbilityMaskComponent->GrantedMaskEffects(MaskType);
+	}
+}
+
+void ASATORICharacter::RemoveMaskGameplayEffect()
+{
+	AbilitySystemComponent->RemoveActiveGameplayEffect(SATORIAbilityMaskComponent->GetCurrentActiveGEHandle());
+
+	//AbilitySystemComponent->RemoveActiveGameplayEffectBySourceEffect(SATORIAbilityMaskComponent->ChooseMaskEffectoToApply(MaskType),
+	//	AbilitySystemComponent.Get());
+}
+
+void ASATORICharacter::OnWeaponOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
+	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	if (OtherActor && (OtherActor != this))
+	{
+		ASATORI_AICharacter* EnemyCharacter = Cast<ASATORI_AICharacter>(OtherActor);
+		if (EnemyCharacter)
+		{
+			UAbilitySystemComponent* EnemyAbilitySystem = EnemyCharacter->GetAbilitySystemComponent();
+			float Damage_Values = USATORI_BlueprintLibrary::ApplyGameplayEffectDamage(EnemyCharacter, WeaponDamage, this, DamageEffect);
+			USATORI_BlueprintLibrary::ApplyGameplayEffect(EnemyCharacter, BlockCountGameplayEffect);
+			USATORI_BlueprintLibrary::ApplyGameplayEffect(EnemyCharacter, StunGameplayEffect);
+			AbilitySystemComponent->ApplyGameplayEffectToSelf(ManaRecoverGameplayEffect, 1.0f, AbilitySystemComponent->MakeEffectContext());
+			if (!bMultipleHit)
+			{
+				AttackingCollision->SetGenerateOverlapEvents(false);
+			}
+			EnemyCharacter->CheckDamage();
+			/*AnimactionPlayRater = 0.5f;
+			UGameplayStatics::SetGlobalTimeDilation(GetWorld(), AnimactionPlayRater);*/
+		}
+	}
+}
+
+void ASATORICharacter::OnWeaponOverlapEnd(class UPrimitiveComponent* OverlappedComp,
+	class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
+{
+	//if (OtherActor && (OtherActor != this))
+	//{
+	//	AnimactionPlayRater = 1.0f;
+	//	UGameplayStatics::SetGlobalTimeDilation(GetWorld(), AnimactionPlayRater);
+	//}
+}
+
 //////////////////////////////////////////////////////////////////////////
 // Input
 
@@ -414,6 +554,9 @@ void ASATORICharacter::SetupPlayerInputComponent(class UInputComponent* PlayerIn
 	// handle touch devices
 	PlayerInputComponent->BindTouch(IE_Pressed, this, &ASATORICharacter::TouchStarted);
 	PlayerInputComponent->BindTouch(IE_Released, this, &ASATORICharacter::TouchStopped);
+
+	// Interact Action
+	PlayerInputComponent->BindAction("Interact", IE_Pressed, this, &ASATORICharacter::OnInteract);
 
 	AbilitySystemComponent->BindAbilityActivationToInputComponent(InputComponent, FGameplayAbilityInputBinds(FString("ConfirmTarget"),
 		FString("CancelTarget"), FString("ESATORIAbilityInputID"), static_cast<int32>(ESATORIAbilityInputID::Type::Confirm), static_cast<int32>(ESATORIAbilityInputID::Type::Cancel)));
@@ -480,6 +623,11 @@ void ASATORICharacter::MoveRight(float Value)
 		}
 	}
 	
+}
+
+void ASATORICharacter::OnInteract()
+{
+	InteractComponent->TryToInteract();
 }
 
 void ASATORICharacter::SetComboJumpSection(USATORI_ANS_JumpSection* JumpSection)
@@ -588,6 +736,8 @@ void ASATORICharacter::RemoveAllAbilities()
 	PlayerGameplayAbilityComponent->PlayerGameplayAbility.Empty();
 	PlayerGameplayAbilityComponent->PlayerAbilitiesNames.Empty();
 	PlayerGameplayAbilityComponent->CurrentAbilityValue = 0;
+	PlayerGameplayAbilityComponent->PrevAbilityValue = 0;
+	PlayerGameplayAbilityComponent->NextAbilityValue = 0;
 }
 
 void ASATORICharacter::GetAbility(FName AbilityName)

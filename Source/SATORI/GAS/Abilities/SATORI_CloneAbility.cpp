@@ -16,17 +16,26 @@ void USATORI_CloneAbility::ActivateAbility(
 	const FGameplayAbilityActivationInfo ActivationInfo,
 	const FGameplayEventData* TriggerEventData)
 {
-	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
 
 	if (!IsValid(AnimMontage))
 	{
 		UE_LOG(LogTemp, Warning, TEXT("[%s] USATORI_CloneAbility: Cannot get Animation Montage ... "), *GetName());
+		Super::EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true);
 		return;
 	}
 
-	if (!TagSpawnAbility.IsValid() || !TagEndAbility.IsValid())
+	if (!TagSpawnAbility.IsValid())
 	{
 		UE_LOG(LogTemp, Display, TEXT("[%s] USATORI_CloneAbility: Tag is not valid ... "), *GetName());
+		Super::EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true);
+		return;
+	}
+
+	if (!CommitAbility(Handle, ActorInfo, ActivationInfo))
+	{
+		UE_LOG(LogTemp, Display, TEXT("[%s] USATORI_CloneAbility: Failed commit ability ... "), *GetName());
+		Super::EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true);
+		return;
 	}
 
 	//Handling of events
@@ -47,32 +56,32 @@ void USATORI_CloneAbility::OnCancelled(FGameplayTag EventTag, FGameplayEventData
 
 void USATORI_CloneAbility::OnCompleted(FGameplayTag EventTag, FGameplayEventData EventData)
 {
+	FTimerHandle TimerHandleEndAbility;
+	GetWorld()->GetTimerManager().SetTimer(TimerHandleEndAbility, this, &USATORI_CloneAbility::FinishWaitingForEnd, TimeToEndAbility, false);
+}
+
+void USATORI_CloneAbility::FinishWaitingForEnd()
+{
 	Super::EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, false);
 }
 
 void USATORI_CloneAbility::EventReceived(FGameplayTag EventTag, FGameplayEventData EventData)
 {
-
-	if (EventTag == TagEndAbility)
-	{
-		Super::EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, false);
-		return;
-	}
-
 	if (EventTag == TagSpawnAbility)
 	{
-
 		ASATORICharacter* Character = Cast<ASATORICharacter>(GetAvatarActorFromActorInfo());
 		if (!Character)
 		{
 			UE_LOG(LogTemp, Display, TEXT("[%s] USATORI_CloneAbility: Cannot Cast ASATORICharacter ... "), *GetName());
-			EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true);
+			Super::EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true);
 		}
 
 		//No need to aim it
 		FTransform SpawnTransform = Character->HandComponent->GetComponentTransform();
 		FRotator Rotation = Character->GetActorRotation();
+
 		SpawnTransform.SetRotation(Rotation.Quaternion());
+		SpawnTransform.SetTranslation(SpawnTransform.GetLocation() + Character->GetActorForwardVector() * 50);
 
 		//Clone creation
 		ASATORI_CloneCharacter* Clone = GetWorld()->SpawnActorDeferred<ASATORI_CloneCharacter>(CloneCharacter, SpawnTransform, GetOwningActorFromActorInfo(),

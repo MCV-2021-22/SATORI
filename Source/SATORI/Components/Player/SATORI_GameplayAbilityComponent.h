@@ -11,6 +11,7 @@ class USATORI_ChooseAbilitiesDatas;
 class USATORI_AbilityDataAsset;
 class USATORI_ChangeAbilitiesWidget;
 class UDataTable;
+class USATORI_GameInstance;
 
 USTRUCT(BlueprintType)
 struct FSATORI_AbilitiesDatas
@@ -26,7 +27,7 @@ struct FSATORI_AbilitiesDatas
 	FText AbilityName;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	bool isActive = false;
+	bool isUpgrated = false;
 };
 
 USTRUCT(BlueprintType)
@@ -62,9 +63,6 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "ChooseAbilities")
 	USATORI_ChooseAbilitiesDatas* ChoosesAbilities;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Abilities")
-	UDataTable* AbilitiesIconDatas;
-
 	// ----------------- // ----------------------------------------
 	TMap<FName, FSATORI_AbilitiesDatas> PlayerGameplayAbility;
 
@@ -74,16 +72,21 @@ public:
 
 	TArray<FName> PlayerAbilitiesNamesDissabled;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	UTexture2D* EmptyAbilitiyIcon;
+
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	int CurrentAbilityValue = 0;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
-	int nextAbilityValue = 1;
+	int NextAbilityValue = 1;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	int PrevAbilityValue;
 	// Getters
 	TSubclassOf<USATORI_GameplayAbility> GetCurrentAbility();
+	TArray<FSATORI_AbilitiesDatas> GetNormalAbilities() { return NormalAbilities; }
+	TArray<FSATORI_AbilitiesDatas> GetUpgratedAbilities() { return UpgratedAbilities; }
 
 	UPROPERTY(BlueprintAssignable)
 	FSATORIChangeAbilityIcon AbilityIconChange;
@@ -93,6 +96,7 @@ public:
 	
 	void NotifyAbilityChanged();
 	
+	void ResetCurrentPlayerAbilities();
 public:
 	UFUNCTION(BlueprintCallable)
 	bool TryChangeAbility();
@@ -102,6 +106,7 @@ public:
 
 	TSubclassOf<USATORI_GameplayAbility> GetCurrentSatoriAbility();
 
+	void SetSavedAbilitiesWithGameInstance(USATORI_GameInstance* GameInstance);
 protected:
 	
 	virtual void BeginPlay() override;
@@ -111,9 +116,14 @@ private:
 	FName AbilityName;
 	TSubclassOf<USATORI_GameplayAbility> CurrentGameplayAbility;
 
+	// Abilities
+	TArray<FSATORI_AbilitiesDatas> NormalAbilities;
+	TArray<FSATORI_AbilitiesDatas> UpgratedAbilities;
+
 public:
 
-	void AddEnabledAbility();
+	void AddNormalAbilities(FSATORI_AbilitiesDatas AbilityData);
+	void AddUpgratedAbilities(FSATORI_AbilitiesDatas AbilityData);
 
 	void RemoveEnabledAbility();
 

@@ -8,14 +8,16 @@
 ASATORI_CloneCharacter::ASATORI_CloneCharacter() 
 {
 
-	LuringSphereComponent = CreateDefaultSubobject<USphereComponent>(TEXT("CollisionSphere"));
-	LuringSphereComponent->SetCollisionProfileName(FName(TEXT("PlayerAbility")));
-	LuringSphereComponent->SetupAttachment(RootComponent);
-	LuringSphereComponent->SetGenerateOverlapEvents(true);
-	LuringSphereComponent->OnComponentBeginOverlap.AddDynamic(this, &ASATORI_CloneCharacter::OnOverlapLuringSphere);
+	//RootComponent = CreateDefaultSubobject<USceneComponent>(TEXT("RootComponent"));
+
+	//LuringSphereComponent = CreateDefaultSubobject<USphereComponent>(TEXT("CollisionSphere"));
+	//LuringSphereComponent->SetCollisionProfileName(FName(TEXT("PlayerAbility")));
+	//LuringSphereComponent->SetupAttachment(RootComponent);
+	//LuringSphereComponent->SetGenerateOverlapEvents(true);
+	//LuringSphereComponent->OnComponentBeginOverlap.AddDynamic(this, &ASATORI_CloneCharacter::OnOverlapLuringSphere);
 
 	//Debug
-	LuringSphereComponent->bHiddenInGame = false;
+	//LuringSphereComponent->bHiddenInGame = false;
 
 	if (SwordComponent)
 	{
@@ -31,22 +33,22 @@ ASATORI_CloneCharacter::ASATORI_CloneCharacter()
 }
 
 //Collision for luring
-void ASATORI_CloneCharacter::OnOverlapLuringSphere(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
-{
-
-	ASATORI_CharacterBase* Character = Cast<ASATORI_CharacterBase>(OtherActor);
-
-	if (!Character)
-	{
-		return;
-	}
-
-	if (Character->HasMatchingGameplayTag(EnemyTag))
-	{
-		Character->AddGameplayTag(TagGrantedWhenLured);
-		ArrayLured.AddUnique(OtherActor);
-	}
-}
+//void ASATORI_CloneCharacter::OnOverlapLuringSphere(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+//{
+//
+//	ASATORI_CharacterBase* Character = Cast<ASATORI_CharacterBase>(OtherActor);
+//
+//	if (!Character)
+//	{
+//		return;
+//	}
+//
+//	if (Character->HasMatchingGameplayTag(EnemyTag))
+//	{
+//		Character->AddGameplayTag(TagGrantedWhenLured);
+//		ArrayLured.AddUnique(OtherActor);
+//	}
+//}
 
 void ASATORI_CloneCharacter::BeginPlay()
 {

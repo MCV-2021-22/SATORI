@@ -81,6 +81,13 @@ void USATORI_StatsComponent::InitializeStatsAttributesByInstance(ASATORI_PlayerS
 			Mana = GameInstance->Mana;
 			SatoriCharacter->SetMana(Mana);
 			SatoriCharacter->SetMaxMana(MaxMana);
+
+			MoveSpeed = GameInstance->MoveSpeed;
+			Defense = GameInstance->Defense;
+			Attack = GameInstance->Attack;
+			SatoriCharacter->SetDefense(Defense);
+			SatoriCharacter->SetAttack(Attack);
+			SatoriCharacter->SetMoveSpeed(MoveSpeed);
 		}
 
 		// Update Health UI 

@@ -9,9 +9,6 @@
 #include "Actors/AbilitiesActors/SATORI_PushActor.h"
 #include "SATORI_PushAbility.generated.h"
 
-/**
- * 
- */
 UCLASS()
 class SATORI_API USATORI_PushAbility : public USATORI_GameplayAbility
 {
@@ -40,31 +37,25 @@ public:
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Ability|Tags")
 	FGameplayTag TagSpawnAbility;
 
-	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Ability|Tags")
-	FGameplayTag TagEndAbility;
-
 protected:
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (UIMin = "0.0"), Category = "Ability|Push")
 	float Damage = 5.0f;
 
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (UIMin = "0.0"), Category = "Ability|Push")
-	float Speed = 6000.0f;
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (UIMin = "0.1"), Category = "Ability|Push")
+	float TimeToEndAbility = 0.1f;
 
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (UIMin = "0.0"), Category = "Ability|Push")
-	float PushForce = 6000.0f;
-
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (UIMin = "0.0"), Category = "Ability|Push")
-	float TimeToDestroy = 0.2f;
-
-	UPROPERTY(BlueprintReadOnly, EditAnywhere, meta = (UIMin = "100.0", UIMax = "10000.0"), Category = "Ability|Push")
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, meta = (UIMin = "100.0", UIMax = "10000.0"), Category = "Ability|Push|Debug")
 	float Range = 3000.0f;
 
-	UPROPERTY(BlueprintReadOnly, EditAnywhere, meta = (UIMin = "5.0", UIMax = "85.0"), Category = "Ability|Push")
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, meta = (UIMin = "5.0", UIMax = "85.0"), Category = "Ability|Push|Debug")
 	float AngleRange = 20.0f;
 
-	UPROPERTY(BlueprintReadOnly, EditAnywhere, meta = (UIMin = "16.0", UIMax = "128.0"), Category = "Ability|Push")
-	float SphereRadius = 32.0f;
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, meta = (UIMin = "16.0", UIMax = "128.0"), Category = "Ability|Push|Debug")
+	float BoxRadius = 32.0f;
+	
+	UFUNCTION()
+	void FinishWaitingForEnd();
 
 	UFUNCTION()
 	void OnCancelled(FGameplayTag EventTag, FGameplayEventData EventData);

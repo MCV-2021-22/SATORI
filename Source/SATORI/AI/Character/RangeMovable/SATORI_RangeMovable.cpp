@@ -24,6 +24,9 @@ ASATORI_RangeMovable::ASATORI_RangeMovable()
 
 	//CharacterMovement->bRunPhysicsWithNoController = 3;
 
+
+	
+
 	
 	//AttackingRangeMovableB->OnComponentBeginOverlap.AddUniqueDynamic(this, &AMCV_Pickup::OnComponentBeginOverlap);
 

@@ -9,10 +9,6 @@
 #include "SATORI/Character/SATORI_CharacterBase.h"
 #include "SATORI_DashAbility.generated.h"
 
-/**
- *
- */
-
 class UCharacterMovementComponent;
 
 UCLASS()
@@ -25,7 +21,16 @@ public:
 	USATORI_DashAbility();
 
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Ability")
-		UAnimMontage* AnimMontage;
+	UAnimMontage* AnimMontageDashForward;
+
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Ability")
+	UAnimMontage* AnimMontageDashBackwards;
+
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Ability")
+	UAnimMontage* AnimMontageDashRight;
+
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Ability")
+	UAnimMontage* AnimMontageDashLeft;
 
 	virtual void ActivateAbility(
 		const FGameplayAbilitySpecHandle Handle,
@@ -41,41 +46,35 @@ public:
 		bool bReplicateEndAbility, 
 		bool bWasCancelled) override;
 
-
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Ability|Tags")
-		FGameplayTag TagSpawnAbility;
-
-	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Ability|Tags")
-		FGameplayTag TagEndAbility;
+	FGameplayTag TagEndAbility;
 
 protected:
 
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (UIMin = "0.0"), Category = "Ability|Dash")
-		float DashDistance = 250.0f;
-
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (UIMin = "0.0"), Category = "Ability|Dash")
-		float DashSpeed = 5.0f;
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (UIMin = "1.0"), Category = "Ability|Dash")
+	float DashSpeed = 1250.0f;
 
 	UFUNCTION()
-		void OnCancelled(FGameplayTag EventTag, FGameplayEventData EventData);
+	void OnCancelled(FGameplayTag EventTag, FGameplayEventData EventData);
 
 	UFUNCTION()
-		void OnCompleted(FGameplayTag EventTag, FGameplayEventData EventData);
+	void OnCompleted(FGameplayTag EventTag, FGameplayEventData EventData);
 
 	UFUNCTION()
-		void EventReceived(FGameplayTag EventTag, FGameplayEventData EventData);
+	void EventReceived(FGameplayTag EventTag, FGameplayEventData EventData);
 
 private:
 
-	FVector Direction = FVector::FVector(1.0f, 0.0f, 0.0f); //It just works
-
-	//Tick implementation
-private:
+	FVector DirectionDash;
+	FVector Direction = FVector::FVector(1.0f, 0.0f, 0.0f);
 
 	const bool bStopWhenAbilityEnds = true;
 
 	ASATORI_CharacterBase* Character;
 
+	UCapsuleComponent* CapsuleComponent;
+
+	//Tick implementation
 public:
 
 	bool bIsCreateOnRunning = false;

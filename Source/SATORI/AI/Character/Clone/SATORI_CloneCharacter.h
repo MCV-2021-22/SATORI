@@ -22,23 +22,23 @@ public:
 
 	ASATORI_CloneCharacter();
 
-	UPROPERTY(EditDefaultsOnly, Category = "Clone")
-	USphereComponent* LuringSphereComponent = nullptr;
+	//UPROPERTY(EditDefaultsOnly, Category = "Clone")
+	//USphereComponent* LuringSphereComponent = nullptr;
 
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Meta = (ExposeOnSpawn = true), Category = "Clone")
-	FGameplayTag TagGrantedWhenLured;
+	//UPROPERTY(BlueprintReadWrite, EditAnywhere, Meta = (ExposeOnSpawn = true), Category = "Clone")
+	//FGameplayTag TagGrantedWhenLured;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	FName WeaponSocketName;
 
-	UFUNCTION(BlueprintCallable, Category = "Clone")
-		void OnOverlapLuringSphere(
-			UPrimitiveComponent* OverlappedComp,
-			AActor* OtherActor,
-			UPrimitiveComponent* OtherComp,
-			int32 OtherBodyIndex,
-			bool bFromSweep,
-			const FHitResult& SweepResult);
+	//UFUNCTION(BlueprintCallable, Category = "Clone")
+	//	void OnOverlapLuringSphere(
+	//		UPrimitiveComponent* OverlappedComp,
+	//		AActor* OtherActor,
+	//		UPrimitiveComponent* OtherComp,
+	//		int32 OtherBodyIndex,
+	//		bool bFromSweep,
+	//		const FHitResult& SweepResult);
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Clone|Tags")
 	FGameplayTag  PlayerTag;

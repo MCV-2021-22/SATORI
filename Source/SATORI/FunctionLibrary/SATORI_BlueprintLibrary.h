@@ -15,7 +15,11 @@ class SATORI_API USATORI_BlueprintLibrary : public UBlueprintFunctionLibrary
 	GENERATED_BODY()
 	
 public:
+
 	UFUNCTION(BlueprintCallable, BlueprintAuthorityOnly)
 		static float ApplyGameplayEffectDamage(AActor* DamagedActor, float BaseDamage, 
 			AActor* DamageCauser, TSubclassOf<class UGameplayEffect> DamageEffect);
+
+	UFUNCTION(BlueprintCallable, BlueprintAuthorityOnly)
+		static void ApplyGameplayEffect(AActor* Actor,TSubclassOf<class UGameplayEffect> GameplayEffectEffect);
 };

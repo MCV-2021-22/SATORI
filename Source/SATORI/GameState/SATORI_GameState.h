@@ -9,7 +9,8 @@
 
 class ASATORI_Portal;
 class USATORI_PortalPassiveDataAsset;
-
+class USATORI_PortalGrantedAbilityAsset;
+class USATORI_GameInstance;
 
 UCLASS()
 class SATORI_API ASATORI_GameState : public AGameState
@@ -30,8 +31,20 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Portal")
 	USATORI_PortalPassiveDataAsset* PassiveDataAsset;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Portal")
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Portal")
+	USATORI_PortalGrantedAbilityAsset* GrantedAbilityDataAsset;
+
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = "Portal")
 	TArray<FSATORI_DoorPassiveReward> PortalEffectsToApply;
+
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = "Portal")
+	TArray<FSATORI_PortalAbilitiesDatasReward> PortalGrantedAbilityToApply;
+
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = "Portal")
+	TArray<FSATORI_PortalAbilitiesDatasReward> PortalGrantedUpgratedAbilityToApply;
+
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = "Portal")
+	TArray<FSATORI_PortalAbilitiesDatasReward> PortalGrantedNormalAbilityToApply;
 
 	//EnemyActors
 
@@ -50,8 +63,15 @@ private:
 
 	//UPROPERTY()
 	//TArray < AActor* > EnemyActors;
-
 	int GenerateRandomNumberForPortal();
 
+	// Fill datas assets
 	void FillPortalGameplayEffectWithData();
+	void FillPortalGrantedAbilityWithData();
+
+	// Generated Random Effect o Granted Random Ability
+	void GeneratedRandomPassiveEffect();
+	void GeneratedRandomPlayerAbility();
+
+	USATORI_GameInstance* GameInstanceRef = nullptr;
 };

@@ -3,6 +3,8 @@
 #include "GAS/Abilities/SATORI_PushAbility.h"
 #include "AbilitySystemComponent.h"
 #include "SATORICharacter.h"
+//Debug
+#include "DrawDebugHelpers.h"
 
 USATORI_PushAbility::USATORI_PushAbility ()
 {
@@ -15,23 +17,33 @@ void USATORI_PushAbility::ActivateAbility(
 	const FGameplayAbilityActivationInfo ActivationInfo,
 	const FGameplayEventData* TriggerEventData)
 {
-		Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
 
 	if (!IsValid(AnimMontage))
 	{
 		UE_LOG(LogTemp, Warning, TEXT("[%s] USATORI_PushAbility: Cannot get Animation Montage ... "), *GetName());
+		Super::EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true);
 		return;
 	}
 
 	if (!IsValid(DamageGameplayEffect))
 	{
 		UE_LOG(LogTemp, Warning, TEXT("[%s] USATORI_PushAbility: Cannot get Damage Gameplay Effect Montage ... "), *GetName());
+		Super::EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true);
 		return;
 	}
 
-	if(!TagSpawnAbility.IsValid() || !TagEndAbility.IsValid())
+	if(!TagSpawnAbility.IsValid())
 	{
 		UE_LOG(LogTemp, Display, TEXT("[%s] USATORI_PushAbility: Tag is not valid ... "), *GetName());
+		Super::EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true);
+		return;
+	}
+
+	if (!CommitAbility(Handle, ActorInfo, ActivationInfo))
+	{
+		UE_LOG(LogTemp, Display, TEXT("[%s] USATORI_PushAbility: Failed commit ability ... "), *GetName());
+		Super::EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true);
+		return;
 	}
 
 	//Handling of events
@@ -42,7 +54,6 @@ void USATORI_PushAbility::ActivateAbility(
 	Task->OnCancelled.AddDynamic(this, &USATORI_PushAbility::OnCancelled);
 	Task->EventReceived.AddDynamic(this, &USATORI_PushAbility::EventReceived);
 	Task->ReadyForActivation();
-
 }
 
 void USATORI_PushAbility::OnCancelled(FGameplayTag EventTag, FGameplayEventData EventData)
@@ -52,26 +63,24 @@ void USATORI_PushAbility::OnCancelled(FGameplayTag EventTag, FGameplayEventData 
 
 void USATORI_PushAbility::OnCompleted(FGameplayTag EventTag, FGameplayEventData EventData)
 {
+	FTimerHandle TimerHandleEndAbility;
+	GetWorld()->GetTimerManager().SetTimer(TimerHandleEndAbility, this, &USATORI_PushAbility::FinishWaitingForEnd, TimeToEndAbility, false);
+}
+
+void USATORI_PushAbility::FinishWaitingForEnd()
+{
 	Super::EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, false);
 }
 
 void USATORI_PushAbility::EventReceived(FGameplayTag EventTag, FGameplayEventData EventData)
 {
-
-	if (EventTag == TagEndAbility)
-	{
-		Super::EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, false);
-		return;
-	}
-
 	if (EventTag == TagSpawnAbility)
 	{
-
 		ASATORICharacter* Character = Cast<ASATORICharacter>(GetAvatarActorFromActorInfo());
 		if (!Character)
 		{
 			UE_LOG(LogTemp, Display, TEXT("[%s] USATORI_PushAbility: Cannot Cast ASATORICharacter ... "), *GetName());
-			EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true);
+			Super::EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true);
 		}
 
 		FTransform SpawnTransform = Character->HandComponent->GetComponentTransform();
@@ -96,27 +105,35 @@ void USATORI_PushAbility::EventReceived(FGameplayTag EventTag, FGameplayEventDat
 		//This calcs are for designing parameters for the ability
 		// 
 		//Calc for number of spheres to spawn to cover all range
-		int NumberOfSpheresToSpawn = (FMath::Tan(FMath::DegreesToRadians(AngleRange))) * Range * 2 / (SphereRadius * 2);
-	
+		int QuantityToSpawn = (FMath::Tan(FMath::DegreesToRadians(AngleRange))) * Range * 2 / (BoxRadius * 2) / 2;
+
 		//Calc for cone spawning
 		FRotator RotationOfSpawn = SpawnTransform.GetRotation().Rotator();
-		RotationOfSpawn.Yaw -= AngleRange / 2;
-		float IncrementAngle = AngleRange / NumberOfSpheresToSpawn;
-
+		float IncrementAngle = AngleRange / QuantityToSpawn;
 		SpawnTransform.SetRotation(RotationOfSpawn.Quaternion());
 
 		//Push Actor creation
-		for (int i = 0; i < NumberOfSpheresToSpawn + 1; i++) 
+		for (int i = 0; i < QuantityToSpawn + 1; i++)
 		{
-			ASATORI_PushActor* Push = GetWorld()->SpawnActorDeferred<ASATORI_PushActor>(PushActor, SpawnTransform, GetOwningActorFromActorInfo(),
+			ASATORI_PushActor* PushR = GetWorld()->SpawnActorDeferred<ASATORI_PushActor>(PushActor, SpawnTransform, GetOwningActorFromActorInfo(),
 				Character, ESpawnActorCollisionHandlingMethod::AlwaysSpawn);
-			Push->DamageGameplayEffect = DamageGameplayEffect;
-			Push->Damage = Damage;
-			Push->Speed = Speed;
-			Push->PushForce = PushForce;
-			Push->TimeToDestroy = TimeToDestroy;
-			Push->FinishSpawning(SpawnTransform);
-			
+			PushR->DamageGameplayEffect = DamageGameplayEffect;
+			PushR->Damage = Damage;
+			PushR->TimeToFinish = TimeToEndAbility;
+			PushR->FinishSpawning(SpawnTransform);
+
+			FTransform SpawnTransformMirror = SpawnTransform;
+			FRotator RotationOfSpawMirror = RotationOfSpawn;
+			RotationOfSpawMirror.Yaw = RotationOfSpawMirror.Yaw - IncrementAngle * i * 2;
+			SpawnTransformMirror.SetRotation(RotationOfSpawMirror.Quaternion());
+
+			ASATORI_PushActor* PushL = GetWorld()->SpawnActorDeferred<ASATORI_PushActor>(PushActor, SpawnTransformMirror, GetOwningActorFromActorInfo(),
+				Character, ESpawnActorCollisionHandlingMethod::AlwaysSpawn);
+			PushL->DamageGameplayEffect = DamageGameplayEffect;
+			PushL->Damage = Damage;
+			PushL->TimeToFinish = TimeToEndAbility;
+			PushL->FinishSpawning(SpawnTransformMirror);
+
 			RotationOfSpawn.Yaw += IncrementAngle;
 			SpawnTransform.SetRotation(RotationOfSpawn.Quaternion());
 		}

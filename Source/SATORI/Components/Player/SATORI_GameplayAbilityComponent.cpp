@@ -11,6 +11,7 @@
 #include "Data/SATORI_DT_AbilitiesTypes.h"
 #include "UI/SATORI_MainUI.h"
 #include "UI/Abilities/SATORI_ChangeAbilitiesWidget.h"
+#include "GameplayFramework/SATORI_GameInstance.h"
 
 // Sets default values for this component's properties
 USATORI_GameplayAbilityComponent::USATORI_GameplayAbilityComponent()
@@ -89,9 +90,9 @@ void USATORI_GameplayAbilityComponent::SetNextAbility()
 	if (CurrentAbilityValue >= PlayerAbilitiesNames.Num())
 		CurrentAbilityValue = 0;
 
-	nextAbilityValue++;
-	if (nextAbilityValue >= PlayerAbilitiesNames.Num())
-		nextAbilityValue = 0;
+	NextAbilityValue++;
+	if (NextAbilityValue >= PlayerAbilitiesNames.Num())
+		NextAbilityValue = 0;
 
 	PrevAbilityValue++;
 	if (PrevAbilityValue >= PlayerAbilitiesNames.Num())
@@ -106,9 +107,9 @@ void USATORI_GameplayAbilityComponent::SetPrevAbility()
 	if (CurrentAbilityValue < 0)
 		CurrentAbilityValue = PlayerAbilitiesNames.Num() - 1;
 
-	nextAbilityValue--;
-	if (nextAbilityValue < 0)
-		nextAbilityValue = PlayerAbilitiesNames.Num() - 1;
+	NextAbilityValue--;
+	if (NextAbilityValue < 0)
+		NextAbilityValue = PlayerAbilitiesNames.Num() - 1;
 
 	PrevAbilityValue--;
 	if (PrevAbilityValue < 0)
@@ -133,9 +134,16 @@ TSubclassOf<USATORI_GameplayAbility> USATORI_GameplayAbilityComponent::GetCurren
 }
 
 
-void USATORI_GameplayAbilityComponent::AddEnabledAbility()
+void USATORI_GameplayAbilityComponent::AddNormalAbilities(FSATORI_AbilitiesDatas AbilityData)
 {
+	NormalAbilities.Add(AbilityData);
+	UE_LOG(LogTemp, Display, TEXT(" Player Normal Abilities Numb : [%d] "), NormalAbilities.Num());
+}
 
+void USATORI_GameplayAbilityComponent::AddUpgratedAbilities(FSATORI_AbilitiesDatas AbilityData)
+{
+	UpgratedAbilities.Add(AbilityData);
+	UE_LOG(LogTemp, Display, TEXT(" Player Upgrated Abilities Numb : [%d] "), UpgratedAbilities.Num());
 }
 
 void USATORI_GameplayAbilityComponent::RemoveEnabledAbility()
@@ -152,7 +160,7 @@ void USATORI_GameplayAbilityComponent::NotifyAbilityChanged()
 {
 	const FSATORI_AbilitiesDatas* CurrentAbilityData = PlayerGameplayAbility.Find(PlayerAbilitiesNames[CurrentAbilityValue]);
 
-	const FSATORI_AbilitiesDatas* NextAbilityData = PlayerGameplayAbility.Find(PlayerAbilitiesNames[nextAbilityValue]);
+	const FSATORI_AbilitiesDatas* NextAbilityData = PlayerGameplayAbility.Find(PlayerAbilitiesNames[NextAbilityValue]);
 
 	const FSATORI_AbilitiesDatas* PrevAbilityData = PlayerGameplayAbility.Find(PlayerAbilitiesNames[PrevAbilityValue]);
 
@@ -167,6 +175,18 @@ void USATORI_GameplayAbilityComponent::NotifyAbilityChanged()
 	//AbilityIconChange.Broadcast(*AbilityData);
 
 	AllAbilityIconChange.Broadcast(AbilityIconToChange);
+}
+
+void USATORI_GameplayAbilityComponent::SetSavedAbilitiesWithGameInstance(USATORI_GameInstance* GameInstance)
+{
+	NormalAbilities = GameInstance->NormalAbilities;
+	UpgratedAbilities = GameInstance->UpgratedAbilities;
+}
+
+void USATORI_GameplayAbilityComponent::ResetCurrentPlayerAbilities()
+{
+	NormalAbilities.Empty(); 
+	UpgratedAbilities.Empty(); 
 }
 
 /*if (AbilitiesIconDatas)

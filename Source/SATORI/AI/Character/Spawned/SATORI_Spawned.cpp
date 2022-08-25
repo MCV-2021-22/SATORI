@@ -8,7 +8,7 @@ ASATORI_Spawned::ASATORI_Spawned()
 {
 	PrimaryActorTick.bCanEverTick = true;
 
-	bte = TSoftObjectPtr <UBehaviorTree>(FSoftObjectPath(TEXT("/Game/SATORI/AI/Spawned/BT_Spawned.BT_Spawned")));
+	BehaviorTree = TSoftObjectPtr <UBehaviorTree>(FSoftObjectPath(TEXT("/Game/SATORI/AI/Spawned/BT_Spawned.BT_Spawned")));
 
 	
 }
@@ -30,16 +30,10 @@ float ASATORI_Spawned::GetDistAttack() const
 	return DistAttack;
 }
 
-float ASATORI_Spawned::SpawnedDie()
+void ASATORI_Spawned::SpawnedDie()
 {
-
-	int a = 2;
-
 	if(MySpawn)
 	{
 		MySpawn->AddNumEnemies(-1);
-		return 2.0f;
 	}
-	//
-	return 0.1;
 }

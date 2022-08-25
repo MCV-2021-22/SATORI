@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
+#include "GameplayEffectTypes.h"
 #include "SATORI_AbilityMask.generated.h"
 
 UENUM(BlueprintType)
@@ -30,13 +31,14 @@ public:
 	USATORI_AbilityMask();
 
 	void GrantedMaskEffects(SATORIMaskType MaskType);
+
+	// Helper function to choose which GE to Apply after player choose the mask
+	TSubclassOf<UGameplayEffect> ChooseMaskEffectoToApply(SATORIMaskType MaskType);
+
+	FActiveGameplayEffectHandle GetCurrentActiveGEHandle();
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
-
-private:
-	// Helper function to choose which GE to Apply after player choose the mask
-	TSubclassOf<UGameplayEffect> ChooseMaskEffectoToApply(SATORIMaskType MaskType);
 
 public:	
 	// Mask Passvie GE to apply to player
@@ -49,4 +51,7 @@ public:
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "GameplayEffect")
 	TSubclassOf<UGameplayEffect> MidoriGameplayEffect;
 	//TMap<SATORIMaskType, UGameplayEffect> MaskEffects;
+
+private:
+	FActiveGameplayEffectHandle ActiveGEHandle;
 };

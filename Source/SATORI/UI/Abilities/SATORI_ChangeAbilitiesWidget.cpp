@@ -23,7 +23,7 @@ void USATORI_ChangeAbilitiesWidget::NativeConstruct()
 	ASATORICharacter* Character = Cast<ASATORICharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
 	if (Character)
 	{
-		USATORI_GameplayAbilityComponent* CurrentAbilityComponent = Character->PlayerGameplayAbilityComponent;
+		USATORI_GameplayAbilityComponent* CurrentAbilityComponent = Character->GetPlayerAbilityComponent();
 		if (CurrentAbilityComponent)
 		{
 			CurrentAbilityComponent->AllAbilityIconChange.AddDynamic(this, &USATORI_ChangeAbilitiesWidget::BP_AllOnData);
@@ -36,7 +36,7 @@ void USATORI_ChangeAbilitiesWidget::NativeDestruct()
 	ASATORICharacter* Character = Cast<ASATORICharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
 	if (Character)
 	{
-		USATORI_GameplayAbilityComponent* CurrentAbilityComponent = Character->PlayerGameplayAbilityComponent;
+		USATORI_GameplayAbilityComponent* CurrentAbilityComponent = Character->GetPlayerAbilityComponent();
 		if (CurrentAbilityComponent)
 		{
 			CurrentAbilityComponent->AbilityIconChange.RemoveAll(this); // , & USATORI_ChangeAbilitiesWidget::BP_OnData);

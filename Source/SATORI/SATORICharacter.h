@@ -12,6 +12,7 @@
 #include "SATORICharacter.generated.h"
 
 class USATORI_AbilityDataAsset;
+class USATORI_GameplayEffect;
 class UGameplayEffect;
 class USATORI_AbilitySystemComponent;
 class USATORI_AbilityMask;
@@ -19,6 +20,8 @@ class USATORI_ANS_JumpSection;
 class USATORI_GameplayAbility;
 class USkeletalMeshComponent;
 class UCapsuleComponent;
+class USATORI_InteractComponent;
+class USATORI_GameplayAbilityComponent;
 
 UCLASS(config=Game)
 class ASATORICharacter : public ASATORI_CharacterBase
@@ -26,12 +29,11 @@ class ASATORICharacter : public ASATORI_CharacterBase
 	GENERATED_BODY()
 
 public:
+
 	ASATORICharacter();
 
 	// For player controlled characters where the ASC lives on the Pawn
 	virtual void PossessedBy(AController* NewController) override;
-
-	virtual void OnRep_PlayerState() override;
 
 	/** Base turn rate, in deg/sec. Other scaling may affect final turn rate. */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
@@ -67,6 +69,36 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Weapon")
 	USceneComponent* HandComponent;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Weapon")
+	float WeaponDamage = 40.0f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Weapon")
+	bool bMultipleHit = false;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Gamepaly Effect")
+	TSubclassOf<UGameplayEffect> DamageEffect;
+
+	UPROPERTY()
+	USATORI_GameplayEffect* ManaRecoverGameplayEffect;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Gamepaly Effect")
+	TSubclassOf<UGameplayEffect> BlockCountGameplayEffect;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Gamepaly Effect")
+	TSubclassOf<UGameplayEffect> StunGameplayEffect;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	float AnimactionPlayRater = 1.0f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Attack Setting")
+	float VisibleAttackLength = 200.0f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Attack Setting")
+	float VisibleAttackAngle = 8.0f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Attack Setting")
+	int AttackRange = 5;
 
 	void SetComboJumpSection(USATORI_ANS_JumpSection* JumpSection);
 
@@ -79,15 +111,26 @@ public:
 	bool DoRayCast();
 
 	UFUNCTION(BlueprintCallable)
+	bool IsEnemyInFrontOfAngle();
+
+	UFUNCTION()
+	void SetCharacterMask(SATORIMaskType GrantedMaskType);
+
+	UFUNCTION(BlueprintCallable)
 	bool PlayerActiveAbilityWithTag(FGameplayTag TagName);
 
 	UFUNCTION(BlueprintImplementableEvent)
 	void ShowDeathWidget();
 
+	UFUNCTION()
+	void RemoveMaskGameplayEffect();
+
 	virtual void CharacterDeath() override;
 	
 	virtual void RemoveCharacterAbilities() override;
 
+	// Getters
+	bool GetIsAbilityUpgrated() { return IsAbilityUpgrated; }
 	// Getters for Components
 	FORCEINLINE class USATORI_StatsComponent* GetStatsComponent() const { return StatsComponent; }
 	class USATORI_ComboSystemComponent* GetComboSystemComponent() const { return ComboSystemComponent; }
@@ -96,6 +139,8 @@ public:
 	UFUNCTION(BlueprintCallable)
 	USceneComponent* GetHandComponent() const { return HandComponent; }
 
+	UFUNCTION(BlueprintCallable)
+	USATORI_GameplayAbilityComponent* GetPlayerAbilityComponent() const { return PlayerGameplayAbilityComponent; }
 protected:
 
 	// Initialization for player abilities
@@ -104,6 +149,9 @@ protected:
 	void GrantAbilityToPlayer(FGameplayAbilitySpec Ability);
 	void InitializePassiveAttributes();
 
+	bool IsEnemyInFront(const FVector StartPosition, const FVector EndPosition, FHitResult& LocalHitResult, int RotationSize = 1);
+
+	TWeakObjectPtr<AActor> FindNearestEnemy(TArray<TWeakObjectPtr<AActor>> Actors);
 protected:
 
 	// The core ActorComponent for interfacing with the GameplayAbilities System
@@ -116,9 +164,14 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	class USATORI_ComboSystemComponent* ComboSystemComponent;
 
-public:
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	USATORI_InteractComponent* InteractComponent = nullptr;
+
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
-	class USATORI_GameplayAbilityComponent* PlayerGameplayAbilityComponent;
+	USATORI_GameplayAbilityComponent* PlayerGameplayAbilityComponent;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	bool IsAbilityUpgrated = false;
 protected:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
@@ -163,6 +216,16 @@ protected:
 	/** Handler for when a touch input stops. */
 	void TouchStopped(ETouchIndex::Type FingerIndex, FVector Location);
 
+	void OnInteract();
+
+	// Weapon Overlap
+	UFUNCTION()
+	void OnWeaponOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, 
+		UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+
+	UFUNCTION()
+	void OnWeaponOverlapEnd(class UPrimitiveComponent* OverlappedComp, 
+			class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 //Cheats
 public:
 
