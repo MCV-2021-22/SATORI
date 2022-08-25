@@ -95,45 +95,16 @@ void ASATORI_RangeMovable::Tick(float DeltaTime)
 			// find out which way is forward
 			const FRotator Rotation = Controller->GetControlRotation();
 			const FRotator YawRotation(0, Rotation.Yaw, 0);
-			//FVector posinicial = GetActorLocation();
-
-
-
-
-
-			// get forward vector
+			
 			const FVector Direction = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X);
 
-			bool bCanRequestMove = true;
-			UNavigationSystemV1* NavSys = UNavigationSystemV1::GetCurrent(GetWorld());
-			const FNavAgentProperties& AgentProps = GetNavAgentPropertiesRef();
-			FNavLocation ProjectedLocation;
 
-			/*if (NavSys && !NavSys->ProjectPointToNavigation(GetActorLocation() + Direction * (-Value), ProjectedLocation, AgentProps.GetExtent(), &AgentProps))
-			{
-				//UE_VLOG_LOCATION(this, 30.f, FLinearColor::Red, TEXT("AAIController::MoveToLocation failed to project destination location to navmesh"));
-				bCanRequestMove = false;
-			}*/
-
-			
+		
 			if(canMove)
 			{
 				AddMovementInput(Direction, -Value, false);
 			}
 			
-			
-			//FVector posfinal = GetActorLocation();
-
-			
-
-			//if(IsMoveInputIgnored())
-			/*if (posinicial.Equals(posfinal, 0))
-			{
-
-
-				AddMovementInput(Direction, -Value, true);
-			}*/
-		
 		
 
 	}
@@ -152,26 +123,17 @@ void ASATORI_RangeMovable::Tick(float DeltaTime)
 
 				FVector dest1 = GetActorLocation() + fwd;
 
-				//FVector newForward2 = dest - Sphere2->GetActorLocation();
 				FVector RotateValue2 = fwd.RotateAngleAxis(15.0f, FVector(0, 0, 1));
-				//RotateValue2.Normalize();
 				
-				//Sphere2->setDirection(RotateValue2 * 20);
-
 				FVector dest2 = dest1 - RotateValue2;
-
-				//const FRotator Rotation = Controller->GetControlRotation();
-				//const FRotator YawRotation(0, Rotation.Yaw + 15 , 0);
-
-
-
-
-				// get forward vector
-				//const FVector Direction = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X);
 
 				FVector dest3 = dest2 - GetActorLocation();
 
-				AddMovementInput(dest3, Value);
+				
+				if (canMove)
+				{
+					AddMovementInput(dest3, Value);
+				}
 				
 				break;
 
@@ -196,26 +158,17 @@ void ASATORI_RangeMovable::Tick(float DeltaTime)
 
 				FVector dest1 = GetActorLocation() + fwd;
 
-				//FVector newForward2 = dest - Sphere2->GetActorLocation();
 				FVector RotateValue2 = fwd.RotateAngleAxis(-15.0f, FVector(0, 0, 1));
-				//RotateValue2.Normalize();
-
-				//Sphere2->setDirection(RotateValue2 * 20);
-
+				
 				FVector dest2 = dest1 - RotateValue2;
-
-				//const FRotator Rotation = Controller->GetControlRotation();
-				//const FRotator YawRotation(0, Rotation.Yaw + 15 , 0);
-
-
-
-
-				// get forward vector
-				//const FVector Direction = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X);
 
 				FVector dest3 = dest2 - GetActorLocation();
 
-				AddMovementInput(dest3, Value);
+				if (canMove)
+				{
+					AddMovementInput(dest3, Value);
+				}
+				
 
 				break;
 
