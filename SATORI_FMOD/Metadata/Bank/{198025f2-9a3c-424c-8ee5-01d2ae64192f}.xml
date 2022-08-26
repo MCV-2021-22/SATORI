@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<objects serializationModel="Studio.02.02.00">
+	<object class="Bank" id="{198025f2-9a3c-424c-8ee5-01d2ae64192f}">
+		<property name="name">
+			<value>FX Melee</value>
+		</property>
+		<relationship name="folder">
+			<destination>{96e7af2e-6a57-40bb-b858-9a8443b52ee2}</destination>
+		</relationship>
+	</object>
+</objects>
