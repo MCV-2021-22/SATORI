@@ -8,6 +8,7 @@
 
 class USkeletalMeshComponent;
 class UCapsuleComponent;
+class USphereComponent;
 class UGameplayEffect;
 
 UCLASS()
@@ -18,6 +19,9 @@ class SATORI_API ASATORI_CloneCharacter : public ASATORI_AICharacter
 public:
 
 	ASATORI_CloneCharacter();
+
+	UPROPERTY(EditDefaultsOnly, Category = "Luring")
+	USphereComponent* LuringSphereComponent = nullptr;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Weapon")
 	USkeletalMeshComponent* SwordComponentClone;
@@ -32,10 +36,17 @@ public:
 	TSubclassOf<UGameplayEffect> DamageEffect;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Gamepaly Effect")
-	TSubclassOf<UGameplayEffect> BlockCountGameplayEffect;
-
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Gamepaly Effect")
 	TSubclassOf<UGameplayEffect> StunGameplayEffect;
+
+	//Luring Overlap
+	UFUNCTION(BlueprintCallable, Category = "Decoy")
+	void OnOverlapCollisionSphereLuring(
+		UPrimitiveComponent* OverlappedComp,
+		AActor* OtherActor,
+		UPrimitiveComponent* OtherComp,
+		int32 OtherBodyIndex,
+		bool bFromSweep,
+		const FHitResult& SweepResult);
 
 	// Weapon Overlap
 	UFUNCTION()
@@ -47,8 +58,18 @@ public:
 		bool bFromSweep, 
 		const FHitResult& SweepResult);
 
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Clone|Tags")
+	FGameplayTag LuredTag;
+
+	UFUNCTION(BlueprintCallable)
+	TArray < AActor* >& GetArrayLured() { return ArrayLured; };
+
 protected:
 
 	virtual void BeginPlay() override;
+
+private:
+
+	TArray<AActor*> ArrayLured;
 
 };

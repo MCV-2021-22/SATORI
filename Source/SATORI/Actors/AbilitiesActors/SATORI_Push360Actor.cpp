@@ -108,5 +108,5 @@ void ASATORI_Push360Actor::BeginPlay()
 void ASATORI_Push360Actor::DamageEnemy(AActor* Actor, ASATORI_AICharacter* Character)
 {
 	USATORI_BlueprintLibrary::ApplyGameplayEffectDamage(Actor, Damage, Actor, DamageGameplayEffect);
-	Character->CheckDamage();
+	Character->CheckDamage(Damage);
 }

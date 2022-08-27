@@ -178,7 +178,7 @@ void ASATORI_TornadoActor::DamageEnemy(AActor* Actor)
 {
 	ASATORI_AICharacter* Character = Cast<ASATORI_AICharacter>(Actor);
 	USATORI_BlueprintLibrary::ApplyGameplayEffectDamage(Actor, Damage, Actor, DamageGameplayEffect);
-	Character->CheckDamage();
+	Character->CheckDamage(Damage);
 }
 
 //Position of enemies calculations

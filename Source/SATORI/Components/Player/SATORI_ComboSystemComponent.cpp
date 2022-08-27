@@ -9,12 +9,11 @@
 // Sets default values for this component's properties
 USATORI_ComboSystemComponent::USATORI_ComboSystemComponent()
 {
-	//isLightAttack = true;
-	//isHeavyAttack = true;
 	// Weapon Component
 	bWantsInitializeComponent = true;
 
 	ComboType = SATORIComboType::NONE;
+	CurrentComboState = EComboState::None;
 }
 
 void USATORI_ComboSystemComponent::InitializeComponent()
@@ -72,17 +71,11 @@ void USATORI_ComboSystemComponent::LigthAttack()
 
 void USATORI_ComboSystemComponent::HeavyAttack()
 {
-	/*if (isHeavyAttack)
-	{
-		isLightAttack = false;
-	}*/
-	
+
 }
 
 void USATORI_ComboSystemComponent::ResetAllAttribute()
 {
-	/*isLightAttack = true;
-	isHeavyAttack = true;*/
 	lightAttackCounter = 0;
 	HeavyAttackCounter = 0;
 }
@@ -95,7 +88,14 @@ bool USATORI_ComboSystemComponent::CanComboAttack()
 	return false;
 }
 
+
 void USATORI_ComboSystemComponent::SetComboType(SATORIComboType Type)
 {
 	ComboType = Type;
+}
+
+void USATORI_ComboSystemComponent::SetComboState(EComboState State)
+{
+	CurrentComboState = State;
+
 }

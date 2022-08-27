@@ -84,9 +84,6 @@ public:
 	USATORI_GameplayEffect* ManaRecoverGameplayEffect;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "GameplayEffect")
-	TSubclassOf<UGameplayEffect> BlockCountGameplayEffect;
-
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "GameplayEffect")
 	TSubclassOf<UGameplayEffect> StunGameplayEffect;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
