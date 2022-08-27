@@ -9,6 +9,17 @@
 class USphereComponent;
 class USkeletalMeshComponent;
 
+UENUM()
+enum class EComboState : uint8
+{
+	None UMETA(DisplayName = "NONE"),
+	LightAttack_1 UMETA(DisplayName = "LightAttack 1"),
+	LightAttack_2 UMETA(DisplayName = "LightAttack 2"),
+	LightAttack_3 UMETA(DisplayName = "LightAttack 3"),
+	HeavyAttack UMETA(DisplayName = "HeavyAttack"),
+};
+
+
 // UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
 UCLASS(BlueprintType)
 class SATORI_API USATORI_ComboSystemComponent : public UActorComponent
@@ -36,11 +47,8 @@ public:
 
 	void ResetAllAttribute();
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Weapon")
-	USkeletalMeshComponent* SwordComponent;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon")
-	USphereComponent* AttackingCollision;
+	EComboState GetCurrentComboState() { return CurrentComboState; }
+	void SetComboState(EComboState State);
 public:
 	int lightAttackCounter = 0;
 	int HeavyAttackCounter = 0;
@@ -51,4 +59,6 @@ protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
 	virtual void InitializeComponent() override;
+
+	EComboState CurrentComboState;
 };
