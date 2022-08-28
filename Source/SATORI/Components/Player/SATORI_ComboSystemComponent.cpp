@@ -12,7 +12,6 @@ USATORI_ComboSystemComponent::USATORI_ComboSystemComponent()
 	// Weapon Component
 	bWantsInitializeComponent = true;
 
-	ComboType = SATORIComboType::NONE;
 	CurrentComboState = EComboState::None;
 }
 
@@ -88,14 +87,7 @@ bool USATORI_ComboSystemComponent::CanComboAttack()
 	return false;
 }
 
-
-void USATORI_ComboSystemComponent::SetComboType(SATORIComboType Type)
-{
-	ComboType = Type;
-}
-
 void USATORI_ComboSystemComponent::SetComboState(EComboState State)
 {
 	CurrentComboState = State;
-
 }

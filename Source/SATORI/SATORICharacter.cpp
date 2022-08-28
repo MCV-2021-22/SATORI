@@ -30,6 +30,7 @@
 #include "Kismet/KismetMathLibrary.h"
 #include "AI/Components/Arqueros/SATORI_ArcherProjectile.h"
 #include "Character/SATORI_PlayerCameraShake.h"
+#include "Actors/Dummy/SATORI_DummyActor.h"
 //Cheat related include
 #include "Kismet/GameplayStatics.h"
 #include "Components/Player/SATORI_InteractComponent.h"
@@ -169,23 +170,14 @@ void ASATORICharacter::ApplyDefaultAbilities()
 	}
 
 	// Granting a GameplayAbility to an ASC adds it to the ASC's list of ActivatableAbilities allowing it to activate the GameplayAbility
-	for (TSubclassOf<USATORI_GameplayAbility>& StartupAbility : PlayerGameplayAbilityComponent->SATORIAbilities)
+	for (FSATORIGameplayAbilityInfo Ability : PlayerGameplayAbilityComponent->DefaultAbilities->Abilities)
 	{
 		// GameplayAbilitySpec exists on the ASC after a GameplayAbility is granted and defines the activatable GameplayAbility
-		GrantAbilityToPlayer(FGameplayAbilitySpec(StartupAbility, 1, static_cast<int32>(StartupAbility.GetDefaultObject()->AbilityInputID), 
-			this));
+		GrantAbilityToPlayer(FGameplayAbilitySpec(Ability.SATORIAbility, 1, static_cast<uint32>(Ability.AbilityKeys), this));
 
 		// Adding Remove Abilities, use for death, need to remove all abilities
-		RemovedgameplayAbilities.Add(StartupAbility.Get());
+		RemovedgameplayAbilities.Add(Ability.SATORIAbility.Get());
 	}
-	//for (FSATORIGameplayAbilityInfo Ability : PlayerGameplayAbilityComponent->DefaultAbilities->Abilities)
-	//{
-	//	// GameplayAbilitySpec exists on the ASC after a GameplayAbility is granted and defines the activatable GameplayAbility
-	//	GrantAbilityToPlayer(FGameplayAbilitySpec(Ability.SATORIAbility, 1, static_cast<uint32>(Ability.AbilityKeys), this));
-
-	//	// Adding Remove Abilities, use for death, need to remove all abilities
-	//	RemovedgameplayAbilities.Add(Ability.SATORIAbility.Get());
-	//}
 }
 
 bool ASATORICharacter::DoParryBlock()
@@ -493,8 +485,7 @@ void ASATORICharacter::OnWeaponOverlapBegin(UPrimitiveComponent* OverlappedComp,
 {
 	if (OtherActor && (OtherActor != this))
 	{
-		ASATORI_AICharacter* EnemyCharacter = Cast<ASATORI_AICharacter>(OtherActor);
-		if (EnemyCharacter)
+		if (ASATORI_AICharacter* EnemyCharacter = Cast<ASATORI_AICharacter>(OtherActor))
 		{
 			PlayerSenseOfBlow();
 
@@ -510,6 +501,11 @@ void ASATORICharacter::OnWeaponOverlapBegin(UPrimitiveComponent* OverlappedComp,
 			EnemyCharacter->CheckDamage(WeaponDamage);
 			/*AnimactionPlayRater = 0.5f;
 			UGameplayStatics::SetGlobalTimeDilation(GetWorld(), AnimactionPlayRater);*/
+			EnemyCharacter->CheckImpactReceivedByPlayer(this->ComboSystemComponent->GetCurrentComboState());
+		}	
+		else if(ASATORI_DummyActor* DummyActor = Cast<ASATORI_DummyActor>(OtherActor))
+		{
+			DummyActor->CheckImpactReceivedByPlayer(this->ComboSystemComponent->GetCurrentComboState());
 		}
 	}
 }
@@ -517,11 +513,17 @@ void ASATORICharacter::OnWeaponOverlapBegin(UPrimitiveComponent* OverlappedComp,
 void ASATORICharacter::OnWeaponOverlapEnd(class UPrimitiveComponent* OverlappedComp,
 	class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
 {
-	//if (OtherActor && (OtherActor != this))
-	//{
-	//	AnimactionPlayRater = 1.0f;
-	//	UGameplayStatics::SetGlobalTimeDilation(GetWorld(), AnimactionPlayRater);
-	//}
+	if (OtherActor && (OtherActor != this))
+	{
+		if (ASATORI_AICharacter* EnemyCharacter = Cast<ASATORI_AICharacter>(OtherActor))
+		{
+			EnemyCharacter->CheckImpactReceivedByPlayer(EComboState::None);
+		}
+		else if (ASATORI_DummyActor* DummyActor = Cast<ASATORI_DummyActor>(OtherActor))
+		{
+			DummyActor->CheckImpactReceivedByPlayer(EComboState::None);
+		}
+	}
 }
 
 void ASATORICharacter::PlayerSenseOfBlow(float DilationTime, float WaitTime)

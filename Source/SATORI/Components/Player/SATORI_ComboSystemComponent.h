@@ -9,17 +9,6 @@
 class USphereComponent;
 class USkeletalMeshComponent;
 
-
-UENUM(BlueprintType)
-enum class SATORIComboType : uint8
-{
-	NONE UMETA(DisplayName = "NONE"),
-	LightCombo_1 UMETA(DisplayName = "LightCombo 1"),
-	LightCombo_2 UMETA(DisplayName = "LightCombo 2"),
-	LightCombo_3 UMETA(DisplayName = "LightCombo 3"),
-	HeavyCombo_1 UMETA(DisplayName = "HeavyCombo 1")
-};
-
 UENUM()
 enum class EComboState : uint8
 {
@@ -65,12 +54,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon")
 	USphereComponent* AttackingCollision;
 
-	UFUNCTION()
-	void SetComboType(SATORIComboType Type);
-
+	// Getters and Setter
 	EComboState GetCurrentComboState() { return CurrentComboState; }
 	void SetComboState(EComboState State);
-
 public:
 	int lightAttackCounter = 0;
 	int HeavyAttackCounter = 0;
@@ -81,10 +67,6 @@ protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
 	virtual void InitializeComponent() override;
-
-
-	UPROPERTY()
-	SATORIComboType ComboType;
 
 	EComboState CurrentComboState;
 
