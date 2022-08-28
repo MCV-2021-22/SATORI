@@ -4,7 +4,8 @@
 #include "AI/Gas/Raijin/SATORI_AreasPatron.h"
 
 #include "SATORICharacter.h"
-
+#include "AI/Components/Raijin/SATORI_RaijinRayoMovilSpawns.h"
+#include "Components/CapsuleComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "Widgets/Text/ISlateEditableTextWidget.h"
 
@@ -20,32 +21,32 @@ void USATORI_AreasPatron::ActivateAbility(const FGameplayAbilitySpecHandle Handl
 
 	FVector IA_POS = ActorInfo->AvatarActor->GetActorLocation();    
 
-	TArray< AActor* > enemigos;
-	TArray< AActor* > enemigos2;
+	TArray< AActor* > Spawns;
+	
 
 	FName tag = "PossessedBy.Player";
 
-	UGameplayStatics::GetAllActorsWithTag(GetWorld(), FName("PossessedBy.Player"), enemigos);
+	UGameplayStatics::GetAllActorsWithTag(GetWorld(), FName("Raijin.SpawnMovil"), Spawns);
 
-	UGameplayStatics::GetAllActorsOfClass(GetWorld(), ASATORICharacter::StaticClass(), enemigos2);
-	//UGameplayStatics::GetAllActorsOfClass(GetWorld(), ASATORICharacter::StaticClass(), enemigos);
 
-	int array_dim = enemigos.Num();
-	int array_dim2 = enemigos2.Num();
+	int array_dim = Spawns.Num();
 
-	UE_LOG(LogTemp, Display, TEXT("Number of actors with that tag: %d"), array_dim);
 
-	UE_LOG(LogTemp, Display, TEXT("Number of actors2 with that tag: %d"), array_dim2);
 
-	for (AActor* Actor : enemigos)
+	for(int i =0;i<3;i++)
 	{
-		//Actor->Tags.Add("PossessedBy.Player");
-		if(Cast<ASATORICharacter>(Actor) != nullptr)
-		{
-			ASATORICharacter* Player = Cast<ASATORICharacter>(Actor);
-			bool tiene = Player->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag("PossessedBy.Player"));
 
-			UE_LOG(LogTemp, Display, TEXT("Number of actors with that tag: %d"), tiene);
+		int num = rand() % Spawns.Num();
+		//for (AActor* Actor : Spawns)
+		//{
+
+			//Actor->Tags.Add("PossessedBy.Player");
+		AActor* Actor = Spawns[num];
+		if(Cast<ASATORI_RaijinRayoMovilSpawns>(Actor) != nullptr)
+		{
+			ASATORI_RaijinRayoMovilSpawns* Player = Cast<ASATORI_RaijinRayoMovilSpawns>(Actor);
+			
+
 
 			FVector dest = Player->GetActorLocation();
 
@@ -56,35 +57,28 @@ void USATORI_AreasPatron::ActivateAbility(const FGameplayAbilitySpecHandle Handl
 			FTransform IATransform = ActorInfo->AvatarActor->GetTransform();
 
 
-			ASATORI_ArcherProjectile* Sphere = GetWorld()->SpawnActor<ASATORI_ArcherProjectile>(ProjectileClass,
-				ActorInfo->AvatarActor->GetActorLocation() + ActorInfo->AvatarActor->GetActorForwardVector() * 100,
+			ASATORI_RaijinRayoMovil* Rayo = GetWorld()->SpawnActor<ASATORI_RaijinRayoMovil>(ProjectileClass,
+				Player->CapsuleComponentInicio->GetRelativeLocation(),
 				RotationOfIA);
 
-			if(Sphere)
+			if(Rayo)
 			{
-				FVector newForward = dest - Sphere->GetActorLocation();
+				FVector newForward = Player->CapsuleComponentFinal->GetRelativeLocation() - Rayo->GetActorLocation();
 				newForward.Normalize();
-				Sphere->setDirection(newForward * 20);
+				Rayo->setDirection(newForward );
+				Rayo->CapsuleComponentFinal->SetRelativeLocation(Player->CapsuleComponentFinal->GetRelativeLocation());
+				Spawns.Remove(Actor);
+				//Spawns.RemoveAt(num);
 			}
-			
-			break;
-			
-		/*	ASATORI_ArcherProjectile* Sphere = GetWorld()->SpawnActor<ASATORI_ArcherProjectile>(
-
-				ProjectileClass, 
-				IATransform, 
-				RotationOfIA);*/
-
-
-			UE_LOG(LogTemp, Display, TEXT("Bala creadaa"));
-		}
 		
+		}
+			
 
-		//ASATORI_ArcherProjectile* NewProjectile = World->SpawnActor<ASATORI_ArcherProjectile>(ProjectileClass, Transform, SpawnParams);
+			//ASATORI_ArcherProjectile* NewProjectile = World->SpawnActor<ASATORI_ArcherProjectile>(ProjectileClass, Transform, SpawnParams);
+		//}
 	}
 
-
-	EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true);
+	//EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true);
 }
 
 
