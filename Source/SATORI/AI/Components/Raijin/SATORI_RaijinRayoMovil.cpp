@@ -29,7 +29,7 @@ ASATORI_RaijinRayoMovil::ASATORI_RaijinRayoMovil()
 
 
 	CapsuleComponentFinal = CreateDefaultSubobject<UCapsuleComponent>(TEXT("Final"));
-	CapsuleComponentFinal->InitCapsuleSize(1.0f, 10.0f);
+	CapsuleComponentFinal->InitCapsuleSize(30.0f, 100.0f);
 	CapsuleComponentFinal->SetCollisionProfileName(UCollisionProfile::NoCollision_ProfileName);
 	CapsuleComponentFinal->OnComponentBeginOverlap.AddUniqueDynamic(this, &ASATORI_RaijinRayoMovil::OnComponentBeginOverlapFinal);
 	
@@ -113,11 +113,12 @@ void ASATORI_RaijinRayoMovil::Tick(float DeltaTime)
 	}
 
 	//Velocity
-	FVector NewPos = GetActorLocation() * direction * velocity;
 	
-
-	this->SetActorLocation(NewPos);
-
+	FVector NewPos = GetActorLocation() + direction * velocity;
+	
+	SetActorRelativeLocation(NewPos);
+	//SetActorLocation(NewPos);
+	my_decal->SetActorLocation(NewPos);
 	
 	
 
@@ -207,4 +208,9 @@ void ASATORI_RaijinRayoMovil::OnComponentBeginOverlapFinal(
 
 	
 
+}
+
+void ASATORI_RaijinRayoMovil::destroyDecal()
+{
+	my_decal->Destroy();
 }

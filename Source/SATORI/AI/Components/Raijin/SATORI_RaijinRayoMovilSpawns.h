@@ -4,8 +4,10 @@
 
 #include "GameplayTagAssetInterface.h"
 #include "Components/DecalComponent.h"
+
 #include "SATORI_RaijinRayoMovilSpawns.generated.h"
 
+class ATargetPoint;
 class ASATORICharacter;
 class ADecalActor;
 class UGameplayEffect;
@@ -28,9 +30,19 @@ public:
 	UPROPERTY(EditDefaultsOnly)
 		UCapsuleComponent* CapsuleComponentFinal = nullptr;
 
+	UPROPERTY(EditDefaultsOnly)
+		ATargetPoint* pfinal = nullptr;
 	
 
-	
+
+	UFUNCTION()
+		void OnComponentBeginOverlapFinal(
+			UPrimitiveComponent* OverlappedComponent,
+			AActor* OtherActor,
+			UPrimitiveComponent* OtherComp,
+			int32 OtherBodyIndex,
+			bool bFromSweep,
+			const FHitResult& SweepResult);
 
 
 	virtual void BeginPlay() override;

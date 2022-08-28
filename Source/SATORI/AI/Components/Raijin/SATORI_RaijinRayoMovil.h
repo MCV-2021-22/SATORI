@@ -71,6 +71,7 @@ public:
 			const FHitResult& SweepResult);
 
 
+
 	UFUNCTION()
 		void OnComponentHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
 
@@ -79,6 +80,8 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 	void setDirection(FVector newDirection);
+
+	void destroyDecal();
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Meta = (ExposeOnSpawn = true), Category = "Missile")
 		TSubclassOf<UGameplayEffect> DamageGameplayEffect;

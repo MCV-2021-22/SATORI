@@ -35,43 +35,46 @@ void USATORI_AreasPatron::ActivateAbility(const FGameplayAbilitySpecHandle Handl
 
 	for(int i =0;i<3;i++)
 	{
-
-		int num = rand() % Spawns.Num();
-		//for (AActor* Actor : Spawns)
-		//{
-
-			//Actor->Tags.Add("PossessedBy.Player");
-		AActor* Actor = Spawns[num];
-		if(Cast<ASATORI_RaijinRayoMovilSpawns>(Actor) != nullptr)
+		if(Spawns.Num()>0)
 		{
-			ASATORI_RaijinRayoMovilSpawns* Player = Cast<ASATORI_RaijinRayoMovilSpawns>(Actor);
-			
+			int num = rand() % Spawns.Num();
+			//for (AActor* Actor : Spawns)
+			//{
 
-
-			FVector dest = Player->GetActorLocation();
-
-			FRotator RotationOfIA = ActorInfo->AvatarActor->GetActorRotation();
-			FActorSpawnParameters SpawnParams;
-			SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
-			
-			FTransform IATransform = ActorInfo->AvatarActor->GetTransform();
-
-
-			ASATORI_RaijinRayoMovil* Rayo = GetWorld()->SpawnActor<ASATORI_RaijinRayoMovil>(ProjectileClass,
-				Player->CapsuleComponentInicio->GetRelativeLocation(),
-				RotationOfIA);
-
-			if(Rayo)
+				//Actor->Tags.Add("PossessedBy.Player");
+			AActor* Actor = Spawns[num];
+			if (Cast<ASATORI_RaijinRayoMovilSpawns>(Actor) != nullptr)
 			{
-				FVector newForward = Player->CapsuleComponentFinal->GetRelativeLocation() - Rayo->GetActorLocation();
-				newForward.Normalize();
-				Rayo->setDirection(newForward );
-				Rayo->CapsuleComponentFinal->SetRelativeLocation(Player->CapsuleComponentFinal->GetRelativeLocation());
-				Spawns.Remove(Actor);
-				//Spawns.RemoveAt(num);
+				ASATORI_RaijinRayoMovilSpawns* Player = Cast<ASATORI_RaijinRayoMovilSpawns>(Actor);
+
+
+
+				FVector dest = Player->GetActorLocation();
+
+				FRotator RotationOfIA = ActorInfo->AvatarActor->GetActorRotation();
+				FActorSpawnParameters SpawnParams;
+				SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+
+				FTransform IATransform = ActorInfo->AvatarActor->GetTransform();
+
+
+				ASATORI_RaijinRayoMovil* Rayo = GetWorld()->SpawnActor<ASATORI_RaijinRayoMovil>(ProjectileClass,
+					Player->CapsuleComponentInicio->GetRelativeLocation(),
+					RotationOfIA);
+
+				if (Rayo)
+				{
+					FVector newForward = Player->CapsuleComponentFinal->GetRelativeLocation() - Player->CapsuleComponentInicio->GetRelativeLocation();
+					newForward.Normalize();
+					Rayo->setDirection(newForward);
+					Rayo->CapsuleComponentFinal->SetRelativeLocation(Player->CapsuleComponentFinal->GetRelativeLocation());
+					Spawns.Remove(Actor);
+					//Spawns.RemoveAt(num);
+				}
+
 			}
-		
 		}
+		
 			
 
 			//ASATORI_ArcherProjectile* NewProjectile = World->SpawnActor<ASATORI_ArcherProjectile>(ProjectileClass, Transform, SpawnParams);

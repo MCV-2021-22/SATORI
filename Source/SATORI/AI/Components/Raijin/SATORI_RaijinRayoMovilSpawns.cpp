@@ -8,8 +8,10 @@
 #include "GameFramework/ProjectileMovementComponent.h"
 #include "GameFramework/Actor.h"
 #include "Kismet/GameplayStatics.h"
+#include "Engine/TargetPoint.h"
 #include "Runtime/Engine/Classes/Particles/ParticleSystemComponent.h"
 #include "NiagaraFunctionLibrary.h"
+#include "SATORI_RaijinRayoMovil.h"
 
 ASATORI_RaijinRayoMovilSpawns::ASATORI_RaijinRayoMovilSpawns()
 {
@@ -21,21 +23,27 @@ ASATORI_RaijinRayoMovilSpawns::ASATORI_RaijinRayoMovilSpawns()
 
 	//GetCapsuleComponent()->InitCapsuleSize(42.f, 96.0f);
 	CapsuleComponentInicio = CreateDefaultSubobject<UCapsuleComponent>(TEXT("Capsule"));
-	CapsuleComponentInicio->InitCapsuleSize(1.0f, 1.0f);
+	CapsuleComponentInicio->InitCapsuleSize(30.0f, 10.0f);
 	CapsuleComponentInicio->SetupAttachment(RootComponent);
 	CapsuleComponentInicio->SetCollisionProfileName(UCollisionProfile::NoCollision_ProfileName);
 
-
+	RootComponent = CapsuleComponentInicio;
 	
 
 
 	CapsuleComponentFinal = CreateDefaultSubobject<UCapsuleComponent>(TEXT("Final"));
-	CapsuleComponentFinal->InitCapsuleSize(1.0f, 10.0f);
-	CapsuleComponentFinal->SetupAttachment(RootComponent);
+	CapsuleComponentFinal->InitCapsuleSize(30.0f, 10.0f);
+	CapsuleComponentFinal->SetupAttachment(CapsuleComponentInicio);
 	CapsuleComponentFinal->SetCollisionProfileName(UCollisionProfile::NoCollision_ProfileName);
-	
+	CapsuleComponentFinal->OnComponentBeginOverlap.AddUniqueDynamic(this, &ASATORI_RaijinRayoMovilSpawns::OnComponentBeginOverlapFinal);
 	
 
+
+
+	pfinal = CreateDefaultSubobject<ATargetPoint>(TEXT("Final2"));
+	CapsuleComponentFinal->InitCapsuleSize(30.0f, 10.0f);
+	CapsuleComponentFinal->SetupAttachment(RootComponent);
+	
 	//SphereComponent->SetCollisionProfileName(UCollisionProfile::BlockAllDynamic_ProfileName);
 	//SphereComponent->SetCollisionProfileName(FName("Trigger"));
  	//SphereComponent->OnComponentHit.AddUniqueDynamic(this, &ASATORI_ArcherProjectile::OnComponentHit);
@@ -75,5 +83,29 @@ void ASATORI_RaijinRayoMovilSpawns::BeginPlay()
 
 
 }
+void ASATORI_RaijinRayoMovilSpawns::OnComponentBeginOverlapFinal(
+	UPrimitiveComponent* OverlappedComponent,
+	AActor* OtherActor,
+	UPrimitiveComponent* OtherComp,
+	int32 OtherBodyIndex,
+	bool bFromSweep,
+	const FHitResult& SweepResult)
+{
+	ASATORI_RaijinRayoMovil* Rayo = Cast<ASATORI_RaijinRayoMovil>(OtherActor);
+	if (Rayo && !Rayo->inmune )
+	{
 
+		//float dmg_done = USATORI_BlueprintLibrary::ApplyGameplayEffectDamage(Player, Damage, Player, DamageGameplayEffect);
+		
+		Rayo->destroyDecal();
+		Rayo->Destroy();
+
+		//float dmg_done = USATORI_BlueprintLibrary::ApplyGameplayEffectDamage(OtherActor, Damage, OtherActor, DamageGameplayEffect);
+
+	}
+
+
+
+
+}
 
