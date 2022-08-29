@@ -13,7 +13,7 @@ ASATORI_ArcherProjectile::ASATORI_ArcherProjectile()
 	PrimaryActorTick.bCanEverTick = true;
 
 	SphereComponent = CreateDefaultSubobject<USphereComponent>(TEXT("Sphere"));
-	SphereComponent->SetSphereRadius(5.0f);
+	SphereComponent->SetSphereRadius(radius);
 	//SphereComponent->SetCollisionProfileName(UCollisionProfile::BlockAllDynamic_ProfileName);
 	
 	SphereComponent->OnComponentHit.AddUniqueDynamic(this, &ASATORI_ArcherProjectile::OnComponentHit);
@@ -31,7 +31,7 @@ ASATORI_ArcherProjectile::ASATORI_ArcherProjectile()
 	UGameplayStatics::GetAllActorsWithTag(GetWorld(), FName("PossessedBy.Player"), enemigos);
 
 
-	UE_LOG(LogTemp, Display, TEXT("Bala creada 222 "));
+
 }
 
 void ASATORI_ArcherProjectile::setDirection(FVector newDirection)
@@ -62,7 +62,7 @@ void ASATORI_ArcherProjectile::Tick(float DeltaTime)
 		if(GameInstanceRef->TimeSlow)
 		{
 			FVector position = GetActorLocation();
-			FVector new_pos = position + direction * 0.25;
+			FVector new_pos = position + direction * velocity * 0.25;
 
 			SetActorLocation(new_pos);
 			RootComponent->SetWorldLocation(new_pos);
@@ -73,7 +73,7 @@ void ASATORI_ArcherProjectile::Tick(float DeltaTime)
 		else
 		{
 			FVector position = GetActorLocation();
-			FVector new_pos = position + direction;
+			FVector new_pos = position + direction * velocity;
 
 			SetActorLocation(new_pos);
 			RootComponent->SetWorldLocation(new_pos);
