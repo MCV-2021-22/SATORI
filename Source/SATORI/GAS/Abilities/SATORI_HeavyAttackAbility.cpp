@@ -2,4 +2,94 @@
 
 
 #include "GAS/Abilities/SATORI_HeavyAttackAbility.h"
+#include "SATORI/AbilityTask/SATORI_PlayMontageAndWaitEvent.h"
+#include "GameplayEffect.h"
+#include "Abilities/Tasks/AbilityTask_WaitInputRelease.h"
+#include "Animation/AnimInstance.h"
+#include "SATORICharacter.h"
+#include "Animation/SkeletalMeshActor.h"
+#include "GAS/Tasks/AbilityTask_WaitInputReleaseByTm.h"
 
+USATORI_HeavyAttackAbility::USATORI_HeavyAttackAbility()
+{
+	InstancingPolicy = EGameplayAbilityInstancingPolicy::InstancedPerActor;
+}
+
+void USATORI_HeavyAttackAbility::ActivateAbility(const FGameplayAbilitySpecHandle Handle,
+	const FGameplayAbilityActorInfo* ActorInfo,
+	const FGameplayAbilityActivationInfo ActivationInfo,
+	const FGameplayEventData* TriggerEventData)
+{
+	if (!IsValid(AnimMontage))
+	{
+		UE_LOG(LogTemp, Warning, TEXT("[%s] USATORI_HeavyAttackAbility: Cannot get Animation Montage ... "), *GetName());
+		Super::EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true);
+		return;
+	}
+
+	if (!CommitAbility(Handle, ActorInfo, ActivationInfo))
+	{
+		UE_LOG(LogTemp, Display, TEXT("[%s] USATORI_HeavyAttackAbility: Failed commit ability ... "), *GetName());
+		Super::EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true);
+		return;
+	}
+
+	USATORI_PlayMontageAndWaitEvent* Task = USATORI_PlayMontageAndWaitEvent::PlayMontageAndWaitForEvent(this, NAME_None, AnimMontage, FGameplayTagContainer(), 1.0f, NAME_None, bStopWhenAbilityEnds, 1.0f);
+	Task->OnBlendOut.AddDynamic(this, &USATORI_HeavyAttackAbility::OnCompleted);
+	Task->OnCompleted.AddDynamic(this, &USATORI_HeavyAttackAbility::OnCompleted);
+	Task->OnInterrupted.AddDynamic(this, &USATORI_HeavyAttackAbility::OnCancelled);
+	Task->OnCancelled.AddDynamic(this, &USATORI_HeavyAttackAbility::OnCancelled);
+	Task->EventReceived.AddDynamic(this, &USATORI_HeavyAttackAbility::EventReceived);
+	Task->ReadyForActivation();
+
+	UAbilityTask_WaitInputReleaseByTm* WaitInputReleaseTask = UAbilityTask_WaitInputReleaseByTm::WaitInputReleaseByTime(this, false, MaxHoldTime);
+	WaitInputReleaseTask->UpdateHoldTime();
+	WaitInputReleaseTask->OnRelease.AddDynamic(this, &USATORI_HeavyAttackAbility::OnTimerFinished);
+	WaitInputReleaseTask->ReadyForActivation();
+}
+
+
+void USATORI_HeavyAttackAbility::EndAbility(const FGameplayAbilitySpecHandle Handle,
+	const FGameplayAbilityActorInfo* ActorInfo,
+	const FGameplayAbilityActivationInfo ActivationInfo,
+	bool bReplicateEndAbility,
+	bool bWasCancelled)
+{
+	MaxHoldTime = 0.0f;
+
+	Super::EndAbility(Handle, ActorInfo, ActivationInfo, bReplicateEndAbility, bWasCancelled);
+}
+
+void USATORI_HeavyAttackAbility::OnCancelled(FGameplayTag EventTag, FGameplayEventData EventData)
+{
+	Super::EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, false);
+}
+
+void USATORI_HeavyAttackAbility::OnCompleted(FGameplayTag EventTag, FGameplayEventData EventData)
+{
+	Super::EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, false);
+}
+
+void USATORI_HeavyAttackAbility::EventReceived(FGameplayTag EventTag, FGameplayEventData EventData)
+{
+	
+}
+
+void USATORI_HeavyAttackAbility::OnTimerFinished(float FinishTime)
+{
+	ASATORICharacter* Character = Cast<ASATORICharacter>(GetAvatarActorFromActorInfo());
+	if (Character)
+	{
+		// Attack Multiplier Section
+		float CurrentAttack = Character->WeaponDamage;
+		float LastAttackDamage = (((FinishTime * CurrentAttack) / 100) + AttackMultiplier) * CurrentAttack;
+		Character->WeaponDamage += LastAttackDamage;
+
+		// Anim Jump Section
+		UAnimInstance* AnimInstance = Character->GetMesh()->GetAnimInstance();
+		if (AnimInstance)
+		{
+			AnimInstance->Montage_JumpToSection(FName("AttackEnd"), AnimMontage);
+		}
+	}
+}

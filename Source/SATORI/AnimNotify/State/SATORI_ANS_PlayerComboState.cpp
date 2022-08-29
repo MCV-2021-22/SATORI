@@ -36,6 +36,8 @@ void USATORI_ANS_PlayerComboState::NotifyEnd(USkeletalMeshComponent* MeshComp, U
 	ASATORICharacter* Character = Cast<ASATORICharacter>(MeshComp->GetOwner());
 	if (Character)
 	{
+		Character->WeaponDamage = Character->WeaponSavedDamage;
+
 		USATORI_ComboSystemComponent* ComboComponent = Character->GetComboSystemComponent();
 		if (ComboComponent)
 		{
