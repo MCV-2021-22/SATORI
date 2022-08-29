@@ -182,6 +182,14 @@ void ASATORICharacter::ApplyDefaultAbilities()
 		// Adding Remove Abilities, use for death, need to remove all abilities
 		RemovedgameplayAbilities.Add(Ability.SATORIAbility.Get());
 	}
+	//for (FSATORIGameplayAbilityInfo Ability : PlayerGameplayAbilityComponent->DefaultAbilities->Abilities)
+	//{
+	//	// GameplayAbilitySpec exists on the ASC after a GameplayAbility is granted and defines the activatable GameplayAbility
+	//	GrantAbilityToPlayer(FGameplayAbilitySpec(Ability.SATORIAbility, 1, static_cast<uint32>(Ability.AbilityKeys), this));
+
+	//	// Adding Remove Abilities, use for death, need to remove all abilities
+	//	RemovedgameplayAbilities.Add(Ability.SATORIAbility.Get());
+	//}
 }
 
 bool ASATORICharacter::DoParryBlock()
