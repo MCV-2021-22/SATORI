@@ -2,7 +2,7 @@
 <objects serializationModel="Studio.02.02.00">
 	<object class="Event" id="{e0763358-83d8-4c28-8175-15d90746f184}">
 		<property name="name">
-			<value>Footsteps</value>
+			<value>MONKFootsteps</value>
 		</property>
 		<property name="outputFormat">
 			<value>1</value>
@@ -229,7 +229,7 @@
 	</object>
 	<object class="MultiSound" id="{e94e01b1-00dc-4385-b16e-2f3e6361541b}">
 		<property name="length">
-			<value>0.59999999999999998</value>
+			<value>0.41999999999999998</value>
 		</property>
 		<property name="playlistMode">
 			<value>1</value>
