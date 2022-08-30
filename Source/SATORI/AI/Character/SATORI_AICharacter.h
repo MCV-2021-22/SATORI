@@ -56,6 +56,9 @@ public:
 	// Default attributes for a character for initializing
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Player|GameplayEffect")
 	TArray<TSubclassOf<UGameplayEffect>> PassiveGameplayEffects;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon")
+	UCapsuleComponent* AttackingCollision2;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Stats")
 	USATORI_EnemyStatComponent* EnemyStatComponent;

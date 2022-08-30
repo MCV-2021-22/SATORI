@@ -105,7 +105,7 @@ void UGA_ArqueroDefensivo::OnTimerFinished(const FGameplayAbilitySpecHandle Hand
 				FVector newForward = dest - Sphere->GetActorLocation();
 				newForward.Normalize();
 				Sphere->damage = this->damage;
-				Sphere->setDirection(newForward * 20);
+				Sphere->setDirection(newForward );
 			}
 			break;
 		}

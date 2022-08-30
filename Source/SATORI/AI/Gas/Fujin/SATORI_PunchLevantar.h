@@ -8,10 +8,11 @@
 #include "GameplayTagAssetInterface.h"
 #include "GAS/SATORI_GameplayAbility.h"
 #include "SATORI/AbilityTask/SATORI_PlayMontageandWaitNotify.h"
-#include "AI/Components/Raijin/SATORI_RaijinRayo.h"
+#include "AI/Components/Fujin/SATORI_FujinLevantarCollision.h"
 #include "SATORI_PunchLevantar.generated.h"
 
 
+class ASATORICharacter;
 /**
  * 
  */
@@ -35,10 +36,16 @@ public:
 
 
 	UPROPERTY(BlueprintReadOnly, EditAnywhere)
-		TSubclassOf<ASATORI_RaijinRayo> ProjectileClass;
+		TSubclassOf<ASATORI_FujinLevantarCollision> ProjectileClass;
+
+	
+
+	void checkCollisionPlayer(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo);
 
 protected:
 
 	int iteracion = 0;
 	int max_iteracion = 4;
+
+	ASATORICharacter* Player;
 };

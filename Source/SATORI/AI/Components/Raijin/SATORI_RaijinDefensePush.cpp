@@ -103,6 +103,9 @@ void ASATORI_RaijinDefensePush::PushPlayer(ASATORICharacter* Player)
 		//Player->GetMesh()->AddImpulse(FVector(100000000, 100000000,0));
 
 		Player->GetCharacterMovement()->AddImpulse(FVector(resultante.X, resultante.Y,1000));
+
+		
+
 	}
 
 

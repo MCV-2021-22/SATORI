@@ -30,11 +30,8 @@ ASATORI_FujinCharm::ASATORI_FujinCharm()
 	StaticMeshComponent->SetupAttachment(RootComponent);
 
 
-	TArray< AActor* > enemigos;
-	UGameplayStatics::GetAllActorsWithTag(GetWorld(), FName("PossessedBy.Player"), enemigos);
 
 
-	UE_LOG(LogTemp, Display, TEXT("Bala creada 222 "));
 }
 
 void ASATORI_FujinCharm::setDirection(FVector newDirection)

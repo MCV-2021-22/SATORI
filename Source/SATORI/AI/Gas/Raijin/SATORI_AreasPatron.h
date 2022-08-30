@@ -8,7 +8,7 @@
 #include "GameplayTagAssetInterface.h"
 #include "GAS/SATORI_GameplayAbility.h"
 #include "SATORI/AbilityTask/SATORI_PlayMontageandWaitNotify.h"
-#include "AI/Components/Arqueros/SATORI_ArcherProjectile.h"
+#include "AI/Components/Raijin/SATORI_RaijinRayoMovil.h"
 #include "SATORI_AreasPatron.generated.h"
 
 
@@ -32,7 +32,7 @@ public:
 
 
 	UPROPERTY(BlueprintReadOnly, EditAnywhere)
-		TSubclassOf<ASATORI_ArcherProjectile> ProjectileClass;
+		TSubclassOf<ASATORI_RaijinRayoMovil> ProjectileClass;
 
 
 };

@@ -4,19 +4,21 @@
 
 #include "GameplayTagAssetInterface.h"
 #include "GameplayFramework/SATORI_GameInstance.h"
-#include "SATORI_ArcherProjectile.generated.h"
+#include "SATORI_FujinLevantarCollision.generated.h"
 
+class ASATORICharacter;
+class ASATORI_Fujin;
 class UGameplayEffect;
 class UStaticMeshComponent;
 class USphereComponent;
 
 UCLASS(Blueprintable, Abstract)
-class ASATORI_ArcherProjectile : public AActor
+class ASATORI_FujinLevantarCollision : public AActor
 {
 	GENERATED_BODY()
 
 public:
-	ASATORI_ArcherProjectile();
+	ASATORI_FujinLevantarCollision();
 
 	UPROPERTY(EditDefaultsOnly)
 		USphereComponent* SphereComponent = nullptr;
@@ -24,11 +26,22 @@ public:
 	UPROPERTY(EditDefaultsOnly)
 		UStaticMeshComponent* StaticMeshComponent = nullptr;
 
-	UPROPERTY(BlueprintReadOnly, EditAnywhere)
-		float radius = 5.0f;
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Debug")
+		float TraceDistanceToFloor = 250.0f;
 
-	UPROPERTY(BlueprintReadOnly, EditAnywhere)
-		float velocity = 20.0f;
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Debug")
+		float HeightChange = 1000.0f;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Debug")
+		float MaxHeight = 50.0f;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Debug")
+		float MinHeight = 30.0f;
+
+	FHitResult OutHit;
+	FCollisionQueryParams CollisionParams;
+
+
 	//UPROPERTY(BlueprintReadWrite, EditAnywhere, Meta = (ExposeOnSpawn = true), Category = "Missile")
 	float damage = 10.0f;
 
@@ -46,15 +59,27 @@ public:
 
 	virtual void BeginPlay() override;
 
-	virtual void Tick(float DeltaTime) override;
-
-	void setDirection(FVector newDirection);
+	void InmunityOff();
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Meta = (ExposeOnSpawn = true), Category = "Missile")
 		TSubclassOf<UGameplayEffect> DamageGameplayEffect;
 
-	void DestroySelfByParry();
+	
+
+	FTimerHandle TimerHandle;
+
+
+	void PushPlayer(ASATORICharacter* Player);
+
+	virtual void Tick(float DeltaTime) override;
+
+	UPROPERTY(EditAnywhere)
+		float ImpulseForce;
+
 protected:
+
+	ASATORICharacter* Player = nullptr;
+	
 
 	//UFUNCTION()
 	//void OnComponentHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
@@ -63,11 +88,17 @@ protected:
 
 	FVector direction;
 
-	float inmunity = 1.f;
+	float inmunityTime = 1.f;
+
+	bool inmunity = true;
 
 	float LifeTime = 8.f;
 
 	USATORI_GameInstance* GameInstanceRef;
+
+
+	
+
 };
 
 

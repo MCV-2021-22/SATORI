@@ -75,7 +75,7 @@ void UGA_ArqueroAbanico::EventReceived(FGameplayTag EventTag, FGameplayEventData
 
 					newForward.Normalize();
 					Sphere->damage = this->damage;
-					Sphere->setDirection(newForward * 20);
+					Sphere->setDirection(newForward );
 				}
 
 
@@ -93,7 +93,7 @@ void UGA_ArqueroAbanico::EventReceived(FGameplayTag EventTag, FGameplayEventData
 					RotateValue1.Normalize();
 					Sphere1->damage = this->damage;
 					//Sphere1->setDirection(newForward1 * 50);
-					Sphere1->setDirection(RotateValue1 * 20);
+					Sphere1->setDirection(RotateValue1 );
 				}
 
 
@@ -107,7 +107,7 @@ void UGA_ArqueroAbanico::EventReceived(FGameplayTag EventTag, FGameplayEventData
 					FVector RotateValue2 = newForward2.RotateAngleAxis(-15.0f, FVector(0, 0, 1));
 					RotateValue2.Normalize();
 					Sphere2->damage = this->damage;
-					Sphere2->setDirection(RotateValue2 * 20);
+					Sphere2->setDirection(RotateValue2 );
 
 				}
 				break;

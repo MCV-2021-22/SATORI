@@ -3,34 +3,54 @@
 #include "CoreMinimal.h"
 
 #include "GameplayTagAssetInterface.h"
-#include "GameplayFramework/SATORI_GameInstance.h"
-#include "SATORI_ArcherProjectile.generated.h"
+#include "Components/DecalComponent.h"
+#include "SATORI_RaijinRayoMovil.generated.h"
 
+class ASATORICharacter;
+class ADecalActor;
 class UGameplayEffect;
 class UStaticMeshComponent;
 class USphereComponent;
+class UCapsuleComponent;
+class UNiagaraSystem;
 
 UCLASS(Blueprintable, Abstract)
-class ASATORI_ArcherProjectile : public AActor
+class ASATORI_RaijinRayoMovil : public AActor
 {
 	GENERATED_BODY()
 
 public:
-	ASATORI_ArcherProjectile();
+	ASATORI_RaijinRayoMovil();
 
 	UPROPERTY(EditDefaultsOnly)
 		USphereComponent* SphereComponent = nullptr;
 
 	UPROPERTY(EditDefaultsOnly)
+		UCapsuleComponent* CapsuleComponentFinal = nullptr;
+
+	UPROPERTY(EditDefaultsOnly)
+		UNiagaraSystem* Trueno = nullptr;
+
+	UPROPERTY(EditDefaultsOnly)
+	UCapsuleComponent* CapsuleComponent = nullptr;
+
+	UPROPERTY(EditDefaultsOnly)
 		UStaticMeshComponent* StaticMeshComponent = nullptr;
 
-	UPROPERTY(BlueprintReadOnly, EditAnywhere)
-		float radius = 5.0f;
+	UPROPERTY(BlueprintReadOnly)
+		UDecalComponent* Decal = nullptr;
 
 	UPROPERTY(BlueprintReadOnly, EditAnywhere)
-		float velocity = 20.0f;
-	//UPROPERTY(BlueprintReadWrite, EditAnywhere, Meta = (ExposeOnSpawn = true), Category = "Missile")
-	float damage = 10.0f;
+		UMaterialInterface* MaterialDecal;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	float velocity = 10.0f;
+
+	bool inmune = true;
+	float timeiNMUNE = 1.0F;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Meta = (ExposeOnSpawn = true), Category = "Missile")
+	float Damage = 10;
 
 	UFUNCTION()
 		void OnComponentBeginOverlap(
@@ -42,6 +62,17 @@ public:
 			const FHitResult& SweepResult);
 
 	UFUNCTION()
+		void OnComponentBeginOverlapFinal(
+			UPrimitiveComponent* OverlappedComponent,
+			AActor* OtherActor,
+			UPrimitiveComponent* OtherComp,
+			int32 OtherBodyIndex,
+			bool bFromSweep,
+			const FHitResult& SweepResult);
+
+
+
+	UFUNCTION()
 		void OnComponentHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
 
 	virtual void BeginPlay() override;
@@ -50,11 +81,16 @@ public:
 
 	void setDirection(FVector newDirection);
 
+	void destroyDecal();
+
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Meta = (ExposeOnSpawn = true), Category = "Missile")
 		TSubclassOf<UGameplayEffect> DamageGameplayEffect;
 
-	void DestroySelfByParry();
+
+
 protected:
+
+
 
 	//UFUNCTION()
 	//void OnComponentHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
@@ -67,7 +103,15 @@ protected:
 
 	float LifeTime = 8.f;
 
-	USATORI_GameInstance* GameInstanceRef;
+	ADecalActor* my_decal = nullptr;
+
+
+	float time_to_destroy = 8.0f;
+
+	float decal_size = 300.0f;
+
+	float scale = 1.0f;
+
 };
 
 
