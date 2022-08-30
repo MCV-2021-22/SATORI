@@ -78,6 +78,9 @@ public:
 	float WeaponDamage = 40.0f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Weapon")
+	float WeaponSavedDamage = 40.0f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Weapon")
 	bool bMultipleHit = false;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "GameplayEffect")

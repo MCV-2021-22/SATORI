@@ -30,7 +30,8 @@ ASATORI_AICharacter::ASATORI_AICharacter()
 	PrimaryActorTick.bCanEverTick = true;
 
 	EnemyType = SATORIEnemyType::None;
-	
+	EnemyImpactType = SATORIEnemyImpactType::None;
+
 	AbilitySystemComponent = CreateDefaultSubobject<USATORI_AbilitySystemComponent>(TEXT("AbilitySystemComponent"));
 	AbilitySystemComponent->SetIsReplicated(true);
 
@@ -298,4 +299,27 @@ void ASATORI_AICharacter::RegisterInTargetableArray_Implementation()
 void ASATORI_AICharacter::CharacterDeath()
 {
 	
+}
+
+void ASATORI_AICharacter::CheckImpactReceivedByPlayer(EComboState State)
+{
+	switch (State)
+	{
+	case EComboState::None:
+		EnemyImpactType = SATORIEnemyImpactType::None;
+		break;
+	case EComboState::LightAttack_1:
+		EnemyImpactType = SATORIEnemyImpactType::LightAttack1;
+		break;
+	case EComboState::LightAttack_2:
+		EnemyImpactType = SATORIEnemyImpactType::LightAttack2;
+		break;
+	case EComboState::LightAttack_3:
+		EnemyImpactType = SATORIEnemyImpactType::LightAttack3;
+		break;
+	case EComboState::HeavyAttack:
+		EnemyImpactType = SATORIEnemyImpactType::HeavyAttack;
+		break;
+	default: break;
+	}
 }

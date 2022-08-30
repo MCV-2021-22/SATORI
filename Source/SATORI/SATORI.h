@@ -35,3 +35,26 @@ namespace ESATORIAbilityInputID
 		ChoosePrevAbility	UMETA(DisplayName = "ChoosePrevAbility")
 	};
 }
+
+UENUM(BlueprintType)
+enum class ESATORI_AbilityInputID : uint8
+{
+	// 0 None
+	None			UMETA(DisplayName = "None"),
+	// 1 Confirm
+	Confirm			UMETA(DisplayName = "Confirm"),
+	// 2 Cancel
+	Cancel			UMETA(DisplayName = "Cancel"),
+	// Dash
+	Dash			UMETA(DisplayName = "Dash"),
+	// Attack
+	Attack			UMETA(DisplayName = "Attack"),
+	// HeavyAttack
+	HeavyAttack		UMETA(DisplayName = "HeavyAttack"),
+	// ChooseAbility
+	ChooseAbility	UMETA(DisplayName = "ChooseAbility"),
+	// LaunchAbility
+	LaunchAbility	UMETA(DisplayName = "LaunchAbility"),
+	// ChoosePrevAbility
+	ChoosePrevAbility	UMETA(DisplayName = "ChoosePrevAbility")
+};

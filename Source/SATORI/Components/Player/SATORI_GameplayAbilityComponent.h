@@ -73,6 +73,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Abilities")
 	USATORI_AbilityDataAsset* DefaultAbilities;
 
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Player Abilities")
+	TArray<TSubclassOf<class USATORI_GameplayAbility>> SATORIAbilities;
+
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "ChooseAbilities")
 	USATORI_ChooseAbilitiesDatas* ChoosesAbilities;
 
