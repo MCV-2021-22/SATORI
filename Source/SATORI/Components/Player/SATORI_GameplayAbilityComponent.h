@@ -21,7 +21,7 @@ struct FSATORI_AbilitiesDatas
 	TSubclassOf<USATORI_GameplayAbility> CurrentAbility;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	UTexture2D* AbilitiyIcon;
+	UTexture2D* AbilitiyIcon = nullptr;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	FText AbilityName;
@@ -46,13 +46,13 @@ struct FSATORI_AbilitiesIconsDatas
 	GENERATED_BODY()
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	UTexture2D* FirstAbilitiyIcon;
+	UTexture2D* FirstAbilitiyIcon = nullptr;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	UTexture2D* SecondAbilitiyIcon;
+	UTexture2D* SecondAbilitiyIcon = nullptr;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	UTexture2D* LastAbilitiyIcon;
+	UTexture2D* LastAbilitiyIcon = nullptr;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	FSATORI_AbilitiesBordesChecker AbilitiesBordesChecker;
@@ -71,13 +71,13 @@ public:
 	USATORI_GameplayAbilityComponent();
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Abilities")
-	USATORI_AbilityDataAsset* DefaultAbilities;
+	USATORI_AbilityDataAsset* DefaultAbilities = nullptr;
 
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Player Abilities")
 	TArray<TSubclassOf<class USATORI_GameplayAbility>> SATORIAbilities;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "ChooseAbilities")
-	USATORI_ChooseAbilitiesDatas* ChoosesAbilities;
+	USATORI_ChooseAbilitiesDatas* ChoosesAbilities = nullptr;
 
 	// ----------------- // ----------------------------------------
 	TMap<FName, FSATORI_AbilitiesDatas> PlayerGameplayAbility;
