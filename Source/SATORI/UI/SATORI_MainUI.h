@@ -12,6 +12,7 @@ class USATORI_CurrencyWidget;
 class USATORI_ChangeAbilitiesWidget;
 class USATORI_MaksInteractUI;
 class USATORI_GeneralVendorInteractUI;
+class USATORI_BossHealthBarUI;
 class UTexture2D;
 
 /*
@@ -46,6 +47,10 @@ public:
 	// General Vendor
 	UPROPERTY(meta = (BindWidget))
 	USATORI_GeneralVendorInteractUI* GeneralVendorWidget;
+
+	// Boss UI
+	UPROPERTY(meta = (BindWidget))
+	USATORI_BossHealthBarUI* BossHealthBarUI;
 public:
 	// Health helper functions
 	void SetHealthBarPercentage(float value);
@@ -63,4 +68,7 @@ public:
 
 	// General Vendor function
 	void SetGeneralVendorVisibility(bool Vendor_Visibility);
+
+	// General Vendor function
+	void SetBossUIVisibility(bool BossUI_Visibility);
 };

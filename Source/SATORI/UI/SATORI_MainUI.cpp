@@ -8,6 +8,7 @@
 #include "WorldActor/SATORI_MaksInteractUI.h"
 #include "WorldActor/SATORI_GeneralVendorInteractUI.h"
 #include "Abilities/SATORI_ChangeAbilitiesWidget.h"
+#include "Enemy/SATORI_BossHealthBarUI.h"
 #include "Engine/Texture2D.h"
 
 bool USATORI_MainUI::Initialize()
@@ -25,6 +26,9 @@ bool USATORI_MainUI::Initialize()
 	{
 		GeneralVendorWidget->RemoveFromViewport();
 	}
+
+	BossHealthBarUI->SetVisibility(ESlateVisibility::Hidden);
+	//BossHealthBarUI->RemoveFromViewport();
 
 	return true;
 }
@@ -80,5 +84,17 @@ void USATORI_MainUI::SetGeneralVendorVisibility(bool Vendor_Visibility)
 	else
 	{
 		GeneralVendorWidget->RemoveFromViewport();
+	}
+}
+
+void USATORI_MainUI::SetBossUIVisibility(bool BossUI_Visibility)
+{
+	if (BossUI_Visibility)
+	{
+		BossHealthBarUI->SetVisibility(ESlateVisibility::Visible);
+	}
+	else
+	{
+		BossHealthBarUI->SetVisibility(ESlateVisibility::Hidden);
 	}
 }
