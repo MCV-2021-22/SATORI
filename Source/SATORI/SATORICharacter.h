@@ -132,6 +132,7 @@ public:
 	UFUNCTION(BlueprintImplementableEvent)
 	void ShowDeathWidget();
 
+	// Remove Player Mask Effecr
 	UFUNCTION()
 	void RemoveMaskGameplayEffect();
 

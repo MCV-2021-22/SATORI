@@ -110,7 +110,7 @@ void ASATORICharacter::BeginPlay()
 void ASATORICharacter::PossessedBy(AController* NewController)
 {
 	Super::PossessedBy(NewController);
-	UE_LOG(LogTemp, Warning, TEXT("On Possessed"));
+	//UE_LOG(LogTemp, Warning, TEXT("On Possessed"));
 	USATORI_GameInstance* GameInstanceRef = Cast<USATORI_GameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
 	ASATORI_PlayerState* PS = GetPlayerState<ASATORI_PlayerState>();
 	if (PS)
