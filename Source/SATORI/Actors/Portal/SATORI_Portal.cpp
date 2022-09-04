@@ -251,3 +251,22 @@ void ASATORI_Portal::RemoveGameinstanceAbilities(USATORI_GameInstance* GameInsta
 		GameInstanceRef->RemoveElementonFromNormalAbilities(Id);
 	}
 }
+
+void ASATORI_Portal::ResetCurrentPortalData()
+{
+	// Remove Current reward
+	CurrentGameplayEffect = nullptr;
+	CurrentAbility = nullptr;
+
+	PortalAbilityIconTexture->SetSprite(nullptr);
+	PortalEffectIconTexture->SetSprite(nullptr);
+
+	PortalEffectsToApply.PassiveEffect = nullptr;
+	PortalEffectsToApply.PassiveIcon = nullptr;
+	PortalEffectsToApply.Description = FText::GetEmpty();
+
+	PortalAbilityToApply.CurrentAbility = nullptr;
+	PortalAbilityToApply.AbilitiyIcon = nullptr;
+	PortalAbilityToApply.AbilityName = FText::GetEmpty();
+	PortalAbilityToApply.isUpgrated = false;
+}

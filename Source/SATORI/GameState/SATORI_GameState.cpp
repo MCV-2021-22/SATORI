@@ -27,33 +27,9 @@ void ASATORI_GameState::BeginPlay()
     ApplyDefaultPlayerGameplayAbilities();
 
     // Portal Logics
-    TSubclassOf<ASATORI_Portal> classToFind;
-    classToFind = ASATORI_Portal::StaticClass();
-    TArray<AActor*> FoundPortals;
-    UGameplayStatics::GetAllActorsOfClass(GetWorld(), classToFind, FoundPortals);
+    FindAllScenePortal();
 
-    for (int i = 0; i < FoundPortals.Num(); i++)
-    {
-        ASATORI_Portal* Portal = Cast<ASATORI_Portal>(FoundPortals[i]);
-        if (Portal)
-        {
-            InstancePortals.Add(Portal);
-        }
-    }
-
-    // Fill datas
-    FillPortalGameplayEffectWithData();
-    FillPortalGrantedAbilityWithData();
-
-   /* GeneratedRandomPlayerAbility();
-    GeneratedRandomPassiveEffect();*/
-    GenerateRandomPassiveEffectAndAbilities();
-
-    // Check if it is first level
-    if (InstancePortals.Num() == 1 && InstancePortals[0]->IsFirstLevel)
-    {
-        InstancePortals[0]->ActivatePortal();
-    }
+    GiveRewardAbilitesToPortal();
 }
 
 void ASATORI_GameState::FillPortalGameplayEffectWithData()
@@ -191,6 +167,50 @@ void ASATORI_GameState::ApplyDefaultPlayerGameplayAbilities()
                 AbilitySystemComponent->GiveAbility(FGameplayAbilitySpec(Ability.SATORIAbility, 1, static_cast<uint32>(Ability.AbilityKeys), Character));
             }
         }
+    }
+}
+
+void ASATORI_GameState::ResetAllPortalAbilities()
+{
+    for (int i = 0; i < InstancePortals.Num(); i++)
+    {
+        InstancePortals[i]->ResetCurrentPortalData();
+    }
+
+    GiveRewardAbilitesToPortal();
+}
+
+void ASATORI_GameState::FindAllScenePortal()
+{
+    TSubclassOf<ASATORI_Portal> classToFind;
+    classToFind = ASATORI_Portal::StaticClass();
+    TArray<AActor*> FoundPortals;
+    UGameplayStatics::GetAllActorsOfClass(GetWorld(), classToFind, FoundPortals);
+
+    for (int i = 0; i < FoundPortals.Num(); i++)
+    {
+        ASATORI_Portal* Portal = Cast<ASATORI_Portal>(FoundPortals[i]);
+        if (Portal)
+        {
+            InstancePortals.Add(Portal);
+        }
+    }
+}
+
+void ASATORI_GameState::GiveRewardAbilitesToPortal()
+{
+    // Fill datas
+    FillPortalGameplayEffectWithData();
+    FillPortalGrantedAbilityWithData();
+
+    /* GeneratedRandomPlayerAbility();
+     GeneratedRandomPassiveEffect();*/
+    GenerateRandomPassiveEffectAndAbilities();
+
+    // Check if it is first level
+    if (InstancePortals.Num() == 1 && InstancePortals[0]->IsFirstLevel)
+    {
+        InstancePortals[0]->ActivatePortal();
     }
 }
 
