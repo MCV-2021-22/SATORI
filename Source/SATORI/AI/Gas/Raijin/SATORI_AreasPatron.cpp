@@ -31,6 +31,7 @@ void USATORI_AreasPatron::ActivateAbility(const FGameplayAbilitySpecHandle Handl
 
 	int array_dim = Spawns.Num();
 
+	
 
 
 	for(int i =0;i<3;i++)
@@ -69,6 +70,7 @@ void USATORI_AreasPatron::ActivateAbility(const FGameplayAbilitySpecHandle Handl
 					Rayo->setDirection(newForward);
 					Rayo->CapsuleComponentFinal->SetRelativeLocation(Player->CapsuleComponentFinal->GetRelativeLocation());
 					Spawns.Remove(Actor);
+					Rayos.Add(Actor);
 					//Spawns.RemoveAt(num);
 				}
 
@@ -81,8 +83,37 @@ void USATORI_AreasPatron::ActivateAbility(const FGameplayAbilitySpecHandle Handl
 		//}
 	}
 
+	TimerDelegate = FTimerDelegate::CreateUObject(this, &USATORI_AreasPatron::EndRayos, CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo);
+	GetWorld()->GetTimerManager().SetTimer(TimerHandle, TimerDelegate, 0.3f, true);
 	//EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true);
 }
 
+void USATORI_AreasPatron::EndRayos(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo)
+{
 
+	if(Rayos.Num() == 0)
+	{
+		EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true);
+	}
+	else
+	{
+		for(int j=0;j<Rayos.Num();j++)
+		{
+			AActor* Actor = Rayos[j];
+
+			ASATORI_RaijinRayoMovil* Rayo = Cast<ASATORI_RaijinRayoMovil>(Actor);
+
+			if(Rayo->getDestruido())
+			{
+
+				Rayos.Remove(Actor);
+				Rayo->Destroy();
+
+			}
+
+		}
+
+	}
+
+}
 

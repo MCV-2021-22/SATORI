@@ -199,7 +199,9 @@ void ASATORI_RaijinRayoMovil::OnComponentBeginOverlapFinal(
 		//float dmg_done = USATORI_BlueprintLibrary::ApplyGameplayEffectDamage(Player, Damage, Player, DamageGameplayEffect);
 
 		my_decal->Destroy();
-		Destroy();
+
+		destruido = true;
+		//Destroy();
 
 		//float dmg_done = USATORI_BlueprintLibrary::ApplyGameplayEffectDamage(OtherActor, Damage, OtherActor, DamageGameplayEffect);
 
@@ -213,4 +215,12 @@ void ASATORI_RaijinRayoMovil::OnComponentBeginOverlapFinal(
 void ASATORI_RaijinRayoMovil::destroyDecal()
 {
 	my_decal->Destroy();
+}
+
+
+
+
+bool ASATORI_RaijinRayoMovil::getDestruido()
+{
+	return destruido;
 }

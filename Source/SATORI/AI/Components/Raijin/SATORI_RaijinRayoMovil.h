@@ -86,7 +86,7 @@ public:
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Meta = (ExposeOnSpawn = true), Category = "Missile")
 		TSubclassOf<UGameplayEffect> DamageGameplayEffect;
 
-
+	bool getDestruido();
 
 protected:
 
@@ -111,6 +111,8 @@ protected:
 	float decal_size = 300.0f;
 
 	float scale = 1.0f;
+
+	bool destruido = false;
 
 };
 
