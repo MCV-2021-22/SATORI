@@ -219,6 +219,7 @@ void ASATORI_GameState::GiveRewardAbilitesToPortal()
     if (InstancePortals.Num() == 1 && InstancePortals[0]->IsFirstLevel)
     {
         InstancePortals[0]->ActivatePortal();
+        InstancePortals[0]->SetCurrentMeshInteractability(true);
     }
 }
 
