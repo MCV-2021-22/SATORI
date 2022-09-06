@@ -243,7 +243,12 @@ void ASATORI_AICharacter::CheckDamage(float Damage)
 			Spawned->SpawnedDie();
 		}
 
-		AddGameplayTag(DeadTag);
+		AActor* Actor = Cast<AActor>(this);
+		//ASATORI_AICharacter* Character = Cast<ASATORI_AICharacter>(Actor);
+
+		GetWorld()->GetAuthGameMode<ASATORIGameMode>()->RemoveEnemyActor(Actor);
+		Destroy();
+		//AddGameplayTag(DeadTag);
 	}
 }
 
