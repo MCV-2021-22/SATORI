@@ -6,6 +6,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "SATORICharacter.h"
 #include "Character/SATORI_PlayerController.h"
+#include "GameState/SATORI_GameState.h"
 
 bool USATORI_GeneralVendorInteractUI::Initialize()
 {
@@ -37,7 +38,17 @@ void USATORI_GeneralVendorInteractUI::BuyItem()
 	{
 		isClicked = true;
 
-		// TODO
+		ASATORICharacter* SatoriCharacter = Cast<ASATORICharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
+		if (SatoriCharacter)
+		{
+			SatoriCharacter->SetIsAbilityUpgrated(true);			
+		}
+		// Reset portal abilities
+		ASATORI_GameState* GameState = GetWorld() != NULL ? GetWorld()->GetGameState<ASATORI_GameState>() : NULL;
+		if (GameState)
+		{
+			GameState->ResetAllPortalAbilities();
+		}
 	}
 }
 

@@ -85,6 +85,7 @@ public:
 
 	bool isInteractWithMaskVendor = false;
 
+	bool isAbilityUpgrated = false; 
 	// Abilities
 	TArray<FSATORI_AbilitiesDatas> NormalAbilities;
 	TArray<FSATORI_AbilitiesDatas> UpgratedAbilities;
