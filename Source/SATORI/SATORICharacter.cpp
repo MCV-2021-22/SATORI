@@ -148,12 +148,14 @@ void ASATORICharacter::PossessedBy(AController* NewController)
 			GameInstanceRef->PlayerStart = false;
 			StatsComponent->InitializeStatsAttributes(PS);
 			PlayerGameplayAbilityComponent->SetSavedAbilitiesWithGameInstance(GameInstanceRef);
+			IsAbilityUpgrated = GameInstanceRef->isAbilityUpgrated;
 		}
 		else
 		{
 			StatsComponent->InitializeStatsAttributesByInstance(PS, GameInstanceRef);
 			SATORIAbilityMaskComponent->GrantedMaskEffects(GameInstanceRef->MaskType);
 			PlayerGameplayAbilityComponent->SetSavedAbilitiesWithGameInstance(GameInstanceRef);
+			IsAbilityUpgrated = GameInstanceRef->isAbilityUpgrated;
 		}
 
 		// Set Health to Max Health Value

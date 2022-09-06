@@ -142,6 +142,7 @@ public:
 
 	// Getters
 	bool GetIsAbilityUpgrated() { return IsAbilityUpgrated; }
+	void SetIsAbilityUpgrated(bool Value) { IsAbilityUpgrated = Value; }
 	// Getters for Components
 	FORCEINLINE class USATORI_StatsComponent* GetStatsComponent() const { return StatsComponent; }
 	class USATORI_ComboSystemComponent* GetComboSystemComponent() const { return ComboSystemComponent; }

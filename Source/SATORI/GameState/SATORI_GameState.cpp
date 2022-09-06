@@ -178,6 +178,12 @@ void ASATORI_GameState::ResetAllPortalAbilities()
     }
 
     GiveRewardAbilitesToPortal();
+
+    GameInstanceRef = Cast<USATORI_GameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
+    if (GameInstanceRef)
+    {
+        GameInstanceRef->isAbilityUpgrated = true;
+    }
 }
 
 void ASATORI_GameState::FindAllScenePortal()

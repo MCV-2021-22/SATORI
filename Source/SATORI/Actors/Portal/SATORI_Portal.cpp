@@ -47,7 +47,7 @@ ASATORI_Portal::ASATORI_Portal()
 	SphereComponent->SetSphereRadius(120.0f);
 	//SphereComponent->SetCollisionProfileName(FName("IgnoreAllOverlapOnlyPlayer"));
 	SphereComponent->SetCollisionProfileName(UCollisionProfile::NoCollision_ProfileName);
-	SphereComponent->OnComponentBeginOverlap.AddUniqueDynamic(this, &ASATORI_Portal::OnComponentBeginOverlap);
+	//SphereComponent->OnComponentBeginOverlap.AddUniqueDynamic(this, &ASATORI_Portal::OnComponentBeginOverlap);
 
 	WidgetComponent = CreateDefaultSubobject<UWidgetComponent>(TEXT("WidgetComponent"));
 	WidgetComponent->SetupAttachment(RootComponent);
@@ -72,29 +72,7 @@ void ASATORI_Portal::OnConstruction(const FTransform& Transform)
 void ASATORI_Portal::OnComponentBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
 	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	UE_LOG(LogTemp, Warning, TEXT("On Overlap Beg %s"), *OtherActor->GetName());
 
-	/*ASATORICharacter* Character = Cast<ASATORICharacter>(OtherActor);
-
-	if (!Character)
-	{
-		return;
-	}
-
-	if (Character)
-	{
-		if (CurrentGameplayEffect.Get())
-		{
-			ApplyEffectToPlayer(Character);
-		}
-
-		if(CurrentAbility.Get())
-		{
-			GrantedAbilityToPlayer(Character);
-		}
-		
-		ChangeLevel(Character);
-	}*/
 }
 
 void ASATORI_Portal::ApplyEffectToPlayer(ASATORICharacter* PlayerCharacter)
