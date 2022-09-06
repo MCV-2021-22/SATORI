@@ -108,6 +108,8 @@ public:
 	/*UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "PassiveDataAsset")
 	USATORI_PortalPassiveDataAsset* PassiveDataAsset;*/
 
+	void SetCurrentMeshInteractability(bool CanInteract);
+
 	void SetCurrentGameplayEffectData(FSATORI_DoorPassiveReward CurrentEffecData);
 	void SetCurrentGameplayAbilityData(FSATORI_PortalAbilitiesDatasReward CurrentAbilityData);
 	void SetCurrentId(int Id);

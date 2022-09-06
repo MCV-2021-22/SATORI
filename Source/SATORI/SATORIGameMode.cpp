@@ -6,6 +6,7 @@
 #include "GameplayFramework/SATORI_GameInstance.h"
 #include "Savegame/SATORI_SaveGame.h"
 #include "Savegame/SATORI_ActorSaveData.h"
+#include "Actors/Portal/SATORI_Portal.h"
 
 ASATORIGameMode::ASATORIGameMode()
 {
@@ -60,7 +61,7 @@ void ASATORIGameMode::RemoveEnemyActor(AActor* Enemy)
 		for (ASATORI_Portal* Portal : PortalActors)
 		{
 			Portal->ActivatePortal();
-			
+			Portal->SetCurrentMeshInteractability(true);
 		}
 	}
 }

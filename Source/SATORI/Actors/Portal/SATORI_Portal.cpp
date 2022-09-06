@@ -47,7 +47,7 @@ ASATORI_Portal::ASATORI_Portal()
 	SphereComponent->SetSphereRadius(120.0f);
 	//SphereComponent->SetCollisionProfileName(FName("IgnoreAllOverlapOnlyPlayer"));
 	SphereComponent->SetCollisionProfileName(UCollisionProfile::NoCollision_ProfileName);
-	//SphereComponent->OnComponentBeginOverlap.AddUniqueDynamic(this, &ASATORI_Portal::OnComponentBeginOverlap);
+	SphereComponent->OnComponentBeginOverlap.AddUniqueDynamic(this, &ASATORI_Portal::OnComponentBeginOverlap);
 
 	WidgetComponent = CreateDefaultSubobject<UWidgetComponent>(TEXT("WidgetComponent"));
 	WidgetComponent->SetupAttachment(RootComponent);
@@ -72,7 +72,7 @@ void ASATORI_Portal::OnConstruction(const FTransform& Transform)
 void ASATORI_Portal::OnComponentBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
 	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-
+	UE_LOG(LogTemp, Warning, TEXT("On Portal"));
 }
 
 void ASATORI_Portal::ApplyEffectToPlayer(ASATORICharacter* PlayerCharacter)
@@ -247,4 +247,21 @@ void ASATORI_Portal::ResetCurrentPortalData()
 	PortalAbilityToApply.AbilitiyIcon = nullptr;
 	PortalAbilityToApply.AbilityName = FText::GetEmpty();
 	PortalAbilityToApply.isUpgrated = false;
+}
+
+void ASATORI_Portal::SetCurrentMeshInteractability(bool CanInteract)
+{
+	//StaticMeshComponent->Co
+	if (CanInteract)
+	{
+		StaticMeshComponent->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+		StaticMeshComponent->SetCollisionProfileName(UCollisionProfile::BlockAllDynamic_ProfileName);
+		//UE_LOG(LogTemp, Warning, TEXT("TRUE!!!!!!!!!!!!!!!!!"));
+	}
+	else
+	{
+		//UE_LOG(LogTemp, Warning, TEXT("FALSE!!!!!!!!!!!!!!!!!"));
+		StaticMeshComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+		StaticMeshComponent->SetCollisionProfileName(UCollisionProfile::NoCollision_ProfileName);
+	}
 }

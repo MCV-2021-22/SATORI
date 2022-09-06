@@ -175,6 +175,7 @@ void ASATORI_GameState::ResetAllPortalAbilities()
     for (int i = 0; i < InstancePortals.Num(); i++)
     {
         InstancePortals[i]->ResetCurrentPortalData();
+        InstancePortals[i]->SetCurrentMeshInteractability(false);
     }
 
     GiveRewardAbilitesToPortal();
@@ -196,6 +197,7 @@ void ASATORI_GameState::FindAllScenePortal()
     for (int i = 0; i < FoundPortals.Num(); i++)
     {
         ASATORI_Portal* Portal = Cast<ASATORI_Portal>(FoundPortals[i]);
+        Portal->SetCurrentMeshInteractability(false);
         if (Portal)
         {
             InstancePortals.Add(Portal);
