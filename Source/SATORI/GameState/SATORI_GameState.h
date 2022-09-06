@@ -30,9 +30,6 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Abilities")
 	USATORI_AbilityDataAsset* DefaultAbilities;
 
-	// Portal 
-	TArray<ASATORI_Portal*> InstancePortals;
-
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Portal")
 	USATORI_PortalPassiveDataAsset* PassiveDataAsset;
 
@@ -51,6 +48,8 @@ public:
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = "Portal")
 	TArray<FSATORI_PortalAbilitiesDatasReward> PortalGrantedNormalAbilityToApply;
 
+	UFUNCTION()
+	void ResetAllPortalAbilities();
 	//EnemyActors
 
 	//TArray < AActor* >& GetEnemyActorsRef() { return EnemyActors; };
@@ -69,6 +68,11 @@ private:
 	// Apply Abilities
 	void ApplyDefaultPlayerGameplayAbilities();
 
+	// Give abilites to portal
+	void GiveRewardAbilitesToPortal();
+
+	// Find All portal
+	void FindAllScenePortal();
 	//UPROPERTY()
 	//TArray < AActor* > EnemyActors;
 	int GenerateRandomNumberForPortal();
@@ -83,5 +87,8 @@ private:
 
 	void GenerateRandomPassiveEffectAndAbilities();
 
+	// Variables
 	USATORI_GameInstance* GameInstanceRef = nullptr;
+	// Portal 
+	TArray<ASATORI_Portal*> InstancePortals;
 };

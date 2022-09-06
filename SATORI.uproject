@@ -33,10 +33,6 @@
 		{
 			"Name": "Water",
 			"Enabled": true
-		},
-		{
-			"Name": "RenderDocPlugin",
-			"Enabled": true
 		}
 	],
 	"TargetPlatforms": [
