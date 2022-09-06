@@ -9,6 +9,7 @@
 #include "Character/SATORI_CharacterBase.h"
 #include "GameplayTags.h"
 #include "GAS\SATORI_GameplayAbility.h"
+#include "Components/Player/SATORI_ComboSystemComponent.h"
 #include "SATORI_AICharacter.generated.h"
 
 
@@ -33,6 +34,15 @@ enum class SATORIEnemyType : uint8
 	Boss UMETA(DisplayName = "Boss"),
 };
 
+UENUM(BlueprintType)
+enum class SATORIEnemyImpactType : uint8
+{
+	None UMETA(DisplayName = "None"),
+	LightAttack1 UMETA(DisplayName = "LightAttack1"),
+	LightAttack2 UMETA(DisplayName = "LightAttack2"),
+	LightAttack3 UMETA(DisplayName = "LightAttack3"),
+	HeavyAttack UMETA(DisplayName = "HeavyAttack"),
+};
 
 UCLASS()
 class SATORI_API ASATORI_AICharacter : public ASATORI_CharacterBase, public ISATORI_TargetSystemInterface
@@ -56,6 +66,9 @@ public:
 	// Default attributes for a character for initializing
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Player|GameplayEffect")
 	TArray<TSubclassOf<UGameplayEffect>> PassiveGameplayEffects;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon")
+	UCapsuleComponent* AttackingCollision2;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Stats")
 	USATORI_EnemyStatComponent* EnemyStatComponent;
@@ -112,6 +125,9 @@ public:
 	TSubclassOf<USATORI_EnemyHealthBar> HealthBarUI;
 
 	virtual void CharacterDeath() override;
+
+	// Check Impact Received
+	void CheckImpactReceivedByPlayer(EComboState State);
 protected:
 
 	// Default attributes for a character for initializing on spawn/respawn.
@@ -125,8 +141,13 @@ protected:
 	UPROPERTY(EditAnywhere)
 	TSoftObjectPtr <UBehaviorTree> BehaviorTree;
 
+	// Enemy Type
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	SATORIEnemyType EnemyType;
+
+	// Enemy Type
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	SATORIEnemyImpactType EnemyImpactType;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	class USphereComponent* HeadComponent;

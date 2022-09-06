@@ -24,7 +24,7 @@ void USATORI_ANS_PlayerComboState::NotifyBegin(USkeletalMeshComponent* MeshComp,
 			// print enum to string
 			const TEnumAsByte<EComboState> EComboStateEnum = ComboState;
 			FString EnumAsString = UEnum::GetValueAsString(EComboStateEnum.GetValue());
-			UE_LOG(LogTemp, Warning, TEXT("My Current combo state is : %s"), *EnumAsString);
+			//UE_LOG(LogTemp, Warning, TEXT("My Current combo state is : %s"), *EnumAsString);
 		}
 	}
 }
@@ -36,11 +36,13 @@ void USATORI_ANS_PlayerComboState::NotifyEnd(USkeletalMeshComponent* MeshComp, U
 	ASATORICharacter* Character = Cast<ASATORICharacter>(MeshComp->GetOwner());
 	if (Character)
 	{
+		Character->WeaponDamage = Character->WeaponSavedDamage;
+
 		USATORI_ComboSystemComponent* ComboComponent = Character->GetComboSystemComponent();
 		if (ComboComponent)
 		{
 			ComboComponent->SetComboState(EComboState::None);
-			UE_LOG(LogTemp, Warning, TEXT("Reset my current combo state"));
+			//UE_LOG(LogTemp, Warning, TEXT("Reset my current combo state"));
 		}
 	}
 }

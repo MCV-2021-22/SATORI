@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Abilities/GameplayAbility.h"
+#include "SATORI.h"
 #include "SATORI_GameplayAbility.generated.h"
 
 
@@ -32,6 +33,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	bool bIsActivated = false;
 
+	// Abilities with this set will automatically activate when the input is pressed
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Ability")
+	ESATORI_AbilityInputID AbilityInputID = ESATORI_AbilityInputID::None;
 	// Gameplay Effect
 	//virtual void ApplyEffectContainer();
 	//virtual void ApplyEffectContainerSpec();

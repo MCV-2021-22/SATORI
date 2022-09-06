@@ -11,6 +11,7 @@ USATORI_ComboSystemComponent::USATORI_ComboSystemComponent()
 {
 	// Weapon Component
 	bWantsInitializeComponent = true;
+
 	CurrentComboState = EComboState::None;
 }
 

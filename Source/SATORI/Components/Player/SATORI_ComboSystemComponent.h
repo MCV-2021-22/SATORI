@@ -47,6 +47,14 @@ public:
 
 	void ResetAllAttribute();
 
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Weapon")
+	USkeletalMeshComponent* SwordComponent;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon")
+	USphereComponent* AttackingCollision;
+
+	// Getters and Setter
 	EComboState GetCurrentComboState() { return CurrentComboState; }
 	void SetComboState(EComboState State);
 public:
@@ -61,4 +69,5 @@ protected:
 	virtual void InitializeComponent() override;
 
 	EComboState CurrentComboState;
+
 };
