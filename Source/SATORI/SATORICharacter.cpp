@@ -317,7 +317,7 @@ bool ASATORICharacter::IsEnemyInFront(const FVector StartPosition, const FVector
 			Params
 		);
 
-		::DrawDebugLine(World, StartPosition, newEndPos, newHit ? FColor::Green : FColor::Red, false, 1.0f);
+		//::DrawDebugLine(World, StartPosition, newEndPos, newHit ? FColor::Green : FColor::Red, false, 1.0f);
 
 		if (newHit)
 		{
@@ -404,6 +404,7 @@ void ASATORICharacter::CharacterDeath()
 	if (GameInstanceRef)
 	{
 		GameInstanceRef->ResetPortalRewardAbilities();
+		GameInstanceRef->SetPlayerStart(true);
 	}
 
 	// Reset current player reward abilities with the portal to zero
