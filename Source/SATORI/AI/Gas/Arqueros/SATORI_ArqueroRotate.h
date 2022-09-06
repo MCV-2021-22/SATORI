@@ -44,9 +44,14 @@ public:
 
 	void OnTimerFinished(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo);
 
+	UPROPERTY(BlueprintReadOnly, EditAnywhere)
+		int iteracion = 0;
 
+	UPROPERTY(BlueprintReadOnly, EditAnywhere)
+		int max_iteracion = 4;
 
 private:
 
+	
 	const bool bStopWhenAbilityEnds = true;
 };

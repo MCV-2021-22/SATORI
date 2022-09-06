@@ -34,5 +34,12 @@ public:
 	UPROPERTY(BlueprintReadOnly, EditAnywhere)
 		TSubclassOf<ASATORI_RaijinRayoMovil> ProjectileClass;
 
+	FTimerDelegate TimerDelegate;
+	FTimerHandle TimerHandle;
 
+	void EndRayos(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo);
+
+
+protected:
+	TArray< AActor* > Rayos;
 };
