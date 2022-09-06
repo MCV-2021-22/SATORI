@@ -27,7 +27,8 @@ bool USATORI_MainUI::Initialize()
 		GeneralVendorWidget->RemoveFromViewport();
 	}
 
-	BossHealthBarUI->SetVisibility(ESlateVisibility::Hidden);
+	if(IsValid(BossHealthBarUI))
+		BossHealthBarUI->SetVisibility(ESlateVisibility::Hidden);
 	//BossHealthBarUI->RemoveFromViewport();
 
 	return true;
