@@ -394,7 +394,7 @@ void ASATORICharacter::ApplyGameplayeEffectToPlayerWithParam(TSubclassOf<UGamepl
 	}
 }
 
-void ASATORICharacter::CharacterDeath()
+void ASATORICharacter::ResetCharacterDatas()
 {
 	// Only runs on Server
 	RemoveCharacterAbilities();
@@ -410,11 +410,6 @@ void ASATORICharacter::CharacterDeath()
 	// Reset current player reward abilities with the portal to zero
 	this->PlayerGameplayAbilityComponent->ResetCurrentPlayerAbilities();
 
-	// Set Collision
-	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-	GetCharacterMovement()->GravityScale = 0;
-	GetCharacterMovement()->Velocity = FVector(0);
-
 	// Remove all gameplay effects
 	if (AbilitySystemComponent.IsValid())
 	{
@@ -426,6 +421,16 @@ void ASATORICharacter::CharacterDeath()
 
 		AbilitySystemComponent->AddLooseGameplayTag(DeadTag);
 	}
+}
+
+void ASATORICharacter::CharacterDeath()
+{
+	ResetCharacterDatas();
+
+	// Set Collision
+	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	GetCharacterMovement()->GravityScale = 0;
+	GetCharacterMovement()->Velocity = FVector(0);
 
 	// Playe Death montage
 	if (DeathMontage)

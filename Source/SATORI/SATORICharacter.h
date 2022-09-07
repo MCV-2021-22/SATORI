@@ -140,6 +140,7 @@ public:
 	
 	virtual void RemoveCharacterAbilities() override;
 
+	void ResetCharacterDatas();
 	// Getters
 	bool GetIsAbilityUpgrated() { return IsAbilityUpgrated; }
 	void SetIsAbilityUpgrated(bool Value) { IsAbilityUpgrated = Value; }

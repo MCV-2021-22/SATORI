@@ -59,6 +59,6 @@ void USATORI_PauseMenuUI::OnMainMenuClicked()
 	ASATORICharacter* Character = Cast<ASATORICharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
 	if (Character)
 	{
-		Character->CharacterDeath();
+		Character->ResetCharacterDatas();
 	}
 }
