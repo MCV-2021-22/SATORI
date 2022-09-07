@@ -214,7 +214,7 @@ void USATORI_AI_BlockAbilityMelee::BlockDamage()
 
 	float Direction = Rotation.Yaw - PlayerRotation.Yaw;
 
-	GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, FString::Printf(TEXT("Yaw: %f"), Direction));
+	//GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, FString::Printf(TEXT("Yaw: %f"), Direction));
 
 	if ((Direction > 100 || Direction < -100))
 	{
