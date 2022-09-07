@@ -84,6 +84,7 @@ void USATORI_HeavyAttackAbility::OnTimerFinished(float FinishTime)
 		float CurrentAttack = Character->WeaponDamage;
 		float LastAttackDamage = (((FinishTime * CurrentAttack) / 100) + AttackMultiplier) * CurrentAttack;
 		Character->WeaponDamage += LastAttackDamage;
+		//GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Red, FString::Printf(TEXT("Attack power: %f"), Character->WeaponDamage));
 
 		// Anim Jump Section
 		UAnimInstance* AnimInstance = Character->GetMesh()->GetAnimInstance();

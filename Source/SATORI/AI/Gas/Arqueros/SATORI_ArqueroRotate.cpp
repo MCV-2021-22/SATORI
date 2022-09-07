@@ -34,17 +34,29 @@ void USATORI_ArqueroRotate::ActivateAbility(const FGameplayAbilitySpecHandle Han
 	ASATORI_RangeMovable* Character = Cast<ASATORI_RangeMovable>(GetAvatarActorFromActorInfo());
 	if (Character)
 	{
-		if(side==0)
+		if (Character->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag("State.BlockRight")))
 		{
 			Character->moveLeft = true;
 		}
-		else
+		else if(Character->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag("State.BlockLeft")))
 		{
 			Character->moveRight = true;
 		}
+		else
+		{
+			if (side == 0)
+			{
+				Character->moveLeft = true;
+			}
+			else
+			{
+				Character->moveRight = true;
+			}
+		}
+			
 	}
 	TimerDelegate = FTimerDelegate::CreateUObject(this, &USATORI_ArqueroRotate::OnTimerFinished, CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo);
-	GetWorld()->GetTimerManager().SetTimer(TimerHandle, TimerDelegate, 1.0f, false);
+	GetWorld()->GetTimerManager().SetTimer(TimerHandle, TimerDelegate, 0.3f, true);
 
 
 }
@@ -56,21 +68,43 @@ void USATORI_ArqueroRotate::OnTimerFinished(const FGameplayAbilitySpecHandle Han
 
 	ASATORI_RangeMovable* Character = Cast<ASATORI_RangeMovable>(GetAvatarActorFromActorInfo());
 
-	//GetWorld()->GetTimerManager().ClearTimer(TimerHandle);
-	FRotator RotationOfIA = ActorInfo->AvatarActor->GetActorRotation();
-	FActorSpawnParameters SpawnParams;
+	if(iteracion < max_iteracion)
+	{
+		
+
+		//GetWorld()->GetTimerManager().ClearTimer(TimerHandle);
+		
+		Character->moveLeft = false;
+		Character->moveRight = false;
+
+
+		int side = rand() % 2;
+		if (side == 0)
+		{
+			Character->moveLeft = true;
+		}
+		else
+		{
+			Character->moveRight = true;
+		}
+		iteracion++;
+
+
+	}
+	else
+	{
+		Character->moveLeft = false;
+		Character->moveRight = false;
+
+		GetWorld()->GetTimerManager().ClearTimer(TimerHandle);
+
+		EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true);
+	}
 	
 
+
+
 	
-	//ASATORI_RangeMovable* Character = Cast<ASATORI_RangeMovable>(GetAvatarActorFromActorInfo());
-	Character->moveLeft = false;
-	Character->moveRight = false;
-
-
-
-	GetWorld()->GetTimerManager().ClearTimer(TimerHandle);
-
-	EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true);
 
 
 }
