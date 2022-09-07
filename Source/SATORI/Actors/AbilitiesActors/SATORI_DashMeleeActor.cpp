@@ -60,6 +60,7 @@ void ASATORI_DashMeleeActor::OnOverlapCollisionSphere(UPrimitiveComponent* Overl
 	{
 		bDamagePlayer = true;
 		USATORI_BlueprintLibrary::ApplyGameplayEffectDamage(Character, Damage, Character, DamageGameplayEffect);
+		USATORI_BlueprintLibrary::ApplyGameplayEffect(Character, HeavyHitGameplayEffect);
 	}
 }
 
