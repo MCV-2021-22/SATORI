@@ -35,18 +35,21 @@ void USATORI_GameInstance::BeginLoadingScreen(const FString& MapName)
     {
         FLoadingScreenAttributes LoadingScreen;
         LoadingScreen.bAutoCompleteWhenLoadingCompletes = true;
- 
-        LoadingWidget = CreateWidget<UUserWidget>(this, WidgetTemplate);
+      
+        if (LoadingWidget)
+        {
+            LoadingWidget = CreateWidget<UUserWidget>(this, WidgetTemplate);
 
-        TSharedPtr<SWidget> WidgetPtr = LoadingWidget->TakeWidget();
-        LoadingScreen.WidgetLoadingScreen = WidgetPtr;
+            TSharedPtr<SWidget> WidgetPtr = LoadingWidget->TakeWidget();
+            LoadingScreen.WidgetLoadingScreen = WidgetPtr;
+
+        }
 
         // - Play Movies Setting
-        //LoadingScreen.MoviePaths.Add("squad_intro_movie");
         //LoadingScreen.bMoviesAreSkippable = true;//
         //LoadingScreen.bWaitForManualStop = true;//
         //LoadingScreen.PlaybackType = EMoviePlaybackType::MT_Looped;
-
+        //LoadingScreen.MoviePaths.Add("VID_20191121_165521");
         GetMoviePlayer()->SetupLoadingScreen(LoadingScreen);
     }
 }
