@@ -37,6 +37,9 @@ public:
 	UPROPERTY(BlueprintReadOnly, Meta = (ExposeOnSpawn = true), Category = "Dash")
 	TSubclassOf<UGameplayEffect> DamageGameplayEffect;
 
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "GameplayEffect")
+	TSubclassOf<UGameplayEffect> HeavyHitGameplayEffect;
+
 	UPROPERTY(BlueprintReadOnly, Meta = (ExposeOnSpawn = true), Category = "Dash")
 	float Damage;
 
