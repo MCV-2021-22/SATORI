@@ -140,6 +140,7 @@ public:
 	
 	virtual void RemoveCharacterAbilities() override;
 
+	void ResetCharacterDatas();
 	// Getters
 	bool GetIsAbilityUpgrated() { return IsAbilityUpgrated; }
 	void SetIsAbilityUpgrated(bool Value) { IsAbilityUpgrated = Value; }
@@ -164,6 +165,9 @@ protected:
 	bool IsEnemyInFront(const FVector StartPosition, const FVector EndPosition, FHitResult& LocalHitResult, int RotationSize = 1);
 
 	TWeakObjectPtr<AActor> FindNearestEnemy(TArray<TWeakObjectPtr<AActor>> Actors);
+
+	bool DoParryBlockAllEnemies();
+	bool DoParryBlockOneEnemies();
 protected:
 
 	// The core ActorComponent for interfacing with the GameplayAbilities System
@@ -184,6 +188,10 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	bool IsAbilityUpgrated = false;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	class UBoxComponent* ParryCollision;
+
 protected:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
@@ -239,6 +247,15 @@ protected:
 
 	UFUNCTION()
 	void OnWeaponOverlapEnd(class UPrimitiveComponent* OverlappedComp, 
+			class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
+
+	// Parry Overlap
+	UFUNCTION()
+		void OnParryOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
+			UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+
+	UFUNCTION()
+		void OnParryOverlapEnd(class UPrimitiveComponent* OverlappedComp,
 			class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 //Cheats
 public:

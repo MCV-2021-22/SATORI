@@ -12,10 +12,9 @@
 #include "SATORI_GameInstance.generated.h"
 
 class USATORI_PortalGrantedAbilityAsset;
+class UUserWidget;
 
-/**
- * 
- */
+// SATORI GAME INSTANCE
 UCLASS(BlueprintType, Blueprintable)
 class SATORI_API USATORI_GameInstance : public UGameInstance
 {
@@ -26,6 +25,11 @@ public:
 
 	void Init() override;
 	void Shutdown() override;
+
+	UFUNCTION()
+	virtual void BeginLoadingScreen(const FString& MapName);
+	UFUNCTION()
+	virtual void EndLoadingScreen(UWorld* InLoadedWorld);
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Portal")
 	USATORI_PortalGrantedAbilityAsset* GrantedAbilityDataAsset;
@@ -43,6 +47,12 @@ public:
 	void UnRegisterActorToSave();
 
 	void SavePortalAbilitiesData();
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Loading Screen")
+	TSubclassOf<UUserWidget> WidgetTemplate;
+
+	UPROPERTY()
+	UUserWidget* LoadingWidget;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float Health = 0.0f;
