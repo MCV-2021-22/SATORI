@@ -5,6 +5,7 @@
 #include "SATORICharacter.h"
 #include "Components/SkeletalMeshComponent.h"
 #include "Components/SphereComponent.h"
+#include "Components/BoxComponent.h"
 
 // Sets default values for this component's properties
 USATORI_ComboSystemComponent::USATORI_ComboSystemComponent()
@@ -13,6 +14,7 @@ USATORI_ComboSystemComponent::USATORI_ComboSystemComponent()
 	bWantsInitializeComponent = true;
 
 	CurrentComboState = EComboState::None;
+
 }
 
 void USATORI_ComboSystemComponent::InitializeComponent()

@@ -4,6 +4,8 @@
 #include "GameplayFramework/SATORI_GameInstance.h"
 #include "Kismet/GameplayStatics.h"
 #include "Data/SATORI_PortalGrantedAbilityAsset.h"
+#include "MoviePlayer.h"
+#include "Blueprint/UserWidget.h"
 
 USATORI_GameInstance::USATORI_GameInstance()
 {
@@ -11,16 +13,57 @@ USATORI_GameInstance::USATORI_GameInstance()
 }
 
 void USATORI_GameInstance::Init()
-{
+{   
 	Super::Init();
 	InitSaveGame();
 	FillPortalGrantedAbilityWithData();
+
+    // Loading Screen
+    FCoreUObjectDelegates::PreLoadMap.AddUObject(this, &USATORI_GameInstance::BeginLoadingScreen);
+    FCoreUObjectDelegates::PostLoadMapWithWorld.AddUObject(this, &USATORI_GameInstance::EndLoadingScreen);
 }
 
 void USATORI_GameInstance::Shutdown()
 {
 	Super::Shutdown();
 	SaveGameToDisk();
+}
+
+void USATORI_GameInstance::BeginLoadingScreen(const FString& MapName)
+{
+    if (!IsRunningDedicatedServer())
+    {
+        FLoadingScreenAttributes LoadingScreen;
+        LoadingScreen.bAutoCompleteWhenLoadingCompletes = true;
+      
+        if (LoadingWidget)
+        {
+            LoadingWidget = CreateWidget<UUserWidget>(this, WidgetTemplate);
+
+            TSharedPtr<SWidget> WidgetPtr = LoadingWidget->TakeWidget();
+            LoadingScreen.WidgetLoadingScreen = WidgetPtr;
+
+        }
+
+        // - Play Movies Setting
+        //LoadingScreen.bMoviesAreSkippable = true;//
+        //LoadingScreen.bWaitForManualStop = true;//
+        //LoadingScreen.PlaybackType = EMoviePlaybackType::MT_Looped;
+        //LoadingScreen.MoviePaths.Add("VID_20191121_165521");
+        GetMoviePlayer()->SetupLoadingScreen(LoadingScreen);
+    }
+}
+
+void USATORI_GameInstance::EndLoadingScreen(UWorld* InLoadedWorld)
+{
+    if (!IsRunningDedicatedServer())
+    {
+        if (LoadingWidget)
+        {
+            LoadingWidget->RemoveFromParent();
+            LoadingWidget->MarkPendingKill();
+        }
+    }
 }
 
 void USATORI_GameInstance::SaveGameToDisk()

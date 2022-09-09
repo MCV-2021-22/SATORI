@@ -31,6 +31,7 @@
 #include "AI/Components/Arqueros/SATORI_ArcherProjectile.h"
 #include "Character/SATORI_PlayerCameraShake.h"
 #include "Actors/Dummy/SATORI_DummyActor.h"
+#include "Components/BoxComponent.h"
 //Cheat related include
 #include "Kismet/GameplayStatics.h"
 #include "Components/Player/SATORI_InteractComponent.h"
@@ -100,6 +101,15 @@ ASATORICharacter::ASATORICharacter()
 		AttackingCollision->OnComponentBeginOverlap.AddDynamic(this, &ASATORICharacter::OnWeaponOverlapBegin);
 		AttackingCollision->OnComponentEndOverlap.AddDynamic(this, &ASATORICharacter::OnWeaponOverlapEnd);
 	}
+
+	// Parry Collision
+	ParryCollision = CreateDefaultSubobject<UBoxComponent>(TEXT("ParryForwardCollision"));
+	ParryCollision->SetupAttachment(GetRootComponent());
+	ParryCollision->SetCollisionProfileName("Pawn");
+	ParryCollision->SetGenerateOverlapEvents(false);
+	ParryCollision->SetRelativeLocation(FVector(90.0f, 0.0f, 0.0f));
+	ParryCollision->OnComponentBeginOverlap.AddDynamic(this, &ASATORICharacter::OnParryOverlapBegin);
+	ParryCollision->OnComponentEndOverlap.AddDynamic(this, &ASATORICharacter::OnParryOverlapEnd);
 }
 
 void ASATORICharacter::BeginPlay()
@@ -189,6 +199,19 @@ void ASATORICharacter::ApplyDefaultAbilities()
 
 bool ASATORICharacter::DoParryBlock()
 {
+	UE_LOG(LogTemp, Warning, TEXT("DoParryBlockAllEnemies"));
+	return DoParryBlockAllEnemies();
+	//DoParryBlockOneEnemies();
+}
+
+bool ASATORICharacter::DoParryBlockAllEnemies()
+{
+	ParryCollision->SetGenerateOverlapEvents(true);
+	return true;
+}
+
+bool ASATORICharacter::DoParryBlockOneEnemies()
+{
 	const FVector StartPosition = GetActorLocation();
 	const FRotator StartRotation = GetActorRotation();
 	const FVector EndPosition = StartPosition + (StartRotation.Vector() * 300.0f);
@@ -224,7 +247,7 @@ bool ASATORICharacter::DoParryBlock()
 			{
 				return false;
 			}
-		}	
+		}
 	}
 	else if (ASATORI_ArcherProjectile* EnemyProjectiles = Cast<ASATORI_ArcherProjectile>(HitResult.Actor))
 	{
@@ -394,7 +417,7 @@ void ASATORICharacter::ApplyGameplayeEffectToPlayerWithParam(TSubclassOf<UGamepl
 	}
 }
 
-void ASATORICharacter::CharacterDeath()
+void ASATORICharacter::ResetCharacterDatas()
 {
 	// Only runs on Server
 	RemoveCharacterAbilities();
@@ -410,11 +433,6 @@ void ASATORICharacter::CharacterDeath()
 	// Reset current player reward abilities with the portal to zero
 	this->PlayerGameplayAbilityComponent->ResetCurrentPlayerAbilities();
 
-	// Set Collision
-	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-	GetCharacterMovement()->GravityScale = 0;
-	GetCharacterMovement()->Velocity = FVector(0);
-
 	// Remove all gameplay effects
 	if (AbilitySystemComponent.IsValid())
 	{
@@ -426,6 +444,16 @@ void ASATORICharacter::CharacterDeath()
 
 		AbilitySystemComponent->AddLooseGameplayTag(DeadTag);
 	}
+}
+
+void ASATORICharacter::CharacterDeath()
+{
+	ResetCharacterDatas();
+
+	// Set Collision
+	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	GetCharacterMovement()->GravityScale = 0;
+	GetCharacterMovement()->Velocity = FVector(0);
 
 	// Playe Death montage
 	if (DeathMontage)
@@ -532,6 +560,23 @@ void ASATORICharacter::OnWeaponOverlapEnd(class UPrimitiveComponent* OverlappedC
 			DummyActor->CheckImpactReceivedByPlayer(EComboState::None);
 		}
 	}
+}
+
+
+void ASATORICharacter::OnParryOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
+	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	if (OtherActor)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Enemy"));
+	}
+}
+
+
+void ASATORICharacter::OnParryOverlapEnd(class UPrimitiveComponent* OverlappedComp,
+	class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
+{
+
 }
 
 void ASATORICharacter::PlayerSenseOfBlow(float DilationTime, float WaitTime)
