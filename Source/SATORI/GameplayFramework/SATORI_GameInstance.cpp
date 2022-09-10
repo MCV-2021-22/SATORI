@@ -36,14 +36,10 @@ void USATORI_GameInstance::BeginLoadingScreen(const FString& MapName)
         FLoadingScreenAttributes LoadingScreen;
         LoadingScreen.bAutoCompleteWhenLoadingCompletes = true;
       
-        if (LoadingWidget)
-        {
-            LoadingWidget = CreateWidget<UUserWidget>(this, WidgetTemplate);
+        LoadingWidget = CreateWidget<UUserWidget>(this, WidgetTemplate);
 
-            TSharedPtr<SWidget> WidgetPtr = LoadingWidget->TakeWidget();
-            LoadingScreen.WidgetLoadingScreen = WidgetPtr;
-
-        }
+        TSharedPtr<SWidget> WidgetPtr = LoadingWidget->TakeWidget();
+        LoadingScreen.WidgetLoadingScreen = WidgetPtr;
 
         // - Play Movies Setting
         //LoadingScreen.bMoviesAreSkippable = true;//
