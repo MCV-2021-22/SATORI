@@ -1,7 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "AI/Gas/BTTaksGenerales/BTTask_ActivateAbility.h"
+#include "AI/Tasks/BTTaksGenerales/BTTask_ActivateAbility.h"
 #include "AIController.h"
 #include "AbilitySystemComponent.h"
 #include "Abilities/GameplayAbility.h"
