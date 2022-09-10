@@ -27,11 +27,12 @@ EBTNodeResult::Type UBTTask_MoveToWithRanges::ExecuteTask(UBehaviorTreeComponent
 
 	if(Moving == EPathFollowingRequestResult::RequestSuccessful || Moving == EPathFollowingRequestResult::AlreadyAtGoal)
 	{
-		FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
+		//FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
 		return EBTNodeResult::Succeeded;
 	}
 
-	return EBTNodeResult::Succeeded;
+	//FinishLatentTask(OwnerComp, EBTNodeResult::InProgress);
+	return EBTNodeResult::InProgress;
 }
 
 EBTNodeResult::Type UBTTask_MoveToWithRanges::AbortTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
@@ -40,5 +41,20 @@ EBTNodeResult::Type UBTTask_MoveToWithRanges::AbortTask(UBehaviorTreeComponent& 
 	{ 
 		Character->GetCharacterMovement()->StopActiveMovement();
 	}
+	//FinishLatentTask(OwnerComp, EBTNodeResult::Aborted);
 	return EBTNodeResult::Aborted;
+}
+
+void UBTTask_MoveToWithRanges::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds)
+{
+	AActor* Target = Cast<AActor>(OwnerComp.GetBlackboardComponent()->GetValueAsObject(MyBlackboardKey.SelectedKeyName));
+	AActor* Actor = Cast<AActor>(OwnerComp.GetAIOwner()->GetPawn());
+
+	if (IsValid(Target) && IsValid(Actor))
+	{
+		if (FVector::Dist(Actor->GetActorLocation(), Target->GetActorLocation()) > MaxRadiusToFail)
+		{
+			AbortTask(OwnerComp, NodeMemory);
+		}
+	}
 }
