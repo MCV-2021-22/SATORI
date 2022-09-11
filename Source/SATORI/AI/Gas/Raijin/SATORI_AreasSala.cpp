@@ -5,7 +5,7 @@
 
 #include "SATORICharacter.h"
 #include "Engine/DecalActor.h"
-
+#include "AbilityTask/SATORI_PlayMontageAndWaitEvent.h"
 #include "Kismet/GameplayStatics.h"
 #include "Widgets/Text/ISlateEditableTextWidget.h"
 
@@ -19,97 +19,130 @@ USATORI_AreasSala::USATORI_AreasSala()
 void USATORI_AreasSala::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData)
 {
 
-	FVector IA_POS = ActorInfo->AvatarActor->GetActorLocation();
+	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
 
-	TArray< AActor* > enemigos;
+	//Handling of events
+	USATORI_PlayMontageAndWaitEvent* Task = USATORI_PlayMontageAndWaitEvent::PlayMontageAndWaitForEvent(this, NAME_None, AnimMontage, FGameplayTagContainer(), 1.0f, NAME_None, bStopWhenAbilityEnds, 1.0f);
+	Task->OnBlendOut.AddDynamic(this, &USATORI_AreasSala::OnCompleted);
+	Task->OnCompleted.AddDynamic(this, &USATORI_AreasSala::OnCompleted);
+	Task->OnInterrupted.AddDynamic(this, &USATORI_AreasSala::OnCancelled);
+	Task->OnCancelled.AddDynamic(this, &USATORI_AreasSala::OnCancelled);
+	Task->EventReceived.AddDynamic(this, &USATORI_AreasSala::EventReceived);
+	Task->ReadyForActivation();
 
-	FName tag = "PossessedBy.Player";
+	//GetWorld()->GetTimerManager().ClearTimer(TimerHandle);
 
-	UGameplayStatics::GetAllActorsWithTag(GetWorld(), FName("PossessedBy.Player"), enemigos);
+}
 
-	TArray<FVector> Array_Pos;
-	//Array_Pos.SetNum(8);
 
-	//UGameplayStatics::GetAllActorsOfClass(GetWorld(), ASATORICharacter::StaticClass(), enemigos);
 
-	for (AActor* Actor : enemigos)
+
+void USATORI_AreasSala::EventReceived(FGameplayTag EventTag, FGameplayEventData EventData)
+{
+	if (EventTag == TagSpawnAbility)
 	{
-		//Actor->Tags.Add("PossessedBy.Player");
-		if (Cast<ASATORICharacter>(Actor) != nullptr)
+		FVector IA_POS = CurrentActorInfo->AvatarActor->GetActorLocation();
+
+		TArray< AActor* > enemigos;
+
+		FName tag = "PossessedBy.Player";
+
+		UGameplayStatics::GetAllActorsWithTag(GetWorld(), FName("PossessedBy.Player"), enemigos);
+
+		TArray<FVector> Array_Pos;
+		//Array_Pos.SetNum(8);
+
+		//UGameplayStatics::GetAllActorsOfClass(GetWorld(), ASATORICharacter::StaticClass(), enemigos);
+
+		for (AActor* Actor : enemigos)
 		{
-
-			ASATORICharacter* Player = Cast<ASATORICharacter>(Actor);
-			bool tiene = Player->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag("PossessedBy.Player"));
-
-
-
-
-			FRotator RotationOfIA = ActorInfo->AvatarActor->GetActorRotation();
-			FActorSpawnParameters SpawnParams;
-			SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
-
-			for (int i=0;i<8;i++)
+			//Actor->Tags.Add("PossessedBy.Player");
+			if (Cast<ASATORICharacter>(Actor) != nullptr)
 			{
-				bool spawned = false;
 
-				while(!spawned)
+				ASATORICharacter* Player = Cast<ASATORICharacter>(Actor);
+				bool tiene = Player->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag("PossessedBy.Player"));
+
+
+
+
+				FRotator RotationOfIA = CurrentActorInfo->AvatarActor->GetActorRotation();
+				FActorSpawnParameters SpawnParams;
+				SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+
+				for (int i = 0; i < 8; i++)
 				{
-					spawned = true;
+					bool spawned = false;
 
-					if (i == 0)
+					while (!spawned)
 					{
-						ASATORI_RaijinRayo* Rayo = GetWorld()->SpawnActor<ASATORI_RaijinRayo>(ProjectileClass,
-							Player->GetActorLocation(),
-							RotationOfIA);
-					}
-					else
-					{
-						int x = rand() % 2000 - 1000;
-						int y = rand() % 2000 - 1000;
+						spawned = true;
 
-						FVector finalpos = Player->GetActorLocation() + FVector(x, y, 0);
-						ASATORI_RaijinRayo* Rayo = GetWorld()->SpawnActor<ASATORI_RaijinRayo>(ProjectileClass,
-							finalpos,
-							RotationOfIA);
-
-						//miramos si colisiona en algun lugar, tanto con el borde del mapa como con los propios rayos
-						if (!Rayo->CheckCollision())
+						if (i == 0)
 						{
-							for (int j = 0; j < Array_Pos.Num(); j++)
-							{
-								FVector vector_dist = Rayo->GetActorLocation() - Array_Pos[j];
-
-								float dist = vector_dist.Dist(Rayo->GetActorLocation(), Array_Pos[j]);
-
-								//float dist = sqrt(pow(vector_dist.X, 2) + pow(vector_dist.Y, 2) );
-
-								if (dist < 300.0f)
-								{
-									spawned = false;
-								}
-							}
+							ASATORI_RaijinRayo* Rayo = GetWorld()->SpawnActor<ASATORI_RaijinRayo>(ProjectileClass,
+								Player->GetActorLocation(),
+								RotationOfIA);
 						}
 						else
 						{
-							spawned = false;
-						}
+							int x = rand() % 2000 - 1000;
+							int y = rand() % 2000 - 1000;
 
-						//eliminamos
-						if (!spawned)
-						{
-							Rayo->my_decal->Destroy();
-							Rayo->Destroy();
-						}
-						else{
-							Array_Pos.Add(Rayo->GetActorLocation());
+							FVector finalpos = Player->GetActorLocation() + FVector(x, y, 0);
+							ASATORI_RaijinRayo* Rayo = GetWorld()->SpawnActor<ASATORI_RaijinRayo>(ProjectileClass,
+								finalpos,
+								RotationOfIA);
+
+							//miramos si colisiona en algun lugar, tanto con el borde del mapa como con los propios rayos
+							if (!Rayo->CheckCollision())
+							{
+								for (int j = 0; j < Array_Pos.Num(); j++)
+								{
+									FVector vector_dist = Rayo->GetActorLocation() - Array_Pos[j];
+
+									float dist = vector_dist.Dist(Rayo->GetActorLocation(), Array_Pos[j]);
+
+									//float dist = sqrt(pow(vector_dist.X, 2) + pow(vector_dist.Y, 2) );
+
+									if (dist < 300.0f)
+									{
+										spawned = false;
+									}
+								}
+							}
+							else
+							{
+								spawned = false;
+							}
+
+							//eliminamos
+							if (!spawned)
+							{
+								Rayo->my_decal->Destroy();
+								Rayo->Destroy();
+							}
+							else {
+								Array_Pos.Add(Rayo->GetActorLocation());
+							}
 						}
 					}
 				}
+				break;
 			}
-			break;
 		}
+		//EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true);
+
 	}
+}
+
+void USATORI_AreasSala::OnCancelled(FGameplayTag EventTag, FGameplayEventData EventData)
+{
 	EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true);
 }
 
 
+void USATORI_AreasSala::OnCompleted(FGameplayTag EventTag, FGameplayEventData EventData)
+{
+	EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true);
+}

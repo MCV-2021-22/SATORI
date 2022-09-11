@@ -6,6 +6,7 @@
 #include "SATORICharacter.h"
 #include "AI/Components/Raijin/SATORI_RaijinRayoMovilSpawns.h"
 #include "Components/CapsuleComponent.h"
+#include "AbilityTask/SATORI_PlayMontageAndWaitEvent.h"
 #include "Kismet/GameplayStatics.h"
 #include "Widgets/Text/ISlateEditableTextWidget.h"
 
@@ -16,82 +17,105 @@ USATORI_AreasPatron::USATORI_AreasPatron()
 
 }
 
+
 void USATORI_AreasPatron::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData)
 {
 
-	FVector IA_POS = ActorInfo->AvatarActor->GetActorLocation();    
+	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
 
-	TArray< AActor* > Spawns;
-	
+	//Handling of events
+	USATORI_PlayMontageAndWaitEvent* Task = USATORI_PlayMontageAndWaitEvent::PlayMontageAndWaitForEvent(this, NAME_None, AnimMontage, FGameplayTagContainer(), 1.0f, NAME_None, bStopWhenAbilityEnds, 1.0f);
+	Task->OnBlendOut.AddDynamic(this, &USATORI_AreasPatron::OnCompleted);
+	Task->OnCompleted.AddDynamic(this, &USATORI_AreasPatron::OnCompleted);
+	Task->OnInterrupted.AddDynamic(this, &USATORI_AreasPatron::OnCancelled);
+	Task->OnCancelled.AddDynamic(this, &USATORI_AreasPatron::OnCancelled);
+	Task->EventReceived.AddDynamic(this, &USATORI_AreasPatron::EventReceived);
+	Task->ReadyForActivation();
 
-	FName tag = "PossessedBy.Player";
+	//GetWorld()->GetTimerManager().ClearTimer(TimerHandle);
 
-	UGameplayStatics::GetAllActorsWithTag(GetWorld(), FName("Raijin.SpawnMovil"), Spawns);
-
-
-	int array_dim = Spawns.Num();
-
-	
+}
 
 
-	for(int i =0;i<3;i++)
+
+void USATORI_AreasPatron::EventReceived(FGameplayTag EventTag, FGameplayEventData EventData)
+{
+	if (EventTag == TagSpawnAbility)
 	{
-		if(Spawns.Num()>0)
+		FVector IA_POS = CurrentActorInfo->AvatarActor->GetActorLocation();
+
+		TArray< AActor* > Spawns;
+
+
+		FName tag = "PossessedBy.Player";
+
+		UGameplayStatics::GetAllActorsWithTag(GetWorld(), FName("Raijin.SpawnMovil"), Spawns);
+
+
+		int array_dim = Spawns.Num();
+
+
+
+
+		for (int i = 0; i < 3; i++)
 		{
-			int num = rand() % Spawns.Num();
-			//for (AActor* Actor : Spawns)
-			//{
-
-				//Actor->Tags.Add("PossessedBy.Player");
-			AActor* Actor = Spawns[num];
-			if (Cast<ASATORI_RaijinRayoMovilSpawns>(Actor) != nullptr)
+			if (Spawns.Num() > 0)
 			{
-				ASATORI_RaijinRayoMovilSpawns* Player = Cast<ASATORI_RaijinRayoMovilSpawns>(Actor);
+				int num = rand() % Spawns.Num();
+				//for (AActor* Actor : Spawns)
+				//{
 
-
-
-				FVector dest = Player->GetActorLocation();
-
-				FRotator RotationOfIA = ActorInfo->AvatarActor->GetActorRotation();
-				FActorSpawnParameters SpawnParams;
-				SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
-
-				FTransform IATransform = ActorInfo->AvatarActor->GetTransform();
-
-
-				ASATORI_RaijinRayoMovil* Rayo = GetWorld()->SpawnActor<ASATORI_RaijinRayoMovil>(ProjectileClass,
-					Player->CapsuleComponentInicio->GetRelativeLocation(),
-					RotationOfIA);
-
-				if (Rayo)
+					//Actor->Tags.Add("PossessedBy.Player");
+				AActor* Actor = Spawns[num];
+				if (Cast<ASATORI_RaijinRayoMovilSpawns>(Actor) != nullptr)
 				{
-					FVector newForward = Player->CapsuleComponentFinal->GetRelativeLocation() - Player->CapsuleComponentInicio->GetRelativeLocation();
-					newForward.Normalize();
-					Rayo->setDirection(newForward);
-					Rayo->CapsuleComponentFinal->SetRelativeLocation(Player->CapsuleComponentFinal->GetRelativeLocation());
-					Spawns.Remove(Actor);
-					Rayos.Add(Actor);
-					//Spawns.RemoveAt(num);
-				}
+					ASATORI_RaijinRayoMovilSpawns* Player = Cast<ASATORI_RaijinRayoMovilSpawns>(Actor);
 
+
+
+					FVector dest = Player->GetActorLocation();
+
+					FRotator RotationOfIA = CurrentActorInfo->AvatarActor->GetActorRotation();
+					FActorSpawnParameters SpawnParams;
+					SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+
+					FTransform IATransform = CurrentActorInfo->AvatarActor->GetTransform();
+
+
+					ASATORI_RaijinRayoMovil* Rayo = GetWorld()->SpawnActor<ASATORI_RaijinRayoMovil>(ProjectileClass,
+						Player->CapsuleComponentInicio->GetRelativeLocation(),
+						RotationOfIA);
+
+					if (Rayo)
+					{
+						FVector newForward = Player->CapsuleComponentFinal->GetRelativeLocation() - Player->CapsuleComponentInicio->GetRelativeLocation();
+						newForward.Normalize();
+						Rayo->setDirection(newForward);
+						Rayo->CapsuleComponentFinal->SetRelativeLocation(Player->CapsuleComponentFinal->GetRelativeLocation());
+						Spawns.Remove(Actor);
+						Rayos.Add(Actor);
+						//Spawns.RemoveAt(num);
+					}
+
+				}
 			}
-		}
-		
-			
+
+
 
 			//ASATORI_ArcherProjectile* NewProjectile = World->SpawnActor<ASATORI_ArcherProjectile>(ProjectileClass, Transform, SpawnParams);
 		//}
-	}
+		}
 
-	TimerDelegate = FTimerDelegate::CreateUObject(this, &USATORI_AreasPatron::EndRayos, CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo);
-	GetWorld()->GetTimerManager().SetTimer(TimerHandle, TimerDelegate, 0.3f, true);
-	//EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true);
+		TimerDelegate = FTimerDelegate::CreateUObject(this, &USATORI_AreasPatron::EndRayos, CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo);
+		GetWorld()->GetTimerManager().SetTimer(TimerHandle, TimerDelegate, 0.3f, true);
+
+	}
 }
 
 void USATORI_AreasPatron::EndRayos(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo)
 {
 
-	if(Rayos.Num() == 0)
+	if (Rayos.Num() == 0)
 	{
 		EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true);
 	}
@@ -117,3 +141,13 @@ void USATORI_AreasPatron::EndRayos(const FGameplayAbilitySpecHandle Handle, cons
 
 }
 
+void USATORI_AreasPatron::OnCancelled(FGameplayTag EventTag, FGameplayEventData EventData)
+{
+	EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true);
+}
+
+
+void USATORI_AreasPatron::OnCompleted(FGameplayTag EventTag, FGameplayEventData EventData)
+{
+	//EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true);
+}
