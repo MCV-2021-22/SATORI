@@ -107,6 +107,10 @@ protected:
 
 	void GrantAbility(FGameplayAbilitySpec Ability);
 
+	bool bursting = false;
+	float time_burst = 0.0f;
+	float dmg_burst = 0.0f;
+
 public:
 
 	//Deathchecking
