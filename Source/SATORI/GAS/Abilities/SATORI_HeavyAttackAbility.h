@@ -7,6 +7,7 @@
 #include "SATORI_HeavyAttackAbility.generated.h"
 
 class UGameplayEffect;
+class ASATORI_Push360Actor;
 
 UCLASS()
 class SATORI_API USATORI_HeavyAttackAbility : public USATORI_GameplayAbility
@@ -20,6 +21,12 @@ public:
 	UAnimMontage* AnimMontage;
 
 	TSubclassOf<UGameplayEffect> PowerUpGameplayEffect;
+
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Ability")
+	TSubclassOf<ASATORI_Push360Actor> Push360Actor;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Ability")
+	TSubclassOf<UGameplayEffect> DamageGameplayEffect;
 
 	virtual void ActivateAbility(
 		const FGameplayAbilitySpecHandle Handle,
@@ -38,10 +45,18 @@ protected:
 
 	// Variables
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Ability")
-	float MaxHoldTime = 3.0f;
+	float MaxHoldTime = 4.0f;
 
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Ability")
-	float AttackMultiplier = 0.2f;
+	float AttackMultiplier = 0.15f;
+
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Ability")
+	float KnockBackHoldTime = 2.0f;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (UIMin = "0.1"), Category = "Ability|Push360")
+	float TimeToEndAbility = 0.01f;
+
+	float FinishHoldTime = 0.0f;
 
 	const bool bStopWhenAbilityEnds = true;
 	// Functions

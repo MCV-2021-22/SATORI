@@ -226,7 +226,15 @@ void ASATORI_Portal::RemoveGameinstanceAbilities(USATORI_GameInstance* GameInsta
 {
 	if (Id != 0 && GameInstanceRef)
 	{
-		GameInstanceRef->RemoveElementonFromNormalAbilities(Id);
+		ASATORICharacter* Character = Cast<ASATORICharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
+		if (!Character->GetIsAbilityUpgrated())
+		{
+			GameInstanceRef->RemoveElementonFromNormalAbilities(Id);
+		}
+		else
+		{
+			GameInstanceRef->RemoveElementonFromUpgratedAbilities(Id);
+		}
 	}
 }
 
