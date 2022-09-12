@@ -214,7 +214,6 @@ bool ASATORICharacter::DoParryBlockAllEnemies()
 	UWorld* World = GetWorld();
 	TArray<FHitResult> HitResults;
 	TArray<TWeakObjectPtr<AActor>> NewActors;
-	// https://www.youtube.com/watch?v=Gu5f3-hFFfY
 
 	 /*Search for static objects only*/
 	ECollisionChannel ECC = ECollisionChannel::ECC_WorldDynamic;
@@ -598,9 +597,12 @@ void ASATORICharacter::OnWeaponOverlapBegin(UPrimitiveComponent* OverlappedComp,
 				AttackingCollision->SetGenerateOverlapEvents(false);
 			}
 			EnemyCharacter->CheckDamage(WeaponDamage);
-			/*AnimactionPlayRater = 0.5f;
-			UGameplayStatics::SetGlobalTimeDilation(GetWorld(), AnimactionPlayRater);*/
+
+			// Send current damage type recived (light attack o heavy attack)
 			EnemyCharacter->CheckImpactReceivedByPlayer(this->ComboSystemComponent->GetCurrentComboState());
+
+			// Adding Knock Back to enemy
+			this->ComboSystemComponent->ApplyKnockBackTagToEnemy(EnemyCharacter);
 		}	
 		else if(ASATORI_DummyActor* DummyActor = Cast<ASATORI_DummyActor>(OtherActor))
 		{
