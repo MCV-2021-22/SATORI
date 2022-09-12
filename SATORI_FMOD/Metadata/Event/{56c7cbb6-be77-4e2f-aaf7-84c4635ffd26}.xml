@@ -5,7 +5,7 @@
 			<value>MONKClone</value>
 		</property>
 		<property name="outputFormat">
-			<value>0</value>
+			<value>1</value>
 		</property>
 		<relationship name="folder">
 			<destination>{a457183b-6ae7-473a-afb0-917c86763ebd}</destination>
@@ -59,11 +59,18 @@
 	<object class="EventAutomatableProperties" id="{2e23d5c6-c74e-4d1d-8f2a-d5108de51b0c}" />
 	<object class="MarkerTrack" id="{3c20c90f-54a3-4afd-9dca-21b5cbb8395e}" />
 	<object class="GroupTrack" id="{c9226e7d-7ae3-4b86-88d3-e2e71f823e15}">
+		<relationship name="modules">
+			<destination>{ad469341-db11-491c-b626-fbd176b8e5ed}</destination>
+		</relationship>
 		<relationship name="mixerGroup">
 			<destination>{fbb584a3-d52a-43e2-99c4-1a4f02c8a7bc}</destination>
 		</relationship>
 	</object>
-	<object class="Timeline" id="{1301fcd8-304c-4ee5-b3c9-ede7a6e9c10a}" />
+	<object class="Timeline" id="{1301fcd8-304c-4ee5-b3c9-ede7a6e9c10a}">
+		<relationship name="modules">
+			<destination>{ad469341-db11-491c-b626-fbd176b8e5ed}</destination>
+		</relationship>
+	</object>
 	<object class="EventMixerMaster" id="{9051d1be-7c40-4b15-b6f9-740f3b60bac5}">
 		<relationship name="effectChain">
 			<destination>{0593e895-6884-4746-bbd6-6fb92ee2f12d}</destination>
@@ -81,6 +88,17 @@
 		</relationship>
 	</object>
 	<object class="MixerBusPanner" id="{4b8b2521-3ada-4f39-b467-0ba30f0c73e9}" />
+	<object class="SingleSound" id="{ad469341-db11-491c-b626-fbd176b8e5ed}">
+		<property name="length">
+			<value>1.4500000000000002</value>
+		</property>
+		<property name="playCount">
+			<value>5</value>
+		</property>
+		<relationship name="audioFile">
+			<destination>{5eef36cd-de15-4068-97d9-8e446a358223}</destination>
+		</relationship>
+	</object>
 	<object class="EventMixerGroup" id="{fbb584a3-d52a-43e2-99c4-1a4f02c8a7bc}">
 		<property name="name">
 			<value>Audio 1</value>

@@ -5,7 +5,7 @@
 			<value>MONKTimeStop</value>
 		</property>
 		<property name="outputFormat">
-			<value>0</value>
+			<value>1</value>
 		</property>
 		<relationship name="folder">
 			<destination>{a457183b-6ae7-473a-afb0-917c86763ebd}</destination>
@@ -59,11 +59,18 @@
 	<object class="EventAutomatableProperties" id="{c9946bb1-d2e8-46a1-8bcd-572566e5648b}" />
 	<object class="MarkerTrack" id="{d55c0894-6b82-4cfc-bf84-fcdfc9b6fa1b}" />
 	<object class="GroupTrack" id="{caaa16ed-92b9-43b3-9503-4130eb7c30ea}">
+		<relationship name="modules">
+			<destination>{674b7174-d3eb-4ef8-b9ae-721b8404931f}</destination>
+		</relationship>
 		<relationship name="mixerGroup">
 			<destination>{46e22e7c-d9b9-48f6-9b97-14b48950fd8a}</destination>
 		</relationship>
 	</object>
-	<object class="Timeline" id="{89b64cb7-daee-42de-a91b-a73ff82dd056}" />
+	<object class="Timeline" id="{89b64cb7-daee-42de-a91b-a73ff82dd056}">
+		<relationship name="modules">
+			<destination>{674b7174-d3eb-4ef8-b9ae-721b8404931f}</destination>
+		</relationship>
+	</object>
 	<object class="EventMixerMaster" id="{9c3d42b0-a7d6-44e0-8bbf-3aa0f9405b52}">
 		<relationship name="effectChain">
 			<destination>{32781e85-1025-4289-b3f6-6ee41ca70057}</destination>
@@ -81,6 +88,14 @@
 		</relationship>
 	</object>
 	<object class="MixerBusPanner" id="{4a6325e2-ffc7-4138-b725-87471409138b}" />
+	<object class="SingleSound" id="{674b7174-d3eb-4ef8-b9ae-721b8404931f}">
+		<property name="length">
+			<value>2.9039999999999999</value>
+		</property>
+		<relationship name="audioFile">
+			<destination>{4862ff1d-e243-4edb-900a-94c45fbb1d46}</destination>
+		</relationship>
+	</object>
 	<object class="EventMixerGroup" id="{46e22e7c-d9b9-48f6-9b97-14b48950fd8a}">
 		<property name="name">
 			<value>Audio 1</value>
