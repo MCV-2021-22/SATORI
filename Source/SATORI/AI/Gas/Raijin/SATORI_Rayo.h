@@ -24,7 +24,14 @@ public:
 
 	USATORI_Rayo();
 
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Ability")
+		UAnimMontage* AnimMontage;
 
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Ability|Tags")
+		FGameplayTag TagSpawnAbility;
+
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Ability|Tags")
+		FGameplayTag TagEndAbility;
 
 	FTimerDelegate TimerDelegate;
 
@@ -40,7 +47,19 @@ public:
 	void OnBucleRayos(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo);
 
 protected:
+	UFUNCTION()
+		void OnCancelled(FGameplayTag EventTag, FGameplayEventData EventData);
+
+	UFUNCTION()
+		void OnCompleted(FGameplayTag EventTag, FGameplayEventData EventData);
+
+	UFUNCTION()
+		void EventReceived(FGameplayTag EventTag, FGameplayEventData EventData);
 
 	int iteracion = 0;
 	int max_iteracion = 4;
+
+private:
+
+	const bool bStopWhenAbilityEnds = true;
 };
