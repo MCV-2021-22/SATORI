@@ -6,6 +6,8 @@
 #include "Components/SkeletalMeshComponent.h"
 #include "Components/SphereComponent.h"
 #include "Components/BoxComponent.h"
+#include "AI/Character/SATORI_AICharacter.h"
+#include "AbilitySystemComponent.h"
 
 // Sets default values for this component's properties
 USATORI_ComboSystemComponent::USATORI_ComboSystemComponent()
@@ -92,4 +94,23 @@ bool USATORI_ComboSystemComponent::CanComboAttack()
 void USATORI_ComboSystemComponent::SetComboState(EComboState State)
 {
 	CurrentComboState = State;
+}
+
+void USATORI_ComboSystemComponent::ApplyKnockBackTagToEnemy(ASATORI_AICharacter* Enemy)
+{
+	if (Enemy && CurrentComboState == EComboState::HeavyAttack)
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Red, "Adding Tags");
+
+		Enemy->AddGameplayTag(FGameplayTag::RequestGameplayTag(FName("State.KnockBack")));
+
+		FGameplayEventData EventData;
+		EventData.EventTag = FGameplayTag::RequestGameplayTag(FName("State.KnockBack.Start"));
+		Enemy->GetAbilitySystemComponent()->HandleGameplayEvent(FGameplayTag::RequestGameplayTag(FName("State.KnockBack.Start")), &EventData);
+
+		if (Enemy->GetAbilitySystemComponent()->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag(FName("State.KnockBack"))))
+		{
+			return;
+		}
+	}
 }

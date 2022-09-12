@@ -8,6 +8,7 @@
 
 class USphereComponent;
 class USkeletalMeshComponent;
+class ASATORI_AICharacter;
 
 UENUM()
 enum class EComboState : uint8
@@ -53,6 +54,8 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon")
 	USphereComponent* AttackingCollision;
+
+	void ApplyKnockBackTagToEnemy(ASATORI_AICharacter* Enemy);
 
 	// Getters and Setter
 	EComboState GetCurrentComboState() { return CurrentComboState; }

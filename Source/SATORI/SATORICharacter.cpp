@@ -103,13 +103,13 @@ ASATORICharacter::ASATORICharacter()
 	}
 
 	// Parry Collision
-	ParryCollision = CreateDefaultSubobject<UBoxComponent>(TEXT("ParryForwardCollision"));
+	/*ParryCollision = CreateDefaultSubobject<UBoxComponent>(TEXT("ParryForwardCollision"));
 	ParryCollision->SetupAttachment(GetRootComponent());
 	ParryCollision->SetCollisionProfileName("Pawn");
 	ParryCollision->SetGenerateOverlapEvents(false);
 	ParryCollision->SetRelativeLocation(FVector(90.0f, 0.0f, 0.0f));
 	ParryCollision->OnComponentBeginOverlap.AddDynamic(this, &ASATORICharacter::OnParryOverlapBegin);
-	ParryCollision->OnComponentEndOverlap.AddDynamic(this, &ASATORICharacter::OnParryOverlapEnd);
+	ParryCollision->OnComponentEndOverlap.AddDynamic(this, &ASATORICharacter::OnParryOverlapEnd);*/
 }
 
 void ASATORICharacter::BeginPlay()
@@ -199,14 +199,76 @@ void ASATORICharacter::ApplyDefaultAbilities()
 
 bool ASATORICharacter::DoParryBlock()
 {
-	UE_LOG(LogTemp, Warning, TEXT("DoParryBlockAllEnemies"));
-	return DoParryBlockAllEnemies();
-	//DoParryBlockOneEnemies();
+	//return DoParryBlockAllEnemies();
+	return DoParryBlockOneEnemies();
 }
 
 bool ASATORICharacter::DoParryBlockAllEnemies()
 {
-	ParryCollision->SetGenerateOverlapEvents(true);
+	//ParryCollision->SetGenerateOverlapEvents(true);
+
+	const FVector StartPosition = GetActorLocation();
+	const FRotator StartRotation = GetActorRotation();
+	const FVector EndPosition = StartPosition + (StartRotation.Vector() * 300.0f);
+
+	UWorld* World = GetWorld();
+	TArray<FHitResult> HitResults;
+	TArray<TWeakObjectPtr<AActor>> NewActors;
+
+	 /*Search for static objects only*/
+	ECollisionChannel ECC = ECollisionChannel::ECC_WorldDynamic;
+
+	 /*Declare the Collision Shape, assign a Sphere shape and set it's radius*/
+	FCollisionShape CollisionShape;
+	CollisionShape.ShapeType = ECollisionShape::Box;
+	CollisionShape.SetBox(FVector(EndPosition.X, 10.0f, 10.f));
+
+	FVector CenterOfBox = ((EndPosition - StartPosition) / 2) + StartPosition;
+
+	DrawDebugBox(GetWorld(), CenterOfBox, CollisionShape.GetExtent(), FColor::Green, true);
+
+	bool isHit = GetWorld()->SweepMultiByChannel(HitResults, StartPosition, EndPosition, FQuat::Identity, ECC, CollisionShape);
+
+	if (isHit)
+	{
+		for (int i = 0; i < HitResults.Num(); i++)
+		{
+			TWeakObjectPtr<ASATORI_AICharacter> AICharacter = Cast<ASATORI_AICharacter>(HitResults[i].Actor);
+			if (AICharacter.IsValid())
+			{
+				bool isInFront = AICharacter->CheckPlayerWithRayCast();
+				if (isInFront)
+				{
+					if (AICharacter->GetAbilitySystemComponent()->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag(FName("State.CanEnemyParry"))))
+					{
+						UE_LOG(LogTemp, Warning, TEXT("Enemy"));
+
+						AICharacter->AddGameplayTag(FGameplayTag::RequestGameplayTag(FName("State.Parried")));
+
+						FGameplayEventData EventData;
+						EventData.EventTag = FGameplayTag::RequestGameplayTag(FName("State.Parried.Start"));
+						AICharacter->GetAbilitySystemComponent()->HandleGameplayEvent(FGameplayTag::RequestGameplayTag(FName("State.Parried.Start")), &EventData);
+
+						return true;
+					}
+					if (AICharacter->GetAbilitySystemComponent()->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag(FName("State.Parried"))))
+					{
+						return false;
+					}
+				}
+			}
+			else if (ASATORI_ArcherProjectile* EnemyProjectiles = Cast<ASATORI_ArcherProjectile>(HitResults[i].Actor))
+			{
+				if (EnemyProjectiles)
+				{
+					//UE_LOG(LogTemp, Warning, TEXT("hiii projectiles !!! "));
+					EnemyProjectiles->DestroySelfByParry();
+					return true;
+				}
+			}
+		}
+	}
+
 	return true;
 }
 
@@ -535,9 +597,12 @@ void ASATORICharacter::OnWeaponOverlapBegin(UPrimitiveComponent* OverlappedComp,
 				AttackingCollision->SetGenerateOverlapEvents(false);
 			}
 			EnemyCharacter->CheckDamage(WeaponDamage);
-			/*AnimactionPlayRater = 0.5f;
-			UGameplayStatics::SetGlobalTimeDilation(GetWorld(), AnimactionPlayRater);*/
+
+			// Send current damage type recived (light attack o heavy attack)
 			EnemyCharacter->CheckImpactReceivedByPlayer(this->ComboSystemComponent->GetCurrentComboState());
+
+			// Adding Knock Back to enemy
+			this->ComboSystemComponent->ApplyKnockBackTagToEnemy(EnemyCharacter);
 		}	
 		else if(ASATORI_DummyActor* DummyActor = Cast<ASATORI_DummyActor>(OtherActor))
 		{
@@ -566,10 +631,42 @@ void ASATORICharacter::OnWeaponOverlapEnd(class UPrimitiveComponent* OverlappedC
 void ASATORICharacter::OnParryOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
 	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	if (OtherActor)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("Enemy"));
-	}
+	//if (OtherActor && (OtherActor != this))
+	//{
+	//	if (ASATORI_AICharacter* EnemyCharacter = Cast<ASATORI_AICharacter>(OtherActor))
+	//	{
+	//		if (EnemyCharacter)
+	//		{
+	//			bool isInFront = EnemyCharacter->CheckPlayerWithRayCast();
+	//			if (isInFront)
+	//			{
+	//				if (EnemyCharacter->GetAbilitySystemComponent()->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag(FName("State.CanEnemyParry"))))
+	//				{
+	//					UE_LOG(LogTemp, Warning, TEXT("Enemy"));
+
+	//					EnemyCharacter->AddGameplayTag(FGameplayTag::RequestGameplayTag(FName("State.Parried")));
+
+	//					FGameplayEventData EventData;
+	//					EventData.EventTag = FGameplayTag::RequestGameplayTag(FName("State.Parried.Start"));
+	//					EnemyCharacter->GetAbilitySystemComponent()->HandleGameplayEvent(FGameplayTag::RequestGameplayTag(FName("State.Parried.Start")), &EventData);
+	//				}
+	//				if (EnemyCharacter->GetAbilitySystemComponent()->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag(FName("State.Parried"))))
+	//				{
+	//					ParryCollision->SetGenerateOverlapEvents(false);
+	//				}
+	//			}
+	//		}			
+	//	}
+	//	else if (ASATORI_ArcherProjectile* EnemyProjectiles = Cast<ASATORI_ArcherProjectile>(OtherActor))
+	//	{
+	//		if (EnemyProjectiles)
+	//		{
+	//			//UE_LOG(LogTemp, Warning, TEXT("hiii projectiles !!! "));
+	//			EnemyProjectiles->DestroySelfByParry();
+	//		}
+	//	}
+	//}
+	//ParryCollision->SetGenerateOverlapEvents(false);
 }
 
 
