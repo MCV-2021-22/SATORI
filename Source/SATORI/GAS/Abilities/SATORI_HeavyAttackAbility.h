@@ -28,6 +28,9 @@ public:
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Ability")
 	TSubclassOf<UGameplayEffect> DamageGameplayEffect;
 
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Ability|Tags")
+	FGameplayTag TagSpawnAbility;
+
 	virtual void ActivateAbility(
 		const FGameplayAbilitySpecHandle Handle,
 		const FGameplayAbilityActorInfo* ActorInfo,

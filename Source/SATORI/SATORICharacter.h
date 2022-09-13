@@ -83,6 +83,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Weapon")
 	bool bMultipleHit = false;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Weapon")
+	FName SocketName = "BoSocket";
+
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "GameplayEffect")
 	TSubclassOf<UGameplayEffect> DamageEffect;
 
