@@ -24,6 +24,7 @@
 #include "SATORIGameMode.h"
 #include "GameFramework\CharacterMovementComponent.h"
 #include "FunctionLibrary/SATORI_BlueprintLibrary.h"
+#include "AI/Character/Melee/SATORI_Melee.h"
 
 ASATORI_AICharacter::ASATORI_AICharacter()
 {
@@ -240,6 +241,7 @@ void ASATORI_AICharacter::CheckDamage(float Damage)
 	{
 		USATORI_BlueprintLibrary::ApplyGameplayEffect(this, CountGameplayEffect);
 	}*/
+
 	if (!bursting)
 	{
 		time_burst = 5.f;
@@ -257,6 +259,12 @@ void ASATORI_AICharacter::CheckDamage(float Damage)
 
 	if (dmg_burst >= max_health_possible * 0.2f)
 	{
+
+		//Melee
+		if (ASATORI_Melee* Melee = Cast<ASATORI_Melee>(this))
+		{
+			USATORI_BlueprintLibrary::ApplyGameplayEffect(this, SpecialGameplayEffect);
+		}
 
 		ASATORI_CharacterBase* pryeba = Cast<ASATORI_CharacterBase>(this);
 		if (!HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag(("State.Burst"))))

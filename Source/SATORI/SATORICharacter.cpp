@@ -873,7 +873,6 @@ void ASATORICharacter::SetGodMode()
 	SetDefense(100);
 	SetHealth(GetMaxHealth());
 	SetMana(GetMaxMana());
-
 }
 
 void ASATORICharacter::RestartStats()
