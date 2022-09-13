@@ -51,6 +51,9 @@ public:
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Ability|Tags")
 	FGameplayTag HitTag;
 
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Ability|Tags")
+	FGameplayTag  LaunchTag;
+
 protected:
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (UIMin = "1"), Category = "Ability|Block")
