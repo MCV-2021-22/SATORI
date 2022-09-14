@@ -597,12 +597,12 @@ void ASATORICharacter::OnWeaponOverlapBegin(UPrimitiveComponent* OverlappedComp,
 				AttackingCollision->SetGenerateOverlapEvents(false);
 			}
 			// Send current damage type recived (light attack o heavy attack)
-			EnemyCharacter->CheckImpactReceivedByPlayer(this->ComboSystemComponent->GetCurrentComboState());
+			//EnemyCharacter->CheckImpactReceivedByPlayer(this->ComboSystemComponent->GetCurrentComboState());
 
 			// Adding Knock Back to enemy
-			this->ComboSystemComponent->ApplyKnockBackTagToEnemy(EnemyCharacter);
+			//this->ComboSystemComponent->ApplyKnockBackTagToEnemy(EnemyCharacter);
 
-			EnemyCharacter->CheckDamage(WeaponDamage);	
+			//EnemyCharacter->CheckDamage(WeaponDamage);	
 
 			// Adding Knock Back to enemy
 			this->ComboSystemComponent->ApplyKnockBackTagToEnemy(EnemyCharacter);
