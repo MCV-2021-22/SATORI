@@ -77,7 +77,7 @@ public:
 	TSubclassOf<UGameplayEffect> GoldRewardGameplayEffect;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "GameplayEffect")
-	TSubclassOf<UGameplayEffect> SpecialGameplayEffect;
+	TSubclassOf<UGameplayEffect> CountGameplayEffect;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "GameplayEffect")
 	TSubclassOf<UGameplayEffect> HitGameplayEffect;

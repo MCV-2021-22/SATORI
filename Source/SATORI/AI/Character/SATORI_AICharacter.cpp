@@ -236,48 +236,48 @@ void ASATORI_AICharacter::Tick(float DeltaSeconds)
 
 void ASATORI_AICharacter::CheckDamage(float Damage)
 {
-	//Bursting activation
-	/*for (int count = 0; count < Damage / DamageCounter; count++)
+	//Melee
+	ASATORI_Melee* Melee = Cast<ASATORI_Melee>(this);
+	if (Melee)
 	{
-		USATORI_BlueprintLibrary::ApplyGameplayEffect(this, CountGameplayEffect);
-	}*/
-
-	if (!bursting)
-	{
-		time_burst = 5.f;
-		dmg_burst = 0.f;
-		bursting = true;
+		for (int count = 0; count < Damage / DamageCounter; count++)
+		{
+			USATORI_BlueprintLibrary::ApplyGameplayEffect(this, CountGameplayEffect);
+		}
 	}
-	int prob_block = rand() % 100;
-	if(prob_block < 90)
+	else
 	{
+
+		int prob_block = rand() % 100;
+		if(prob_block < 90)
+		{
 		dmg_burst += Damage;
-	}
-	
-
-
-	float max_health_possible = GetMaxHealth();
-	UE_LOG(LogTemp, Display, TEXT("La max health es: %f"), max_health_possible);
-	UE_LOG(LogTemp, Display, TEXT("Damage dealt: %f"), Damage);
-	UE_LOG(LogTemp, Display, TEXT("Damage burst: %f"), dmg_burst);
-
-	if (dmg_burst >= max_health_possible * 0.2f)
-	{
-
-		//Melee
-		if (ASATORI_Melee* Melee = Cast<ASATORI_Melee>(this))
-		{
-			USATORI_BlueprintLibrary::ApplyGameplayEffect(this, SpecialGameplayEffect);
 		}
 
-		ASATORI_CharacterBase* pryeba = Cast<ASATORI_CharacterBase>(this);
-		if (!HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag(("State.Burst"))))
+		if (!bursting)
 		{
-			AddGameplayTag(FGameplayTag::RequestGameplayTag("State.Burst"));
+			time_burst = 5.f;
+			dmg_burst = 0.f;
+			bursting = true;
 		}
-		//AbilitySystemComponent->AddLooseGameplayTag(FGameplayTag::RequestGameplayTag("State.Burst"));
-	}
+		
+		float max_health_possible = GetMaxHealth();
+		UE_LOG(LogTemp, Display, TEXT("La max health es: %f"), max_health_possible);
+		UE_LOG(LogTemp, Display, TEXT("Damage dealt: %f"), Damage);
+		UE_LOG(LogTemp, Display, TEXT("Damage burst: %f"), dmg_burst);
 
+		if (dmg_burst >= max_health_possible * 0.2f)
+		{
+
+			ASATORI_CharacterBase* pryeba = Cast<ASATORI_CharacterBase>(this);
+			if (!HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag(("State.Burst"))))
+			{
+				AddGameplayTag(FGameplayTag::RequestGameplayTag("State.Burst"));
+			}
+			//AbilitySystemComponent->AddLooseGameplayTag(FGameplayTag::RequestGameplayTag("State.Burst"));
+
+		}
+	}
 
 	USATORI_BlueprintLibrary::ApplyGameplayEffect(this, HitGameplayEffect);
 
@@ -292,7 +292,7 @@ void ASATORI_AICharacter::CheckDamage(float Damage)
 		}
 
 		//Melee
-		if (ASATORI_Melee* Melee = Cast<ASATORI_Melee>(this))
+		if (Melee)
 		{
 			AddGameplayTag(DeadTag);
 		}
