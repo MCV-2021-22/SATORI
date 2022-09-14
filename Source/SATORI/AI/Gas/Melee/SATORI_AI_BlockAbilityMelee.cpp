@@ -70,7 +70,10 @@ void USATORI_AI_BlockAbilityMelee::EndAbility(
 	bool bWasCancelled)
 {
 	//Security measure - remove tags 
-	Melee->RemoveGameplayTag(BlockDamageTag);
+	if (!Melee->HasMatchingGameplayTag(LaunchTag))
+	{
+		Melee->RemoveGameplayTag(BlockDamageTag);
+	}
 	Melee->RemoveGameplayTag(CanBeStunnedTag);
 	Melee->GetCharacterMovement()->RotationRate.Yaw = RotationRate;
 	Super::EndAbility(Handle, ActorInfo, ActivationInfo, bReplicateEndAbility, bWasCancelled);

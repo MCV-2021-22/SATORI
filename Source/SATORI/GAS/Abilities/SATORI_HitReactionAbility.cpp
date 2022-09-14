@@ -73,7 +73,10 @@ void USATORI_HitReactionAbility::EndAbility(
 	bool bReplicateEndAbility,
 	bool bWasCancelled)
 {
-
+	if (ASATORI_PlayerController* Controller = Cast<ASATORI_PlayerController>(Character->GetController()))
+	{
+		Character->EnableInput(Controller);
+	}
 	Super::EndAbility(Handle, ActorInfo, ActivationInfo, bReplicateEndAbility, bWasCancelled);
 }
 
