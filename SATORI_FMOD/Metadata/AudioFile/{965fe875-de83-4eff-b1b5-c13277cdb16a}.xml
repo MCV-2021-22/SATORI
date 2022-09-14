@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<objects serializationModel="Studio.02.02.00">
+	<object class="AudioFile" id="{965fe875-de83-4eff-b1b5-c13277cdb16a}">
+		<property name="assetPath">
+			<value>Character/MONK/FS_GRUNTS_GROANS_10 (1).wav</value>
+		</property>
+		<property name="frequencyInKHz">
+			<value>44.0999985</value>
+		</property>
+		<property name="channelCount">
+			<value>2</value>
+		</property>
+		<property name="length">
+			<value>0.60249433106575967</value>
+		</property>
+		<relationship name="masterAssetFolder">
+			<destination>{269b0b2d-b44d-4e19-a3ee-86e302406a27}</destination>
+		</relationship>
+	</object>
+</objects>
