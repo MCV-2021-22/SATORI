@@ -607,12 +607,10 @@ void ASATORICharacter::OnWeaponOverlapBegin(UPrimitiveComponent* OverlappedComp,
 			// Adding Knock Back to enemy
 			this->ComboSystemComponent->ApplyKnockBackTagToEnemy(EnemyCharacter);
 
-			EnemyCharacter->CheckDamage(WeaponDamage);
-
 			// Send current damage type recived (light attack o heavy attack)
 			EnemyCharacter->CheckImpactReceivedByPlayer(this->ComboSystemComponent->GetCurrentComboState());
 
-			
+			EnemyCharacter->CheckDamage(WeaponDamage);	
 		}	
 		else if(ASATORI_DummyActor* DummyActor = Cast<ASATORI_DummyActor>(OtherActor))
 		{
@@ -698,8 +696,6 @@ void ASATORICharacter::PlayerSenseOfBlow(float DilationTime, float WaitTime)
 		{
 			UGameplayStatics::SetGlobalTimeDilation(GetWorld(), 1.0f);
 		}), WaitTime, false);
-
-	
 }
 
 //////////////////////////////////////////////////////////////////////////
