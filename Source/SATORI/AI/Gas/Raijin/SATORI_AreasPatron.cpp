@@ -93,7 +93,7 @@ void USATORI_AreasPatron::EventReceived(FGameplayTag EventTag, FGameplayEventDat
 						Rayo->setDirection(newForward);
 						Rayo->CapsuleComponentFinal->SetRelativeLocation(Player->CapsuleComponentFinal->GetRelativeLocation());
 						Spawns.Remove(Actor);
-						Rayos.Add(Actor);
+						Rayos.Add(Rayo);
 						//Spawns.RemoveAt(num);
 					}
 
@@ -115,6 +115,7 @@ void USATORI_AreasPatron::EventReceived(FGameplayTag EventTag, FGameplayEventDat
 void USATORI_AreasPatron::EndRayos(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo)
 {
 
+	
 	if (Rayos.Num() == 0)
 	{
 		EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true);
@@ -132,6 +133,7 @@ void USATORI_AreasPatron::EndRayos(const FGameplayAbilitySpecHandle Handle, cons
 
 				Rayos.Remove(Actor);
 				Rayo->Destroy();
+				
 
 			}
 

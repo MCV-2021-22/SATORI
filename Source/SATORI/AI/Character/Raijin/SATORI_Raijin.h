@@ -32,6 +32,6 @@ protected:
 
 	FVector SpawnPos;
 
-	float SoCloseDist = 40.0f;
+	float SoCloseDist = 120.0f;
 
 };

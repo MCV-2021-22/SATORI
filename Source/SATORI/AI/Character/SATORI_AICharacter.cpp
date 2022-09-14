@@ -246,8 +246,12 @@ void ASATORI_AICharacter::CheckDamage(float Damage)
 		dmg_burst = 0.f;
 		bursting = true;
 	}
-
-	dmg_burst += Damage;
+	int prob_block = rand() % 100;
+	if(prob_block < 90)
+	{
+		dmg_burst += Damage;
+	}
+	
 
 
 	float max_health_possible = GetMaxHealth();
