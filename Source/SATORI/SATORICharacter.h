@@ -261,18 +261,7 @@ protected:
 		void OnParryOverlapEnd(class UPrimitiveComponent* OverlappedComp,
 			class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 //Cheats
-
-private:
-
-	float TurnRate = 0;
-
 public:
-
-	UFUNCTION(BlueprintCallable)
-	float GetTurnRate() { return TurnRate; };
-
-	UFUNCTION(BlueprintCallable)
-	void SetTurnRate(float InputAxis) { TurnRate = InputAxis; };
 
 	UFUNCTION(Exec)
 	void SetGodMode();
