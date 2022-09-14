@@ -115,9 +115,9 @@ void ASATORI_GameState::GenerateRandomPassiveEffectAndAbilities()
                     // So, the array will get Size - 0 and Size - 1 element (we only hace 2 portal per run)
                     FSATORI_PortalAbilitiesDatasReward Reward = PortalGrantedNormalAbilityToApply[Size - CurrentId];
                     InstancePortals[i]->SetCurrentGameplayAbilityData(Reward);
-                    UE_LOG(LogTemp, Display, TEXT(" Player Normal Abilities Size : [%d] "), Size);
+                    // UE_LOG(LogTemp, Display, TEXT(" Player Normal Abilities Size : [%d] "), Size);
                     FString AbilityString = Reward.AbilityName.ToString();
-                    UE_LOG(LogTemp, Warning, TEXT(" Player Normal Ability Name : %s "), *AbilityString);
+                    // UE_LOG(LogTemp, Warning, TEXT(" Player Normal Ability Name : %s "), *AbilityString);
                     InstancePortals[i]->SetCurrentId(CurrentId + 1);
                 }
             }

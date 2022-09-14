@@ -163,20 +163,20 @@ void USATORI_GameInstance::RemoveElementonFromUpgratedAbilities(int Id)
         if (PortalGrantedUpgratedAbilityToApply.Num() == 2 && Id == 1)
         {
             FString AbilityString = PortalGrantedUpgratedAbilityToApply[Index].AbilityName.ToString();
-            UE_LOG(LogTemp, Warning, TEXT(" Player Normal Ability Name : %s "), *AbilityString);
+            UE_LOG(LogTemp, Warning, TEXT(" Player Upgrated Ability Name : %s "), *AbilityString);
             PortalGrantedUpgratedAbilityToApply.RemoveAt(0);
         }
         else if (PortalGrantedUpgratedAbilityToApply.Num() == 2 && Id == 2)
         {
             FString AbilityString = PortalGrantedUpgratedAbilityToApply[Index].AbilityName.ToString();
-            UE_LOG(LogTemp, Warning, TEXT(" Player Normal Ability Name : %s "), *AbilityString);
+            UE_LOG(LogTemp, Warning, TEXT(" Player Upgrated Ability Name : %s "), *AbilityString);
             PortalGrantedUpgratedAbilityToApply.RemoveAt(1);
         }
         else
         {
-            FString AbilityString = PortalGrantedNormalAbilityToApply[Index].AbilityName.ToString();
-            UE_LOG(LogTemp, Warning, TEXT(" Player Normal Ability Name : %s "), *AbilityString);
-            PortalGrantedNormalAbilityToApply.RemoveAt(Index);
+            FString AbilityString = PortalGrantedUpgratedAbilityToApply[Index].AbilityName.ToString();
+            UE_LOG(LogTemp, Warning, TEXT(" Player Upgrated Ability Name : %s "), *AbilityString);
+            PortalGrantedUpgratedAbilityToApply.RemoveAt(Index);
         }
         ShuffleArray(PortalGrantedUpgratedAbilityToApply);
     }

@@ -9,6 +9,7 @@
 #include "SATORICharacter.h"
 #include "Animation/SkeletalMeshActor.h"
 #include "GAS/Tasks/AbilityTask_WaitInputReleaseByTm.h"
+#include "Actors/AbilitiesActors/SATORI_Push360Actor.h"
 
 USATORI_HeavyAttackAbility::USATORI_HeavyAttackAbility()
 {
@@ -55,24 +56,46 @@ void USATORI_HeavyAttackAbility::EndAbility(const FGameplayAbilitySpecHandle Han
 	bool bReplicateEndAbility,
 	bool bWasCancelled)
 {
-	MaxHoldTime = 0.0f;
+	FinishHoldTime = 0.0f;
 
 	Super::EndAbility(Handle, ActorInfo, ActivationInfo, bReplicateEndAbility, bWasCancelled);
 }
 
 void USATORI_HeavyAttackAbility::OnCancelled(FGameplayTag EventTag, FGameplayEventData EventData)
 {
-	Super::EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, false);
+	EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, false);
 }
 
 void USATORI_HeavyAttackAbility::OnCompleted(FGameplayTag EventTag, FGameplayEventData EventData)
 {
-	Super::EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, false);
+	EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, false);
 }
 
 void USATORI_HeavyAttackAbility::EventReceived(FGameplayTag EventTag, FGameplayEventData EventData)
 {
-	
+	if (EventTag == TagSpawnAbility)
+	{
+		if (FinishHoldTime > KnockBackHoldTime)
+		{
+			ASATORICharacter* Character = Cast<ASATORICharacter>(GetAvatarActorFromActorInfo());
+			if (!Character)
+			{
+				UE_LOG(LogTemp, Display, TEXT("[%s] USATORI_CloneAbility: Cannot Cast ASATORICharacter ... "), *GetName());
+				Super::EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true);
+			}
+
+			FTransform SpawnTransform = Character->GetTransform();
+
+			ASATORI_Push360Actor* Push360 = GetWorld()->SpawnActorDeferred<ASATORI_Push360Actor>(Push360Actor, SpawnTransform, GetOwningActorFromActorInfo(),
+				Character, ESpawnActorCollisionHandlingMethod::AlwaysSpawn);
+			Push360->DamageGameplayEffect = DamageGameplayEffect;
+			Push360->Damage = 0.0f;
+			Push360->TimeToFinish = TimeToEndAbility;
+			Push360->FinishSpawning(SpawnTransform);
+		}
+	}
+
+	FinishHoldTime = 0.0f;
 }
 
 void USATORI_HeavyAttackAbility::OnTimerFinished(float FinishTime)
@@ -85,6 +108,8 @@ void USATORI_HeavyAttackAbility::OnTimerFinished(float FinishTime)
 		float LastAttackDamage = (((FinishTime * CurrentAttack) / 100) + AttackMultiplier) * CurrentAttack;
 		Character->WeaponDamage += LastAttackDamage;
 		//GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Red, FString::Printf(TEXT("Attack power: %f"), Character->WeaponDamage));
+
+		FinishHoldTime = FinishTime;
 
 		// Anim Jump Section
 		UAnimInstance* AnimInstance = Character->GetMesh()->GetAnimInstance();
