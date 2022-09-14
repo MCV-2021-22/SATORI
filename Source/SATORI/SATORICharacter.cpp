@@ -91,7 +91,7 @@ ASATORICharacter::ASATORICharacter()
 	if (SwordComponent)
 	{
 		const FAttachmentTransformRules AttachmentRules = FAttachmentTransformRules(EAttachmentRule::KeepRelative, false);
-		SwordComponent->AttachToComponent(GetMesh(), AttachmentRules, "BoSocket");
+		SwordComponent->AttachToComponent(GetMesh(), AttachmentRules, SocketName);
 		// Sphere Collision
 		AttackingCollision->SetCapsuleSize(20.f, 60.f, true);
 		AttackingCollision->SetCollisionProfileName("Pawn");
@@ -596,16 +596,21 @@ void ASATORICharacter::OnWeaponOverlapBegin(UPrimitiveComponent* OverlappedComp,
 			{
 				AttackingCollision->SetGenerateOverlapEvents(false);
 			}
+			// Send current damage type recived (light attack o heavy attack)
+			EnemyCharacter->CheckImpactReceivedByPlayer(this->ComboSystemComponent->GetCurrentComboState());
 
 			// Adding Knock Back to enemy
 			this->ComboSystemComponent->ApplyKnockBackTagToEnemy(EnemyCharacter);
 
-			EnemyCharacter->CheckDamage(WeaponDamage);
+			EnemyCharacter->CheckDamage(WeaponDamage);	
+
+			// Adding Knock Back to enemy
+			this->ComboSystemComponent->ApplyKnockBackTagToEnemy(EnemyCharacter);
 
 			// Send current damage type recived (light attack o heavy attack)
 			EnemyCharacter->CheckImpactReceivedByPlayer(this->ComboSystemComponent->GetCurrentComboState());
 
-			
+			EnemyCharacter->CheckDamage(WeaponDamage);	
 		}	
 		else if(ASATORI_DummyActor* DummyActor = Cast<ASATORI_DummyActor>(OtherActor))
 		{
@@ -691,8 +696,6 @@ void ASATORICharacter::PlayerSenseOfBlow(float DilationTime, float WaitTime)
 		{
 			UGameplayStatics::SetGlobalTimeDilation(GetWorld(), 1.0f);
 		}), WaitTime, false);
-
-	
 }
 
 //////////////////////////////////////////////////////////////////////////

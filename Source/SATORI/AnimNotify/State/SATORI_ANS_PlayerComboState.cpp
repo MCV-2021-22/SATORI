@@ -4,6 +4,7 @@
 #include "AnimNotify/State/SATORI_ANS_PlayerComboState.h"
 #include "SATORICharacter.h"
 #include "Components/CapsuleComponent.h"
+#include "Actors/AbilitiesActors/SATORI_Push360Actor.h"
 
 USATORI_ANS_PlayerComboState::USATORI_ANS_PlayerComboState()
 {
@@ -24,7 +25,7 @@ void USATORI_ANS_PlayerComboState::NotifyBegin(USkeletalMeshComponent* MeshComp,
 			// print enum to string
 			const TEnumAsByte<EComboState> EComboStateEnum = ComboState;
 			FString EnumAsString = UEnum::GetValueAsString(EComboStateEnum.GetValue());
-			//UE_LOG(LogTemp, Warning, TEXT("My Current combo state is : %s"), *EnumAsString);
+			//UE_LOG(LogTemp, Warning, TEXT("My Current combo state is : %s"), *EnumAsString);			
 		}
 	}
 }
