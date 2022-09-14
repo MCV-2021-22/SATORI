@@ -120,7 +120,12 @@ void ASATORI_RaijinRayoMovil::Tick(float DeltaTime)
 	//SetActorLocation(NewPos);
 	my_decal->SetActorLocation(NewPos);
 	
-	
+	FVector RayoLocation = GetActorLocation();
+
+	if (Trueno)
+	{
+		UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), Trueno, RayoLocation);
+	}
 
 	
 }

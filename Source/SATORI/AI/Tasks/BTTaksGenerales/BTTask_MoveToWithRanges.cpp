@@ -1,6 +1,8 @@
 //
 
 #include "AI/Tasks/BTTaksGenerales/BTTask_MoveToWithRanges.h"
+#include "Navigation/PathFollowingComponent.h"
+#include "AITypes.h"
 #include "AIController.h"
 #include "SATORICharacter.h"
 #include "AI/Character/SATORI_AICharacter.h"
@@ -9,7 +11,7 @@
 
 UBTTask_MoveToWithRanges::UBTTask_MoveToWithRanges()
 {
-	bCreateNodeInstance = true;
+	bNotifyTick = true;
 }
 
 EBTNodeResult::Type UBTTask_MoveToWithRanges::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
@@ -23,15 +25,9 @@ EBTNodeResult::Type UBTTask_MoveToWithRanges::ExecuteTask(UBehaviorTreeComponent
 		return EBTNodeResult::Failed;
 	}
 
-	EPathFollowingRequestResult::Type Moving = AIController->MoveToActor(Target, AcceptanceRadius, bStopOnOverlap, bUsePathfinding, bCanStrafe, FilterClass, bAllowPartialPath);
+	AIController->MoveToActor(Target, AcceptanceRadius, bStopOnOverlap, bUsePathfinding, bCanStrafe, FilterClass, bAllowPartialPath);
 
-	if(Moving == EPathFollowingRequestResult::RequestSuccessful || Moving == EPathFollowingRequestResult::AlreadyAtGoal)
-	{
-		FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
-		return EBTNodeResult::Succeeded;
-	}
-
-	return EBTNodeResult::Succeeded;
+	return EBTNodeResult::InProgress;
 }
 
 EBTNodeResult::Type UBTTask_MoveToWithRanges::AbortTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
@@ -40,5 +36,27 @@ EBTNodeResult::Type UBTTask_MoveToWithRanges::AbortTask(UBehaviorTreeComponent& 
 	{ 
 		Character->GetCharacterMovement()->StopActiveMovement();
 	}
+
+	FinishLatentTask(OwnerComp, EBTNodeResult::Aborted);
 	return EBTNodeResult::Aborted;
+}
+
+void UBTTask_MoveToWithRanges::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds)
+{
+	AActor* Target = Cast<AActor>(OwnerComp.GetBlackboardComponent()->GetValueAsObject(MyBlackboardKey.SelectedKeyName));
+	ASATORI_AICharacter* Character = Cast<ASATORI_AICharacter>(OwnerComp.GetAIOwner()->GetPawn());
+
+	if (IsValid(Target) && Character)
+	{
+		if (FVector::Dist(Character->GetActorLocation(), Target->GetActorLocation()) > MaxRadiusToFail)
+		{
+			Character->GetCharacterMovement()->StopActiveMovement();
+			FinishLatentTask(OwnerComp, EBTNodeResult::Failed);
+		}
+		if (FVector::Dist(Character->GetActorLocation(), Target->GetActorLocation()) < AcceptanceRadius)
+		{
+			Character->GetCharacterMovement()->StopActiveMovement();
+			FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
+		}
+	}
 }

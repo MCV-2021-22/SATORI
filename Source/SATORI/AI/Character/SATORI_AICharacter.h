@@ -77,7 +77,7 @@ public:
 	TSubclassOf<UGameplayEffect> GoldRewardGameplayEffect;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "GameplayEffect")
-	TSubclassOf<UGameplayEffect> CountGameplayEffect;
+	TSubclassOf<UGameplayEffect> SpecialGameplayEffect;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "GameplayEffect")
 	TSubclassOf<UGameplayEffect> HitGameplayEffect;
@@ -106,6 +106,10 @@ protected:
 	virtual void AddAICharacterAbilities();
 
 	void GrantAbility(FGameplayAbilitySpec Ability);
+
+	bool bursting = false;
+	float time_burst = 0.0f;
+	float dmg_burst = 0.0f;
 
 public:
 

@@ -603,6 +603,16 @@ void ASATORICharacter::OnWeaponOverlapBegin(UPrimitiveComponent* OverlappedComp,
 			this->ComboSystemComponent->ApplyKnockBackTagToEnemy(EnemyCharacter);
 
 			EnemyCharacter->CheckDamage(WeaponDamage);	
+
+			// Adding Knock Back to enemy
+			this->ComboSystemComponent->ApplyKnockBackTagToEnemy(EnemyCharacter);
+
+			EnemyCharacter->CheckDamage(WeaponDamage);
+
+			// Send current damage type recived (light attack o heavy attack)
+			EnemyCharacter->CheckImpactReceivedByPlayer(this->ComboSystemComponent->GetCurrentComboState());
+
+			
 		}	
 		else if(ASATORI_DummyActor* DummyActor = Cast<ASATORI_DummyActor>(OtherActor))
 		{
@@ -870,7 +880,6 @@ void ASATORICharacter::SetGodMode()
 	SetDefense(100);
 	SetHealth(GetMaxHealth());
 	SetMana(GetMaxMana());
-
 }
 
 void ASATORICharacter::RestartStats()
@@ -879,48 +888,12 @@ void ASATORICharacter::RestartStats()
 	SetMana(GetMaxMana());
 }
 
-void ASATORICharacter::GetAllAbilities()
-{
-	/*for (TSubclassOf < USATORI_GameplayAbility > Ability : PlayerGameplayAbilityComponent->DisabledAbilityClasses)
-	{
-		PlayerGameplayAbilityComponent->EnabledAbilityClasses.AddUnique(Ability);
-	}
-	PlayerGameplayAbilityComponent->DisabledAbilityClasses.Empty();*/
-}
-
 void ASATORICharacter::RemoveAllAbilities()
 {
 	PlayerGameplayAbilityComponent->PlayerGameplayAbility.Empty();
 	PlayerGameplayAbilityComponent->PlayerAbilitiesNames.Empty();
 	PlayerGameplayAbilityComponent->GetCharacterAbilities().Empty();
 	PlayerGameplayAbilityComponent->CurrentAbilityValue = 0;
-}
-
-void ASATORICharacter::GetAbility(FName AbilityName)
-{
-	/*TSubclassOf < USATORI_GameplayAbility > AbilityToEnable;
-
-	for (TSubclassOf < USATORI_GameplayAbility > Ability : PlayerGameplayAbilityComponent->DisabledAbilityClasses)
-	{
-		FName GetAbilityName = Ability.GetDefaultObject()->GetAbilityName();
-		UE_LOG(LogTemp, Display, TEXT("GetAbilityName: %s"), *GetAbilityName.ToString());
-		UE_LOG(LogTemp, Display, TEXT("AbilityName: %s"), *AbilityName.ToString());
-		if (GetAbilityName.ToString() == AbilityName.ToString())
-		{
-			AbilityToEnable = Ability;
-			PlayerGameplayAbilityComponent->EnabledAbilityClasses.AddUnique(AbilityToEnable);
-		}
-	}
-	PlayerGameplayAbilityComponent->DisabledAbilityClasses.Remove(AbilityToEnable);*/
-}
-
-void ASATORICharacter::GetEnabledAbilityName()
-{
-	/*for (TSubclassOf < USATORI_GameplayAbility > Ability : PlayerGameplayAbilityComponent->EnabledAbilityClasses)
-	{
-		FName GetAbilityName = Ability.GetDefaultObject()->GetAbilityName();
-		GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, FString::Printf(TEXT("AbilityName: %s"), *GetAbilityName.ToString()));
-	}*/
 }
 
 void ASATORICharacter::KillAllEnemies()

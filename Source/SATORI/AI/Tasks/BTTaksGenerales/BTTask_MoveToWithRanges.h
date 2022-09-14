@@ -17,6 +17,7 @@ class SATORI_API UBTTask_MoveToWithRanges : public UBTTaskNode
 	UBTTask_MoveToWithRanges();
 	virtual EBTNodeResult::Type ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory) override;
 	virtual EBTNodeResult::Type AbortTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory) override;
+	virtual void TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds) override;
 
 public:
 
@@ -24,19 +25,19 @@ public:
 		FBlackboardKeySelector MyBlackboardKey;
 
 	UPROPERTY(EditAnywhere)
-		float AcceptanceRadius;
+		float AcceptanceRadius = 0.0f;
 	UPROPERTY(EditAnywhere)
-		float MaxRadiusToFail;
+		float MaxRadiusToFail = 0.0f;
 
 	UPROPERTY(EditAnywhere)
-		bool bStopOnOverlap;
+		bool bStopOnOverlap = true;
 	UPROPERTY(EditAnywhere)
-		bool bUsePathfinding;
+		bool bUsePathfinding = true;
 	UPROPERTY(EditAnywhere)
 		bool bCanStrafe;
 	UPROPERTY(EditAnywhere);
 		TSubclassOf< UNavigationQueryFilter > FilterClass;
 	UPROPERTY(EditAnywhere)
-		bool bAllowPartialPath;
+		bool bAllowPartialPath = true;
 
 };

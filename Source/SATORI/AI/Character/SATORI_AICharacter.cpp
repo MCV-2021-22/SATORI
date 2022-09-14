@@ -24,6 +24,7 @@
 #include "SATORIGameMode.h"
 #include "GameFramework\CharacterMovementComponent.h"
 #include "FunctionLibrary/SATORI_BlueprintLibrary.h"
+#include "AI/Character/Melee/SATORI_Melee.h"
 
 ASATORI_AICharacter::ASATORI_AICharacter()
 {
@@ -221,15 +222,58 @@ bool ASATORI_AICharacter::CheckPlayerWithRayCast()
 void ASATORI_AICharacter::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
+
+	if (bursting)
+	{
+		time_burst -= DeltaSeconds;
+		if (time_burst <= 0.f)
+		{
+			bursting = false;
+			RemoveGameplayTag(FGameplayTag::RequestGameplayTag("State.Burst"));
+		}
+	}
 }
 
 void ASATORI_AICharacter::CheckDamage(float Damage)
 {
 	//Bursting activation
-	for (int count = 0; count < Damage / DamageCounter; count++)
+	/*for (int count = 0; count < Damage / DamageCounter; count++)
 	{
 		USATORI_BlueprintLibrary::ApplyGameplayEffect(this, CountGameplayEffect);
+	}*/
+
+	if (!bursting)
+	{
+		time_burst = 5.f;
+		dmg_burst = 0.f;
+		bursting = true;
 	}
+
+	dmg_burst += Damage;
+
+
+	float max_health_possible = GetMaxHealth();
+	UE_LOG(LogTemp, Display, TEXT("La max health es: %f"), max_health_possible);
+	UE_LOG(LogTemp, Display, TEXT("Damage dealt: %f"), Damage);
+	UE_LOG(LogTemp, Display, TEXT("Damage burst: %f"), dmg_burst);
+
+	if (dmg_burst >= max_health_possible * 0.2f)
+	{
+
+		//Melee
+		if (ASATORI_Melee* Melee = Cast<ASATORI_Melee>(this))
+		{
+			USATORI_BlueprintLibrary::ApplyGameplayEffect(this, SpecialGameplayEffect);
+		}
+
+		ASATORI_CharacterBase* pryeba = Cast<ASATORI_CharacterBase>(this);
+		if (!HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag(("State.Burst"))))
+		{
+			AddGameplayTag(FGameplayTag::RequestGameplayTag("State.Burst"));
+		}
+		//AbilitySystemComponent->AddLooseGameplayTag(FGameplayTag::RequestGameplayTag("State.Burst"));
+	}
+
 
 	USATORI_BlueprintLibrary::ApplyGameplayEffect(this, HitGameplayEffect);
 
@@ -243,12 +287,17 @@ void ASATORI_AICharacter::CheckDamage(float Damage)
 			Spawned->SpawnedDie();
 		}
 
-		AActor* Actor = Cast<AActor>(this);
-		//ASATORI_AICharacter* Character = Cast<ASATORI_AICharacter>(Actor);
-
-		GetWorld()->GetAuthGameMode<ASATORIGameMode>()->RemoveEnemyActor(Actor);
-		Destroy();
-		//AddGameplayTag(DeadTag);
+		//Melee
+		if (ASATORI_Melee* Melee = Cast<ASATORI_Melee>(this))
+		{
+			AddGameplayTag(DeadTag);
+		}
+		else
+		{
+			AActor* Actor = Cast<AActor>(this);
+			GetWorld()->GetAuthGameMode<ASATORIGameMode>()->RemoveEnemyActor(Actor);
+			Destroy();
+		}
 	}
 }
 
