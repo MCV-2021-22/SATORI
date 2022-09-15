@@ -10,6 +10,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "Runtime/Engine/Classes/Particles/ParticleSystemComponent.h"
 #include "NiagaraFunctionLibrary.h"
+#include "SATORI_RaijinRayoMovilSpawns.h"
 
 ASATORI_RaijinRayoMovil::ASATORI_RaijinRayoMovil()
 {
@@ -141,7 +142,7 @@ void ASATORI_RaijinRayoMovil::OnComponentHit(UPrimitiveComponent* HitComponent, 
 	IGameplayTagAssetInterface* OtherTagInterface = Cast<IGameplayTagAssetInterface>(OtherActor);
 
 
-	Destroy();
+	//Destroy();
 
 	/*if (IsHostile(InstigatorTagInterface, OtherTagInterface)) {
 		HandleHit(OtherActor);
@@ -190,6 +191,21 @@ void ASATORI_RaijinRayoMovil::OnComponentBeginOverlap(
 
 	}
 
+	ASATORI_RaijinRayoMovilSpawns* Rayo = Cast<ASATORI_RaijinRayoMovilSpawns>(OtherActor);
+	if (Rayo && !inmune)
+	{
+
+		//float dmg_done = USATORI_BlueprintLibrary::ApplyGameplayEffectDamage(Player, Damage, Player, DamageGameplayEffect);
+
+		my_decal->Destroy();
+
+		destruido = true;
+		//Destroy();
+
+		//float dmg_done = USATORI_BlueprintLibrary::ApplyGameplayEffectDamage(OtherActor, Damage, OtherActor, DamageGameplayEffect);
+
+	}
+
 }
 
 void ASATORI_RaijinRayoMovil::OnComponentBeginOverlapFinal(
@@ -200,7 +216,7 @@ void ASATORI_RaijinRayoMovil::OnComponentBeginOverlapFinal(
 	bool bFromSweep,
 	const FHitResult& SweepResult)
 {
-	ASATORI_RaijinRayoMovil* Rayo = Cast<ASATORI_RaijinRayoMovil>(OtherActor);
+	ASATORI_RaijinRayoMovilSpawns* Rayo = Cast<ASATORI_RaijinRayoMovilSpawns>(OtherActor);
 	if (Rayo && !inmune)
 	{
 
