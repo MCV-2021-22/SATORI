@@ -68,8 +68,6 @@ void USATORI_ComboSystemComponent::LigthAttack()
 			lightAttackCounter ++;
 		}
 	}
-	
-	UE_LOG(LogTemp, Warning, TEXT("lightAttackCounter : %d"), lightAttackCounter);
 }
 
 void USATORI_ComboSystemComponent::HeavyAttack()

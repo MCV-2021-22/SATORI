@@ -241,7 +241,6 @@ bool ASATORICharacter::DoParryBlockAllEnemies()
 				{
 					if (AICharacter->GetAbilitySystemComponent()->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag(FName("State.CanEnemyParry"))))
 					{
-						UE_LOG(LogTemp, Warning, TEXT("Enemy"));
 
 						AICharacter->AddGameplayTag(FGameplayTag::RequestGameplayTag(FName("State.Parried")));
 
@@ -295,7 +294,6 @@ bool ASATORICharacter::DoParryBlockOneEnemies()
 		{
 			if (AICharacter->GetAbilitySystemComponent()->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag(FName("State.CanEnemyParry"))))
 			{
-				UE_LOG(LogTemp, Warning, TEXT("Enemy"));
 
 				AICharacter->AddGameplayTag(FGameplayTag::RequestGameplayTag(FName("State.Parried")));
 
@@ -343,7 +341,6 @@ bool ASATORICharacter::IsEnemyInFrontOfAngle()
 	if (IsEnemyInFront(StartPosition, EndPosition, HitResult))
 	{
 		NewActors.Add(HitResult.Actor);
-		UE_LOG(LogTemp, Warning, TEXT("Enemigo in front !!! "));
 		bHit = true;
 	}
 	// Check enemy is in front of the angle
@@ -353,7 +350,6 @@ bool ASATORICharacter::IsEnemyInFrontOfAngle()
 		if (bHit)
 		{
 			NewActors.Add(HitResult.Actor);
-			UE_LOG(LogTemp, Warning, TEXT("Enemigo in front of the angle!!! "));
 		}
 	}
 

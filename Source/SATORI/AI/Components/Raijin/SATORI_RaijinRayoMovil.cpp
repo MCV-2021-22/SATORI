@@ -58,8 +58,6 @@ ASATORI_RaijinRayoMovil::ASATORI_RaijinRayoMovil()
 	TArray< AActor* > enemigos;
 	UGameplayStatics::GetAllActorsWithTag(GetWorld(), FName("PossessedBy.Player"), enemigos);
 
-
-	UE_LOG(LogTemp, Display, TEXT("Bala creada 222 "));
 }
 
 void ASATORI_RaijinRayoMovil::setDirection(FVector newDirection)
@@ -88,15 +86,8 @@ void ASATORI_RaijinRayoMovil::BeginPlay()
 		my_decal->SetLifeSpan(0);
 		my_decal->GetDecal()->DecalSize = FVector(decal_size, decal_size, decal_size);
 		//decal->SetLifeSpan(8);
-		UE_LOG(LogTemp, Warning, TEXT("Yes decal spawned"));
 		//m_previousActionDecal = decal;
 	}
-	else
-	{
-		UE_LOG(LogTemp, Warning, TEXT("No decal spawned"));
-	}
-
-
 }
 
 
