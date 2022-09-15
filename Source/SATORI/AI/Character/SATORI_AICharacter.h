@@ -113,6 +113,7 @@ protected:
 
 public:
 
+	bool canDestroy = false;
 	//Deathchecking
 	UFUNCTION(BlueprintCallable)
 	void CheckDamage(float Damage);

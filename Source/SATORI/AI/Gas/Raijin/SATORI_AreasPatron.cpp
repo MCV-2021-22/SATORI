@@ -115,7 +115,7 @@ void USATORI_AreasPatron::EventReceived(FGameplayTag EventTag, FGameplayEventDat
 void USATORI_AreasPatron::EndRayos(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo)
 {
 
-	
+	UE_LOG(LogTemp, Warning, TEXT("Num Rayos %f"), Rayos.Num());
 	if (Rayos.Num() == 0)
 	{
 		EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true);
@@ -126,12 +126,14 @@ void USATORI_AreasPatron::EndRayos(const FGameplayAbilitySpecHandle Handle, cons
 		{
 			AActor* Actor = Rayos[j];
 
-			ASATORI_RaijinRayoMovil* Rayo = Cast<ASATORI_RaijinRayoMovil>(Actor);
+			//ASATORI_RaijinRayoMovil* Rayo = Cast<ASATORI_RaijinRayoMovil>(Actor);
+			ASATORI_RaijinRayoMovil* Rayo = Cast<ASATORI_RaijinRayoMovil>(Rayos[j]);
+
 
 			if(Rayo->getDestruido())
 			{
 
-				Rayos.Remove(Actor);
+				Rayos.Remove(Rayo);
 				Rayo->Destroy();
 				
 

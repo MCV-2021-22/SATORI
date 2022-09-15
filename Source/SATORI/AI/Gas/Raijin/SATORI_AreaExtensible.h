@@ -41,6 +41,12 @@ public:
 	UPROPERTY(BlueprintReadOnly, EditAnywhere)
 		TSubclassOf<ASATORI_RaijinRayoExtensible> ProjectileClass;
 
+
+	FTimerDelegate TimerDelegate;
+	FTimerHandle TimerHandle;
+
+	ASATORI_RaijinRayoExtensible* Rayo1;
+	void EndRayos(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo);
 protected:
 	UFUNCTION()
 		void OnCancelled(FGameplayTag EventTag, FGameplayEventData EventData);
