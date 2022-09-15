@@ -65,6 +65,10 @@ void USATORI_AreaExtensible::EventReceived(FGameplayTag EventTag, FGameplayEvent
 				ASATORI_RaijinRayoExtensible* Rayo = GetWorld()->SpawnActor<ASATORI_RaijinRayoExtensible>(ProjectileClass,
 					IA_POS,
 					RotationOfIA);
+				if(Rayo)
+				{
+					Rayo1 = Rayo;
+				}
 
 				break;
 
@@ -82,10 +86,29 @@ void USATORI_AreaExtensible::EventReceived(FGameplayTag EventTag, FGameplayEvent
 			//ASATORI_ArcherProjectile* NewProjectile = World->SpawnActor<ASATORI_ArcherProjectile>(ProjectileClass, Transform, SpawnParams);
 		}
 
+		TimerDelegate = FTimerDelegate::CreateUObject(this, &USATORI_AreaExtensible::EndRayos, CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo);
+		GetWorld()->GetTimerManager().SetTimer(TimerHandle, TimerDelegate, 0.3f, true);
 
 		//EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true);
 
 	}
+}
+
+void USATORI_AreaExtensible::EndRayos(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo)
+{
+
+	//UE_LOG(LogTemp, Warning, TEXT("Num Rayos %f"), Rayos.Num());
+	if (Rayo1)
+	{
+		if(Rayo1->destruible)
+		{
+			Rayo1->Destroy();
+			EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true);
+		}
+		
+	}
+	
+
 }
 
 void USATORI_AreaExtensible::OnCancelled(FGameplayTag EventTag, FGameplayEventData EventData)
