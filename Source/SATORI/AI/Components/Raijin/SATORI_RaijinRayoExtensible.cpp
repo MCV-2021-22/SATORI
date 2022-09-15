@@ -175,8 +175,8 @@ void ASATORI_RaijinRayoExtensible::OnComponentBeginOverlap(
 		float dmg_done = USATORI_BlueprintLibrary::ApplyGameplayEffectDamage(Player, Damage, Player, DamageGameplayEffect);
 
 		my_decal->Destroy();
-		Destroy();
-
+		//Destroy();
+		destruible = true;
 		//float dmg_done = USATORI_BlueprintLibrary::ApplyGameplayEffectDamage(OtherActor, Damage, OtherActor, DamageGameplayEffect);
 
 	}
