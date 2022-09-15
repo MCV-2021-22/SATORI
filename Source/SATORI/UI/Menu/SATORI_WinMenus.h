@@ -25,7 +25,11 @@ public:
 	UPROPERTY(meta = (BindWidget))
 	UButton* MainMenuButton;
 
+	//UPROPERTY(meta = (BindWidget))
+	UButton* ResumeButton;
 private:
+	UFUNCTION()
+	void OnResumeClicked();
 
 	UFUNCTION()
 	void OnMainMenuClicked();

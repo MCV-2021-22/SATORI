@@ -47,7 +47,6 @@ void ASATORI_WinPortalActor::Interact(AActor* ActorInteracting)
 			ASATORICharacter* SatoriCharacter = Cast<ASATORICharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
 			if (SatoriCharacter)
 			{
-				SatoriCharacter->CharacterDeath();
 				ASATORI_PlayerController* PlayerController = Cast<ASATORI_PlayerController>(SatoriCharacter->GetController());
 				if (PlayerController)
 				{
