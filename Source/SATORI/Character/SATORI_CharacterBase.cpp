@@ -22,7 +22,10 @@ UAbilitySystemComponent* ASATORI_CharacterBase::GetAbilitySystemComponent() cons
 
 void ASATORI_CharacterBase::AddGameplayTag(const FGameplayTag& TagToAdd)
 {
-	AbilitySystemComponent->AddLooseGameplayTag(TagToAdd);
+	if(AbilitySystemComponent.IsValid())
+	{
+		AbilitySystemComponent->AddLooseGameplayTag(TagToAdd);
+	}
 }
 
 void ASATORI_CharacterBase::RemoveGameplayTag(const FGameplayTag& TagToRemove)

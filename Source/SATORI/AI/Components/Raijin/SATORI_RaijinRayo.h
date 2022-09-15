@@ -44,7 +44,7 @@ public:
 		UMaterialInterface* MaterialDecal;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Meta = (ExposeOnSpawn = true), Category = "Missile")
-	float Damage = 10;
+	float Damage = 0.001;
 
 	UFUNCTION()
 		void OnComponentBeginOverlap(

@@ -118,8 +118,11 @@ void ASATORI_RaijinRayoMovil::Tick(float DeltaTime)
 	
 	SetActorRelativeLocation(NewPos);
 	//SetActorLocation(NewPos);
-	my_decal->SetActorLocation(NewPos);
-	
+
+	if(my_decal)
+	{
+		my_decal->SetActorLocation(NewPos);
+	}
 	FVector RayoLocation = GetActorLocation();
 
 	if (Trueno)
@@ -177,7 +180,7 @@ void ASATORI_RaijinRayoMovil::OnComponentBeginOverlap(
 	if(Player)
 	{
 
-		//float dmg_done = USATORI_BlueprintLibrary::ApplyGameplayEffectDamage(Player, Damage, Player, DamageGameplayEffect);
+		float dmg_done = USATORI_BlueprintLibrary::ApplyGameplayEffectDamage(Player, Damage, Player, DamageGameplayEffect);
 
 		//my_decal->Destroy();
 		//Destroy();

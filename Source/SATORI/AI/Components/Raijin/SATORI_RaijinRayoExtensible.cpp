@@ -111,7 +111,7 @@ void ASATORI_RaijinRayoExtensible::Tick(float DeltaTime)
 		decal_size += DeltaTime;
 		scale += DeltaTime;
 		//CapsuleComponent->SetCapsuleSize(decal_size, 1000.0f);
-		CapsuleComponent->SetRelativeScale3D(FVector(scale, scale, 1));
+		CapsuleComponent->SetRelativeScale3D(FVector(scale, scale, scale));
 		//my_decal->GetDecal()->DecalSize = FVector(decal_size, decal_size, decal_size);
 		my_decal->GetDecal()->SetRelativeScale3D(FVector(scale, scale, scale));
 	}
@@ -172,7 +172,7 @@ void ASATORI_RaijinRayoExtensible::OnComponentBeginOverlap(
 	if(Player)
 	{
 
-		//float dmg_done = USATORI_BlueprintLibrary::ApplyGameplayEffectDamage(Player, Damage, Player, DamageGameplayEffect);
+		float dmg_done = USATORI_BlueprintLibrary::ApplyGameplayEffectDamage(Player, Damage, Player, DamageGameplayEffect);
 
 		my_decal->Destroy();
 		Destroy();
