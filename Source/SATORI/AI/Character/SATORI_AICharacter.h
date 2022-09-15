@@ -132,6 +132,8 @@ public:
 
 	// Check Impact Received
 	void CheckImpactReceivedByPlayer(EComboState State);
+
+	SATORIEnemyType GetEnemyType() { return EnemyType; }
 protected:
 
 	// Default attributes for a character for initializing on spawn/respawn.

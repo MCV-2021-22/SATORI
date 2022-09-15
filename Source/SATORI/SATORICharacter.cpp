@@ -596,21 +596,17 @@ void ASATORICharacter::OnWeaponOverlapBegin(UPrimitiveComponent* OverlappedComp,
 			{
 				AttackingCollision->SetGenerateOverlapEvents(false);
 			}
-			// Send current damage type recived (light attack o heavy attack)
-			EnemyCharacter->CheckImpactReceivedByPlayer(this->ComboSystemComponent->GetCurrentComboState());
-
 			// Adding Knock Back to enemy
 			this->ComboSystemComponent->ApplyKnockBackTagToEnemy(EnemyCharacter);
-
-			EnemyCharacter->CheckDamage(WeaponDamage);	
-
-			// Adding Knock Back to enemy
-			this->ComboSystemComponent->ApplyKnockBackTagToEnemy(EnemyCharacter);
+			if (EnemyCharacter->GetEnemyType() == SATORIEnemyType::Boss)
+			{
+				//this->ComboSystemComponent->BossHealthNotifyAbilityChanged();
+			}		
 
 			// Send current damage type recived (light attack o heavy attack)
 			EnemyCharacter->CheckImpactReceivedByPlayer(this->ComboSystemComponent->GetCurrentComboState());
 
-			EnemyCharacter->CheckDamage(WeaponDamage);	
+			EnemyCharacter->CheckDamage(WeaponDamage);
 		}	
 		else if(ASATORI_DummyActor* DummyActor = Cast<ASATORI_DummyActor>(OtherActor))
 		{

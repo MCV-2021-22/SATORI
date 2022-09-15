@@ -114,3 +114,8 @@ void USATORI_ComboSystemComponent::ApplyKnockBackTagToEnemy(ASATORI_AICharacter*
 		}
 	}
 }
+
+void USATORI_ComboSystemComponent::BossHealthNotifyAbilityChanged()
+{
+	BossHealthChanges.Broadcast(isInBossFight);
+}
