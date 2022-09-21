@@ -105,7 +105,7 @@ void USATORI_ArqueroBackwards::ActivateAbility(const FGameplayAbilitySpecHandle 
 		Character->moveBackwards = true;
 	}
 	TimerDelegate = FTimerDelegate::CreateUObject(this, &USATORI_ArqueroBackwards::OnTimerFinished, CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo);
-	GetWorld()->GetTimerManager().SetTimer(TimerHandle, TimerDelegate, 0.5f, false);
+	GetWorld()->GetTimerManager().SetTimer(TimerHandle, TimerDelegate, 1.5f, false);
 	
 
 }
