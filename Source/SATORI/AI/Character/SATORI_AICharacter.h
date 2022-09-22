@@ -134,6 +134,9 @@ public:
 	// Check Impact Received
 	void CheckImpactReceivedByPlayer(EComboState State);
 
+	// Set Enemy color when received damage
+	void SetDamagedColor();
+
 	SATORIEnemyType GetEnemyType() { return EnemyType; }
 protected:
 
@@ -171,6 +174,7 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	bool isInFrontPlayer = false;
 
+	TArray<UMaterialInstanceDynamic*> DynamicMaterials;
 public: //Target System Interface related and Tag Abilities related (Nacho)
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Tag")
