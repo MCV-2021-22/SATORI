@@ -15,6 +15,7 @@ USATORI_SpawnEnemies::USATORI_SpawnEnemies()
 
 void USATORI_SpawnEnemies::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData)
 {
+
 	FActorSpawnParameters SpawnParams;
 	SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
 
@@ -25,9 +26,6 @@ void USATORI_SpawnEnemies::ActivateAbility(const FGameplayAbilitySpecHandle Hand
 
 
 	ASATORI_Spawner* Spawner = Cast<ASATORI_Spawner>(ActorInfo->AvatarActor);
-
-	
-	
 
 	EnemySpawned->SpawnDefaultController();
 	EnemySpawned->SetMySpawn(Spawner);
