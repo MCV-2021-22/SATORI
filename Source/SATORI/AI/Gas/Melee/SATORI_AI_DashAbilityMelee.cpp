@@ -96,7 +96,7 @@ void USATORI_AI_DashAbilityMelee::EventReceived(FGameplayTag EventTag, FGameplay
 		Params.AddIgnoredActor(Melee);
 		FVector DashActorVisibility = DashActorPosition;
 		DashActorVisibility.Z = DashActorVisibility.Z + 50;
-		DrawDebugSphere(GetWorld(), DashActorVisibility, 10.0f, 12, FColor(255, 0, 0), false, 10.0f);
+		//DrawDebugSphere(GetWorld(), DashActorVisibility, 10.0f, 12, FColor(255, 0, 0), false, 10.0f);
 		bool bHit = GetWorld()->LineTraceSingleByChannel(HitResult, Melee->GetActorLocation(), DashActorVisibility, ECollisionChannel::ECC_Visibility, Params);
 		if (bHit)
 		{
