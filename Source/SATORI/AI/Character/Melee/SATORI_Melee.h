@@ -38,4 +38,7 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Gameplay Effect")
 	TSubclassOf<UGameplayEffect> DamageEffect;
 
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Attack")
+		FGameplayTag HeavyHitTag;
+
 };

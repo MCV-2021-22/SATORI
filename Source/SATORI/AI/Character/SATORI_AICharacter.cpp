@@ -232,6 +232,11 @@ void ASATORI_AICharacter::Tick(float DeltaSeconds)
 			RemoveGameplayTag(FGameplayTag::RequestGameplayTag("State.Burst"));
 		}
 	}
+	if(canDestroy)
+	{
+		Destroy();
+	}
+
 }
 
 void ASATORI_AICharacter::CheckDamage(float Damage)
@@ -299,8 +304,10 @@ void ASATORI_AICharacter::CheckDamage(float Damage)
 		else
 		{
 			AActor* Actor = Cast<AActor>(this);
-			GetWorld()->GetAuthGameMode<ASATORIGameMode>()->RemoveEnemyActor(Actor);
-			Destroy();
+
+			AddGameplayTag(FGameplayTag::RequestGameplayTag("State.Dead"));
+			//GetWorld()->GetAuthGameMode<ASATORIGameMode>()->RemoveEnemyActor(Actor);
+			//Destroy();
 		}
 	}
 }

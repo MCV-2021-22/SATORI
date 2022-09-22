@@ -22,7 +22,6 @@ bool UBTDecorator_PlayerClose::CalculateRawConditionValue(UBehaviorTreeComponent
 
 	float dist = AI->GetDistanceTo(Player1);
 	UE_LOG(LogTemp, Warning, TEXT("Dist %f"), dist);
-
 	if(dist<= AI->getSoCloseDist())
 	{
 		return true;

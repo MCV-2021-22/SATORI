@@ -241,7 +241,6 @@ bool ASATORICharacter::DoParryBlockAllEnemies()
 				{
 					if (AICharacter->GetAbilitySystemComponent()->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag(FName("State.CanEnemyParry"))))
 					{
-						UE_LOG(LogTemp, Warning, TEXT("Enemy"));
 
 						AICharacter->AddGameplayTag(FGameplayTag::RequestGameplayTag(FName("State.Parried")));
 
@@ -295,7 +294,6 @@ bool ASATORICharacter::DoParryBlockOneEnemies()
 		{
 			if (AICharacter->GetAbilitySystemComponent()->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag(FName("State.CanEnemyParry"))))
 			{
-				UE_LOG(LogTemp, Warning, TEXT("Enemy"));
 
 				AICharacter->AddGameplayTag(FGameplayTag::RequestGameplayTag(FName("State.Parried")));
 
@@ -343,7 +341,6 @@ bool ASATORICharacter::IsEnemyInFrontOfAngle()
 	if (IsEnemyInFront(StartPosition, EndPosition, HitResult))
 	{
 		NewActors.Add(HitResult.Actor);
-		UE_LOG(LogTemp, Warning, TEXT("Enemigo in front !!! "));
 		bHit = true;
 	}
 	// Check enemy is in front of the angle
@@ -353,7 +350,6 @@ bool ASATORICharacter::IsEnemyInFrontOfAngle()
 		if (bHit)
 		{
 			NewActors.Add(HitResult.Actor);
-			UE_LOG(LogTemp, Warning, TEXT("Enemigo in front of the angle!!! "));
 		}
 	}
 
@@ -596,21 +592,17 @@ void ASATORICharacter::OnWeaponOverlapBegin(UPrimitiveComponent* OverlappedComp,
 			{
 				AttackingCollision->SetGenerateOverlapEvents(false);
 			}
-			// Send current damage type recived (light attack o heavy attack)
-			//EnemyCharacter->CheckImpactReceivedByPlayer(this->ComboSystemComponent->GetCurrentComboState());
-
-			// Adding Knock Back to enemy
-			//this->ComboSystemComponent->ApplyKnockBackTagToEnemy(EnemyCharacter);
-
-			//EnemyCharacter->CheckDamage(WeaponDamage);	
-
 			// Adding Knock Back to enemy
 			this->ComboSystemComponent->ApplyKnockBackTagToEnemy(EnemyCharacter);
+			if (EnemyCharacter->GetEnemyType() == SATORIEnemyType::Boss)
+			{
+				//this->ComboSystemComponent->BossHealthNotifyAbilityChanged();
+			}		
 
 			// Send current damage type recived (light attack o heavy attack)
 			EnemyCharacter->CheckImpactReceivedByPlayer(this->ComboSystemComponent->GetCurrentComboState());
 
-			EnemyCharacter->CheckDamage(WeaponDamage);	
+			EnemyCharacter->CheckDamage(WeaponDamage);
 		}	
 		else if(ASATORI_DummyActor* DummyActor = Cast<ASATORI_DummyActor>(OtherActor))
 		{

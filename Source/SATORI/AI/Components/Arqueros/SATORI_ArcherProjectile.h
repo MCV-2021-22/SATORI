@@ -30,6 +30,7 @@ public:
 	UPROPERTY(BlueprintReadOnly, EditAnywhere)
 		float velocity = 20.0f;
 	//UPROPERTY(BlueprintReadWrite, EditAnywhere, Meta = (ExposeOnSpawn = true), Category = "Missile")
+	UPROPERTY(BlueprintReadOnly, EditAnywhere)
 	float damage = 10.0f;
 
 	UFUNCTION()
