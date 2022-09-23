@@ -423,5 +423,5 @@ void ASATORI_AICharacter::SetDamagedColor()
 					DynamicMaterials[i]->SetScalarParameterValue(FName(TEXT("BaseColor")), 0.0f);
 				}
 			}
-		}, 0.2f, false);
+		}, 0.1f, false);
 }
