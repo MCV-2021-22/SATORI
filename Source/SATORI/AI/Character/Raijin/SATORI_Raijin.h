@@ -34,7 +34,7 @@ public:
 	void setArcoAltavoces();
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Weapon")
-		USkeletalMeshComponent* SwordComponentRight;
+		UStaticMeshComponent* SwordComponentRight;
 
 protected:
 
