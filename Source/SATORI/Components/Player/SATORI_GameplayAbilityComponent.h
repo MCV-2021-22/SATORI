@@ -12,6 +12,7 @@ class USATORI_AbilityDataAsset;
 class USATORI_ChangeAbilitiesWidget;
 class UDataTable;
 class USATORI_GameInstance;
+class UAsyncTaskCooldownChanged;
 
 USTRUCT(BlueprintType)
 struct FSATORI_AbilitiesDatas
@@ -110,6 +111,11 @@ public:
 	void NotifyAbilityChanged();
 	
 	void ResetCurrentPlayerAbilities();
+
+	UFUNCTION(BlueprintCallable)
+	UAsyncTaskCooldownChanged* GetAsyncTaskCooldownChanged() { return CooldownIconChanges; }
+	UFUNCTION(BlueprintCallable)
+	void SetAsyncTaskCooldownChanged(UAsyncTaskCooldownChanged* Value) { CooldownIconChanges = Value; }
 public:
 	UFUNCTION(BlueprintCallable)
 	bool TryChangeAbility();
@@ -140,6 +146,9 @@ private:
 
 	UPROPERTY()
 	FSATORI_AbilitiesIconsDatas AbilityIconToChange;
+
+	UPROPERTY()
+	UAsyncTaskCooldownChanged* CooldownIconChanges;
 public:
 
 	void AddPortalAbilities(FSATORI_AbilitiesDatas AbilityData);
