@@ -8,6 +8,7 @@
 #include "GAS/Tasks/SATORI_AbilityTask_StartAbilityAndWait.h"
 #include "FunctionLibrary/AsyncTaskCooldownChanged.h"
 #include "GameplayEffect.h"
+#include "Components/Player/SATORI_GameplayAbilityComponent.h"
 
 void USATORI_LaunchAbility::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData)
 {
@@ -27,7 +28,10 @@ void USATORI_LaunchAbility::ActivateAbility(const FGameplayAbilitySpecHandle Han
 				if (CurrentStartAbility)
 				{
 					CurrentStartAbility->Activate();
-					ApplyCooldownToAbilityUI(NextAbility, Player);
+					if (CurrentStartAbility->GetAbilityHasBeenActivated())
+					{
+						ApplyCooldownToAbilityUI(NextAbility, Player);
+					}
 				}
 			}
 		}
@@ -48,6 +52,9 @@ void USATORI_LaunchAbility::ApplyCooldownToAbilityUI(TSubclassOf<USATORI_Gamepla
 	const FGameplayEffectSpec* Spec = nullptr;
 	UAbilitySystemComponent* AbilitySystemComponent = Player->GetAbilitySystemComponent();
 	
+	float TimeRemaining = 0.0f;
+	float CooldownDuration = 0.0f;
+
 	if (PlayerAbility)
 	{
 		UGameplayEffect* CooldownEffect = PlayerAbility->GetCooldownGameplayEffect();
@@ -57,12 +64,39 @@ void USATORI_LaunchAbility::ApplyCooldownToAbilityUI(TSubclassOf<USATORI_Gamepla
 			FGameplayEffectContextHandle ContextHandle;
 			FGameplayEffectSpecHandle SpecHandle = AbilitySystemComponent->MakeOutgoingSpec(PlayerCooldownGameplayEffect, 1.0f, ContextHandle);
 			Spec = SpecHandle.Data.Get();
+
+			// Facking this sh*t man bro omg, sh*t fack
+			FGameplayTagContainer InCooldownTags = FGameplayTagContainer();
+			Spec->GetAllGrantedTags(InCooldownTags);
+			FGameplayEffectQuery const Query = FGameplayEffectQuery::MakeQuery_MatchAnyOwningTags(InCooldownTags);
+			TArray< TPair<float, float> > DurationAndTimeRemaining = AbilitySystemComponent->GetActiveEffectsTimeRemainingAndDuration(Query);
+			if (DurationAndTimeRemaining.Num() > 0)
+			{
+				int32 BestIdx = 0;
+				float LongestTime = DurationAndTimeRemaining[0].Key;
+				for (int32 Idx = 1; Idx < DurationAndTimeRemaining.Num(); ++Idx)
+				{
+					if (DurationAndTimeRemaining[Idx].Key > LongestTime)
+					{
+						LongestTime = DurationAndTimeRemaining[Idx].Key;
+						BestIdx = Idx;
+					}
+				}
+
+				TimeRemaining = DurationAndTimeRemaining[BestIdx].Key;
+				CooldownDuration = DurationAndTimeRemaining[BestIdx].Value;
+			}
 		}
 	}
-	
+
 	const FGameplayTagContainer* CooldownTag = Spec->CapturedSourceTags.GetAggregatedTags();
-	UAsyncTaskCooldownChanged* CooldownChanged =
-		UAsyncTaskCooldownChanged::ListenForCooldownChange(Player->GetAbilitySystemComponent(), *CooldownTag, true);
-	float TimeRemain = CooldownChanged->LocalTimeRemain;
-	UE_LOG(LogTemp, Warning, TEXT("Time Remain, %f"), TimeRemain);
+	/*UAsyncTaskCooldownChanged* CooldownChanged =
+		UAsyncTaskCooldownChanged::ListenForCooldownChange(Player->GetAbilitySystemComponent(), *CooldownTag, true);*/
+
+	//UE_LOG(LogTemp, Warning, TEXT("Time Remain, %f"), TimeRemaining);
+	USATORI_GameplayAbilityComponent* CurrentAbilityComponent = Player->GetPlayerAbilityComponent();
+	if (CurrentAbilityComponent)
+	{
+		CurrentAbilityComponent->NotifyCooldownAbilityChanged(TimeRemaining);
+	}
 }

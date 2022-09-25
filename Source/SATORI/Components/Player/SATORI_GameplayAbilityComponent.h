@@ -59,8 +59,24 @@ struct FSATORI_AbilitiesIconsDatas
 	FSATORI_AbilitiesBordesChecker AbilitiesBordesChecker;
 };
 
+USTRUCT(BlueprintType)
+struct FSATORI_AbilitiesIconsCooldownDatas
+{
+	GENERATED_BODY()
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	bool IsFirstCooldownAvaiable = false;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	bool IsSecondCooldownAvaiable = false;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	bool IsThirstCooldownAvaiable = false;
+};
+
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FSATORIChangeAbilityIcon, const FSATORI_AbilitiesDatas&, AbilityData);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FSATORIChangeAllAbilityIcon, FSATORI_AbilitiesIconsDatas, AbilityData);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FSATORICooldownAbilityIcon, FSATORI_AbilitiesIconsCooldownDatas, CooldownData);
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class SATORI_API USATORI_GameplayAbilityComponent : public UActorComponent
@@ -102,20 +118,29 @@ public:
 
 	TArray<FSATORI_AbilitiesDatas> GetCharacterAbilities() { return PortalRewardAbilities; }
 
+	UFUNCTION(BlueprintCallable)
+	UAsyncTaskCooldownChanged* GetAsyncTaskCooldownChanged() { return CooldownIconChanges; }
+	UFUNCTION(BlueprintCallable)
+	void SetAsyncTaskCooldownChanged(UAsyncTaskCooldownChanged* Value) { CooldownIconChanges = Value; }
+
+	// Notifies
 	UPROPERTY(BlueprintAssignable)
 	FSATORIChangeAbilityIcon AbilityIconChange;
 
 	UPROPERTY(BlueprintAssignable)
 	FSATORIChangeAllAbilityIcon AllAbilityIconChange;
+
+	UPROPERTY(BlueprintAssignable)
+	FSATORICooldownAbilityIcon CooldownAbilityIconChange;
 	
 	void NotifyAbilityChanged();
-	
+	void NotifyCooldownAbilityChanged(float TimeRemaining);
+
+	// -------------------End Notify ----------------------------
+
+	// Reset Player Hability
 	void ResetCurrentPlayerAbilities();
 
-	UFUNCTION(BlueprintCallable)
-	UAsyncTaskCooldownChanged* GetAsyncTaskCooldownChanged() { return CooldownIconChanges; }
-	UFUNCTION(BlueprintCallable)
-	void SetAsyncTaskCooldownChanged(UAsyncTaskCooldownChanged* Value) { CooldownIconChanges = Value; }
 public:
 	UFUNCTION(BlueprintCallable)
 	bool TryChangeAbility();
@@ -129,6 +154,9 @@ public:
 protected:
 	
 	virtual void BeginPlay() override;
+
+	void CheckCooldownTimeRemaines(float TimeRemained);
+	void CooldownCountDown();
 private:
 
 	FName AbilityName;

@@ -30,6 +30,9 @@ public:
 	UFUNCTION(BlueprintImplementableEvent)
 	void BP_AllOnData(FSATORI_AbilitiesIconsDatas Data);
 
+	UFUNCTION(BlueprintImplementableEvent)
+	void BP_CooldownDatas(FSATORI_AbilitiesIconsCooldownDatas CooldownDatas);
+
 	UFUNCTION(BlueprintCallable)
 	void ChangeBordersIcons(FSATORI_AbilitiesBordesChecker Data);
 

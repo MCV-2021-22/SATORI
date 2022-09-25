@@ -28,6 +28,7 @@ void USATORI_ChangeAbilitiesWidget::NativeConstruct()
 		if (CurrentAbilityComponent)
 		{
 			CurrentAbilityComponent->AllAbilityIconChange.AddDynamic(this, &USATORI_ChangeAbilitiesWidget::BP_AllOnData);
+			CurrentAbilityComponent->CooldownAbilityIconChange.AddDynamic(this, &USATORI_ChangeAbilitiesWidget::BP_CooldownDatas);
 		}
 	}
 }
@@ -41,6 +42,7 @@ void USATORI_ChangeAbilitiesWidget::NativeDestruct()
 		if (CurrentAbilityComponent)
 		{
 			CurrentAbilityComponent->AbilityIconChange.RemoveAll(this); // , & USATORI_ChangeAbilitiesWidget::BP_OnData);
+			CurrentAbilityComponent->CooldownAbilityIconChange.RemoveAll(this); // , & USATORI_ChangeAbilitiesWidget::BP_OnData);
 		}
 	}
 
