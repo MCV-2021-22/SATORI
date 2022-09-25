@@ -8,6 +8,7 @@
 #include "Components/Player/SATORI_GameplayAbilityComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "Components/Border.h"
+#include "Components/ProgressBar.h"
 
 bool USATORI_ChangeAbilitiesWidget::Initialize()
 {
@@ -75,5 +76,20 @@ void USATORI_ChangeAbilitiesWidget::ChangeBordersIcons(FSATORI_AbilitiesBordesCh
 		FirstAbilityBorder->SetBrushFromTexture(nullptr);
 		SecondAbilityBorder->SetBrushFromTexture(nullptr);
 		ThirstAbilityBorder->SetBrushFromTexture(BorderTexture);
+	}
+}
+
+void USATORI_ChangeAbilitiesWidget::HabilityCooldownChanges(float Opacity, bool IsCooldownvisible,
+	UImage* HabilityIcon, UProgressBar* CooldownBar)
+{
+	if (IsCooldownvisible)
+	{
+		CooldownBar->SetVisibility(ESlateVisibility::Visible);
+		HabilityIcon->SetOpacity(Opacity);
+	}
+	else
+	{
+		CooldownBar->SetVisibility(ESlateVisibility::Hidden);
+		HabilityIcon->SetOpacity(1.0);
 	}
 }

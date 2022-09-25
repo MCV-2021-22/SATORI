@@ -177,6 +177,9 @@ private:
 
 	UPROPERTY()
 	UAsyncTaskCooldownChanged* CooldownIconChanges;
+
+	UPROPERTY()
+	float HabilityTimeRemained = 0.0f;
 public:
 
 	void AddPortalAbilities(FSATORI_AbilitiesDatas AbilityData);

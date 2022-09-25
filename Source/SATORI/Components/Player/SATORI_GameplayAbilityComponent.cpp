@@ -206,14 +206,14 @@ void USATORI_GameplayAbilityComponent::NotifyCooldownAbilityChanged(float TimeRe
 		CheckCooldownTimeRemaines(TimeRemaining);
 	}
 
-	if (CurrentAbilityValue == 1 && !CooldownData.IsSecondCooldownAvaiable)
+	else if (CurrentAbilityValue == 1 && !CooldownData.IsSecondCooldownAvaiable)
 	{
 		CooldownData.IsSecondCooldownAvaiable = true;
 		CooldownAbilityIconChange.Broadcast(CooldownData);
 		CheckCooldownTimeRemaines(TimeRemaining);
 	}
 
-	if (CurrentAbilityValue == 2 && !CooldownData.IsThirstCooldownAvaiable)
+	else if (CurrentAbilityValue == 2 && !CooldownData.IsThirstCooldownAvaiable)
 	{
 		CooldownData.IsThirstCooldownAvaiable = true;
 		CooldownAbilityIconChange.Broadcast(CooldownData);
@@ -318,34 +318,38 @@ void USATORI_GameplayAbilityComponent::ResetCurrentPlayerAbilities()
 void USATORI_GameplayAbilityComponent::CheckCooldownTimeRemaines(float TimeRemained)
 {
 	FTimerHandle WaitHandle;
-	float localTimer = TimeRemained;
-	GetWorld()->GetTimerManager().SetTimer(WaitHandle, FTimerDelegate::CreateLambda([&]()
+	HabilityTimeRemained = TimeRemained;
+	GetWorld()->GetTimerManager().SetTimer(WaitHandle, this, &USATORI_GameplayAbilityComponent::CooldownCountDown,
+		1.f, true, 0.0);
+}
+
+void USATORI_GameplayAbilityComponent::CooldownCountDown()
+{
+	float localTimer = HabilityTimeRemained;
+	if (localTimer > 0)
+	{
+		localTimer--;
+		if (localTimer == 0)
 		{
-			if (localTimer > 0)
+			FSATORI_AbilitiesIconsCooldownDatas CooldownData;
+
+			if (CurrentAbilityValue == 0 && CooldownData.IsFirstCooldownAvaiable)
 			{
-				localTimer--;
-				if (localTimer == 0)
-				{
-					FSATORI_AbilitiesIconsCooldownDatas CooldownData;
-
-					if (CurrentAbilityValue == 0 && CooldownData.IsFirstCooldownAvaiable)
-					{
-						CooldownData.IsFirstCooldownAvaiable = false;
-						CooldownAbilityIconChange.Broadcast(CooldownData);
-					}
-
-					if (CurrentAbilityValue == 1 && CooldownData.IsSecondCooldownAvaiable)
-					{
-						CooldownData.IsSecondCooldownAvaiable = false;
-						CooldownAbilityIconChange.Broadcast(CooldownData);
-					}
-
-					if (CurrentAbilityValue == 2 && CooldownData.IsThirstCooldownAvaiable)
-					{
-						CooldownData.IsThirstCooldownAvaiable = false;
-						CooldownAbilityIconChange.Broadcast(CooldownData);
-					}
-				}
+				CooldownData.IsFirstCooldownAvaiable = false;
+				CooldownAbilityIconChange.Broadcast(CooldownData);
 			}
-		}), TimeRemained, true);
+
+			if (CurrentAbilityValue == 1 && CooldownData.IsSecondCooldownAvaiable)
+			{
+				CooldownData.IsSecondCooldownAvaiable = false;
+				CooldownAbilityIconChange.Broadcast(CooldownData);
+			}
+
+			if (CurrentAbilityValue == 2 && CooldownData.IsThirstCooldownAvaiable)
+			{
+				CooldownData.IsThirstCooldownAvaiable = false;
+				CooldownAbilityIconChange.Broadcast(CooldownData);
+			}
+		}
+	}
 }

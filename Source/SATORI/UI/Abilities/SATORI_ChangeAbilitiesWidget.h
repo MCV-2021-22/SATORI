@@ -11,6 +11,7 @@
 class UImage;
 class UTexture2D;
 class UBorder;
+class UProgressBar;
 struct FSATORI_AbilitiesDatas;
 
 UCLASS()
@@ -23,6 +24,10 @@ public:
 
 	virtual void NativeConstruct() override;
 	virtual void NativeDestruct() override;
+
+	UFUNCTION(BlueprintCallable)
+	void HabilityCooldownChanges(float Opacity, bool IsCooldownvisible,
+		UImage* HabilityIcon, UProgressBar* CooldownBar);
 
 	UFUNCTION(BlueprintImplementableEvent)
 	void BP_OnData(const FSATORI_AbilitiesDatas& Data);
