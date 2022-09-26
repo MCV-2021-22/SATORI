@@ -130,7 +130,7 @@ void USATORI_Charm::CheckCharmDone(const FGameplayAbilitySpecHandle Handle, cons
 		}
 		else if(CharmDone->ReturnToFujinDone)
 		{
-			Fujin->AddGameplayTag(FGameplayTag::RequestGameplayTag("State.Charmed"));
+			Fujin->AddGameplayTag(FGameplayTag::RequestGameplayTag("Fujin.Charmhit"));
 			CharmDone->canDestroy = true;
 			EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true);
 		}

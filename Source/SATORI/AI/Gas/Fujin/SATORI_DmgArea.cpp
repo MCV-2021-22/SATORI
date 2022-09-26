@@ -102,7 +102,7 @@ void USATORI_DmgArea::CheckFujin(const FGameplayAbilitySpecHandle Handle, const 
 			{
 				if(UAnimInstance* AnimInstance = Mesh->GetAnimInstance())
 				{
-					AnimInstance->Montage_JumpToSection(FName("2"), AnimInstance->GetCurrentActiveMontage());
+					AnimInstance->Montage_JumpToSection(FName("recovery"), AnimInstance->GetCurrentActiveMontage());
 				}
 			}
 
