@@ -6,9 +6,9 @@
 #include "Abilities/GameplayAbility.h"
 #include "GameplayTags.h"
 #include "GameplayTagAssetInterface.h"
+#include "AI/Components/Fujin/SATORI_FujinKickAereo.h"
 #include "GAS/SATORI_GameplayAbility.h"
 #include "SATORI/AbilityTask/SATORI_PlayMontageandWaitNotify.h"
-#include "AI/Components/Raijin/SATORI_RaijinRayo.h"
 #include "SATORI_DmgArea.generated.h"
 
 
@@ -42,9 +42,9 @@ public:
 
 
 	UPROPERTY(BlueprintReadOnly, EditAnywhere)
-		TSubclassOf<ASATORI_RaijinRayo> ProjectileClass;
+		TSubclassOf<ASATORI_FujinKickAereo> ProjectileClass;
 
-	
+	void CheckFujin(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo);
 
 protected:
 

@@ -40,6 +40,8 @@ public:
 	virtual void ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, 
 		const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData) override;
 
+	void CheckCharmDone(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo);
+
 
 	UPROPERTY(BlueprintReadOnly, EditAnywhere)
 		TSubclassOf<ASATORI_FujinCharm> Charm;
@@ -62,7 +64,11 @@ protected:
 
 	UFUNCTION()
 		void EventReceived(FGameplayTag EventTag, FGameplayEventData EventData);
+
+	ASATORI_FujinCharm* CharmDone;
 private:
 
 	const bool bStopWhenAbilityEnds = true;
+
+	float time_alive = 3.0f;
 };

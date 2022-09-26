@@ -85,13 +85,14 @@ void USATORI_Charm::EventReceived(FGameplayTag EventTag, FGameplayEventData Even
 					{
 						Sphere->Fujin = Fujin1;
 					}
-
+					CharmDone = Sphere;
 				}
 				break;
 			}
 		}
-		EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true);
-
+		//EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true);
+		TimerDelegate = FTimerDelegate::CreateUObject(this, &USATORI_Charm::CheckCharmDone, CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo);
+		GetWorld()->GetTimerManager().SetTimer(TimerHandle, TimerDelegate, 0.3f, true);
 
 	}
 }
@@ -108,11 +109,37 @@ void USATORI_Charm::OnCancelled(FGameplayTag EventTag, FGameplayEventData EventD
 void USATORI_Charm::OnCompleted(FGameplayTag EventTag, FGameplayEventData EventData)
 {
 
-	EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true);
+	//EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true);
 }
 
 	
 
 
+void USATORI_Charm::CheckCharmDone(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo)
+{
 
+	AActor* Actor = GetAvatarActorFromActorInfo();
+
+	ASATORI_Fujin* Fujin = Cast<ASATORI_Fujin>(Actor);
+	if (Fujin)
+	{
+		if(time_alive<0 && !CharmDone->ReturnToFujin)
+		{
+			CharmDone->canDestroy = true;
+			EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true);
+		}
+		else if(CharmDone->ReturnToFujinDone)
+		{
+			Fujin->AddGameplayTag(FGameplayTag::RequestGameplayTag("State.Charmed"));
+			CharmDone->canDestroy = true;
+			EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true);
+		}
+		else if(!CharmDone->ReturnToFujin)
+		{
+			time_alive -= 0.3f;
+		}
+
+	}
+
+}
 
