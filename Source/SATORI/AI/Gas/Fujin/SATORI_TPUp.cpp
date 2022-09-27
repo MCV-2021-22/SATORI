@@ -71,7 +71,7 @@ void USATORI_TPUp::Teleport(const FGameplayAbilitySpecHandle Handle, const FGame
 			if (Cast<ASATORICharacter>(Actor) != nullptr)
 			{
 				ASATORICharacter* Player = Cast<ASATORICharacter>(Actor);
-				Fujin->SetActorLocation(Player->GetActorLocation() + FVector(0,0,20));
+				Fujin->SetActorLocation(Player->GetActorLocation() + FVector(0,0,80));
 				Fujin->GetMesh()->SetVisibility(true);
 				Fujin->SetActorEnableCollision(true);
 
@@ -96,5 +96,5 @@ void USATORI_TPUp::OnCancelled(FGameplayTag EventTag, FGameplayEventData EventDa
 void USATORI_TPUp::OnCompleted(FGameplayTag EventTag, FGameplayEventData EventData)
 {
 
-	EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true);
+	//EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true);
 }
