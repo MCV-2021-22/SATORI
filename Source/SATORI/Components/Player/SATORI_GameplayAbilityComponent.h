@@ -14,6 +14,8 @@ class UDataTable;
 class USATORI_GameInstance;
 class UAsyncTaskCooldownChanged;
 
+// ------------------ Hability Datas ----------------------
+
 USTRUCT(BlueprintType)
 struct FSATORI_AbilitiesDatas
 {
@@ -59,20 +61,32 @@ struct FSATORI_AbilitiesIconsDatas
 	FSATORI_AbilitiesBordesChecker AbilitiesBordesChecker;
 };
 
+// ------------- Cooldown Datas ------------------------------
+USTRUCT(BlueprintType)
+struct FSATORI_CooldownDatas
+{
+	GENERATED_BODY()
+
+	bool IsCooldownAvaiable = false;
+	float TimeRemained = 0.0f;
+};
+
 USTRUCT(BlueprintType)
 struct FSATORI_AbilitiesIconsCooldownDatas
 {
 	GENERATED_BODY()
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	bool IsFirstCooldownAvaiable = false;
+	FSATORI_CooldownDatas FirstIconDatas;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	bool IsSecondCooldownAvaiable = false;
+	FSATORI_CooldownDatas SecondIconDatas;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	bool IsThirstCooldownAvaiable = false;
+	FSATORI_CooldownDatas ThirstIconDatas;
 };
+
+// -------------------- End Datas Sections ----------------------
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FSATORIChangeAbilityIcon, const FSATORI_AbilitiesDatas&, AbilityData);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FSATORIChangeAllAbilityIcon, FSATORI_AbilitiesIconsDatas, AbilityData);
@@ -155,8 +169,9 @@ protected:
 	
 	virtual void BeginPlay() override;
 
-	void CheckCooldownTimeRemaines(float TimeRemained);
-	void CooldownCountDown();
+	void CheckCooldownTimeRemaines(float TimeRemained, int HabilityID);
+	void CooldownCountDown(int HabilityID);
+
 private:
 
 	FName AbilityName;
@@ -177,6 +192,10 @@ private:
 
 	UPROPERTY()
 	UAsyncTaskCooldownChanged* CooldownIconChanges;
+
+	// Cooldown Datas
+	UPROPERTY()
+	FSATORI_AbilitiesIconsCooldownDatas CooldownData;
 
 	UPROPERTY()
 	float HabilityTimeRemained = 0.0f;
