@@ -86,6 +86,13 @@ struct FSATORI_AbilitiesIconsCooldownDatas
 	FSATORI_CooldownDatas ThirstIconDatas;
 };
 
+struct FAbilityCooldownTimerInfo
+{
+	FTimerHandle WaitHandle;
+	float TimeRemaining;
+	int AbilityID;
+};
+
 // -------------------- End Datas Sections ----------------------
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FSATORIChangeAbilityIcon, const FSATORI_AbilitiesDatas&, AbilityData);
@@ -169,7 +176,7 @@ protected:
 	
 	virtual void BeginPlay() override;
 
-	void CheckCooldownTimeRemaines(float TimeRemained, int HabilityID);
+	void CheckCooldownTimeRemaines(int HabilityID);
 	void CooldownCountDown(int HabilityID);
 
 private:
@@ -199,6 +206,11 @@ private:
 
 	UPROPERTY()
 	float HabilityTimeRemained = 0.0f;
+
+	// Handle
+	FTimerHandle Hability_1_WaitHandle;
+
+	TArray<FAbilityCooldownTimerInfo> AbilityCD_Info;
 public:
 
 	void AddPortalAbilities(FSATORI_AbilitiesDatas AbilityData);

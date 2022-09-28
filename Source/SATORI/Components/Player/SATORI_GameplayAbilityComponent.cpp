@@ -46,6 +46,8 @@ void USATORI_GameplayAbilityComponent::BeginPlay()
 		}
 	}
 	
+
+
 	NotifyAbilityChanged();
 
 	if (IsNachoTesting)
@@ -197,12 +199,16 @@ void USATORI_GameplayAbilityComponent::NotifyAbilityChanged()
 void USATORI_GameplayAbilityComponent::NotifyCooldownAbilityChanged(float TimeRemaining)
 {
 	//UE_LOG(LogTemp, Warning, TEXT("Time Remain, %f"), TimeRemaining);
+	FAbilityCooldownTimerInfo LocalAbilityCD_Info;
 	if (CurrentAbilityValue == 0 && !CooldownData.FirstIconDatas.IsCooldownAvaiable)
 	{
 		CooldownData.FirstIconDatas.IsCooldownAvaiable = true;
 		CooldownData.FirstIconDatas.TimeRemained = TimeRemaining;
 		CooldownAbilityIconChange.Broadcast(CooldownData);
-		CheckCooldownTimeRemaines(TimeRemaining, CurrentAbilityValue);
+
+		// Fill the ability CD Info
+	
+		CheckCooldownTimeRemaines(CurrentAbilityValue);
 	}
 
 	else if (CurrentAbilityValue == 1 && !CooldownData.SecondIconDatas.IsCooldownAvaiable)
@@ -210,7 +216,10 @@ void USATORI_GameplayAbilityComponent::NotifyCooldownAbilityChanged(float TimeRe
 		CooldownData.FirstIconDatas.IsCooldownAvaiable = true;
 		CooldownData.FirstIconDatas.TimeRemained = TimeRemaining;
 		CooldownAbilityIconChange.Broadcast(CooldownData);
-		CheckCooldownTimeRemaines(TimeRemaining, CurrentAbilityValue);
+
+		// Fill the ability CD Info
+
+		CheckCooldownTimeRemaines(CurrentAbilityValue);
 	}
 
 	else if (CurrentAbilityValue == 2 && !CooldownData.ThirstIconDatas.IsCooldownAvaiable)
@@ -218,7 +227,10 @@ void USATORI_GameplayAbilityComponent::NotifyCooldownAbilityChanged(float TimeRe
 		CooldownData.FirstIconDatas.IsCooldownAvaiable = true;
 		CooldownData.FirstIconDatas.TimeRemained = TimeRemaining;
 		CooldownAbilityIconChange.Broadcast(CooldownData);
-		CheckCooldownTimeRemaines(TimeRemaining, CurrentAbilityValue);
+
+		// Fill the ability CD Info
+
+		CheckCooldownTimeRemaines(CurrentAbilityValue);
 	}
 	
 }
@@ -316,15 +328,13 @@ void USATORI_GameplayAbilityComponent::ResetCurrentPlayerAbilities()
 	PortalRewardAbilities.Empty();
 }
 
-void USATORI_GameplayAbilityComponent::CheckCooldownTimeRemaines(float TimeRemained, int HabilityID)
+void USATORI_GameplayAbilityComponent::CheckCooldownTimeRemaines(int HabilityID)
 {
 	FTimerDelegate CooldownDelegate;
-	FTimerHandle WaitHandle;
-	HabilityTimeRemained = TimeRemained;
 
 	CooldownDelegate = FTimerDelegate::CreateUObject(this, &USATORI_GameplayAbilityComponent::CooldownCountDown, HabilityID);
 
-	GetWorld()->GetTimerManager().SetTimer(WaitHandle, CooldownDelegate, HabilityTimeRemained, false, 0.0);
+	GetWorld()->GetTimerManager().SetTimer(AbilityCD_Info[HabilityID].WaitHandle, CooldownDelegate, 1, true, 0.0);
 }
 
 void USATORI_GameplayAbilityComponent::CooldownCountDown(int HabilityID)
@@ -338,27 +348,29 @@ void USATORI_GameplayAbilityComponent::CooldownCountDown(int HabilityID)
 	//			CooldownData.IsCooldownAvaiable = false;
 	//		}
 	//	}), CooldownData.TimeRemained, true);
-	float localTimer = HabilityTimeRemained;
-	if (localTimer > 0)
+	HabilityTimeRemained -= 1.0f;
+	if (HabilityTimeRemained >= 0)
 	{
-		localTimer--;
-		if (localTimer == 0)
+		UE_LOG(LogTemp, Warning, TEXT("Local Time, %f"), HabilityTimeRemained);
+		if (HabilityTimeRemained <= 0)
 		{
-			if (HabilityID == 0 && CooldownData.FirstIconDatas.IsCooldownAvaiable)
+			if (HabilityID == 0)
 			{
 				CooldownData.FirstIconDatas.IsCooldownAvaiable = false;
 				CooldownData.FirstIconDatas.TimeRemained = 0.0f;
 				CooldownAbilityIconChange.Broadcast(CooldownData);
+				GetWorld()->GetTimerManager().ClearTimer(Hability_1_WaitHandle);
+				UE_LOG(LogTemp, Warning, TEXT("Entering Here"));
 			}
 
-			if (HabilityID == 1 && CooldownData.SecondIconDatas.IsCooldownAvaiable)
+			if (HabilityID == 1)
 			{
 				CooldownData.SecondIconDatas.IsCooldownAvaiable = false;
 				CooldownData.SecondIconDatas.TimeRemained = 0.0f;
 				CooldownAbilityIconChange.Broadcast(CooldownData);
 			}
 
-			if (HabilityID == 2 && CooldownData.ThirstIconDatas.IsCooldownAvaiable)
+			if (HabilityID == 2/* && CooldownData.ThirstIconDatas.IsCooldownAvaiable*/)
 			{
 				CooldownData.ThirstIconDatas.IsCooldownAvaiable = false;
 				CooldownData.ThirstIconDatas.TimeRemained = 0.0f;
