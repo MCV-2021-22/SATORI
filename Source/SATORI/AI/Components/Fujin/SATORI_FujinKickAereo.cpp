@@ -22,7 +22,7 @@ ASATORI_FujinKickAereo::ASATORI_FujinKickAereo()
 
 	//GetCapsuleComponent()->InitCapsuleSize(42.f, 96.0f);
 	CapsuleComponent = CreateDefaultSubobject<UCapsuleComponent>(TEXT("Capsule"));
-	CapsuleComponent->InitCapsuleSize(300.0f, 1000.0f);
+	CapsuleComponent->InitCapsuleSize(300.0f, 300.0f);
 	CapsuleComponent->SetCollisionProfileName(UCollisionProfile::NoCollision_ProfileName);
 	CapsuleComponent->OnComponentBeginOverlap.AddUniqueDynamic(this, &ASATORI_FujinKickAereo::OnComponentBeginOverlap);
 	CapsuleComponent->OnComponentEndOverlap.AddUniqueDynamic(this, &ASATORI_FujinKickAereo::OnComponentEndOverlap);
@@ -193,6 +193,7 @@ void ASATORI_FujinKickAereo::OnComponentBeginOverlap(
 			int a = 2;
 		}
 		Fujin->AddGameplayTag(FGameplayTag::RequestGameplayTag("Fujin.KickDone"));
+		my_decal->Destroy();
 		Destroy();
 
 	}
