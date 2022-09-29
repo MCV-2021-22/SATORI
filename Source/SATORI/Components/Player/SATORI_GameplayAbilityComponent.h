@@ -204,13 +204,13 @@ private:
 	UPROPERTY()
 	FSATORI_AbilitiesIconsCooldownDatas CooldownData;
 
-	UPROPERTY()
-	float HabilityTimeRemained = 0.0f;
+	//UPROPERTY()
+	//float HabilityTimeRemained = 0.0f;
 
-	// Handle
-	FTimerHandle Hability_1_WaitHandle;
+	//// Handle
+	//FTimerHandle Hability_1_WaitHandle;
 
-	TArray<FAbilityCooldownTimerInfo> AbilityCD_Info;
+	TArray<FAbilityCooldownTimerInfo> AbilityCD_Infos;
 public:
 
 	void AddPortalAbilities(FSATORI_AbilitiesDatas AbilityData);
