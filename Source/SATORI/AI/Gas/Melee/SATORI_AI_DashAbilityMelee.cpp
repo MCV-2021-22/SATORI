@@ -11,6 +11,7 @@
 #include "Kismet/KismetMathLibrary.h"
 #include "Blueprint/AIBlueprintHelperLibrary.h"
 #include "BehaviorTree/BlackboardComponent.h"
+#include "DrawDebugHelpers.h"
 
 USATORI_AI_DashAbilityMelee::USATORI_AI_DashAbilityMelee()
 {
@@ -89,14 +90,19 @@ void USATORI_AI_DashAbilityMelee::EventReceived(FGameplayTag EventTag, FGameplay
 		bTargeting = false;		
 		DashActorPosition = DashActor->GetActorLocation();
 	
+		//CheckVisibility
 		FHitResult HitResult;
 		FCollisionQueryParams Params = FCollisionQueryParams(FName("LineTraceSingle"));
 		Params.AddIgnoredActor(Melee);
-		bool bHit = GetWorld()->LineTraceSingleByChannel(HitResult, Melee->GetActorLocation(), DashActorPosition, ECollisionChannel::ECC_Visibility, Params);
+		FVector DashActorVisibility = DashActorPosition;
+		DashActorVisibility.Z = DashActorVisibility.Z + 50;
+		//DrawDebugSphere(GetWorld(), DashActorVisibility, 10.0f, 12, FColor(255, 0, 0), false, 10.0f);
+		bool bHit = GetWorld()->LineTraceSingleByChannel(HitResult, Melee->GetActorLocation(), DashActorVisibility, ECollisionChannel::ECC_Visibility, Params);
 		if (bHit)
 		{
 			EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true);
 		}
+
 		bDashing = true;
 	}
 }
@@ -131,8 +137,6 @@ void USATORI_AI_DashAbilityMelee::SpawnActor()
 	DashActor->FinishSpawning(SpawnTransform);
 
 	bTargeting = true;
-
-	TotalDistance = FVector::Dist(DashActor->GetActorLocation(), Melee->GetActorLocation());
 }
 
 void USATORI_AI_DashAbilityMelee::Tick(float DeltaTime)

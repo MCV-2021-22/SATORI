@@ -5,6 +5,7 @@
 
 #include "SATORICharacter.h"
 #include "AbilityTask/SATORI_PlayMontageAndWaitEvent.h"
+#include "AI/Character/Raijin/SATORI_Raijin.h"
 #include "Kismet/GameplayStatics.h"
 #include "Widgets/Text/ISlateEditableTextWidget.h"
 
@@ -29,6 +30,11 @@ void USATORI_Rayo::ActivateAbility(const FGameplayAbilitySpecHandle Handle, cons
 	Task->OnCancelled.AddDynamic(this, &USATORI_Rayo::OnCancelled);
 	Task->EventReceived.AddDynamic(this, &USATORI_Rayo::EventReceived);
 	Task->ReadyForActivation();
+	ASATORI_Raijin* Raijin = Cast<ASATORI_Raijin>(GetAvatarActorFromActorInfo());
+	if (Raijin)
+	{
+		Raijin->ArcoAltavoces->setAttacking(true);
+	}
 
 	//GetWorld()->GetTimerManager().ClearTimer(TimerHandle);
 
@@ -90,6 +96,11 @@ void USATORI_Rayo::OnBucleRayos(const FGameplayAbilitySpecHandle Handle, const F
 		
 		GetWorld()->GetTimerManager().ClearTimer(TimerHandle);
 		iteracion = 0;
+		ASATORI_Raijin* Raijin = Cast<ASATORI_Raijin>(GetAvatarActorFromActorInfo());
+		if (Raijin)
+		{
+			Raijin->ArcoAltavoces->setAttacking(false);
+		}
 		EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true);
 
 	}
@@ -102,6 +113,11 @@ void USATORI_Rayo::OnBucleRayos(const FGameplayAbilitySpecHandle Handle, const F
 
 void USATORI_Rayo::OnCancelled(FGameplayTag EventTag, FGameplayEventData EventData)
 {
+	ASATORI_Raijin* Raijin = Cast<ASATORI_Raijin>(GetAvatarActorFromActorInfo());
+	if (Raijin)
+	{
+		Raijin->ArcoAltavoces->setAttacking(false);
+	}
 	EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true);
 }
 

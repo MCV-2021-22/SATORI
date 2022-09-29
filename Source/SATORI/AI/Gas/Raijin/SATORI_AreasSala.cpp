@@ -6,6 +6,7 @@
 #include "SATORICharacter.h"
 #include "Engine/DecalActor.h"
 #include "AbilityTask/SATORI_PlayMontageAndWaitEvent.h"
+#include "AI/Character/Raijin/SATORI_Raijin.h"
 #include "Kismet/GameplayStatics.h"
 #include "Widgets/Text/ISlateEditableTextWidget.h"
 
@@ -30,6 +31,11 @@ void USATORI_AreasSala::ActivateAbility(const FGameplayAbilitySpecHandle Handle,
 	Task->EventReceived.AddDynamic(this, &USATORI_AreasSala::EventReceived);
 	Task->ReadyForActivation();
 
+	ASATORI_Raijin* Raijin = Cast<ASATORI_Raijin>(GetAvatarActorFromActorInfo());
+	if (Raijin)
+	{
+		Raijin->ArcoAltavoces->setAttacking(true);
+	}
 	//GetWorld()->GetTimerManager().ClearTimer(TimerHandle);
 
 }
@@ -138,11 +144,21 @@ void USATORI_AreasSala::EventReceived(FGameplayTag EventTag, FGameplayEventData 
 
 void USATORI_AreasSala::OnCancelled(FGameplayTag EventTag, FGameplayEventData EventData)
 {
+	ASATORI_Raijin* Raijin = Cast<ASATORI_Raijin>(GetAvatarActorFromActorInfo());
+	if (Raijin)
+	{
+		Raijin->ArcoAltavoces->setAttacking(false);
+	}
 	EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true);
 }
 
 
 void USATORI_AreasSala::OnCompleted(FGameplayTag EventTag, FGameplayEventData EventData)
 {
+	ASATORI_Raijin* Raijin = Cast<ASATORI_Raijin>(GetAvatarActorFromActorInfo());
+	if (Raijin)
+	{
+		Raijin->ArcoAltavoces->setAttacking(false);
+	}
 	EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true);
 }
