@@ -80,4 +80,8 @@ public:
 private:
 	void CooldownTimerCounter(FSATORI_CooldownDatas CooldownData);	
 	void HabilityCooldownCounter(FSATORI_CooldownDatas CooldownData);
+
+	FTimerHandle FirstIconHandle;
+	FTimerHandle SecondIconHandle;
+	FTimerHandle ThirstIconHandle;
 };

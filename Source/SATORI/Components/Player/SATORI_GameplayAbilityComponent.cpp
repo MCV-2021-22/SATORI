@@ -364,7 +364,7 @@ void USATORI_GameplayAbilityComponent::CooldownCountDown(int HabilityID)
 	AbilityCD_Infos[HabilityID].TimeRemaining -= 1.0f;
 	if (AbilityCD_Infos[HabilityID].TimeRemaining >= 0)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Local Time, %f"), AbilityCD_Infos[HabilityID].TimeRemaining);
+		//UE_LOG(LogTemp, Warning, TEXT("Local Time, %f"), AbilityCD_Infos[HabilityID].TimeRemaining);
 		if (AbilityCD_Infos[HabilityID].TimeRemaining <= 0)
 		{
 			if (HabilityID == 0)
