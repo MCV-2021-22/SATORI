@@ -24,6 +24,16 @@ public:
 	USATORI_TPUp();
 
 
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Ability")
+		UAnimMontage* AnimMontage;
+
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Ability|Tags")
+		FGameplayTag TagSpawnAbility;
+
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Ability|Tags")
+		FGameplayTag TagEndAbility;
+
+
 
 	FTimerDelegate TimerDelegate;
 
@@ -40,4 +50,16 @@ protected:
 
 	int iteracion = 0;
 	int max_iteracion = 4;
+
+	UFUNCTION()
+		void OnCancelled(FGameplayTag EventTag, FGameplayEventData EventData);
+
+	UFUNCTION()
+		void OnCompleted(FGameplayTag EventTag, FGameplayEventData EventData);
+
+	UFUNCTION()
+		void EventReceived(FGameplayTag EventTag, FGameplayEventData EventData);
+private:
+
+	const bool bStopWhenAbilityEnds = true;
 };

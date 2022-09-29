@@ -4,6 +4,7 @@
 #include "AI/Gas/Fujin/SATORI_PunchLevantar.h"
 
 #include "SATORICharacter.h"
+#include "AbilityTask/SATORI_PlayMontageAndWaitEvent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 
 #include "Kismet/GameplayStatics.h"
@@ -18,54 +19,70 @@ USATORI_PunchLevantar::USATORI_PunchLevantar()
 
 void USATORI_PunchLevantar::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData)
 {
+	//Handling of events
+	USATORI_PlayMontageAndWaitEvent* Task = USATORI_PlayMontageAndWaitEvent::PlayMontageAndWaitForEvent(this, NAME_None, AnimMontage, FGameplayTagContainer(), 1.0f, NAME_None, bStopWhenAbilityEnds, 1.0f);
+	Task->OnBlendOut.AddDynamic(this, &USATORI_PunchLevantar::OnCompleted);
+	Task->OnCompleted.AddDynamic(this, &USATORI_PunchLevantar::OnCompleted);
+	Task->OnInterrupted.AddDynamic(this, &USATORI_PunchLevantar::OnCancelled);
+	Task->OnCancelled.AddDynamic(this, &USATORI_PunchLevantar::OnCancelled);
+	Task->EventReceived.AddDynamic(this, &USATORI_PunchLevantar::EventReceived);
+	Task->ReadyForActivation();
 
 
-	int a = 2;
+}
 
-	FVector IA_POS = ActorInfo->AvatarActor->GetActorLocation();
-
-	TArray< AActor* > enemigos;
-
-	UGameplayStatics::GetAllActorsWithTag(GetWorld(), FName("PossessedBy.Player"), enemigos);
-
-	for (AActor* Actor : enemigos)
+void USATORI_PunchLevantar::EventReceived(FGameplayTag EventTag, FGameplayEventData EventData)
+{
+	if (EventTag == TagSpawnAbility)
 	{
+		int a = 2;
 
-		//Actor->Tags.Add("PossessedBy.Player");
-		if (Cast<ASATORICharacter>(Actor) != nullptr)
+		FVector IA_POS = CurrentActorInfo->AvatarActor->GetActorLocation();
+
+		TArray< AActor* > enemigos;
+
+		UGameplayStatics::GetAllActorsWithTag(GetWorld(), FName("PossessedBy.Player"), enemigos);
+
+		for (AActor* Actor : enemigos)
 		{
-			ASATORICharacter* Player1 = Cast<ASATORICharacter>(Actor);
-			bool tiene = Player1->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag("PossessedBy.Player"));
 
-			FVector dest = Player1->GetActorLocation();
+			//Actor->Tags.Add("PossessedBy.Player");
+			if (Cast<ASATORICharacter>(Actor) != nullptr)
+			{
+				ASATORICharacter* Player1 = Cast<ASATORICharacter>(Actor);
+				bool tiene = Player1->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag("PossessedBy.Player"));
 
-			FRotator RotationOfIA = ActorInfo->AvatarActor->GetActorRotation();
-			FActorSpawnParameters SpawnParams;
-			SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+				FVector dest = Player1->GetActorLocation();
 
-			FTransform IATransform = ActorInfo->AvatarActor->GetTransform();
+				FRotator RotationOfIA = CurrentActorInfo->AvatarActor->GetActorRotation();
+				FActorSpawnParameters SpawnParams;
+				SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+
+				FTransform IATransform = CurrentActorInfo->AvatarActor->GetTransform();
 
 
-			ASATORI_FujinLevantarCollision* Empuje = GetWorld()->SpawnActor<ASATORI_FujinLevantarCollision>(ProjectileClass,
-				dest,
-				RotationOfIA);
+				ASATORI_FujinLevantarCollision* Empuje = GetWorld()->SpawnActor<ASATORI_FujinLevantarCollision>(ProjectileClass,
+					dest,
+					RotationOfIA);
 
-			Empuje->PushPlayer(Player1);
+				Empuje->PushPlayer(Player1);
 
-			Player = Player1;
-			
-			break;
+				Player = Player1;
+
+				break;
+
+			}
 
 		}
+		TimerDelegate = FTimerDelegate::CreateUObject(this, &USATORI_PunchLevantar::checkCollisionPlayer, CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo);
+		GetWorld()->GetTimerManager().SetTimer(TimerHandle, TimerDelegate, 0.1f, true);
+
+
 
 	}
-	TimerDelegate = FTimerDelegate::CreateUObject(this, &USATORI_PunchLevantar::checkCollisionPlayer, CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo);
-	GetWorld()->GetTimerManager().SetTimer(TimerHandle, TimerDelegate, 0.1f, true);
-
-	
-
-	
 }
+
+
 
 void USATORI_PunchLevantar::checkCollisionPlayer(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo)
 {
@@ -81,4 +98,18 @@ void USATORI_PunchLevantar::checkCollisionPlayer(const FGameplayAbilitySpecHandl
 	}
 
 	
+}
+
+
+void USATORI_PunchLevantar::OnCancelled(FGameplayTag EventTag, FGameplayEventData EventData)
+{
+
+	EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true);
+}
+
+
+void USATORI_PunchLevantar::OnCompleted(FGameplayTag EventTag, FGameplayEventData EventData)
+{
+
+	EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true);
 }
