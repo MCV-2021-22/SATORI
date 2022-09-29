@@ -135,12 +135,22 @@ void USATORI_StatsComponent::HealthChanged(const FOnAttributeChangeData& Data)
 	if (Health <= 0)
 	{
 		ASATORICharacter* SatoriCharacter = Cast<ASATORICharacter>(GetOwner());
-		if(SatoriCharacter)
-			SatoriCharacter->CharacterDeath();
-		/*if (DeathWidget)
+		if (SatoriCharacter)
 		{
-			DeathWidget.Get;
-		}*/
+			SatoriCharacter->CharacterDeath();
+			ASATORI_PlayerController* PlayerController = Cast<ASATORI_PlayerController>(SatoriCharacter->GetController());
+			if (PlayerController && SatoriCharacter->GetComboSystemComponent()->isInBossFight == true)
+			{
+				USATORI_MainUI* MainUI = PlayerController->GetSatoriMainUI();
+				if (MainUI)
+				{
+					if (MainUI->BossHealthBarUI)
+					{
+						MainUI->SetBossUIVisibility(false);
+					}					
+				}
+			}
+		}
 	}
 
 	UpdateHealthBarPercent();

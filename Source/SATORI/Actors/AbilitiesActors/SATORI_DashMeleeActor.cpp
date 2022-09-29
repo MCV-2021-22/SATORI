@@ -30,8 +30,8 @@ ASATORI_DashMeleeActor::ASATORI_DashMeleeActor()
 	CollisionSphereComponent->OnComponentBeginOverlap.AddDynamic(this, &ASATORI_DashMeleeActor::OnOverlapCollisionSphere);
 
 	//Debug
-	CollisionBoxComponent->bHiddenInGame = false;
-	CollisionSphereComponent->bHiddenInGame = false;
+	CollisionBoxComponent->bHiddenInGame = true;
+	CollisionSphereComponent->bHiddenInGame = true;
 }
 
 void ASATORI_DashMeleeActor::OnOverlapCollisionBox(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)

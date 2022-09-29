@@ -12,6 +12,9 @@ class USATORI_AbilityDataAsset;
 class USATORI_ChangeAbilitiesWidget;
 class UDataTable;
 class USATORI_GameInstance;
+class UAsyncTaskCooldownChanged;
+
+// ------------------ Hability Datas ----------------------
 
 USTRUCT(BlueprintType)
 struct FSATORI_AbilitiesDatas
@@ -58,8 +61,43 @@ struct FSATORI_AbilitiesIconsDatas
 	FSATORI_AbilitiesBordesChecker AbilitiesBordesChecker;
 };
 
+// ------------- Cooldown Datas ------------------------------
+USTRUCT(BlueprintType)
+struct FSATORI_CooldownDatas
+{
+	GENERATED_BODY()
+
+	bool IsCooldownAvaiable = false;
+	float TimeRemained = 0.0f;
+};
+
+USTRUCT(BlueprintType)
+struct FSATORI_AbilitiesIconsCooldownDatas
+{
+	GENERATED_BODY()
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	FSATORI_CooldownDatas FirstIconDatas;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	FSATORI_CooldownDatas SecondIconDatas;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	FSATORI_CooldownDatas ThirstIconDatas;
+};
+
+struct FAbilityCooldownTimerInfo
+{
+	FTimerHandle WaitHandle;
+	float TimeRemaining;
+	int AbilityID;
+};
+
+// -------------------- End Datas Sections ----------------------
+
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FSATORIChangeAbilityIcon, const FSATORI_AbilitiesDatas&, AbilityData);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FSATORIChangeAllAbilityIcon, FSATORI_AbilitiesIconsDatas, AbilityData);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FSATORICooldownAbilityIcon, FSATORI_AbilitiesIconsCooldownDatas, CooldownData);
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class SATORI_API USATORI_GameplayAbilityComponent : public UActorComponent
@@ -101,15 +139,29 @@ public:
 
 	TArray<FSATORI_AbilitiesDatas> GetCharacterAbilities() { return PortalRewardAbilities; }
 
+	UFUNCTION(BlueprintCallable)
+	UAsyncTaskCooldownChanged* GetAsyncTaskCooldownChanged() { return CooldownIconChanges; }
+	UFUNCTION(BlueprintCallable)
+	void SetAsyncTaskCooldownChanged(UAsyncTaskCooldownChanged* Value) { CooldownIconChanges = Value; }
+
+	// Notifies
 	UPROPERTY(BlueprintAssignable)
 	FSATORIChangeAbilityIcon AbilityIconChange;
 
 	UPROPERTY(BlueprintAssignable)
 	FSATORIChangeAllAbilityIcon AllAbilityIconChange;
+
+	UPROPERTY(BlueprintAssignable)
+	FSATORICooldownAbilityIcon CooldownAbilityIconChange;
 	
 	void NotifyAbilityChanged();
-	
+	void NotifyCooldownAbilityChanged(float TimeRemaining);
+
+	// -------------------End Notify ----------------------------
+
+	// Reset Player Hability
 	void ResetCurrentPlayerAbilities();
+
 public:
 	UFUNCTION(BlueprintCallable)
 	bool TryChangeAbility();
@@ -123,6 +175,10 @@ public:
 protected:
 	
 	virtual void BeginPlay() override;
+
+	void CheckCooldownTimeRemaines(int HabilityID);
+	void CooldownCountDown(int HabilityID);
+
 private:
 
 	FName AbilityName;
@@ -140,6 +196,21 @@ private:
 
 	UPROPERTY()
 	FSATORI_AbilitiesIconsDatas AbilityIconToChange;
+
+	UPROPERTY()
+	UAsyncTaskCooldownChanged* CooldownIconChanges;
+
+	// Cooldown Datas
+	UPROPERTY()
+	FSATORI_AbilitiesIconsCooldownDatas CooldownData;
+
+	//UPROPERTY()
+	//float HabilityTimeRemained = 0.0f;
+
+	//// Handle
+	//FTimerHandle Hability_1_WaitHandle;
+
+	TArray<FAbilityCooldownTimerInfo> AbilityCD_Infos;
 public:
 
 	void AddPortalAbilities(FSATORI_AbilitiesDatas AbilityData);

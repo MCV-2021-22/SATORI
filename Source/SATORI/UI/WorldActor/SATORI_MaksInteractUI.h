@@ -25,6 +25,9 @@ public:
 	UPROPERTY(meta = (BindWidget))
 	UButton* MidoriButton;
 
+	UPROPERTY(meta = (BindWidget))
+	UButton* ResumeButton;
+
 	virtual void NativeConstruct() override;
 
 private:
@@ -36,6 +39,9 @@ private:
 
 	UFUNCTION()
 	void MidoriMaskButtonOnClicked();
+
+	UFUNCTION()
+	void OnResumeClicked();
 
 	bool isClicked = false;
 };

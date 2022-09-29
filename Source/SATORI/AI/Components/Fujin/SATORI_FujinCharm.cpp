@@ -90,7 +90,10 @@ void ASATORI_FujinCharm::Tick(float DeltaTime)
 		Player->SetActorLocation(GetActorLocation());
 	}
 
-
+	if(canDestroy)
+	{
+		Destroy();
+	}
 
 	
 }
@@ -164,7 +167,8 @@ void ASATORI_FujinCharm::OnComponentBeginOverlap(
 		if(Fujin1)
 		{
 			Player->RemoveGameplayTag(FGameplayTag::RequestGameplayTag("State.Charmed"));
-			Destroy();
+			ReturnToFujinDone = true;
+			//Destroy();
 		}
 	}
 

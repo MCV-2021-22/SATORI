@@ -7,6 +7,8 @@
 #include "Actors/Portal/SATORI_Portal.h"
 #include "SATORIGameMode.generated.h"
 
+class ASATORI_WinPortalActor;
+
 UCLASS(minimalapi)
 class ASATORIGameMode : public AGameMode
 {
@@ -46,6 +48,9 @@ public:
 	void AddPortalActor(ASATORI_Portal* Portal);
 
 	UFUNCTION()
+	void AddWinPortalActor(ASATORI_WinPortalActor* Portal);
+
+	UFUNCTION()
 	int NumOfPortalActors();
 
 private:
@@ -56,6 +61,8 @@ private:
 	UPROPERTY()
 	TArray < ASATORI_Portal* > PortalActors;
 
+	UPROPERTY()
+	ASATORI_WinPortalActor* WinPortalActors;
 };
 
 

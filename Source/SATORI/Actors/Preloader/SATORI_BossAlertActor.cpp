@@ -8,6 +8,7 @@
 #include "Character/SATORI_PlayerController.h"
 #include "Blueprint/UserWidget.h"
 #include "UI/SATORI_MainUI.h"
+#include "Components/Player/SATORI_ComboSystemComponent.h"
 
 // Sets default values
 ASATORI_BossAlertActor::ASATORI_BossAlertActor()
@@ -38,6 +39,7 @@ void ASATORI_BossAlertActor::OnOverlapBegin(class UPrimitiveComponent* Overlappe
 		PlayerCharacter = Cast<ASATORICharacter>(OtherActor);
 		if (PlayerCharacter)
 		{
+			PlayerCharacter->GetComboSystemComponent()->isInBossFight = true;
 			ASATORI_PlayerController* PlayerController = Cast<ASATORI_PlayerController>(PlayerCharacter->GetController());
 			if (PlayerController)
 			{
@@ -51,7 +53,6 @@ void ASATORI_BossAlertActor::OnOverlapBegin(class UPrimitiveComponent* Overlappe
 	}
 }
 
-UFUNCTION()
 void ASATORI_BossAlertActor::OnOverlapEnd(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor,
 	class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
 {

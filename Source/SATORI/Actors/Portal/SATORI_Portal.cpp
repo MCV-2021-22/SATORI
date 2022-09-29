@@ -134,8 +134,6 @@ void ASATORI_Portal::ActivatePortal()
 	Active = true;
 	UE_LOG(LogTemp, Display, TEXT("[%s] ASATORI_Portal: Portal is Active ... "), *GetName());
 	
-	//TO DO: UI
-
 	SphereComponent->SetCollisionProfileName(FName("IgnoreAllOverlapOnlyPlayer"));
 
 	if (PortalEffectsToApply.PassiveIcon && PortalAbilityToApply.AbilitiyIcon)

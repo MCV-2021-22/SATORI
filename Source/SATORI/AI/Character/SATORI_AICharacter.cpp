@@ -25,6 +25,7 @@
 #include "GameFramework\CharacterMovementComponent.h"
 #include "FunctionLibrary/SATORI_BlueprintLibrary.h"
 #include "AI/Character/Melee/SATORI_Melee.h"
+#include "Materials/MaterialInstanceDynamic.h"
 
 ASATORI_AICharacter::ASATORI_AICharacter()
 {
@@ -65,6 +66,19 @@ void ASATORI_AICharacter::BeginPlay()
 	//Needed for targeting system (Nacho)
 	if (bIsTargetable) {
 		RegisterInTargetableArray();
+	}
+
+	USkeletalMeshComponent* CharacterMesh = this->GetMesh();
+	TArray<UMaterialInterface*> Materials= CharacterMesh->GetMaterials();
+	
+	if (Materials.Num() > 0)
+	{
+		for (int i = 0; i < Materials.Num(); i++)
+		{
+			UMaterialInstanceDynamic* Material = UMaterialInstanceDynamic::Create(Materials[i], this);
+			DynamicMaterials.Add(Material);
+			CharacterMesh->SetMaterial(i, DynamicMaterials[i]);
+		}
 	}
 }
 
@@ -232,6 +246,11 @@ void ASATORI_AICharacter::Tick(float DeltaSeconds)
 			RemoveGameplayTag(FGameplayTag::RequestGameplayTag("State.Burst"));
 		}
 	}
+	if(canDestroy)
+	{
+		Destroy();
+	}
+
 }
 
 void ASATORI_AICharacter::CheckDamage(float Damage)
@@ -299,8 +318,10 @@ void ASATORI_AICharacter::CheckDamage(float Damage)
 		else
 		{
 			AActor* Actor = Cast<AActor>(this);
-			GetWorld()->GetAuthGameMode<ASATORIGameMode>()->RemoveEnemyActor(Actor);
-			Destroy();
+
+			AddGameplayTag(FGameplayTag::RequestGameplayTag("State.Dead"));
+			//GetWorld()->GetAuthGameMode<ASATORIGameMode>()->RemoveEnemyActor(Actor);
+			//Destroy();
 		}
 	}
 }
@@ -380,4 +401,27 @@ void ASATORI_AICharacter::CheckImpactReceivedByPlayer(EComboState State)
 		break;
 	default: break;
 	}
+}
+
+void ASATORI_AICharacter::SetDamagedColor()
+{
+	for (int i = 0; i < DynamicMaterials.Num(); i++)
+	{
+		if (DynamicMaterials[i])
+		{
+			DynamicMaterials[i]->SetScalarParameterValue(FName(TEXT("BaseColor")), 1.0f);
+		}
+	}
+	
+	FTimerHandle WaitHandle;
+	GetWorld()->GetTimerManager().SetTimer(WaitHandle, [this]()
+		{
+			for (int i = 0; i < DynamicMaterials.Num(); i++)
+			{
+				if (DynamicMaterials[i])
+				{
+					DynamicMaterials[i]->SetScalarParameterValue(FName(TEXT("BaseColor")), 0.0f);
+				}
+			}
+		}, 0.1f, false);
 }
