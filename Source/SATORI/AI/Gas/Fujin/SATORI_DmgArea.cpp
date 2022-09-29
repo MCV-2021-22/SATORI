@@ -84,7 +84,8 @@ void USATORI_DmgArea::OnCancelled(FGameplayTag EventTag, FGameplayEventData Even
 
 void USATORI_DmgArea::OnCompleted(FGameplayTag EventTag, FGameplayEventData EventData)
 {
-
+	final = false;
+	GetWorld()->GetTimerManager().ClearTimer(TimerHandle);
 	EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true);
 }
 
@@ -96,13 +97,17 @@ void USATORI_DmgArea::CheckFujin(const FGameplayAbilitySpecHandle Handle, const 
 	ASATORI_Fujin* Fujin = Cast<ASATORI_Fujin>(Actor);
 	if(Fujin)
 	{
-		if(Fujin->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag(("Fujin.KickDone"))))
+		if(Fujin->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag(("Fujin.KickDone"))) && !final)
 		{
 			if(USkeletalMeshComponent* Mesh = Fujin->GetMesh())
 			{
 				if(UAnimInstance* AnimInstance = Mesh->GetAnimInstance())
 				{
+					final = true;
 					AnimInstance->Montage_JumpToSection(FName("recovery"), AnimInstance->GetCurrentActiveMontage());
+
+					Fujin->RemoveGameplayTag(FGameplayTag::RequestGameplayTag("Fujin.KickDone"));
+					//GetWorld()->GetTimerManager().ClearTimer(TimerHandle);
 				}
 			}
 

@@ -61,5 +61,6 @@ protected:
 		void EventReceived(FGameplayTag EventTag, FGameplayEventData EventData);
 private:
 
+	bool final = false;
 	const bool bStopWhenAbilityEnds = true;
 };

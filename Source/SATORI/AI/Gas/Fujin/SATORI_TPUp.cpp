@@ -71,7 +71,7 @@ void USATORI_TPUp::Teleport(const FGameplayAbilitySpecHandle Handle, const FGame
 			if (Cast<ASATORICharacter>(Actor) != nullptr)
 			{
 				ASATORICharacter* Player = Cast<ASATORICharacter>(Actor);
-				Fujin->SetActorLocation(Player->GetActorLocation() + FVector(0,0,80));
+				Fujin->SetActorLocation(Player->GetActorLocation() + FVector(0,0,1000));
 				Fujin->GetMesh()->SetVisibility(true);
 				Fujin->SetActorEnableCollision(true);
 
