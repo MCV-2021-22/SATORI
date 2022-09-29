@@ -10,6 +10,8 @@ class USphereComponent;
 class USkeletalMeshComponent;
 class ASATORI_AICharacter;
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FSATORIBossHealthChanges, bool, isChanges);
+
 UENUM()
 enum class EComboState : uint8
 {
@@ -37,6 +39,8 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Animations")
 	TArray<UAnimMontage*> HeavyAttackMontageToPlay;
 
+	FSATORIBossHealthChanges BossHealthChanges;
+
 	UFUNCTION(BlueprintCallable)
 	void LigthAttack();
 
@@ -48,7 +52,6 @@ public:
 
 	void ResetAllAttribute();
 
-
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Weapon")
 	USkeletalMeshComponent* SwordComponent;
 
@@ -57,20 +60,26 @@ public:
 
 	void ApplyKnockBackTagToEnemy(ASATORI_AICharacter* Enemy);
 
+	void BossHealthNotifyAbilityChanged();
+
 	// Getters and Setter
 	EComboState GetCurrentComboState() { return CurrentComboState; }
 	void SetComboState(EComboState State);
+	void SetCurrentEnemyType() {}
+
 public:
 	int lightAttackCounter = 0;
 	int HeavyAttackCounter = 0;
 
 	bool isLightAttack = true;
 	bool isHeavyAttack = true;
+
+	bool isInBossFight = false;
+
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
 	virtual void InitializeComponent() override;
 
 	EComboState CurrentComboState;
-
 };

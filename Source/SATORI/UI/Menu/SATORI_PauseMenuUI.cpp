@@ -49,7 +49,6 @@ void USATORI_PauseMenuUI::OnResumeClicked()
 			PlayerController->bEnableMouseOverEvents = false;
 		}
 	}
-
 }
 
 void USATORI_PauseMenuUI::OnMainMenuClicked()

@@ -82,8 +82,6 @@ private:
 	
 	ASATORI_CharacterBase* Enemy;
 	FVector  DashActorPosition;
-	
-	float TotalDistance;
 
 	const bool bStopWhenAbilityEnds = true;
 

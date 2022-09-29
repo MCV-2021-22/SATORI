@@ -33,4 +33,9 @@ public:
 
 	UFUNCTION()
 	void OnAbilityEndedCallback(UGameplayAbility* EndedAbility);
+
+	bool GetAbilityHasBeenActivated() { return bHasBeenActivated; }
+	void SetAbilityHasBeenActivated(bool Value) { bHasBeenActivated = Value; }
+protected:
+	bool bHasBeenActivated = false;
 };

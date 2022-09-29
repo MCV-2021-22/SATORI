@@ -34,6 +34,11 @@ void USATORI_MaksInteractUI::NativeConstruct()
 	{
 		MidoriButton->OnClicked.AddDynamic(this, &USATORI_MaksInteractUI::MidoriMaskButtonOnClicked);
 	}
+
+	if (ResumeButton)
+	{
+		ResumeButton->OnClicked.AddDynamic(this, &USATORI_MaksInteractUI::OnResumeClicked);
+	}
 }
 
 void USATORI_MaksInteractUI::AkaMaskButtonOnClicked()
@@ -89,6 +94,23 @@ void USATORI_MaksInteractUI::MidoriMaskButtonOnClicked()
 		if (PlayerController)
 		{
 			Character->EnableInput(PlayerController);
+		}
+	}
+}
+
+void USATORI_MaksInteractUI::OnResumeClicked()
+{
+	UGameplayStatics::SetGamePaused(GetWorld(), false);
+	this->RemoveFromParent();
+	ASATORICharacter* Character = Cast<ASATORICharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
+	if (Character)
+	{
+		ASATORI_PlayerController* PlayerController = Cast<ASATORI_PlayerController>(Character->GetController());
+		if (PlayerController)
+		{
+			PlayerController->bShowMouseCursor = false;
+			PlayerController->bEnableClickEvents = false;
+			PlayerController->bEnableMouseOverEvents = false;
 		}
 	}
 }

@@ -7,6 +7,7 @@
 #include "Savegame/SATORI_SaveGame.h"
 #include "Savegame/SATORI_ActorSaveData.h"
 #include "Actors/Portal/SATORI_Portal.h"
+#include "Actors/Portal/SATORI_WinPortalActor.h"
 
 ASATORIGameMode::ASATORIGameMode()
 {
@@ -63,6 +64,12 @@ void ASATORIGameMode::RemoveEnemyActor(AActor* Enemy)
 			Portal->ActivatePortal();
 			Portal->SetCurrentMeshInteractability(true);
 		}
+
+		if (WinPortalActors)
+		{
+			WinPortalActors->ActivatePortal();
+			WinPortalActors->SetCurrentMeshInteractability(true);
+		}
 	}
 }
 
@@ -79,6 +86,11 @@ int ASATORIGameMode::NumOfEnemyActors()
 void ASATORIGameMode::AddPortalActor(ASATORI_Portal* Portal)
 {
 	PortalActors.Add(Portal);
+}
+
+void ASATORIGameMode::AddWinPortalActor(ASATORI_WinPortalActor* Portal)
+{
+	WinPortalActors = Portal;
 }
 
 int ASATORIGameMode::NumOfPortalActors()

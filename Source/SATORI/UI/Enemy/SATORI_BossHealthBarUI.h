@@ -17,6 +17,9 @@ class SATORI_API USATORI_BossHealthBarUI : public UUserWidget
 public:
 	bool Initialize() override;
 
+	virtual void NativeConstruct() override;
+	virtual void NativeDestruct() override;
+
 	UPROPERTY(meta = (BindWidget))
 	UProgressBar* Fujin_HealthBar;
 
@@ -30,10 +33,13 @@ public:
 	UTextBlock* Raijin_NameText;
 
 	UFUNCTION(BlueprintCallable)
-	void SetHealthBarPercentage(float Fujin_HealthValue, float Raijin_HealthValue);
+	void SetHealthBarPercentage(bool isBossFight);
 
 	UFUNCTION(BlueprintCallable)
 	void SetHealthTextBlock(FText Fujin_HealthName, FText Raijin_HealthName);
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void BP_HealthDataChanges(float Fujin_HealthValue, float Raijin_HealthValue);
 
 private:
 	class ASATORI_Fujin* Fujin = nullptr;
