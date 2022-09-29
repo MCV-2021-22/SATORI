@@ -12,7 +12,7 @@ UAbilityTask_StartAbilityAndWait* UAbilityTask_StartAbilityAndWait::StartAbility
 
 void UAbilityTask_StartAbilityAndWait::Activate()
 {
-	bool bHasBeenActivated = AbilitySystemComponent->TryActivateAbilityByClass(AbilityClassToActivate);
+	bHasBeenActivated = AbilitySystemComponent->TryActivateAbilityByClass(AbilityClassToActivate);
 	if (bHasBeenActivated)
 	{
 		FGameplayAbilitySpec* AbilitySpec = AbilitySystemComponent->FindAbilitySpecFromClass(AbilityClassToActivate);

@@ -25,6 +25,9 @@ public:
 	void ResetSpawnTime();
 	float GetSpawnTime();
 
+	UPROPERTY(BlueprintReadOnly)
+	bool spawning = false;
+
 protected:
 
 	int MaxNumSpawn = 5;

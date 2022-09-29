@@ -11,7 +11,10 @@
 class UImage;
 class UTexture2D;
 class UBorder;
+class UProgressBar;
 struct FSATORI_AbilitiesDatas;
+struct FSATORI_AbilitiesIconsCooldownDatas;
+struct FSATORI_CooldownDatas;
 
 UCLASS()
 class SATORI_API USATORI_ChangeAbilitiesWidget : public UUserWidget
@@ -24,11 +27,21 @@ public:
 	virtual void NativeConstruct() override;
 	virtual void NativeDestruct() override;
 
+	UFUNCTION(BlueprintCallable)
+	void HabilityCooldownChanges(float Opacity, bool IsCooldownvisible,
+		UImage* HabilityIcon, UProgressBar* CooldownBar);
+
+	UFUNCTION(BlueprintCallable)
+	void HabilityCooldownDatas(FSATORI_AbilitiesIconsCooldownDatas Datas);
+
 	UFUNCTION(BlueprintImplementableEvent)
 	void BP_OnData(const FSATORI_AbilitiesDatas& Data);
 
 	UFUNCTION(BlueprintImplementableEvent)
 	void BP_AllOnData(FSATORI_AbilitiesIconsDatas Data);
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void BP_CooldownDatas(FSATORI_AbilitiesIconsCooldownDatas CooldownDatas);
 
 	UFUNCTION(BlueprintCallable)
 	void ChangeBordersIcons(FSATORI_AbilitiesBordesChecker Data);
@@ -44,4 +57,31 @@ public:
 
 	UPROPERTY(meta = (BindWidget))
 	UBorder* ThirstAbilityBorder;
+
+	// Widget 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (BindWidget))
+	UImage* FirstAbilityIcon;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (BindWidget))
+	UImage* SecondAbilityIcon;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (BindWidget))
+	UImage* LastAbilityIcon;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (BindWidget))
+	UProgressBar* Cooldown_1;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (BindWidget))
+	UProgressBar* Cooldown_2;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (BindWidget))
+	UProgressBar* Cooldown_3;
+
+private:
+	void CooldownTimerCounter(FSATORI_CooldownDatas CooldownData);	
+	void HabilityCooldownCounter(FSATORI_CooldownDatas CooldownData);
+
+	FTimerHandle FirstIconHandle;
+	FTimerHandle SecondIconHandle;
+	FTimerHandle ThirstIconHandle;
 };
