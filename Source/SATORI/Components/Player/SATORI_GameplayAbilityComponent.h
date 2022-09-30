@@ -69,6 +69,7 @@ struct FSATORI_CooldownDatas
 
 	bool IsCooldownAvaiable = false;
 	float TimeRemained = 0.0f;
+	int AbilityID = 0;
 };
 
 USTRUCT(BlueprintType)
@@ -89,6 +90,7 @@ struct FSATORI_AbilitiesIconsCooldownDatas
 struct FAbilityCooldownTimerInfo
 {
 	FTimerHandle WaitHandle;
+	FTimerDelegate CooldownDelegate;
 	float TimeRemaining;
 	int AbilityID;
 };

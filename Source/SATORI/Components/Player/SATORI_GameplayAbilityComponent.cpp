@@ -211,6 +211,7 @@ void USATORI_GameplayAbilityComponent::NotifyCooldownAbilityChanged(float TimeRe
 	{
 		CooldownData.FirstIconDatas.IsCooldownAvaiable = true;
 		CooldownData.FirstIconDatas.TimeRemained = TimeRemaining;
+		CooldownData.FirstIconDatas.AbilityID = 0;
 		CooldownAbilityIconChange.Broadcast(CooldownData);
 
 		// Fill the ability CD Info
@@ -224,6 +225,7 @@ void USATORI_GameplayAbilityComponent::NotifyCooldownAbilityChanged(float TimeRe
 	{
 		CooldownData.SecondIconDatas.IsCooldownAvaiable = true;
 		CooldownData.SecondIconDatas.TimeRemained = TimeRemaining;
+		CooldownData.SecondIconDatas.AbilityID = 1;
 		CooldownAbilityIconChange.Broadcast(CooldownData);
 
 		// Fill the ability CD Info
@@ -237,6 +239,7 @@ void USATORI_GameplayAbilityComponent::NotifyCooldownAbilityChanged(float TimeRe
 	{
 		CooldownData.ThirstIconDatas.IsCooldownAvaiable = true;
 		CooldownData.ThirstIconDatas.TimeRemained = TimeRemaining;
+		CooldownData.ThirstIconDatas.AbilityID = 2;
 		CooldownAbilityIconChange.Broadcast(CooldownData);
 
 		// Fill the ability CD Info
@@ -343,11 +346,13 @@ void USATORI_GameplayAbilityComponent::ResetCurrentPlayerAbilities()
 
 void USATORI_GameplayAbilityComponent::CheckCooldownTimeRemaines(int HabilityID)
 {
-	FTimerDelegate CooldownDelegate;
+	/*FTimerDelegate CooldownDelegate;*/
 
-	CooldownDelegate = FTimerDelegate::CreateUObject(this, &USATORI_GameplayAbilityComponent::CooldownCountDown, HabilityID);
+	AbilityCD_Infos[HabilityID].CooldownDelegate = FTimerDelegate::CreateUObject(this, 
+		&USATORI_GameplayAbilityComponent::CooldownCountDown, HabilityID);
 
-	GetWorld()->GetTimerManager().SetTimer(AbilityCD_Infos[HabilityID].WaitHandle, CooldownDelegate, 1, true, 0.0);
+	GetWorld()->GetTimerManager().SetTimer(AbilityCD_Infos[HabilityID].WaitHandle, 
+		AbilityCD_Infos[HabilityID].CooldownDelegate, 1, true, 0.0);
 }
 
 void USATORI_GameplayAbilityComponent::CooldownCountDown(int HabilityID)
@@ -371,6 +376,7 @@ void USATORI_GameplayAbilityComponent::CooldownCountDown(int HabilityID)
 			{
 				CooldownData.FirstIconDatas.IsCooldownAvaiable = false;
 				CooldownData.FirstIconDatas.TimeRemained = 0.0f;
+				CooldownData.FirstIconDatas.AbilityID = 0;
 				CooldownAbilityIconChange.Broadcast(CooldownData);
 				AbilityCD_Infos[HabilityID].AbilityID = 0;
 				AbilityCD_Infos[HabilityID].TimeRemaining = 0.f;
@@ -382,6 +388,7 @@ void USATORI_GameplayAbilityComponent::CooldownCountDown(int HabilityID)
 			{
 				CooldownData.SecondIconDatas.IsCooldownAvaiable = false;
 				CooldownData.SecondIconDatas.TimeRemained = 0.0f;
+				CooldownData.SecondIconDatas.AbilityID = 0;
 				CooldownAbilityIconChange.Broadcast(CooldownData);
 				AbilityCD_Infos[HabilityID].AbilityID = 0;
 				AbilityCD_Infos[HabilityID].TimeRemaining = 0.f;
@@ -392,6 +399,7 @@ void USATORI_GameplayAbilityComponent::CooldownCountDown(int HabilityID)
 			{
 				CooldownData.ThirstIconDatas.IsCooldownAvaiable = false;
 				CooldownData.ThirstIconDatas.TimeRemained = 0.0f;
+				CooldownData.ThirstIconDatas.AbilityID = 0;
 				CooldownAbilityIconChange.Broadcast(CooldownData);
 				AbilityCD_Infos[HabilityID].AbilityID = 0;
 				AbilityCD_Infos[HabilityID].TimeRemaining = 0.f;

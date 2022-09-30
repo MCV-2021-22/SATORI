@@ -10,11 +10,20 @@
 
 class UImage;
 class UTexture2D;
+class UTextBlock;
 class UBorder;
 class UProgressBar;
 struct FSATORI_AbilitiesDatas;
 struct FSATORI_AbilitiesIconsCooldownDatas;
 struct FSATORI_CooldownDatas;
+
+struct FWidgetCooldownTimerInfo
+{
+	FTimerHandle WaitHandle;
+	float TimeRemaining;
+	FTimerDelegate CooldownDelegate;
+	bool IsInCountDownState = false;
+};
 
 UCLASS()
 class SATORI_API USATORI_ChangeAbilitiesWidget : public UUserWidget
@@ -77,11 +86,20 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (BindWidget))
 	UProgressBar* Cooldown_3;
 
+	UPROPERTY(meta = (BindWidget))
+	class UTextBlock* HabilityCDTimeText_1;
+	UPROPERTY(meta = (BindWidget))
+	class UTextBlock* HabilityCDTimeText_2;
+	UPROPERTY(meta = (BindWidget))
+	class UTextBlock* HabilityCDTimeText_3;
+
 private:
 	void CooldownTimerCounter(FSATORI_CooldownDatas CooldownData);	
 	void HabilityCooldownCounter(FSATORI_CooldownDatas CooldownData);
 
-	FTimerHandle FirstIconHandle;
-	FTimerHandle SecondIconHandle;
-	FTimerHandle ThirstIconHandle;
+	/*FTimerHandle FirstIconWaitHandle;
+	FTimerHandle SecondIconWaitHandle;
+	FTimerHandle ThirstIconWaitHandle;*/
+
+	TArray<FWidgetCooldownTimerInfo> WidgetCD_Infos;
 };
