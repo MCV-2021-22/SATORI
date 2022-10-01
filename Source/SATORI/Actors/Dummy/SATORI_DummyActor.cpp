@@ -10,6 +10,7 @@ ASATORI_DummyActor::ASATORI_DummyActor()
 {
 	/*SkeletalMeshComponent = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("Dummy"));
 	SkeletalMeshComponent->SetupAttachment(RootComponent);*/
+	//GetCapsuleComponent()->OnComponentBeginOverlap.AddDynamic(this, &ASATORI_DummyActor::OnDamageOverlapBegin);
 }
 
 // Called when the game starts or when spawned
@@ -28,7 +29,7 @@ void ASATORI_DummyActor::PlayImpactAnimations()
 void ASATORI_DummyActor::OnDamageOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
 	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-
+	UE_LOG(LogTemp, Warning, TEXT("hi!!!!"));
 }
 
 void ASATORI_DummyActor::OnDamageOverlapEnd(class UPrimitiveComponent* OverlappedComp,
@@ -60,5 +61,30 @@ void ASATORI_DummyActor::CheckImpactReceivedByPlayer(EComboState State)
 		LightAttack_3 = false;
 		break;
 	default: break;
+	}
+}
+
+void ASATORI_DummyActor::PlayAnimationWithDamage()
+{
+	USkeletalMeshComponent* DummyMesh = GetMesh();
+	if (DummyMesh)
+	{
+		if (HeavyAttack || LightAttack_1 || LightAttack_2 || LightAttack_3)
+		{
+			GetMesh()->Stop();
+			int RandomNumber = FMath::RandRange(0, 2);
+			if (RandomNumber == 0)
+			{
+				DummyMesh->PlayAnimation(AnimToPlay_1, false);
+			}
+			else if (RandomNumber == 1)
+			{
+				DummyMesh->PlayAnimation(AnimToPlay_2, false);
+			}
+			else if (RandomNumber == 2)
+			{
+				DummyMesh->PlayAnimation(AnimToPlay_3, false);
+			}
+		}
 	}
 }

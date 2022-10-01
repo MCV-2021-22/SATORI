@@ -36,6 +36,17 @@ public:
 	bool LightAttack_3 = false;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	bool HeavyAttack = false;
+
+	// Animation
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class UAnimationAsset* AnimToPlay_1;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class UAnimationAsset* AnimToPlay_2;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class UAnimationAsset* AnimToPlay_3;
+
+	UFUNCTION(BlueprintCallable)
+	void PlayAnimationWithDamage();
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;

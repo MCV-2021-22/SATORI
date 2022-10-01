@@ -24,7 +24,14 @@ public:
 
 	USATORI_Charm();
 
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Ability")
+		UAnimMontage* AnimMontage;
 
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Ability|Tags")
+		FGameplayTag TagSpawnAbility;
+
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Ability|Tags")
+		FGameplayTag TagEndAbility;
 
 	FTimerDelegate TimerDelegate;
 
@@ -32,6 +39,8 @@ public:
 
 	virtual void ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, 
 		const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData) override;
+
+	void CheckCharmDone(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo);
 
 
 	UPROPERTY(BlueprintReadOnly, EditAnywhere)
@@ -46,4 +55,20 @@ protected:
 
 	int iteracion = 0;
 	int max_iteracion = 4;
+
+	UFUNCTION()
+		void OnCancelled(FGameplayTag EventTag, FGameplayEventData EventData);
+
+	UFUNCTION()
+		void OnCompleted(FGameplayTag EventTag, FGameplayEventData EventData);
+
+	UFUNCTION()
+		void EventReceived(FGameplayTag EventTag, FGameplayEventData EventData);
+
+	ASATORI_FujinCharm* CharmDone;
+private:
+
+	const bool bStopWhenAbilityEnds = true;
+
+	float time_alive = 3.0f;
 };
