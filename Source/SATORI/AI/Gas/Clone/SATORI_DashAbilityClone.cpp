@@ -103,7 +103,7 @@ void USATORI_DashAbilityClone::EndDash()
 	{
 		if (UAnimInstance* AnimInstance = Mesh->GetAnimInstance())
 		{
-			AnimInstance->Montage_JumpToSection(FName("DashEnd"), AnimInstance->GetCurrentActiveMontage());
+			AnimInstance->Montage_JumpToSection(FName("EndDash"), AnimInstance->GetCurrentActiveMontage());
 		}
 	}
 }
