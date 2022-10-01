@@ -24,6 +24,7 @@ class USkeletalMeshComponent;
 class UWidgetComponent;
 class USATORI_EnemyHealthBar;
 class USATORI_EnemyStatComponent;
+class ASATORI_CoinRewardActor;
 
 UENUM(BlueprintType)
 enum class SATORIEnemyType : uint8
@@ -131,6 +132,13 @@ public:
 
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "UI")
 	TSubclassOf<USATORI_EnemyHealthBar> HealthBarUI;
+
+	// Spawn Coin Actor
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "CoinActor")
+	TSubclassOf<ASATORI_CoinRewardActor> SpawnCoinActor;
+
+	UFUNCTION(BlueprintCallable)
+	void SpawnCointActorAfterDeath();
 
 	virtual void CharacterDeath() override;
 

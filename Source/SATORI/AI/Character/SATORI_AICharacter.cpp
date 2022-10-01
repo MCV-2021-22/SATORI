@@ -26,6 +26,7 @@
 #include "FunctionLibrary/SATORI_BlueprintLibrary.h"
 #include "AI/Character/Melee/SATORI_Melee.h"
 #include "Materials/MaterialInstanceDynamic.h"
+#include "Actors/Coin/SATORI_CoinRewardActor.h"
 
 ASATORI_AICharacter::ASATORI_AICharacter()
 {
@@ -424,4 +425,14 @@ void ASATORI_AICharacter::SetDamagedColor()
 				}
 			}
 		}, 0.1f, false);
+}
+
+void ASATORI_AICharacter::SpawnCointActorAfterDeath()
+{
+	FActorSpawnParameters SpawnParams;
+	if (SpawnCoinActor.Get())
+	{
+		ASATORI_CoinRewardActor* SpawnedActorRef = GetWorld()->SpawnActor<ASATORI_CoinRewardActor>(SpawnCoinActor, 
+			this->GetActorTransform(), SpawnParams);
+	}
 }

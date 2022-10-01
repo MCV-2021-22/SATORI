@@ -93,6 +93,7 @@ struct FAbilityCooldownTimerInfo
 	FTimerDelegate CooldownDelegate;
 	float TimeRemaining;
 	int AbilityID;
+	bool IsInCooldown = false;
 };
 
 // -------------------- End Datas Sections ----------------------
