@@ -127,7 +127,8 @@ void ASATORI_FujinLevantarCollision::PushPlayer(ASATORICharacter* Player1)
 		APlayerController* PlayerController = GetWorld()->GetFirstPlayerController();
 		Player1->DisableInput(PlayerController);
 
-		Player1->GetCharacterMovement()->AddImpulse(FVector(0, 0, ImpulseForce));
+		//Player1->GetCharacterMovement()->AddImpulse(FVector(0, 0, ImpulseForce));
+		Player1->GetCharacterMovement()->AddImpulse(FVector(resultante.X/5, resultante.Y/5, ImpulseForce/2));
 
 		
 
