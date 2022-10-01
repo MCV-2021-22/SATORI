@@ -70,5 +70,5 @@ private:
 
 	const bool bStopWhenAbilityEnds = true;
 
-	float time_alive = 3.0f;
+	float time_alive = 4.0f;
 };

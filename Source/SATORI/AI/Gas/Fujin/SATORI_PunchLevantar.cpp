@@ -2,7 +2,7 @@
 
 
 #include "AI/Gas/Fujin/SATORI_PunchLevantar.h"
-
+#include "AI/Character/Fujin/SATORI_Fujin.h"
 #include "SATORICharacter.h"
 #include "AbilityTask/SATORI_PlayMontageAndWaitEvent.h"
 #include "GameFramework/CharacterMovementComponent.h"
@@ -93,6 +93,14 @@ void USATORI_PunchLevantar::checkCollisionPlayer(const FGameplayAbilitySpecHandl
 		APlayerController* PlayerController = GetWorld()->GetFirstPlayerController();
 		Player->EnableInput(PlayerController);
 
+		AActor* Actor = GetAvatarActorFromActorInfo();
+
+		ASATORI_Fujin* Fujin = Cast<ASATORI_Fujin>(Actor);
+		if(Fujin)
+		{
+			Fujin->RemoveGameplayTag(FGameplayTag::RequestGameplayTag("Fujin.Charmhit"));
+		}
+		
 		GetWorld()->GetTimerManager().ClearTimer(TimerHandle);
 		EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true);
 	}

@@ -16,7 +16,7 @@ ASATORI_FujinLevantarCollision::ASATORI_FujinLevantarCollision()
 	PrimaryActorTick.bCanEverTick = true;
 
 	SphereComponent = CreateDefaultSubobject<USphereComponent>(TEXT("Sphere"));
-	SphereComponent->SetSphereRadius(5.0f);
+	SphereComponent->SetSphereRadius(10.0f);
 	//SphereComponent->SetCollisionProfileName(UCollisionProfile::BlockAllDynamic_ProfileName);
 	
 	SphereComponent->OnComponentHit.AddUniqueDynamic(this, &ASATORI_FujinLevantarCollision::OnComponentHit);
