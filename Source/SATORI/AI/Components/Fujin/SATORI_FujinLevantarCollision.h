@@ -88,7 +88,7 @@ protected:
 
 	FVector direction;
 
-	float inmunityTime = 1.f;
+	float inmunityTime = 2.f;
 
 	bool inmunity = true;
 

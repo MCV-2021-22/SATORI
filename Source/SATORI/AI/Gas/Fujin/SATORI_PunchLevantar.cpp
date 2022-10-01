@@ -119,5 +119,5 @@ void USATORI_PunchLevantar::OnCancelled(FGameplayTag EventTag, FGameplayEventDat
 void USATORI_PunchLevantar::OnCompleted(FGameplayTag EventTag, FGameplayEventData EventData)
 {
 
-	EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true);
+	//EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true);
 }
