@@ -100,7 +100,8 @@ struct FAbilityCooldownTimerInfo
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FSATORIChangeAbilityIcon, const FSATORI_AbilitiesDatas&, AbilityData);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FSATORIChangeAllAbilityIcon, FSATORI_AbilitiesIconsDatas, AbilityData);
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FSATORICooldownAbilityIcon, FSATORI_AbilitiesIconsCooldownDatas, CooldownData);
+//DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FSATORICooldownAbilityIcon, FSATORI_AbilitiesIconsCooldownDatas, CooldownData);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FSATORICooldownAbilityIcon, FSATORI_CooldownDatas, CooldownData);
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class SATORI_API USATORI_GameplayAbilityComponent : public UActorComponent
@@ -206,6 +207,9 @@ private:
 	// Cooldown Datas
 	UPROPERTY()
 	FSATORI_AbilitiesIconsCooldownDatas CooldownData;
+
+	// Test Code
+	TArray<FSATORI_CooldownDatas> M_CooldownDatas;
 
 	//UPROPERTY()
 	//float HabilityTimeRemained = 0.0f;

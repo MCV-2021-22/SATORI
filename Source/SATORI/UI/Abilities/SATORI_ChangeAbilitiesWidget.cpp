@@ -20,11 +20,12 @@ bool USATORI_ChangeAbilitiesWidget::Initialize()
 	FWidgetCooldownTimerInfo LocalAbilityCD_Info;
 	LocalAbilityCD_Info.TimeRemaining = 0.f;
 
+	WidgetCD_Infos.Init(LocalAbilityCD_Info, 3);
 	// Fill Empty CD Info Array
-	for (int i = 0; i < 2; i++)
-	{
-		WidgetCD_Infos.Add(LocalAbilityCD_Info);
-	}
+	//for (int i = 0; i < 2; i++)
+	//{
+	//	WidgetCD_Infos.Add(LocalAbilityCD_Info);
+	//}
 
 	return true;
 }
@@ -89,61 +90,121 @@ void USATORI_ChangeAbilitiesWidget::ChangeBordersIcons(FSATORI_AbilitiesBordesCh
 	}
 }
 
-void USATORI_ChangeAbilitiesWidget::HabilityCooldownDatas(FSATORI_AbilitiesIconsCooldownDatas Datas)
+void USATORI_ChangeAbilitiesWidget::HabilityCooldownDatas(FSATORI_CooldownDatas Datas)
 {
 	// First Icon
-	if (Datas.FirstIconDatas.IsCooldownAvaiable && Datas.FirstIconDatas.TimeRemained >= 0.0f 
-		&& !WidgetCD_Infos[Datas.FirstIconDatas.AbilityID].IsInCountDownState)
+	if (Datas.AbilityID == 0)
 	{
-		FirstAbilityIcon->SetOpacity(0.25f);
-		Cooldown_1->SetVisibility(ESlateVisibility::Visible);
+		if (Datas.IsCooldownAvaiable && Datas.TimeRemained >= 0.0f)
+		{
+			FirstAbilityIcon->SetOpacity(0.25f);
+			Cooldown_1->SetVisibility(ESlateVisibility::Visible);
 
-		// info
-		WidgetCD_Infos[Datas.FirstIconDatas.AbilityID].TimeRemaining = Datas.FirstIconDatas.TimeRemained;
-		CooldownTimerCounter(Datas.FirstIconDatas);
-	}
-	else if(!Datas.FirstIconDatas.IsCooldownAvaiable && Datas.FirstIconDatas.TimeRemained <= 0.0f)
-	{
-		Cooldown_1->SetVisibility(ESlateVisibility::Hidden);
-		FirstAbilityIcon->SetOpacity(1.0);
-		WidgetCD_Infos[Datas.FirstIconDatas.AbilityID].IsInCountDownState = false;
+			// info
+			WidgetCD_Infos[Datas.AbilityID].TimeRemaining = Datas.TimeRemained;
+			CooldownTimerCounter(Datas);
+		}
+		else if (!Datas.IsCooldownAvaiable && Datas.TimeRemained <= 0.0f && Datas.AbilityID == 0)
+		{
+			Cooldown_1->SetVisibility(ESlateVisibility::Hidden);
+			FirstAbilityIcon->SetOpacity(1.0);
+			WidgetCD_Infos[Datas.AbilityID].IsInCountDownState = false;
+		}
 	}
 
 	// Second Icon
-	if (Datas.SecondIconDatas.IsCooldownAvaiable && Datas.SecondIconDatas.TimeRemained >= 0.0f
-		&& !WidgetCD_Infos[Datas.FirstIconDatas.AbilityID].IsInCountDownState)
+	else if (Datas.AbilityID == 1)
 	{
-		SecondAbilityIcon->SetOpacity(0.25f);
-		Cooldown_2->SetVisibility(ESlateVisibility::Visible);
+		if (Datas.IsCooldownAvaiable && Datas.TimeRemained >= 0.0f)
+		{
+			FirstAbilityIcon->SetOpacity(0.25f);
+			Cooldown_2->SetVisibility(ESlateVisibility::Visible);
 
-		// info
-		WidgetCD_Infos[Datas.SecondIconDatas.AbilityID].TimeRemaining = Datas.SecondIconDatas.TimeRemained;
-		CooldownTimerCounter(Datas.SecondIconDatas);
-	}
-	else if(!Datas.SecondIconDatas.IsCooldownAvaiable && Datas.SecondIconDatas.TimeRemained <= 0.0f)
-	{
-		Cooldown_2->SetVisibility(ESlateVisibility::Hidden);
-		SecondAbilityIcon->SetOpacity(1.0);
-		WidgetCD_Infos[Datas.FirstIconDatas.AbilityID].IsInCountDownState = false;
+			// info
+			WidgetCD_Infos[Datas.AbilityID].TimeRemaining = Datas.TimeRemained;
+			CooldownTimerCounter(Datas);
+		}
+		else if (!Datas.IsCooldownAvaiable && Datas.TimeRemained <= 0.0f)
+		{
+			Cooldown_2->SetVisibility(ESlateVisibility::Hidden);
+			FirstAbilityIcon->SetOpacity(1.0);
+			WidgetCD_Infos[Datas.AbilityID].IsInCountDownState = false;
+		}
 	}
 
 	// Thirst Icon
-	if (Datas.ThirstIconDatas.IsCooldownAvaiable && Datas.ThirstIconDatas.TimeRemained >= 0.0f
-		&& !WidgetCD_Infos[Datas.FirstIconDatas.AbilityID].IsInCountDownState)
+	else if (Datas.AbilityID == 2)
 	{
-		LastAbilityIcon->SetOpacity(0.25f);
-		Cooldown_3->SetVisibility(ESlateVisibility::Visible);
+		if (Datas.IsCooldownAvaiable && Datas.TimeRemained >= 0.0f)
+		{
+			FirstAbilityIcon->SetOpacity(0.25f);
+			Cooldown_3->SetVisibility(ESlateVisibility::Visible);
 
-		// info
-		WidgetCD_Infos[Datas.ThirstIconDatas.AbilityID].TimeRemaining = Datas.ThirstIconDatas.TimeRemained;
-		CooldownTimerCounter(Datas.ThirstIconDatas);
+			// info
+			WidgetCD_Infos[Datas.AbilityID].TimeRemaining = Datas.TimeRemained;
+			CooldownTimerCounter(Datas);
+		}
+		else if (!Datas.IsCooldownAvaiable && Datas.TimeRemained <= 0.0f && Datas.AbilityID == 1)
+		{
+			Cooldown_3->SetVisibility(ESlateVisibility::Hidden);
+			FirstAbilityIcon->SetOpacity(1.0);
+			WidgetCD_Infos[Datas.AbilityID].IsInCountDownState = false;
+		}
 	}
-	else if(!Datas.ThirstIconDatas.IsCooldownAvaiable && Datas.ThirstIconDatas.TimeRemained <= 0.0f)
-	{
-		Cooldown_3->SetVisibility(ESlateVisibility::Hidden);
-		LastAbilityIcon->SetOpacity(1.0);
-		WidgetCD_Infos[Datas.FirstIconDatas.AbilityID].IsInCountDownState = false;
-	}
+
+	// First Icon
+	//if (Datas.FirstIconDatas.IsCooldownAvaiable && Datas.FirstIconDatas.TimeRemained >= 0.0f 
+	//	&& !WidgetCD_Infos[Datas.FirstIconDatas.AbilityID].IsInCountDownState)
+	//{
+	//	FirstAbilityIcon->SetOpacity(0.25f);
+	//	Cooldown_1->SetVisibility(ESlateVisibility::Visible);
+
+	//	// info
+	//	WidgetCD_Infos[Datas.FirstIconDatas.AbilityID].TimeRemaining = Datas.FirstIconDatas.TimeRemained;
+	//	CooldownTimerCounter(Datas.FirstIconDatas);
+	//}
+	//else if(!Datas.FirstIconDatas.IsCooldownAvaiable && Datas.FirstIconDatas.TimeRemained <= 0.0f)
+	//{
+	//	Cooldown_1->SetVisibility(ESlateVisibility::Hidden);
+	//	FirstAbilityIcon->SetOpacity(1.0);
+	//	WidgetCD_Infos[Datas.FirstIconDatas.AbilityID].IsInCountDownState = false;
+	//}
+
+	//// Second Icon
+	//if (Datas.SecondIconDatas.IsCooldownAvaiable && Datas.SecondIconDatas.TimeRemained >= 0.0f
+	//	&& !WidgetCD_Infos[Datas.FirstIconDatas.AbilityID].IsInCountDownState)
+	//{
+	//	SecondAbilityIcon->SetOpacity(0.25f);
+	//	Cooldown_2->SetVisibility(ESlateVisibility::Visible);
+
+	//	// info
+	//	WidgetCD_Infos[Datas.SecondIconDatas.AbilityID].TimeRemaining = Datas.SecondIconDatas.TimeRemained;
+	//	CooldownTimerCounter(Datas.SecondIconDatas);
+	//}
+	//else if(!Datas.SecondIconDatas.IsCooldownAvaiable && Datas.SecondIconDatas.TimeRemained <= 0.0f)
+	//{
+	//	Cooldown_2->SetVisibility(ESlateVisibility::Hidden);
+	//	SecondAbilityIcon->SetOpacity(1.0);
+	//	WidgetCD_Infos[Datas.FirstIconDatas.AbilityID].IsInCountDownState = false;
+	//}
+
+	//// Thirst Icon
+	//if (Datas.ThirstIconDatas.IsCooldownAvaiable && Datas.ThirstIconDatas.TimeRemained >= 0.0f
+	//	&& !WidgetCD_Infos[Datas.FirstIconDatas.AbilityID].IsInCountDownState)
+	//{
+	//	LastAbilityIcon->SetOpacity(0.25f);
+	//	Cooldown_3->SetVisibility(ESlateVisibility::Visible);
+
+	//	// info
+	//	WidgetCD_Infos[Datas.ThirstIconDatas.AbilityID].TimeRemaining = Datas.ThirstIconDatas.TimeRemained;
+	//	CooldownTimerCounter(Datas.ThirstIconDatas);
+	//}
+	//else if(!Datas.ThirstIconDatas.IsCooldownAvaiable && Datas.ThirstIconDatas.TimeRemained <= 0.0f)
+	//{
+	//	Cooldown_3->SetVisibility(ESlateVisibility::Hidden);
+	//	LastAbilityIcon->SetOpacity(1.0);
+	//	WidgetCD_Infos[Datas.FirstIconDatas.AbilityID].IsInCountDownState = false;
+	//}
 }
 
 void USATORI_ChangeAbilitiesWidget::HabilityCooldownChanges(float Opacity, bool IsCooldownvisible,
@@ -185,15 +246,16 @@ void USATORI_ChangeAbilitiesWidget::HabilityCooldownCounter(FSATORI_CooldownData
 	WidgetCD_Infos[CooldownData.AbilityID].TimeRemaining -= 1.0f;
 	WidgetCD_Infos[CooldownData.AbilityID].IsInCountDownState = true;
 
+	// If no more Cooldown
 	if (WidgetCD_Infos[CooldownData.AbilityID].TimeRemaining <= 0)
 	{
-		GetWorld()->GetTimerManager().ClearTimer(WidgetCD_Infos[CooldownData.AbilityID].WaitHandle);
 		WidgetCD_Infos[CooldownData.AbilityID].TimeRemaining = 0.0f;
 		WidgetCD_Infos[CooldownData.AbilityID].IsInCountDownState = false;
+		GetWorld()->GetTimerManager().ClearTimer(WidgetCD_Infos[CooldownData.AbilityID].WaitHandle);
 	}
 
-	UE_LOG(LogTemp, Warning, TEXT("Local Time : %f, Ability ID : %d"), 
-		WidgetCD_Infos[CooldownData.AbilityID].TimeRemaining, CooldownData.AbilityID);
+	/*UE_LOG(LogTemp, Warning, TEXT("Local Time : %f, Ability ID : %d"), 
+		WidgetCD_Infos[CooldownData.AbilityID].TimeRemaining, CooldownData.AbilityID);*/
 	if (WidgetCD_Infos[CooldownData.AbilityID].TimeRemaining >= 0)
 	{
 		if (CooldownData.AbilityID == 0)
@@ -210,7 +272,7 @@ void USATORI_ChangeAbilitiesWidget::HabilityCooldownCounter(FSATORI_CooldownData
 			Opts.SetMaximumFractionalDigits(0);
 			HabilityCDTimeText_2->SetText(FText::AsNumber(WidgetCD_Infos[CooldownData.AbilityID].TimeRemaining, &Opts));
 		}
-		else if (CooldownData.AbilityID == 1)
+		else if (CooldownData.AbilityID == 2)
 		{
 			//Cooldown_3->SetPercent(WidgetCD_Infos[CooldownData.AbilityID].TimeRemaining / CooldownData.TimeRemained);
 			FNumberFormattingOptions Opts;

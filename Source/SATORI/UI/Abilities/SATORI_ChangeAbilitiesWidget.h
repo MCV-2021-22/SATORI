@@ -41,7 +41,7 @@ public:
 		UImage* HabilityIcon, UProgressBar* CooldownBar);
 
 	UFUNCTION(BlueprintCallable)
-	void HabilityCooldownDatas(FSATORI_AbilitiesIconsCooldownDatas Datas);
+	void HabilityCooldownDatas(FSATORI_CooldownDatas Datas);
 
 	UFUNCTION(BlueprintImplementableEvent)
 	void BP_OnData(const FSATORI_AbilitiesDatas& Data);
@@ -50,7 +50,7 @@ public:
 	void BP_AllOnData(FSATORI_AbilitiesIconsDatas Data);
 
 	UFUNCTION(BlueprintImplementableEvent)
-	void BP_CooldownDatas(FSATORI_AbilitiesIconsCooldownDatas CooldownDatas);
+	void BP_CooldownDatas(FSATORI_CooldownDatas CooldownDatas);
 
 	UFUNCTION(BlueprintCallable)
 	void ChangeBordersIcons(FSATORI_AbilitiesBordesChecker Data);
@@ -94,7 +94,7 @@ public:
 	class UTextBlock* HabilityCDTimeText_3;
 
 private:
-	void CooldownTimerCounter(FSATORI_CooldownDatas CooldownData);	
+	void CooldownTimerCounter(FSATORI_CooldownDatas CooldownData);
 	void HabilityCooldownCounter(FSATORI_CooldownDatas CooldownData);
 
 	/*FTimerHandle FirstIconWaitHandle;
