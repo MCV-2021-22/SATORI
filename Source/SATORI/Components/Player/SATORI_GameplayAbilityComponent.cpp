@@ -214,7 +214,7 @@ void USATORI_GameplayAbilityComponent::NotifyAbilityChanged()
 
 void USATORI_GameplayAbilityComponent::NotifyCooldownAbilityChanged(float TimeRemaining)
 {
-	GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, FString::Printf(TEXT("Hability Value : %d"), CurrentAbilityValue));
+	//GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, FString::Printf(TEXT("Hability Value : %d"), CurrentAbilityValue));
 	if (!M_CooldownDatas[CurrentAbilityValue].IsCooldownAvaiable)
 	{
 		M_CooldownDatas[CurrentAbilityValue].IsCooldownAvaiable = true;

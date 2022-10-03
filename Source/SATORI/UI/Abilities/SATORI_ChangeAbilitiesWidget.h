@@ -70,19 +70,15 @@ public:
 	// Widget 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (BindWidget))
 	UImage* FirstAbilityIcon;
-
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (BindWidget))
 	UImage* SecondAbilityIcon;
-
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (BindWidget))
 	UImage* LastAbilityIcon;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (BindWidget))
 	UProgressBar* Cooldown_1;
-
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (BindWidget))
 	UProgressBar* Cooldown_2;
-
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (BindWidget))
 	UProgressBar* Cooldown_3;
 
@@ -102,4 +98,6 @@ private:
 	FTimerHandle ThirstIconWaitHandle;*/
 
 	TArray<FWidgetCooldownTimerInfo> WidgetCD_Infos;
+
+	void CheckCooldownRemainForUI(int HabilityId);
 };
