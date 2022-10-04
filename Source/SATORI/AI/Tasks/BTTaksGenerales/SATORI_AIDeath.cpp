@@ -42,7 +42,7 @@ void USATORI_AIDeath::EventReceived(FGameplayTag EventTag, FGameplayEventData Ev
 		GetWorld()->GetAuthGameMode<ASATORIGameMode>()->RemoveEnemyActor(Actor);
 		ASATORI_AICharacter* Character = Cast<ASATORI_AICharacter>(Actor);
 		Character->canDestroy = true;
-		
+
 		//Actor->Destroy();
 		EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true);
 	}
