@@ -80,7 +80,7 @@ void USATORI_TimeStop::OnTimerFinished(const FGameplayAbilitySpecHandle Handle, 
 {
 	GameInstanceRef->TimeStop = false;
 	UGameplayStatics::SetGlobalTimeDilation(GetWorld(), 1.f);
-	CurrentActorInfo->AvatarActor->CustomTimeDilation = 1.0f;
+	CurrentActorInfo->AvatarActor->CustomTimeDilation = 1.f;
 	GetWorld()->GetTimerManager().ClearTimer(TimerHandle);
 	EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, false, false);
 }

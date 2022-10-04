@@ -89,8 +89,11 @@ public:
 
 	bool PlayerStart = true;
 
-	bool TimeSlow = false;
 
+	UFUNCTION(BlueprintCallable)
+		int TimeChange() { if(TimeStop) return 2; if(TimeSlow) return 1; return 0; }
+
+	bool TimeSlow = false;
 	bool TimeStop = false;
 
 	bool isInteractWithMaskVendor = false;
