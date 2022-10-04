@@ -6,6 +6,8 @@
 #include "Components/CapsuleComponent.h"
 #include "Character/SATORI_PlayerController.h"
 #include "DrawDebugHelpers.h"
+#include "GameplayFramework/SATORI_GameInstance.h"
+#include "Kismet/GameplayStatics.h"
 
 USATORI_DashAbility::USATORI_DashAbility()
 {
@@ -159,7 +161,19 @@ void USATORI_DashAbility::EventReceived(FGameplayTag EventTag, FGameplayEventDat
 		bDashing = true;
 
 		FTimerHandle TimerHandle;
-		GetWorld()->GetTimerManager().SetTimer(TimerHandle, this, &USATORI_DashAbility::EndDash, TimeToFinish, false);
+		USATORI_GameInstance* GameInstanceRef = Cast<USATORI_GameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
+		if (GameInstanceRef->TimeSlow)
+		{
+			GetWorld()->GetTimerManager().SetTimer(TimerHandle, this, &USATORI_DashAbility::EndDash, TimeToFinish/2, false);
+		}
+		else if (GameInstanceRef->TimeStop)
+		{
+			GetWorld()->GetTimerManager().SetTimer(TimerHandle, this, &USATORI_DashAbility::EndDash, TimeToFinish/10000, false);
+		}
+		else
+		{
+			GetWorld()->GetTimerManager().SetTimer(TimerHandle, this, &USATORI_DashAbility::EndDash, TimeToFinish, false);
+		}
 	}
 
 }

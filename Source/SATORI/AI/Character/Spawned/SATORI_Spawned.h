@@ -32,5 +32,5 @@ protected:
 
 	ASATORI_Spawner* MySpawn;
 
-	float DistAttack = 100.f;
+	float DistAttack = 700.f;
 };

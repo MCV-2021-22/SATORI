@@ -51,7 +51,11 @@ public:
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Meta = (ExposeOnSpawn = true), Category = "Missile")
 		TSubclassOf<UGameplayEffect> DamageGameplayEffect;
 
-	float ReturnToFujin = false;
+	bool ReturnToFujin = false;
+
+	bool ReturnToFujinDone = false;
+
+	bool canDestroy = false;
 
 	ASATORI_Fujin* Fujin = nullptr;
 
