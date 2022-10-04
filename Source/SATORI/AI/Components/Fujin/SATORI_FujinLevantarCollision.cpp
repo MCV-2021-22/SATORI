@@ -16,7 +16,7 @@ ASATORI_FujinLevantarCollision::ASATORI_FujinLevantarCollision()
 	PrimaryActorTick.bCanEverTick = true;
 
 	SphereComponent = CreateDefaultSubobject<USphereComponent>(TEXT("Sphere"));
-	SphereComponent->SetSphereRadius(5.0f);
+	SphereComponent->SetSphereRadius(10.0f);
 	//SphereComponent->SetCollisionProfileName(UCollisionProfile::BlockAllDynamic_ProfileName);
 	
 	SphereComponent->OnComponentHit.AddUniqueDynamic(this, &ASATORI_FujinLevantarCollision::OnComponentHit);
@@ -127,7 +127,8 @@ void ASATORI_FujinLevantarCollision::PushPlayer(ASATORICharacter* Player1)
 		APlayerController* PlayerController = GetWorld()->GetFirstPlayerController();
 		Player1->DisableInput(PlayerController);
 
-		Player1->GetCharacterMovement()->AddImpulse(FVector(0, 0, ImpulseForce));
+		//Player1->GetCharacterMovement()->AddImpulse(FVector(0, 0, ImpulseForce));
+		Player1->GetCharacterMovement()->AddImpulse(FVector(resultante.X/5, resultante.Y/5, ImpulseForce/2));
 
 		
 

@@ -6,6 +6,9 @@
 #include "AI/Character/SATORI_AICharacter.h"
 #include "SATORI_Fujin.generated.h"
 
+
+class UNiagaraComponent;
+class UNiagaraSystem;
 /**
  * 
  */
@@ -18,6 +21,7 @@ public:
 	ASATORI_Fujin();
 
 	virtual void Tick(float DeltaTime) override;
+	virtual void BeginPlay() override;
 
 	bool moveBackwards = false;
 	bool firstmoveBackwards = true;
@@ -39,7 +43,11 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Collision")
 		UCapsuleComponent* CollisionR;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Collision")
+		UNiagaraComponent* Nube1;
 
+	UPROPERTY(EditDefaultsOnly)
+		UNiagaraSystem* Nube = nullptr;
 
 	UFUNCTION()
 		void OnOverlapLeft(

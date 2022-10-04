@@ -86,6 +86,7 @@ void USATORI_Charm::EventReceived(FGameplayTag EventTag, FGameplayEventData Even
 						Sphere->Fujin = Fujin1;
 					}
 					CharmDone = Sphere;
+					time_alive = 4.0f;
 				}
 				break;
 			}
