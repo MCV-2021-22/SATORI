@@ -16,5 +16,8 @@ class SATORI_API USATORI_CheatManager : public UCheatManager
 	
 public:
 	UFUNCTION(Exec)
-	void UnlockAllAbilities();
+	void UnlockAllAbilities(bool Value);
+
+	UFUNCTION(Exec)
+	void SetEasyMode(bool Value);
 };

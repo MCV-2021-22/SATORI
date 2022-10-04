@@ -30,9 +30,18 @@ float USATORI_BlueprintLibrary::ApplyGameplayEffectDamage(AActor* DamagedActor, 
 			FGameplayEffectContextHandle ContextHandle;
 			FGameplayEffectSpecHandle SpecHandle = AbilitySystemComponent->MakeOutgoingSpec(DamageEffect, 1.0f, ContextHandle);
 			FGameplayEffectSpec* Spec = SpecHandle.Data.Get();
-			Spec->SetSetByCallerMagnitude(FGameplayTag::RequestGameplayTag(DamageTag), BaseDamage);
-			AbilitySystemComponent->ApplyGameplayEffectSpecToSelf(*Spec);
-			Spec->GetSetByCallerMagnitude(FGameplayTag::RequestGameplayTag(DamageTag), false, -1.0f);
+			if (Character->GetEasyMode())
+			{
+				Spec->SetSetByCallerMagnitude(FGameplayTag::RequestGameplayTag(DamageTag), 0.0f);
+				AbilitySystemComponent->ApplyGameplayEffectSpecToSelf(*Spec);
+				Spec->GetSetByCallerMagnitude(FGameplayTag::RequestGameplayTag(DamageTag), false, -1.0f);
+			}
+			else
+			{
+				Spec->SetSetByCallerMagnitude(FGameplayTag::RequestGameplayTag(DamageTag), BaseDamage);
+				AbilitySystemComponent->ApplyGameplayEffectSpecToSelf(*Spec);
+				Spec->GetSetByCallerMagnitude(FGameplayTag::RequestGameplayTag(DamageTag), false, -1.0f);
+			}
 		}
 	}
 	return BaseDamage;

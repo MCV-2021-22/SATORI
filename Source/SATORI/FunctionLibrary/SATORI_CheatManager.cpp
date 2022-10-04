@@ -5,8 +5,9 @@
 #include "SATORICharacter.h"
 #include "Components/Player/SATORI_GameplayAbilityComponent.h"
 #include "Kismet/GameplayStatics.h"
+#include "Character/SATORI_CharacterBase.h"
 
-void USATORI_CheatManager::UnlockAllAbilities()
+void USATORI_CheatManager::UnlockAllAbilities(bool Value)
 {
 	ASATORICharacter* Character = Cast<ASATORICharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
 	if (Character)
@@ -14,7 +15,16 @@ void USATORI_CheatManager::UnlockAllAbilities()
 		USATORI_GameplayAbilityComponent* AbilityComp = Character->GetPlayerAbilityComponent();
 		if (AbilityComp)
 		{
-			AbilityComp->UnclockAllHabilities(true);
+			AbilityComp->UnclockAllHabilities(Value);
 		}
+	}
+}
+
+void USATORI_CheatManager::SetEasyMode(bool Value)
+{
+	ASATORICharacter* Character = Cast<ASATORICharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
+	if (Character)
+	{
+		Character->SetEasyMode(Value);
 	}
 }
