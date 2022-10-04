@@ -85,6 +85,9 @@ public:
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "GameplayEffect")
 	TSubclassOf<UGameplayEffect> HeavyHitGameplayEffect;
 
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Spawn")
+	float DesiredZPosition;
+
 	//Ray Cast
 	// Check if the player is in front of the enemy and can do the parry
 	UFUNCTION(BlueprintCallable)
