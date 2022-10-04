@@ -309,7 +309,7 @@ FRotator USATORI_TargetSystemComponent::GetControlRotationOnTarget(const AActor*
 
 	USATORI_GameInstance* GameInstanceRef = Cast<USATORI_GameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
 
-	if(GameInstanceRef->TimeSlow) return FMath::RInterpTo(ControlRotation, TargetRotation, GetWorld()->GetDeltaSeconds()*2, 9.0f);
+	if(GameInstanceRef->TimeSlow) return FMath::RInterpTo(ControlRotation, TargetRotation, GetWorld()->GetDeltaSeconds() * 2, 9.0f);
 	if(GameInstanceRef->TimeStop) return FMath::RInterpTo(ControlRotation, TargetRotation, GetWorld()->GetDeltaSeconds() * 10000, 9.0f);
 
 	return FMath::RInterpTo(ControlRotation, TargetRotation, GetWorld()->GetDeltaSeconds(), 9.0f);
