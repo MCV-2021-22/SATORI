@@ -66,7 +66,7 @@ void USATORI_GameplayAbilityComponent::BeginPlay()
 
 	NotifyAbilityChanged();
 
-	if (IsNachoTesting)
+	if (IsAllHabilityTesting)
 	{
 		GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Red, PlayerAbilitiesNames[CurrentAbilityValue].ToString());
 	}
@@ -89,7 +89,7 @@ bool USATORI_GameplayAbilityComponent::TryChangeAbility()
 void USATORI_GameplayAbilityComponent::SetNextAbility()
 {
 	// Only test for abilities
-	if (IsNachoTesting)
+	if (IsAllHabilityTesting)
 	{
 		CurrentAbilityValue++;
 		if (CurrentAbilityValue >= PlayerGameplayAbility.Num())
@@ -119,7 +119,7 @@ void USATORI_GameplayAbilityComponent::SetNextAbility()
 void USATORI_GameplayAbilityComponent::SetPrevAbility()
 {
 	// Only test for abilities
-	if (IsNachoTesting)
+	if (IsAllHabilityTesting)
 	{
 		CurrentAbilityValue--;
 		if (CurrentAbilityValue < 0)
@@ -149,7 +149,7 @@ void USATORI_GameplayAbilityComponent::SetPrevAbility()
 
 TSubclassOf<USATORI_GameplayAbility> USATORI_GameplayAbilityComponent::GetCurrentSatoriAbility()
 {
-	if (!IsNachoTesting)
+	if (!IsAllHabilityTesting)
 	{
 		if (PortalRewardAbilities.Num() > 0)
 		{

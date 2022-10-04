@@ -136,9 +136,6 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	int CurrentAbilityValue = 0;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
-	bool IsNachoTesting = false;
-
 	// Getters
 
 	TArray<FSATORI_AbilitiesDatas> GetCharacterAbilities() { return PortalRewardAbilities; }
@@ -166,6 +163,8 @@ public:
 	// Reset Player Hability
 	void ResetCurrentPlayerAbilities();
 
+	// Hability Testing
+	void UnclockAllHabilities(bool Value) { IsAllHabilityTesting = Value; }
 public:
 	UFUNCTION(BlueprintCallable)
 	bool TryChangeAbility();
@@ -218,6 +217,9 @@ private:
 	//FTimerHandle Hability_1_WaitHandle;
 
 	TArray<FAbilityCooldownTimerInfo> AbilityCD_Infos;
+
+	// Hability Test
+	bool IsAllHabilityTesting = false;
 public:
 
 	void AddPortalAbilities(FSATORI_AbilitiesDatas AbilityData);
