@@ -50,10 +50,10 @@ void USATORI_AI_DashAbilitySpawned::ActivateAbility(
 
 	//Handling of events
 	USATORI_PlayMontageAndWaitEvent* Task = USATORI_PlayMontageAndWaitEvent::PlayMontageAndWaitForEvent(this, NAME_None, AnimMontage, FGameplayTagContainer(), 1.0f, NAME_None, bStopWhenAbilityEnds, 1.0f);
-	Task->OnBlendOut.AddDynamic(this, &USATORI_AI_DashAbilitySpawned::OnCompleted);
-	Task->OnCompleted.AddDynamic(this, &USATORI_AI_DashAbilitySpawned::OnCompleted);
-	Task->OnInterrupted.AddDynamic(this, &USATORI_AI_DashAbilitySpawned::OnCancelled);
-	Task->OnCancelled.AddDynamic(this, &USATORI_AI_DashAbilitySpawned::OnCancelled);
+	//Task->OnBlendOut.AddDynamic(this, &USATORI_AI_DashAbilitySpawned::OnCompleted);
+	//Task->OnCompleted.AddDynamic(this, &USATORI_AI_DashAbilitySpawned::OnCompleted);
+	//Task->OnInterrupted.AddDynamic(this, &USATORI_AI_DashAbilitySpawned::OnCancelled);
+	//Task->OnCancelled.AddDynamic(this, &USATORI_AI_DashAbilitySpawned::OnCancelled);
 	Task->EventReceived.AddDynamic(this, &USATORI_AI_DashAbilitySpawned::EventReceived);
 	Task->ReadyForActivation();
 }

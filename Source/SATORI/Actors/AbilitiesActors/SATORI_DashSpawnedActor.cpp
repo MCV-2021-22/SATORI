@@ -87,7 +87,7 @@ void ASATORI_DashSpawnedActor::Tick(float DeltaTime)
 		{
 			if (UAnimInstance* AnimInstance = Mesh->GetAnimInstance())
 			{
-				AnimInstance->Montage_JumpToSection(FName("EndDash"), AnimInstance->GetCurrentActiveMontage());
+				AnimInstance->Montage_JumpToSection(FName("explotion"), AnimInstance->GetCurrentActiveMontage());
 			}
 		}
 	}
