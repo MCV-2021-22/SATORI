@@ -35,7 +35,7 @@ ASATORI_Fujin::ASATORI_Fujin()
 		const FAttachmentTransformRules AttachmentRules = FAttachmentTransformRules(EAttachmentRule::KeepRelative, false);
 		Left->AttachToComponent(GetMesh(), AttachmentRules, "LHand");
 		// Sphere Collision
-		CollisionL->SetCapsuleSize(30.f, 100.f, true);
+		CollisionL->SetCapsuleSize(30.f, 50.f, true);
 		//CollisionL->SetCollisionProfileName("Pawn");
 		CollisionL->SetGenerateOverlapEvents(true);
 		CollisionL->OnComponentBeginOverlap.AddUniqueDynamic(this, &ASATORI_Fujin::OnOverlapLeft);
@@ -50,7 +50,7 @@ ASATORI_Fujin::ASATORI_Fujin()
 		const FAttachmentTransformRules AttachmentRules = FAttachmentTransformRules(EAttachmentRule::KeepRelative, false);
 		Right->AttachToComponent(GetMesh(), AttachmentRules, "RHand");
 		// Sphere Collision
-		CollisionR->SetCapsuleSize(30.f, 100.f, true);
+		CollisionR->SetCapsuleSize(30.f, 50.f, true);
 		//CollisionR->SetCollisionProfileName("Pawn");
 		CollisionR->SetGenerateOverlapEvents(true);
 		CollisionR->OnComponentBeginOverlap.AddUniqueDynamic(this, &ASATORI_Fujin::OnOverlapRight);
@@ -87,7 +87,8 @@ void ASATORI_Fujin::BeginPlay()
 		Nube1->AttachToComponent(GetMesh(), AttachmentRules, "BckNubeFujin");
 	}*/
 
-
+	CollisionL->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	CollisionR->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 
 
 }

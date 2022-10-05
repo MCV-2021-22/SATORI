@@ -5,6 +5,8 @@
 
 #include "SATORICharacter.h"
 #include "AbilityTask/SATORI_PlayMontageAndWaitEvent.h"
+#include "AI/Character/Fujin/SATORI_Fujin.h"
+#include "Components/CapsuleComponent.h"
 
 #include "Kismet/GameplayStatics.h"
 #include "Widgets/Text/ISlateEditableTextWidget.h"
@@ -32,23 +34,83 @@ void USATORI_PunchRaf::ActivateAbility(const FGameplayAbilitySpecHandle Handle, 
 
 void USATORI_PunchRaf::EventReceived(FGameplayTag EventTag, FGameplayEventData EventData)
 {
-	if (EventTag == TagSpawnAbility)
+	if (EventTag == TagPunchRight)
 	{
-		int a = 2;
+		ASATORI_Fujin* Fujin = Cast<ASATORI_Fujin>(GetAvatarActorFromActorInfo());
+
+		if (Fujin)
+		{
+			Fujin->CollisionR->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+		}
 		
 
+	}
+	else if(EventTag == TagPunchRightEnd)
+	{
+		ASATORI_Fujin* Fujin = Cast<ASATORI_Fujin>(GetAvatarActorFromActorInfo());
+
+		if (Fujin)
+		{
+			Fujin->CollisionR->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+		}
+	}
+	else if (EventTag == TagPunchLeft)
+	{
+		ASATORI_Fujin* Fujin = Cast<ASATORI_Fujin>(GetAvatarActorFromActorInfo());
+
+		if (Fujin)
+		{
+			Fujin->CollisionL->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+		}
+	}
+	else if (EventTag == TagPunchLeftEnd)
+	{
+		ASATORI_Fujin* Fujin = Cast<ASATORI_Fujin>(GetAvatarActorFromActorInfo());
+
+		if (Fujin)
+		{
+			Fujin->CollisionL->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+		}
+	}
+	else if (EventTag == TagPunchHeavy)
+	{
+		ASATORI_Fujin* Fujin = Cast<ASATORI_Fujin>(GetAvatarActorFromActorInfo());
+
+		if (Fujin)
+		{
+			Fujin->CollisionR->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+		}
+	}
+	else if (EventTag == TagPunchHeavyEnd)
+	{
+		ASATORI_Fujin* Fujin = Cast<ASATORI_Fujin>(GetAvatarActorFromActorInfo());
+
+		if (Fujin)
+		{
+			Fujin->CollisionR->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+		}
 	}
 }
 
 void USATORI_PunchRaf::OnCancelled(FGameplayTag EventTag, FGameplayEventData EventData)
 {
-
+	ASATORI_Fujin* Fujin = Cast<ASATORI_Fujin>(GetAvatarActorFromActorInfo());
+	if (Fujin)
+	{
+		Fujin->CollisionR->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+		Fujin->CollisionL->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	}
 	EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true);
 }
 
 
 void USATORI_PunchRaf::OnCompleted(FGameplayTag EventTag, FGameplayEventData EventData)
 {
-
+	ASATORI_Fujin* Fujin = Cast<ASATORI_Fujin>(GetAvatarActorFromActorInfo());
+	if (Fujin)
+	{
+		Fujin->CollisionR->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+		Fujin->CollisionL->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	}
 	EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true);
 }

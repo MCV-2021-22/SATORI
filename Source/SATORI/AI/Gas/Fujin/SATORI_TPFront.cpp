@@ -97,7 +97,7 @@ void USATORI_TPFront::OnCancelled(FGameplayTag EventTag, FGameplayEventData Even
 void USATORI_TPFront::OnCompleted(FGameplayTag EventTag, FGameplayEventData EventData)
 {
 
-	EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true);
+	//EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true);
 }
 
 

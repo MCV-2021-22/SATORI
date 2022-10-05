@@ -8,42 +8,32 @@
 #include "GameplayTagAssetInterface.h"
 #include "GAS/SATORI_GameplayAbility.h"
 #include "SATORI/AbilityTask/SATORI_PlayMontageandWaitNotify.h"
-#include "AI/Components/Raijin/SATORI_RaijinRayo.h"
-#include "SATORI_PunchRaf.generated.h"
+#include "SATORI_TPSpawn.generated.h"
 
 
 /**
  * 
  */
 UCLASS()
-class SATORI_API USATORI_PunchRaf : public UGameplayAbility
+class SATORI_API USATORI_TPSpawn : public UGameplayAbility
 {
 	GENERATED_BODY()
 
 public:
 
-	USATORI_PunchRaf();
+	USATORI_TPSpawn();
+
 
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Ability")
 		UAnimMontage* AnimMontage;
 
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Ability|Tags")
-		FGameplayTag TagPunchRight;
+		FGameplayTag TagSpawnAbility;
 
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Ability|Tags")
-		FGameplayTag TagPunchRightEnd;
+		FGameplayTag TagEndAbility;
 
-	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Ability|Tags")
-		FGameplayTag TagPunchLeft;
 
-	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Ability|Tags")
-		FGameplayTag TagPunchLeftEnd;
-
-	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Ability|Tags")
-		FGameplayTag TagPunchHeavy;
-
-	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Ability|Tags")
-		FGameplayTag TagPunchHeavyEnd;
 
 	FTimerDelegate TimerDelegate;
 
@@ -52,10 +42,9 @@ public:
 	virtual void ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, 
 		const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData) override;
 
+	void Teleport(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo);
 
-	UPROPERTY(BlueprintReadOnly, EditAnywhere)
-		TSubclassOf<ASATORI_RaijinRayo> ProjectileClass;
-
+	
 
 protected:
 
