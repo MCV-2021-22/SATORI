@@ -15,10 +15,12 @@
 // Sets default values
 ASATORI_MaskVendor::ASATORI_MaskVendor()
 {
+	RootComponent = CreateDefaultSubobject<USceneComponent>(TEXT("RootComponent"));
+
 	MaskVendorMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("StaticMeshComponent"));
 	MaskVendorMesh->SetupAttachment(RootComponent);
 
-	WidgetComponent = CreateDefaultSubobject<UWidgetComponent>(TEXT("InteractUIComponent"));
+	WidgetComponent = CreateDefaultSubobject<UWidgetComponent>(TEXT("WidgetComponent"));
 	WidgetComponent->SetupAttachment(RootComponent);
 	// Hide interaction
 	WidgetComponent->SetVisibility(false, true);
