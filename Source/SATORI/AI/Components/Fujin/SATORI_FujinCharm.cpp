@@ -57,7 +57,7 @@ void ASATORI_FujinCharm::Tick(float DeltaTime)
 
 	Super::Tick(DeltaTime);
 
-	if(!GameInstanceRef->TimeStop)
+	if(!GameInstanceRef->TimeStop && !ReturnToFujinDone)
 	{
 		if(GameInstanceRef->TimeSlow)
 		{
@@ -65,7 +65,7 @@ void ASATORI_FujinCharm::Tick(float DeltaTime)
 			FVector new_pos = position + direction * 0.25;
 
 			SetActorLocation(new_pos);
-			RootComponent->SetWorldLocation(new_pos);
+			//RootComponent->SetWorldLocation(new_pos);
 
 			inmunity -= DeltaTime * 0.25;
 			LifeTime -= DeltaTime * 0.25;
@@ -76,7 +76,7 @@ void ASATORI_FujinCharm::Tick(float DeltaTime)
 			FVector new_pos = position + direction;
 
 			SetActorLocation(new_pos);
-			RootComponent->SetWorldLocation(new_pos);
+			//RootComponent->SetWorldLocation(new_pos);
 
 			inmunity -= DeltaTime;
 			LifeTime -= DeltaTime;
@@ -85,7 +85,7 @@ void ASATORI_FujinCharm::Tick(float DeltaTime)
 
 		
 	}
-	if(ReturnToFujin)
+	if(ReturnToFujin && !ReturnToFujinDone)
 	{
 		Player->SetActorLocation(GetActorLocation());
 	}
@@ -146,6 +146,10 @@ void ASATORI_FujinCharm::OnComponentBeginOverlap(
 	if(Player1 && !ReturnToFujin && Fujin)
 	{
 		ReturnToFujin = true;
+
+		
+		//SetActorHiddenInGame(true);
+		StaticMeshComponent->SetVisibility(false);
 		
 		FVector dest = Fujin->GetActorLocation();
 		//FVector dest = FVector(0, 0, 0);

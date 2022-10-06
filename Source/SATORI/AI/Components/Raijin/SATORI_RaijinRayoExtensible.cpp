@@ -118,7 +118,8 @@ void ASATORI_RaijinRayoExtensible::Tick(float DeltaTime)
 	else
 	{
 		my_decal->Destroy();
-		Destroy();
+		destruible = true;
+		//Destroy();
 	}
 	
 
