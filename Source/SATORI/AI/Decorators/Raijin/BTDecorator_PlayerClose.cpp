@@ -20,11 +20,14 @@ bool UBTDecorator_PlayerClose::CalculateRawConditionValue(UBehaviorTreeComponent
 
 	ASATORI_CharacterBase* Player1 = Cast<ASATORI_CharacterBase>(OwnerComp.GetBlackboardComponent()->GetValueAsObject(MyBlackboardKey.SelectedKeyName));
 
-	float dist = AI->GetDistanceTo(Player1);
-	UE_LOG(LogTemp, Warning, TEXT("Dist %f"), dist);
-	if(dist<= AI->getSoCloseDist())
+	if(Player1)
 	{
-		return true;
+		float dist = AI->GetDistanceTo(Player1);
+		UE_LOG(LogTemp, Warning, TEXT("Dist %f"), dist);
+		if (dist <= AI->getSoCloseDist())
+		{
+			return true;
+		}
 	}
 
 	return false;

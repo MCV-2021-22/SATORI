@@ -28,10 +28,22 @@ public:
 		UAnimMontage* AnimMontage;
 
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Ability|Tags")
-		FGameplayTag TagSpawnAbility;
+		FGameplayTag TagPunchRight;
 
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Ability|Tags")
-		FGameplayTag TagEndAbility;
+		FGameplayTag TagPunchRightEnd;
+
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Ability|Tags")
+		FGameplayTag TagPunchLeft;
+
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Ability|Tags")
+		FGameplayTag TagPunchLeftEnd;
+
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Ability|Tags")
+		FGameplayTag TagPunchHeavy;
+
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Ability|Tags")
+		FGameplayTag TagPunchHeavyEnd;
 
 	FTimerDelegate TimerDelegate;
 
