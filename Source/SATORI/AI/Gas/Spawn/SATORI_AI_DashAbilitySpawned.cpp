@@ -1,7 +1,6 @@
 //
 
 #include "AI/Gas/Spawn/SATORI_AI_DashAbilitySpawned.h"
-#include "AbilitySystemComponent.h"
 #include "SATORICharacter.h"
 #include "Actors/AbilitiesActors/SATORI_DashMeleeActor.h"
 #include "AI/Character/SATORI_AICharacter.h"
@@ -61,7 +60,10 @@ void USATORI_AI_DashAbilitySpawned::ActivateAbility(
 void USATORI_AI_DashAbilitySpawned::EndAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateEndAbility, bool bWasCancelled)
 {
 	Spawned->RemoveGameplayTag(FGameplayTag::RequestGameplayTag("Dash.Stop"));
-	DashActor->Destroy();
+	if(DashActor)
+	{
+		DashActor->Destroy();
+	}
 	Super::EndAbility(Handle, ActorInfo, ActivationInfo, bReplicateEndAbility, bWasCancelled);
 }
 
@@ -163,7 +165,14 @@ void USATORI_AI_DashAbilitySpawned::Tick(float DeltaTime)
 	if(Spawned->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag("Dash.Stop")))
 	{
 		bDashing = false;
+		Explode();
 	}
+
+}
+
+void USATORI_AI_DashAbilitySpawned::Explode()
+{
+	EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true);
 }
 
 bool USATORI_AI_DashAbilitySpawned::IsTickable() const

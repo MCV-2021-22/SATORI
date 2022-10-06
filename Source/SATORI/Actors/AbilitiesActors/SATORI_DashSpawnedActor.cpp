@@ -61,6 +61,8 @@ void ASATORI_DashSpawnedActor::OnOverlapCollisionSphere(UPrimitiveComponent* Ove
 		bDamagePlayer = true;
 		USATORI_BlueprintLibrary::ApplyGameplayEffectDamage(Character, Damage, Character, DamageGameplayEffect);
 		USATORI_BlueprintLibrary::ApplyGameplayEffect(Character, HeavyHitGameplayEffect);
+		Destroy();
+		OwnerSpawned->Destroy();
 	}
 }
 
