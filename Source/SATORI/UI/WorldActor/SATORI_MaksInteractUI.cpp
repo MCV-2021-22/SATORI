@@ -111,6 +111,7 @@ void USATORI_MaksInteractUI::OnResumeClicked()
 			PlayerController->bShowMouseCursor = false;
 			PlayerController->bEnableClickEvents = false;
 			PlayerController->bEnableMouseOverEvents = false;
+			PlayerController->EnableInput(PlayerController);
 		}
 	}
 }

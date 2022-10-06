@@ -24,7 +24,7 @@ public:
 	virtual void StartCanInteract(AActor* ActorInteracting) override;
 	virtual void StopCanInteract(AActor* ActorInteracting) override;
 
-	UPROPERTY(EditDefaultsOnly)
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	UWidgetComponent* WidgetComponent = nullptr;
 
 	UPROPERTY(EditDefaultsOnly)
