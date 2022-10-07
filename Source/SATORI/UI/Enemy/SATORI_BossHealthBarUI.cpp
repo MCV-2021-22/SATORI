@@ -17,14 +17,6 @@ bool USATORI_BossHealthBarUI::Initialize()
 
 	if (!Success) { return false; }
 
-	/*TArray<AActor*> Actors;
-	UGameplayStatics::GetAllActorsOfClass(GetWorld(), ASATORI_Fujin::StaticClass(), Actors);
-	for (AActor* Actor : Actors)
-	{
-		Fujin = Cast<ASATORI_Fujin>(Actor);
-		Raijin = Cast<ASATORI_Raijin>(Actor);
-	}*/
-
 	AActor* FujinActor = UGameplayStatics::GetActorOfClass(GetWorld(), ASATORI_Fujin::StaticClass());
 
 	if (FujinActor)
@@ -50,6 +42,9 @@ bool USATORI_BossHealthBarUI::Initialize()
 void USATORI_BossHealthBarUI::NativeConstruct()
 {
 	Super::NativeConstruct();
+
+
+
 	ASATORICharacter* Character = Cast<ASATORICharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
 	if (Character)
 	{

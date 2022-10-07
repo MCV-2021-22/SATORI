@@ -489,6 +489,11 @@ void ASATORICharacter::ResetCharacterDatas()
 		GameInstanceRef->SetPlayerStart(true);
 	}
 
+	if (this->ComboSystemComponent->isInBossFight)
+	{
+		this->ComboSystemComponent->isInBossFight = false;
+	}
+
 	// Reset current player reward abilities with the portal to zero
 	this->PlayerGameplayAbilityComponent->ResetCurrentPlayerAbilities();
 

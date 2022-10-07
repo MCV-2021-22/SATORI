@@ -28,3 +28,12 @@ void USATORI_CheatManager::SetEasyMode(bool Value)
 		Character->SetEasyMode(Value);
 	}
 }
+
+void USATORI_CheatManager::IncreasedAttack()
+{
+	ASATORICharacter* Character = Cast<ASATORICharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
+	if (Character)
+	{
+		Character->WeaponDamage = 1000.0f;
+	}
+}
