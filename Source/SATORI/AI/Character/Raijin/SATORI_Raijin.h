@@ -44,13 +44,18 @@ public:
 
 	void setFujin();
 
-	bool getDowned();
+	UFUNCTION(BlueprintType, BlueprintCallable)
+		bool getDowned();
 
 	void setDowned(bool dw);
 
 	void startCDDowned();
 
+	void revivirTag();
+
 	void revivir();
+
+	bool getFujinDowned();
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Weapon")
 		UStaticMeshComponent* SwordComponentRight;

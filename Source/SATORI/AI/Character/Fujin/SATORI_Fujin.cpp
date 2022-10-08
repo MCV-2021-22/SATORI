@@ -204,3 +204,47 @@ void ASATORI_Fujin::setRaijin()
 	}
 
 }
+
+
+bool ASATORI_Fujin::getDowned()
+{
+	return downed;
+}
+
+
+void ASATORI_Fujin::setDowned(bool dw)
+{
+	downed = dw;
+
+
+}
+
+void ASATORI_Fujin::startCDDowned()
+{
+
+	setDowned(true);
+	GetWorld()->GetTimerManager().SetTimer(TimerHandleDowned, this, &ASATORI_Fujin::revivirTag, CdTimeDowned, false);
+
+}
+
+void ASATORI_Fujin::revivirTag()
+{
+	RemoveGameplayTag(FGameplayTag::RequestGameplayTag("State.Downed"));
+
+}
+
+
+void ASATORI_Fujin::revivir()
+{
+	setDowned(false);
+	GetWorld()->GetTimerManager().ClearTimer(TimerHandleDowned);
+
+	SetHealth(GetMaxHealth() * 0.25f);
+
+}
+
+bool ASATORI_Fujin::getRaijinDowned()
+{
+	return Raijin->getDowned();
+}
+

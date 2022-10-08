@@ -107,11 +107,22 @@ void ASATORI_Raijin::setDowned(bool dw)
 	
 }
 
+bool ASATORI_Raijin::getDowned()
+{
+	return downed;
+}
+
 void ASATORI_Raijin::startCDDowned()
 {
 	
-	
-	GetWorld()->GetTimerManager().SetTimer(TimerHandleDowned, this, &ASATORI_Raijin::revivir, CdTimeDowned, false);
+	setDowned(true);
+	GetWorld()->GetTimerManager().SetTimer(TimerHandleDowned, this, &ASATORI_Raijin::revivirTag, CdTimeDowned, false);
+
+}
+
+void ASATORI_Raijin::revivirTag()
+{
+	RemoveGameplayTag(FGameplayTag::RequestGameplayTag("State.Downed"));
 
 }
 
@@ -124,4 +135,7 @@ void ASATORI_Raijin::revivir()
 
 }
 
-
+bool ASATORI_Raijin::getFujinDowned()
+{
+	return Fujin->getDowned();
+}

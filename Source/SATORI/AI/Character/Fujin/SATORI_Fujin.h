@@ -41,7 +41,22 @@ public:
 
 	FTimerHandle TimerHandle;
 
+	FTimerHandle TimerHandleDowned;
+
 	void setRaijin();
+
+	UFUNCTION(BlueprintType, BlueprintCallable)
+		bool getDowned();
+
+	void setDowned(bool dw);
+
+	void startCDDowned();
+
+	void revivirTag();
+
+	void revivir();
+
+	bool getRaijinDowned();
 
 
 	FVector posinicial;
@@ -105,6 +120,10 @@ protected:
 	float dist_attack = 800.0f;
 
 	float close_dist = 100.0f;
+
+	bool downed = false;
+
+	float CdTimeDowned = 10.0f;
 	
 };
 
