@@ -81,6 +81,10 @@ void ASATORI_AICharacter::BeginPlay()
 			CharacterMesh->SetMaterial(i, DynamicMaterials[i]);
 		}
 	}
+
+	// Appearance
+	// Testing
+	//DynamicMaterials[0]->SetScalarParameterValue(FName(TEXT("Appearance")), 0.5f);
 }
 
 void ASATORI_AICharacter::OnConstruction(const FTransform& Transform)
