@@ -33,7 +33,8 @@ bool USATORI_BossHealthBarUI::Initialize()
 
 	if (Fujin && Raijin)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Enemy UI TESTING !!!!!!!!!!!"));
+		Fujin_MaxHealth = Fujin->GetMaxHealth();
+		Raijin_MaxHealth = Raijin->GetMaxHealth();
 	}
 
 	return true;
@@ -43,7 +44,11 @@ void USATORI_BossHealthBarUI::NativeConstruct()
 {
 	Super::NativeConstruct();
 
-
+	if (Fujin && Raijin)
+	{
+		Raijin_HealthBar->SetPercent(Raijin->GetHealth() / Raijin->GetMaxHealth());
+		Fujin_HealthBar->SetPercent(Fujin->GetHealth() / Fujin->GetMaxHealth());
+	}
 
 	ASATORICharacter* Character = Cast<ASATORICharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
 	if (Character)
@@ -74,19 +79,17 @@ void USATORI_BossHealthBarUI::SetHealthBarPercentage(bool isBossFight)
 {
 	if (isBossFight)
 	{
-		float Fujin_MaxHealth = Fujin->GetMaxHealth();
 		float Current_FujinHealth = Fujin->GetHealth();
 		if (Current_FujinHealth >= 0)
 		{
 			float Fujin_Value = Current_FujinHealth / Fujin_MaxHealth;
-			if (Raijin_HealthBar)
+			if (Fujin_HealthBar)
 			{
-				Raijin_HealthBar->SetPercent(Fujin_Value);
+				Fujin_HealthBar->SetPercent(Fujin_Value);
 			}
 		}
-
-		float Raijin_MaxHealth = Fujin->GetMaxHealth();
-		float Current_RaijinHealth = Fujin->GetHealth();
+		
+		float Current_RaijinHealth = Raijin->GetHealth();
 		if (Current_RaijinHealth >= 0)
 		{
 			float Raijin_Value = Current_RaijinHealth / Raijin_MaxHealth;
