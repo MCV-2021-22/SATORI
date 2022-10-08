@@ -4,6 +4,7 @@
 #include "AI/Character/Fujin/SATORI_Fujin.h"
 // Fill out your copyright notice in the Description page of Project Settings.
 
+#include "AI/Character/Raijin/SATORI_Raijin.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "NavigationSystem.h"
@@ -78,6 +79,7 @@ void ASATORI_Fujin::BeginPlay()
 {
 	Super::BeginPlay();
 
+	AddGameplayTag(FGameplayTag::RequestGameplayTag("Boss.Jugable"));
 	//(UNiagaraSystem * SystemTemplate, USceneComponent * AttachToComponent, FName AttachPointName, FVector Location, FRotator Rotation, FVector Scale, EAttachLocation::Type LocationType, bool bAutoDestroy, ENCPoolMethod PoolingMethod, bool bAutoActivate = true, bool bPreCullCheck = true);
 	Nube1 = UNiagaraFunctionLibrary::SpawnSystemAttached(Nube, GetMesh(), TEXT("BckNubeFujin"), FVector(0), FRotator::ZeroRotator,FVector(0.1f,0.1f,0.1f), EAttachLocation::Type::KeepRelativeOffset, false,  ENCPoolMethod::None);
 	
@@ -89,6 +91,10 @@ void ASATORI_Fujin::BeginPlay()
 
 	CollisionL->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	CollisionR->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+
+
+	GetWorld()->GetTimerManager().SetTimer(TimerHandle, this, &ASATORI_Fujin::setRaijin, 0.5f, false);
+
 
 
 }
@@ -177,3 +183,71 @@ void ASATORI_Fujin::OnEndOverlapRight(
 	}
 
 }
+
+
+void ASATORI_Fujin::setRaijin()
+{
+	TSubclassOf<ASATORI_Raijin> classToFind;
+	classToFind = ASATORI_Raijin::StaticClass();
+
+	TArray< AActor* > enemigos;
+
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(), classToFind, enemigos);
+
+	if (enemigos.Num() > 0)
+	{
+		ASATORI_Raijin* Raij = Cast<ASATORI_Raijin>(enemigos[0]);
+		if (Raij)
+		{
+			Raijin = Raij;
+		}
+
+	}
+
+}
+
+
+bool ASATORI_Fujin::getDowned()
+{
+	return downed;
+}
+
+
+void ASATORI_Fujin::setDowned(bool dw)
+{
+	downed = dw;
+
+
+}
+
+void ASATORI_Fujin::startCDDowned()
+{
+	RemoveGameplayTag(FGameplayTag::RequestGameplayTag("State.Downed"));
+	setDowned(true);
+	GetWorld()->GetTimerManager().SetTimer(TimerHandleDowned, this, &ASATORI_Fujin::revivirTag, CdTimeDowned, false);
+
+}
+
+void ASATORI_Fujin::revivirTag()
+{
+	AddGameplayTag(FGameplayTag::RequestGameplayTag("State.Revive"));
+
+}
+
+
+void ASATORI_Fujin::revivir()
+{
+	setDowned(false);
+	RemoveGameplayTag(FGameplayTag::RequestGameplayTag("State.Revive"));
+	GetWorld()->GetTimerManager().ClearTimer(TimerHandleDowned);
+
+	SetHealth(GetMaxHealth() * 0.25f);
+	AddGameplayTag(FGameplayTag::RequestGameplayTag("Boss.Jugable"));
+
+}
+
+bool ASATORI_Fujin::getRaijinDowned()
+{
+	return Raijin->getDowned();
+}
+

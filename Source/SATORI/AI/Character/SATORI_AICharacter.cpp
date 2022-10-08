@@ -25,6 +25,8 @@
 #include "GameFramework\CharacterMovementComponent.h"
 #include "FunctionLibrary/SATORI_BlueprintLibrary.h"
 #include "AI/Character/Melee/SATORI_Melee.h"
+#include "AI/Character/Fujin/SATORI_Fujin.h"
+#include "AI/Character/Raijin/SATORI_Raijin.h"
 #include "Materials/MaterialInstanceDynamic.h"
 #include "Actors/Coin/SATORI_CoinRewardActor.h"
 
@@ -306,6 +308,8 @@ void ASATORI_AICharacter::CheckDamage(float Damage)
 	{
 		//Spawned edge case
 		ASATORI_Spawned* Spawned = Cast<ASATORI_Spawned>(this);
+		ASATORI_Fujin* Fujin = Cast<ASATORI_Fujin>(this);
+		ASATORI_Raijin* Raijin = Cast<ASATORI_Raijin>(this);
 		if (Spawned != nullptr)
 		{
 			Spawned->SpawnedDie();
@@ -315,6 +319,33 @@ void ASATORI_AICharacter::CheckDamage(float Damage)
 		if (Melee)
 		{
 			AddGameplayTag(DeadTag);
+		}
+		else if(Fujin)
+		{
+			if(Fujin->getRaijinDowned())
+			{
+				AddGameplayTag(FGameplayTag::RequestGameplayTag("State.Dead"));
+				Fujin->Raijin->AddGameplayTag(FGameplayTag::RequestGameplayTag("State.Dead"));
+			}
+			else
+			{
+				AddGameplayTag(FGameplayTag::RequestGameplayTag("State.Downed"));
+				RemoveGameplayTag(FGameplayTag::RequestGameplayTag("Boss.Jugable"));
+
+			}
+		}
+		else if(Raijin)
+		{
+			if (Raijin->getFujinDowned())
+			{
+				AddGameplayTag(FGameplayTag::RequestGameplayTag("State.Dead"));
+				Raijin->Fujin->AddGameplayTag(FGameplayTag::RequestGameplayTag("State.Dead"));
+			}
+			else
+			{
+				AddGameplayTag(FGameplayTag::RequestGameplayTag("State.Downed"));
+				RemoveGameplayTag(FGameplayTag::RequestGameplayTag("Boss.Jugable"));
+			}
 		}
 		else
 		{
