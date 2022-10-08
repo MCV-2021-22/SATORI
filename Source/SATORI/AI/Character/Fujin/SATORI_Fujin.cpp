@@ -4,6 +4,7 @@
 #include "AI/Character/Fujin/SATORI_Fujin.h"
 // Fill out your copyright notice in the Description page of Project Settings.
 
+#include "AI/Character/Raijin/SATORI_Raijin.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "NavigationSystem.h"
@@ -91,6 +92,10 @@ void ASATORI_Fujin::BeginPlay()
 	CollisionR->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 
 
+	GetWorld()->GetTimerManager().SetTimer(TimerHandle, this, &ASATORI_Fujin::setRaijin, 0.5f, false);
+
+
+
 }
 void ASATORI_Fujin::Tick(float DeltaTime)
 {
@@ -174,6 +179,28 @@ void ASATORI_Fujin::OnEndOverlapRight(
 	{
 		canMove = true;
 		RemoveGameplayTag(FGameplayTag::RequestGameplayTag("State.BlockRight"));
+	}
+
+}
+
+
+void ASATORI_Fujin::setRaijin()
+{
+	TSubclassOf<ASATORI_Raijin> classToFind;
+	classToFind = ASATORI_Raijin::StaticClass();
+
+	TArray< AActor* > enemigos;
+
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(), classToFind, enemigos);
+
+	if (enemigos.Num() > 0)
+	{
+		ASATORI_Raijin* Raij = Cast<ASATORI_Raijin>(enemigos[0]);
+		if (Raij)
+		{
+			Raijin = Raij;
+		}
+
 	}
 
 }

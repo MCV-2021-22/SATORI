@@ -102,7 +102,9 @@ void ASATORI_RaijinDefensePush::PushPlayer(ASATORICharacter* Player)
 
 		//Player->GetMesh()->AddImpulse(FVector(100000000, 100000000,0));
 
-		Player->GetCharacterMovement()->AddImpulse(FVector(resultante.X / 5, resultante.Y / 5, ImpulseForce / 2));
+		APlayerController* PlayerController = GetWorld()->GetFirstPlayerController();
+		Player->DisableInput(PlayerController);
+		Player->GetCharacterMovement()->AddImpulse(FVector(resultante.X / 10, resultante.Y / 10, ImpulseForce / 5));
 
 		
 

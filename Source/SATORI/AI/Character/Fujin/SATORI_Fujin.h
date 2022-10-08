@@ -7,6 +7,7 @@
 #include "SATORI_Fujin.generated.h"
 
 
+class ASATORI_Raijin;
 class UNiagaraComponent;
 class UNiagaraSystem;
 /**
@@ -35,6 +36,13 @@ public:
 	float getDistAttack();
 
 	float getCloseDist();
+
+	ASATORI_Raijin* Raijin;
+
+	FTimerHandle TimerHandle;
+
+	void setRaijin();
+
 
 	FVector posinicial;
 
