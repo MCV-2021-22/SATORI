@@ -34,6 +34,8 @@ void ASATORI_Raijin::BeginPlay()
 {
 	Super::BeginPlay();
 
+	AddGameplayTag(FGameplayTag::RequestGameplayTag("Boss.Jugable"));
+
 	setSpawnPos(GetActorLocation());
 
 	GetWorld()->GetTimerManager().SetTimer(TimerHandle,this, &ASATORI_Raijin::setArcoAltavoces, 0.5f, false);
@@ -114,7 +116,8 @@ bool ASATORI_Raijin::getDowned()
 
 void ASATORI_Raijin::startCDDowned()
 {
-	
+
+	RemoveGameplayTag(FGameplayTag::RequestGameplayTag("State.Downed"));
 	setDowned(true);
 	GetWorld()->GetTimerManager().SetTimer(TimerHandleDowned, this, &ASATORI_Raijin::revivirTag, CdTimeDowned, false);
 
@@ -122,16 +125,18 @@ void ASATORI_Raijin::startCDDowned()
 
 void ASATORI_Raijin::revivirTag()
 {
-	RemoveGameplayTag(FGameplayTag::RequestGameplayTag("State.Downed"));
+	AddGameplayTag(FGameplayTag::RequestGameplayTag("State.Revive"));
 
 }
 
 void ASATORI_Raijin::revivir()
 {
 	setDowned(false);
+	RemoveGameplayTag(FGameplayTag::RequestGameplayTag("State.Revive"));
 	GetWorld()->GetTimerManager().ClearTimer(TimerHandleDowned);
 
 	SetHealth(GetMaxHealth() * 0.25f);
+	AddGameplayTag(FGameplayTag::RequestGameplayTag("Boss.Jugable"));
 
 }
 

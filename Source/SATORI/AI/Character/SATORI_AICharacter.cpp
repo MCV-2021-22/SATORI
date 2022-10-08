@@ -325,10 +325,13 @@ void ASATORI_AICharacter::CheckDamage(float Damage)
 			if(Fujin->getRaijinDowned())
 			{
 				AddGameplayTag(FGameplayTag::RequestGameplayTag("State.Dead"));
+				Fujin->Raijin->AddGameplayTag(FGameplayTag::RequestGameplayTag("State.Dead"));
 			}
 			else
 			{
 				AddGameplayTag(FGameplayTag::RequestGameplayTag("State.Downed"));
+				RemoveGameplayTag(FGameplayTag::RequestGameplayTag("Boss.Jugable"));
+
 			}
 		}
 		else if(Raijin)
@@ -336,10 +339,12 @@ void ASATORI_AICharacter::CheckDamage(float Damage)
 			if (Raijin->getFujinDowned())
 			{
 				AddGameplayTag(FGameplayTag::RequestGameplayTag("State.Dead"));
+				Raijin->Fujin->AddGameplayTag(FGameplayTag::RequestGameplayTag("State.Dead"));
 			}
 			else
 			{
 				AddGameplayTag(FGameplayTag::RequestGameplayTag("State.Downed"));
+				RemoveGameplayTag(FGameplayTag::RequestGameplayTag("Boss.Jugable"));
 			}
 		}
 		else

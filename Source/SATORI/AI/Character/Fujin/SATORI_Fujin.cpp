@@ -79,6 +79,7 @@ void ASATORI_Fujin::BeginPlay()
 {
 	Super::BeginPlay();
 
+	AddGameplayTag(FGameplayTag::RequestGameplayTag("Boss.Jugable"));
 	//(UNiagaraSystem * SystemTemplate, USceneComponent * AttachToComponent, FName AttachPointName, FVector Location, FRotator Rotation, FVector Scale, EAttachLocation::Type LocationType, bool bAutoDestroy, ENCPoolMethod PoolingMethod, bool bAutoActivate = true, bool bPreCullCheck = true);
 	Nube1 = UNiagaraFunctionLibrary::SpawnSystemAttached(Nube, GetMesh(), TEXT("BckNubeFujin"), FVector(0), FRotator::ZeroRotator,FVector(0.1f,0.1f,0.1f), EAttachLocation::Type::KeepRelativeOffset, false,  ENCPoolMethod::None);
 	
@@ -221,7 +222,7 @@ void ASATORI_Fujin::setDowned(bool dw)
 
 void ASATORI_Fujin::startCDDowned()
 {
-
+	RemoveGameplayTag(FGameplayTag::RequestGameplayTag("State.Downed"));
 	setDowned(true);
 	GetWorld()->GetTimerManager().SetTimer(TimerHandleDowned, this, &ASATORI_Fujin::revivirTag, CdTimeDowned, false);
 
@@ -229,7 +230,7 @@ void ASATORI_Fujin::startCDDowned()
 
 void ASATORI_Fujin::revivirTag()
 {
-	RemoveGameplayTag(FGameplayTag::RequestGameplayTag("State.Downed"));
+	AddGameplayTag(FGameplayTag::RequestGameplayTag("State.Revive"));
 
 }
 
@@ -237,9 +238,11 @@ void ASATORI_Fujin::revivirTag()
 void ASATORI_Fujin::revivir()
 {
 	setDowned(false);
+	RemoveGameplayTag(FGameplayTag::RequestGameplayTag("State.Revive"));
 	GetWorld()->GetTimerManager().ClearTimer(TimerHandleDowned);
 
 	SetHealth(GetMaxHealth() * 0.25f);
+	AddGameplayTag(FGameplayTag::RequestGameplayTag("Boss.Jugable"));
 
 }
 
