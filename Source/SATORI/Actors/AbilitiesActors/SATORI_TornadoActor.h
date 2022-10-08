@@ -12,6 +12,8 @@
 class USphereComponent;
 class UStaticMeshComponent;
 class UProjectileMovementComponent;
+class UNiagaraSystem;
+class UParticleSystemComponent;
 
 UCLASS()
 class SATORI_API ASATORI_TornadoActor : public AActor
@@ -116,7 +118,9 @@ public:
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Tornado|Tags")
 	FGameplayTag  NoDamageTag;
 
-
+	// Particles
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
+	UParticleSystemComponent* ParticleEffect = nullptr;
 protected:
 
 	virtual void BeginPlay() override;
