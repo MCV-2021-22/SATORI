@@ -4,6 +4,7 @@
 #include "AI/Character/SATORI_AICharacter.h"
 #include "GameFramework\CharacterMovementComponent.h"
 #include "SATORIGameMode.h"
+#include "AI/Character/Melee/SATORI_Melee.h"
 
 USATORI_AIDeathAbility::USATORI_AIDeathAbility()
 {
@@ -43,6 +44,17 @@ void USATORI_AIDeathAbility::ActivateAbility(
 	if (IsValid(AnimMontage))
 	{
 		Character->StopAnimMontage(AnimMontage);
+	}
+
+	Character->EnemyDissolveAfterDeath();
+
+	if (Character->GetEnemyType() == SATORIEnemyType::Melee)
+	{
+		ASATORI_Melee* Melee = Cast<ASATORI_Melee>(Actor);
+		if (Melee)
+		{
+			Melee->WeaponDissolveAfterDeath();
+		}
 	}
 
 	Character->GetCharacterMovement()->Velocity = FVector(0);

@@ -600,8 +600,7 @@ void ASATORICharacter::OnWeaponOverlapBegin(UPrimitiveComponent* OverlappedComp,
 				//this->ComboSystemComponent->BossHealthNotifyAbilityChanged();
 
 			}				
-
-
+			
 			// Send current damage type recived (light attack o heavy attack)
 			EnemyCharacter->CheckImpactReceivedByPlayer(this->ComboSystemComponent->GetCurrentComboState());
 

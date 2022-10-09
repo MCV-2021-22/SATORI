@@ -81,10 +81,6 @@ void ASATORI_AICharacter::BeginPlay()
 			CharacterMesh->SetMaterial(i, DynamicMaterials[i]);
 		}
 	}
-
-	// Appearance
-	// Testing
-	//DynamicMaterials[0]->SetScalarParameterValue(FName(TEXT("Appearance")), 0.5f);
 }
 
 void ASATORI_AICharacter::OnConstruction(const FTransform& Transform)
@@ -429,6 +425,8 @@ void ASATORI_AICharacter::SetDamagedColor()
 				}
 			}
 		}, 0.1f, false);
+
+	GetWorld()->GetTimerManager().ClearTimer(WaitHandle);
 }
 
 void ASATORI_AICharacter::SpawnCointActorAfterDeath()
@@ -438,5 +436,20 @@ void ASATORI_AICharacter::SpawnCointActorAfterDeath()
 	{
 		ASATORI_CoinRewardActor* SpawnedActorRef = GetWorld()->SpawnActor<ASATORI_CoinRewardActor>(SpawnCoinActor, 
 			this->GetActorTransform(), SpawnParams);
+	}
+}
+void ASATORI_AICharacter::EnemyDissolveAfterDeath()
+{
+	if (DynamicMaterials.Num() > 0)
+	{
+		GetWorld()->GetTimerManager().SetTimer(MaterialWaitHandle, [this]()
+			{
+				DynamicMaterials[0]->SetScalarParameterValue(FName(TEXT("Appearance")), TimeCountDown);
+				TimeCountDown -= LocalRate;
+				if (TimeCountDown <= 0)
+				{
+					GetWorld()->GetTimerManager().ClearTimer(MaterialWaitHandle);
+				}
+			}, LocalRate, true);
 	}
 }
