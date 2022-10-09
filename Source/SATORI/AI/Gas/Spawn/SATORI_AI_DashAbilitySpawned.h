@@ -77,8 +77,11 @@ private:
 	void SpawnActor();
 	void GetTarget();
 
+	
+
 	bool bDashing = false;
 	bool bTargeting = false;
+	bool bExplode = false;
 	
 	ASATORI_CharacterBase* Enemy;
 	FVector  DashActorPosition;
@@ -88,6 +91,8 @@ private:
 public:
 
 	bool bIsCreateOnRunning = false;
+
+	void Explode();
 
 	virtual void Tick(float DeltaTime) override;
 
