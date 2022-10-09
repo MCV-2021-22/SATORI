@@ -7,6 +7,7 @@
 #include "SATORI_Fujin.generated.h"
 
 
+class ASATORI_Raijin;
 class UNiagaraComponent;
 class UNiagaraSystem;
 /**
@@ -35,6 +36,28 @@ public:
 	float getDistAttack();
 
 	float getCloseDist();
+
+	ASATORI_Raijin* Raijin;
+
+	FTimerHandle TimerHandle;
+
+	FTimerHandle TimerHandleDowned;
+
+	void setRaijin();
+
+	UFUNCTION(BlueprintType, BlueprintCallable)
+		bool getDowned();
+
+	void setDowned(bool dw);
+
+	void startCDDowned();
+
+	void revivirTag();
+
+	void revivir();
+
+	bool getRaijinDowned();
+
 
 	FVector posinicial;
 
@@ -97,6 +120,10 @@ protected:
 	float dist_attack = 800.0f;
 
 	float close_dist = 100.0f;
+
+	bool downed = false;
+
+	float CdTimeDowned = 10.0f;
 	
 };
 
