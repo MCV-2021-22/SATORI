@@ -301,7 +301,7 @@ void ASATORI_AICharacter::CheckDamage(float Damage)
 		}
 	}
 
-	USATORI_BlueprintLibrary::ApplyGameplayEffect(this, HitGameplayEffect);
+	//USATORI_BlueprintLibrary::ApplyGameplayEffect(this, HitGameplayEffect);
 
 	//Death
 	if(GetHealth() <= 0.0f)
