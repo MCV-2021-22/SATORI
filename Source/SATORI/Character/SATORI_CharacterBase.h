@@ -118,10 +118,14 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Player|Attributes")
 	virtual void SetGold(float Gold);
 
+	// Cheat Function
+	void SetEasyMode(bool Value) { IsGodMode = Value; }
+	bool GetEasyMode() { return IsGodMode; }
 protected:
 
 	virtual void BeginPlay() override;
 
+	bool IsGodMode = false;
 
 	TWeakObjectPtr<USATORI_AttributeSet> AttributeSetBase;
 

@@ -42,6 +42,7 @@ void USATORI_AIDeath::EventReceived(FGameplayTag EventTag, FGameplayEventData Ev
 		GetWorld()->GetAuthGameMode<ASATORIGameMode>()->RemoveEnemyActor(Actor);
 		ASATORI_AICharacter* Character = Cast<ASATORI_AICharacter>(Actor);
 		Character->canDestroy = true;
+
 		//Actor->Destroy();
 		EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true);
 	}
@@ -56,6 +57,10 @@ void USATORI_AIDeath::OnCompleted(FGameplayTag EventTag, FGameplayEventData Even
 	AActor* Actor = GetAvatarActorFromActorInfo();
 	GetWorld()->GetAuthGameMode<ASATORIGameMode>()->RemoveEnemyActor(Actor);
 	Actor->Destroy();
+
+	ASATORI_AICharacter* Character = Cast<ASATORI_AICharacter>(Actor);
+	if(Character)
+		Character->SpawnCointActorAfterDeath();
 
 	EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true);
 }

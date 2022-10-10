@@ -22,8 +22,9 @@ bool UBTDecorator_InRangeSpawned::CalculateRawConditionValue(UBehaviorTreeCompon
 	ASATORICharacter* Player1 = Cast<ASATORICharacter>(OwnerComp.GetBlackboardComponent()->GetValueAsObject(MyBlackboardKey.SelectedKeyName));
 
 	float dist = AI->GetDistanceTo(Player1);
+	float distAI = AI->GetDistAttack();
 
-	if(dist<= AI->GetDistAttack())
+	if(dist<= distAI)
 	{
 		return true;
 	}

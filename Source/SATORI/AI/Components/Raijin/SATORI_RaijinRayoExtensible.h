@@ -87,7 +87,7 @@ protected:
 	ADecalActor* my_decal = nullptr;
 
 
-	float time_to_destroy = 8.0f;
+	float time_to_destroy = 5.0f;
 
 	float decal_size = 300.0f;
 

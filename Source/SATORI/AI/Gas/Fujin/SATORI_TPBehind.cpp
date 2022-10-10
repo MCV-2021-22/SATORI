@@ -73,7 +73,7 @@ void USATORI_TPBehind::Teleport(const FGameplayAbilitySpecHandle Handle, const F
 			if (Cast<ASATORICharacter>(Actor) != nullptr)
 			{
 				ASATORICharacter* Player = Cast<ASATORICharacter>(Actor);
-				Fujin->SetActorLocation(Player->GetActorLocation() - Player->GetActorForwardVector() * 100);
+				Fujin->SetActorLocation(Player->GetActorLocation() - (Player->GetActorForwardVector() * 100)*4);
 				Fujin->GetMesh()->SetVisibility(true);
 				Fujin->SetActorEnableCollision(true);
 
@@ -98,6 +98,6 @@ void USATORI_TPBehind::OnCancelled(FGameplayTag EventTag, FGameplayEventData Eve
 void USATORI_TPBehind::OnCompleted(FGameplayTag EventTag, FGameplayEventData EventData)
 {
 
-	EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true);
+	//EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true);
 }
 

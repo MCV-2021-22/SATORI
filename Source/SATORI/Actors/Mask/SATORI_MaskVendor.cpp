@@ -15,13 +15,16 @@
 // Sets default values
 ASATORI_MaskVendor::ASATORI_MaskVendor()
 {
+	RootComponent = CreateDefaultSubobject<USceneComponent>(TEXT("RootComponent"));
+
 	MaskVendorMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("StaticMeshComponent"));
 	MaskVendorMesh->SetupAttachment(RootComponent);
 
 	WidgetComponent = CreateDefaultSubobject<UWidgetComponent>(TEXT("WidgetComponent"));
-
+	WidgetComponent->SetupAttachment(RootComponent);
 	// Hide interaction
 	WidgetComponent->SetVisibility(false, true);
+	WidgetComponent->SetRelativeLocation(FVector(50.f, 0.0f, -10.f));
 }
 
 // Called when the game starts or when spawned

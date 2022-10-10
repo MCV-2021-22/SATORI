@@ -24,6 +24,7 @@ class USkeletalMeshComponent;
 class UWidgetComponent;
 class USATORI_EnemyHealthBar;
 class USATORI_EnemyStatComponent;
+class ASATORI_CoinRewardActor;
 
 UENUM(BlueprintType)
 enum class SATORIEnemyType : uint8
@@ -85,6 +86,11 @@ public:
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "GameplayEffect")
 	TSubclassOf<UGameplayEffect> HeavyHitGameplayEffect;
 
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Spawn")
+	float DesiredZPosition;
+
+
 	//Ray Cast
 	// Check if the player is in front of the enemy and can do the parry
 	UFUNCTION(BlueprintCallable)
@@ -132,13 +138,22 @@ public:
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "UI")
 	TSubclassOf<USATORI_EnemyHealthBar> HealthBarUI;
 
+	// Spawn Coin Actor
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "CoinActor")
+	TSubclassOf<ASATORI_CoinRewardActor> SpawnCoinActor;
+
+	UFUNCTION(BlueprintCallable)
+	void SpawnCointActorAfterDeath();
+
 	virtual void CharacterDeath() override;
 
 	// Check Impact Received
 	void CheckImpactReceivedByPlayer(EComboState State);
 
+
 	// Set Enemy color when received damage
 	void SetDamagedColor();
+
 
 	SATORIEnemyType GetEnemyType() { return EnemyType; }
 protected:

@@ -15,10 +15,13 @@
 // Sets default values
 ASATORI_GeneralVendor::ASATORI_GeneralVendor()
 {
+	RootComponent = CreateDefaultSubobject<USceneComponent>(TEXT("RootComponent"));
+
 	GeneralVendorMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("StaticMeshComponent"));
 	GeneralVendorMesh->SetupAttachment(RootComponent);
 
 	WidgetComponent = CreateDefaultSubobject<UWidgetComponent>(TEXT("WidgetComponent"));
+	WidgetComponent->SetupAttachment(RootComponent);
 
 	// Hide interaction
 	WidgetComponent->SetVisibility(false, true);

@@ -7,6 +7,8 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "NavigationSystem.h"
+#include "NiagaraComponent.h"
+#include "NiagaraFunctionLibrary.h"
 #include "Components/CapsuleComponent.h"
 
 
@@ -33,7 +35,7 @@ ASATORI_Fujin::ASATORI_Fujin()
 		const FAttachmentTransformRules AttachmentRules = FAttachmentTransformRules(EAttachmentRule::KeepRelative, false);
 		Left->AttachToComponent(GetMesh(), AttachmentRules, "LHand");
 		// Sphere Collision
-		CollisionL->SetCapsuleSize(30.f, 100.f, true);
+		CollisionL->SetCapsuleSize(30.f, 50.f, true);
 		//CollisionL->SetCollisionProfileName("Pawn");
 		CollisionL->SetGenerateOverlapEvents(true);
 		CollisionL->OnComponentBeginOverlap.AddUniqueDynamic(this, &ASATORI_Fujin::OnOverlapLeft);
@@ -48,7 +50,7 @@ ASATORI_Fujin::ASATORI_Fujin()
 		const FAttachmentTransformRules AttachmentRules = FAttachmentTransformRules(EAttachmentRule::KeepRelative, false);
 		Right->AttachToComponent(GetMesh(), AttachmentRules, "RHand");
 		// Sphere Collision
-		CollisionR->SetCapsuleSize(30.f, 100.f, true);
+		CollisionR->SetCapsuleSize(30.f, 50.f, true);
 		//CollisionR->SetCollisionProfileName("Pawn");
 		CollisionR->SetGenerateOverlapEvents(true);
 		CollisionR->OnComponentBeginOverlap.AddUniqueDynamic(this, &ASATORI_Fujin::OnOverlapRight);
@@ -56,18 +58,46 @@ ASATORI_Fujin::ASATORI_Fujin()
 		CollisionR->AttachTo(Right);
 	}
 
-
 	
+
+	//{
+		//const FAttachmentTransformRules AttachmentRules = FAttachmentTransformRules(EAttachmentRule::KeepRelative, false);
+		//Nube->AttachToComponent(GetMesh(), AttachmentRules, "BckNubeFujin");
+
+		//UNiagaraFunctionLibrary::SpawnSystemAttached(Nube,GetMesh(), "BckNubeFujin", AttachmentRules);
+	//}
+
+	//UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), Trueno, RayoLocation);
 
 	BehaviorTree = TSoftObjectPtr <UBehaviorTree>(FSoftObjectPath(TEXT("/Game/SATORI/AI/Fujin/BT_Fujin.BT_Fujin")));
 	posinicial = GetActorLocation();
 }
 
+
+void ASATORI_Fujin::BeginPlay()
+{
+	Super::BeginPlay();
+
+	//(UNiagaraSystem * SystemTemplate, USceneComponent * AttachToComponent, FName AttachPointName, FVector Location, FRotator Rotation, FVector Scale, EAttachLocation::Type LocationType, bool bAutoDestroy, ENCPoolMethod PoolingMethod, bool bAutoActivate = true, bool bPreCullCheck = true);
+	Nube1 = UNiagaraFunctionLibrary::SpawnSystemAttached(Nube, GetMesh(), TEXT("BckNubeFujin"), FVector(0), FRotator::ZeroRotator,FVector(0.1f,0.1f,0.1f), EAttachLocation::Type::KeepRelativeOffset, false,  ENCPoolMethod::None);
+	
+	/*if (Nube1)
+	{
+		const FAttachmentTransformRules AttachmentRules = FAttachmentTransformRules(EAttachmentRule::KeepRelative, false);
+		Nube1->AttachToComponent(GetMesh(), AttachmentRules, "BckNubeFujin");
+	}*/
+
+	CollisionL->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	CollisionR->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+
+
+}
 void ASATORI_Fujin::Tick(float DeltaTime)
 {
 
 
 	Super::Tick(DeltaTime);
+	
 	
 
 }

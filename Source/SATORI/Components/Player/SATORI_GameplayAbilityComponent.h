@@ -69,6 +69,7 @@ struct FSATORI_CooldownDatas
 
 	bool IsCooldownAvaiable = false;
 	float TimeRemained = 0.0f;
+	int AbilityID = 0;
 };
 
 USTRUCT(BlueprintType)
@@ -89,15 +90,18 @@ struct FSATORI_AbilitiesIconsCooldownDatas
 struct FAbilityCooldownTimerInfo
 {
 	FTimerHandle WaitHandle;
+	FTimerDelegate CooldownDelegate;
 	float TimeRemaining;
 	int AbilityID;
+	bool IsInCooldown = false;
 };
 
 // -------------------- End Datas Sections ----------------------
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FSATORIChangeAbilityIcon, const FSATORI_AbilitiesDatas&, AbilityData);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FSATORIChangeAllAbilityIcon, FSATORI_AbilitiesIconsDatas, AbilityData);
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FSATORICooldownAbilityIcon, FSATORI_AbilitiesIconsCooldownDatas, CooldownData);
+//DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FSATORICooldownAbilityIcon, FSATORI_AbilitiesIconsCooldownDatas, CooldownData);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FSATORICooldownAbilityIcon, FSATORI_CooldownDatas, CooldownData);
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class SATORI_API USATORI_GameplayAbilityComponent : public UActorComponent
@@ -132,9 +136,6 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	int CurrentAbilityValue = 0;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
-	bool IsNachoTesting = false;
-
 	// Getters
 
 	TArray<FSATORI_AbilitiesDatas> GetCharacterAbilities() { return PortalRewardAbilities; }
@@ -162,6 +163,8 @@ public:
 	// Reset Player Hability
 	void ResetCurrentPlayerAbilities();
 
+	// Hability Testing
+	void UnclockAllHabilities(bool Value) { IsAllHabilityTesting = Value; }
 public:
 	UFUNCTION(BlueprintCallable)
 	bool TryChangeAbility();
@@ -204,6 +207,9 @@ private:
 	UPROPERTY()
 	FSATORI_AbilitiesIconsCooldownDatas CooldownData;
 
+	// Test Code
+	TArray<FSATORI_CooldownDatas> M_CooldownDatas;
+
 	//UPROPERTY()
 	//float HabilityTimeRemained = 0.0f;
 
@@ -211,6 +217,9 @@ private:
 	//FTimerHandle Hability_1_WaitHandle;
 
 	TArray<FAbilityCooldownTimerInfo> AbilityCD_Infos;
+
+	// Hability Test
+	bool IsAllHabilityTesting = false;
 public:
 
 	void AddPortalAbilities(FSATORI_AbilitiesDatas AbilityData);

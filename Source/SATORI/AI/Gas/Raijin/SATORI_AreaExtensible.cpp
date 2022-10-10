@@ -110,11 +110,13 @@ void USATORI_AreaExtensible::EndRayos(const FGameplayAbilitySpecHandle Handle, c
 		if(Rayo1->destruible)
 		{
 			Rayo1->Destroy();
+
 			ASATORI_Raijin* Raijin = Cast<ASATORI_Raijin>(GetAvatarActorFromActorInfo());
 			if (Raijin)
 			{
 				Raijin->ArcoAltavoces->setAttacking(false);
 			}
+
 			EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true);
 		}
 		
@@ -136,10 +138,10 @@ void USATORI_AreaExtensible::OnCancelled(FGameplayTag EventTag, FGameplayEventDa
 
 void USATORI_AreaExtensible::OnCompleted(FGameplayTag EventTag, FGameplayEventData EventData)
 {
-	ASATORI_Raijin* Raijin = Cast<ASATORI_Raijin>(GetAvatarActorFromActorInfo());
+	/*ASATORI_Raijin* Raijin = Cast<ASATORI_Raijin>(GetAvatarActorFromActorInfo());
 	if (Raijin)
 	{
 		Raijin->ArcoAltavoces->setAttacking(false);
-	}
-	EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true);
+	}*/
+	//EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true);
 }

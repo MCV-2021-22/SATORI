@@ -36,6 +36,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "Components/Player/SATORI_InteractComponent.h"
 #include "SATORIGameMode.h"
+#include "GameplayFramework/SATORI_GameInstance.h"
 
 //////////////////////////////////////////////////////////////////////////
 // ASATORICharacter
@@ -597,7 +598,9 @@ void ASATORICharacter::OnWeaponOverlapBegin(UPrimitiveComponent* OverlappedComp,
 			if (EnemyCharacter->GetEnemyType() == SATORIEnemyType::Boss)
 			{
 				//this->ComboSystemComponent->BossHealthNotifyAbilityChanged();
+
 			}				
+
 
 			// Send current damage type recived (light attack o heavy attack)
 			EnemyCharacter->CheckImpactReceivedByPlayer(this->ComboSystemComponent->GetCurrentComboState());
@@ -682,12 +685,50 @@ void ASATORICharacter::PlayerSenseOfBlow(float DilationTime, float WaitTime)
 	GetWorld()->GetFirstPlayerController()->PlayerCameraManager->StartCameraShake(CameraShake);
 
 	// Slow motion
-	UGameplayStatics::SetGlobalTimeDilation(GetWorld(), DilationTime);
-	FTimerHandle WaitHandle; 
-	GetWorld()->GetTimerManager().SetTimer(WaitHandle, FTimerDelegate::CreateLambda([&]()
-		{
-			UGameplayStatics::SetGlobalTimeDilation(GetWorld(), 1.0f);
-		}), WaitTime, false);
+	USATORI_GameInstance* GameInstanceRef = Cast<USATORI_GameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
+	if (GameInstanceRef->TimeSlow)
+	{
+		UGameplayStatics::SetGlobalTimeDilation(GetWorld(), 0.4f);
+		FTimerHandle WaitHandle;
+		GetWorld()->GetTimerManager().SetTimer(WaitHandle, FTimerDelegate::CreateLambda([&]()
+			{
+				USATORI_GameInstance* GameInstanceRef = Cast<USATORI_GameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
+				if (GameInstanceRef->TimeSlow)
+				{
+					UGameplayStatics::SetGlobalTimeDilation(GetWorld(), 0.5f);
+				}
+				else
+				{
+					UGameplayStatics::SetGlobalTimeDilation(GetWorld(), 1.0f);
+				}
+			}), WaitTime, false);
+	}
+	else if (GameInstanceRef->TimeStop)
+	{
+		UGameplayStatics::SetGlobalTimeDilation(GetWorld(), 0.00008f);
+		FTimerHandle WaitHandle;
+		GetWorld()->GetTimerManager().SetTimer(WaitHandle, FTimerDelegate::CreateLambda([&]()
+			{
+				USATORI_GameInstance* GameInstanceRef = Cast<USATORI_GameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
+				if (GameInstanceRef->TimeStop)
+				{
+					UGameplayStatics::SetGlobalTimeDilation(GetWorld(), 0.0001f);
+				}
+				else
+				{
+					UGameplayStatics::SetGlobalTimeDilation(GetWorld(), 1.0f);
+				}
+			}), WaitTime, false);
+	}
+	else
+	{
+		UGameplayStatics::SetGlobalTimeDilation(GetWorld(), DilationTime);
+		FTimerHandle WaitHandle;
+		GetWorld()->GetTimerManager().SetTimer(WaitHandle, FTimerDelegate::CreateLambda([&]()
+			{
+				UGameplayStatics::SetGlobalTimeDilation(GetWorld(), 1.0f);
+			}), WaitTime, false);
+	}
 }
 
 //////////////////////////////////////////////////////////////////////////

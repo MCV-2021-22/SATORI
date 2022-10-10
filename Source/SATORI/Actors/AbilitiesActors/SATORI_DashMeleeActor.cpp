@@ -100,4 +100,9 @@ void ASATORI_DashMeleeActor::Tick(float DeltaTime)
 			CollisionSphereComponent->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
 		}
 	}
+
+	if (CollisionSphereComponent->IsCollisionEnabled() && !MeleeCharacter->HasMatchingGameplayTag(DashDamageTag))
+	{
+		CollisionSphereComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	}
 }
