@@ -7,6 +7,7 @@
 #include "AI/Components/Raijin/SATORI_ArcoAltavoces.h"
 #include "SATORI_Raijin.generated.h"
 
+class ASATORI_Fujin;
 /**
  * 
  */
@@ -29,9 +30,32 @@ public:
 
 	ASATORI_ArcoAltavoces* ArcoAltavoces;
 
+	ASATORI_Fujin* Fujin;
+
 	FTimerHandle TimerHandle;
 
+	FTimerHandle TimerHandleFujin;
+
+	FTimerHandle TimerHandleDowned;
+
+	FTimerDelegate TimerDelegate;
+
 	void setArcoAltavoces();
+
+	void setFujin();
+
+	UFUNCTION(BlueprintType, BlueprintCallable)
+		bool getDowned();
+
+	void setDowned(bool dw);
+
+	void startCDDowned();
+
+	void revivirTag();
+
+	void revivir();
+
+	bool getFujinDowned();
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Weapon")
 		UStaticMeshComponent* SwordComponentRight;
@@ -41,5 +65,9 @@ protected:
 	FVector SpawnPos;
 
 	float SoCloseDist = 250.0f;
+
+	bool downed = false;
+
+	float CdTimeDowned = 10.0f;
 
 };

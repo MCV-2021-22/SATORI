@@ -61,19 +61,20 @@ void USATORI_TimeStop::StartTimeStop()
 	GameInstanceRef = Cast<USATORI_GameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
 	GameInstanceRef->TimeStop = true;
 
-	UGameplayStatics::SetGlobalTimeDilation(GetWorld(), 0.0001f);
+	UGameplayStatics::SetGlobalTimeDilation(GetWorld(), 0.2f);
 
 	TimerD = FTimerDelegate::CreateUObject(this, &USATORI_TimeStop::SetActorVelocity, CurrentActorInfo);
-	GetWorld()->GetTimerManager().SetTimer(TimerH, TimerD,0.000001f, false);
+	GetWorld()->GetTimerManager().SetTimer(TimerH, TimerD,0.01f, false);
 
 	TimerDelegate = FTimerDelegate::CreateUObject(this, &USATORI_TimeStop::OnTimerFinished, CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo);
-	GetWorld()->GetTimerManager().SetTimer(TimerHandle, TimerDelegate, AbilityTime * 0.0001f, false);
+	GetWorld()->GetTimerManager().SetTimer(TimerHandle, TimerDelegate, AbilityTime * 0.2f, false);
 	
 }
 
 void USATORI_TimeStop::SetActorVelocity(const FGameplayAbilityActorInfo* ActorInfo)
 {
-	ActorInfo->AvatarActor->CustomTimeDilation = 10000.f;
+	ActorInfo->AvatarActor->CustomTimeDilation = 5.0f;
+	GetWorld()->GetTimerManager().ClearTimer(TimerH);
 }
 
 void USATORI_TimeStop::OnTimerFinished(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo)

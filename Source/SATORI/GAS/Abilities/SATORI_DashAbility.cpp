@@ -135,6 +135,8 @@ void USATORI_DashAbility::EndAbility(
 	{
 		Character->EnableInput(Controller);
 	}
+
+	GetWorld()->GetTimerManager().ClearAllTimersForObject(this);
 	Super::EndAbility(Handle, ActorInfo, ActivationInfo, bReplicateEndAbility, bWasCancelled);
 }
 
@@ -168,7 +170,7 @@ void USATORI_DashAbility::EventReceived(FGameplayTag EventTag, FGameplayEventDat
 		}
 		else if (GameInstanceRef->TimeStop)
 		{
-			GetWorld()->GetTimerManager().SetTimer(TimerHandle, this, &USATORI_DashAbility::EndDash, TimeToFinish/10000, false);
+			GetWorld()->GetTimerManager().SetTimer(TimerHandle, this, &USATORI_DashAbility::EndDash, TimeToFinish/5, false);
 		}
 		else
 		{

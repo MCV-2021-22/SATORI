@@ -3,6 +3,7 @@
 
 #include "AI/Character/Raijin/SATORI_Raijin.h"
 
+#include "AI/Character/Fujin/SATORI_Fujin.h"
 #include "Kismet/GameplayStatics.h"
 
 ASATORI_Raijin::ASATORI_Raijin()
@@ -33,9 +34,13 @@ void ASATORI_Raijin::BeginPlay()
 {
 	Super::BeginPlay();
 
+	AddGameplayTag(FGameplayTag::RequestGameplayTag("Boss.Jugable"));
+
 	setSpawnPos(GetActorLocation());
 
 	GetWorld()->GetTimerManager().SetTimer(TimerHandle,this, &ASATORI_Raijin::setArcoAltavoces, 0.5f, false);
+
+	GetWorld()->GetTimerManager().SetTimer(TimerHandleFujin,this, &ASATORI_Raijin::setFujin, 0.5f, false);
 
 
 }
@@ -74,4 +79,68 @@ void ASATORI_Raijin::setArcoAltavoces()
 
 	}
 
+}
+
+void ASATORI_Raijin::setFujin()
+{
+	TSubclassOf<ASATORI_Fujin> classToFind;
+	classToFind = ASATORI_Fujin::StaticClass();
+
+	TArray< AActor* > enemigos;
+
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(), classToFind, enemigos);
+
+	if (enemigos.Num() > 0)
+	{
+		ASATORI_Fujin* Fuj = Cast<ASATORI_Fujin>(enemigos[0]);
+		if (Fuj)
+		{
+			Fujin = Fuj;
+		}
+
+	}
+
+}
+
+void ASATORI_Raijin::setDowned(bool dw)
+{
+	downed = dw;
+
+	
+}
+
+bool ASATORI_Raijin::getDowned()
+{
+	return downed;
+}
+
+void ASATORI_Raijin::startCDDowned()
+{
+
+	RemoveGameplayTag(FGameplayTag::RequestGameplayTag("State.Downed"));
+	setDowned(true);
+	GetWorld()->GetTimerManager().SetTimer(TimerHandleDowned, this, &ASATORI_Raijin::revivirTag, CdTimeDowned, false);
+
+}
+
+void ASATORI_Raijin::revivirTag()
+{
+	AddGameplayTag(FGameplayTag::RequestGameplayTag("State.Revive"));
+
+}
+
+void ASATORI_Raijin::revivir()
+{
+	setDowned(false);
+	RemoveGameplayTag(FGameplayTag::RequestGameplayTag("State.Revive"));
+	GetWorld()->GetTimerManager().ClearTimer(TimerHandleDowned);
+
+	SetHealth(GetMaxHealth() * 0.25f);
+	AddGameplayTag(FGameplayTag::RequestGameplayTag("Boss.Jugable"));
+
+}
+
+bool ASATORI_Raijin::getFujinDowned()
+{
+	return Fujin->getDowned();
 }
