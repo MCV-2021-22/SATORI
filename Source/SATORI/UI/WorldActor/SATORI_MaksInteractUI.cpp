@@ -53,10 +53,6 @@ void USATORI_MaksInteractUI::AkaMaskButtonOnClicked()
 		}
 		Character->SetCharacterMask(SATORIMaskType::Aka);
 		ASATORI_PlayerController* PlayerController = Cast<ASATORI_PlayerController>(Character->GetController());
-		if (PlayerController)
-		{
-			Character->EnableInput(PlayerController);
-		}
 	}
 }
 
@@ -72,10 +68,6 @@ void USATORI_MaksInteractUI::AoMaskButtonOnClicked()
 		}
 		Character->SetCharacterMask(SATORIMaskType::Ao);
 		ASATORI_PlayerController* PlayerController = Cast<ASATORI_PlayerController>(Character->GetController());
-		if (PlayerController)
-		{
-			Character->EnableInput(PlayerController);
-		}
 	}
 }
 
@@ -91,10 +83,6 @@ void USATORI_MaksInteractUI::MidoriMaskButtonOnClicked()
 		}
 		Character->SetCharacterMask(SATORIMaskType::Midori);
 		ASATORI_PlayerController* PlayerController = Cast<ASATORI_PlayerController>(Character->GetController());
-		if (PlayerController)
-		{
-			Character->EnableInput(PlayerController);
-		}
 	}
 }
 
@@ -111,7 +99,7 @@ void USATORI_MaksInteractUI::OnResumeClicked()
 			PlayerController->bShowMouseCursor = false;
 			PlayerController->bEnableClickEvents = false;
 			PlayerController->bEnableMouseOverEvents = false;
-			PlayerController->EnableInput(PlayerController);
+			Character->EnableInput(PlayerController);
 		}
 	}
 }
