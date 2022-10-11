@@ -20,4 +20,7 @@ public:
 
 	UFUNCTION(Exec)
 	void SetEasyMode(bool Value);
+
+	UFUNCTION(Exec)
+	void IncreasedAttack();
 };
