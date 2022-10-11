@@ -27,9 +27,6 @@ public:
 	UPROPERTY(meta = (BindWidget))
 	UButton* QuitButton;
 
-	UPROPERTY(meta = (BindWidget))
-	UButton* MainMenuButton;
-
 protected:
 	UFUNCTION()
 	void OnDeathButtonClicked();

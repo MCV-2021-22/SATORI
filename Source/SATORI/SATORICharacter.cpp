@@ -603,9 +603,9 @@ void ASATORICharacter::OnWeaponOverlapBegin(UPrimitiveComponent* OverlappedComp,
 			if (EnemyCharacter->GetEnemyType() == SATORIEnemyType::Boss)
 			{
 				//this->ComboSystemComponent->BossHealthNotifyAbilityChanged();
-
 			}				
 
+			EnemyCharacter->SetDamagedColor();
 
 			// Send current damage type recived (light attack o heavy attack)
 			EnemyCharacter->CheckImpactReceivedByPlayer(this->ComboSystemComponent->GetCurrentComboState());

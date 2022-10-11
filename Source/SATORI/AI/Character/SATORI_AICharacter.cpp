@@ -455,7 +455,7 @@ void ASATORI_AICharacter::SetDamagedColor()
 					DynamicMaterials[i]->SetScalarParameterValue(FName(TEXT("BaseColor")), 0.0f);
 				}
 			}
-		}, 0.1f, false);
+		}, 0.2f, false);
 }
 
 void ASATORI_AICharacter::SpawnCointActorAfterDeath()
