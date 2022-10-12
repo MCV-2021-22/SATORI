@@ -447,9 +447,6 @@ void ASATORI_AICharacter::SetDamagedColor()
 			{
 				DynamicMaterials[i]->SetScalarParameterValue(FName(TEXT("BaseColor")), 1.0f);
 			}
-		}, 0.1f, false);
-
-	GetWorld()->GetTimerManager().ClearTimer(WaitHandle);
 		}
 
 		FTimerHandle WaitHandle;
@@ -485,6 +482,7 @@ void ASATORI_AICharacter::EnemyDissolveAfterDeath()
 				TimeCountDown -= LocalRate;
 				if (TimeCountDown <= 0)
 				{
+					DynamicMaterials[0]->SetScalarParameterValue(FName(TEXT("Appearance")), -0.1f);
 					GetWorld()->GetTimerManager().ClearTimer(MaterialWaitHandle);
 				}
 			}, LocalRate, true);
