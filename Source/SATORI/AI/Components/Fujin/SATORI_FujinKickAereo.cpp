@@ -11,6 +11,8 @@
 #include "Runtime/Engine/Classes/Particles/ParticleSystemComponent.h"
 #include "NiagaraFunctionLibrary.h"
 #include "AI/Character/Fujin/SATORI_Fujin.h"
+#define ECC_Player ECollisionChannel::ECC_GameTraceChannel4
+#define ECC_Enemy ECollisionChannel::ECC_GameTraceChannel5
 
 ASATORI_FujinKickAereo::ASATORI_FujinKickAereo()
 {
@@ -22,11 +24,19 @@ ASATORI_FujinKickAereo::ASATORI_FujinKickAereo()
 
 	//GetCapsuleComponent()->InitCapsuleSize(42.f, 96.0f);
 	CapsuleComponent = CreateDefaultSubobject<UCapsuleComponent>(TEXT("Capsule"));
-	CapsuleComponent->InitCapsuleSize(300.0f, 300.0f);
+	CapsuleComponent->InitCapsuleSize(300.0f, 400.0f);
 	CapsuleComponent->SetCollisionProfileName(UCollisionProfile::NoCollision_ProfileName);
 	CapsuleComponent->OnComponentBeginOverlap.AddUniqueDynamic(this, &ASATORI_FujinKickAereo::OnComponentBeginOverlap);
 	CapsuleComponent->OnComponentEndOverlap.AddUniqueDynamic(this, &ASATORI_FujinKickAereo::OnComponentEndOverlap);
 
+	RootComponent = CapsuleComponent;
+
+	CapsuleComponentPeque = CreateDefaultSubobject<UCapsuleComponent>(TEXT("CapsuleComponentPeque"));
+	CapsuleComponentPeque->InitCapsuleSize(200.0f, 60.0f);
+	CapsuleComponentPeque->SetCollisionProfileName(UCollisionProfile::NoCollision_ProfileName);
+	CapsuleComponentPeque->OnComponentBeginOverlap.AddUniqueDynamic(this, &ASATORI_FujinKickAereo::OnComponentBeginOverlapPeque);
+	CapsuleComponentPeque->OnComponentEndOverlap.AddUniqueDynamic(this, &ASATORI_FujinKickAereo::OnComponentEndOverlapPeque);
+	CapsuleComponentPeque->SetupAttachment(RootComponent);
 	//SphereComponent->SetCollisionProfileName(UCollisionProfile::BlockAllDynamic_ProfileName);
 	//SphereComponent->SetCollisionProfileName(FName("Trigger"));
 	//SphereComponent->OnComponentHit.AddUniqueDynamic(this, &ASATORI_ArcherProjectile::OnComponentHit);
@@ -35,7 +45,7 @@ ASATORI_FujinKickAereo::ASATORI_FujinKickAereo()
 
 
 	//RootComponent = SphereComponent;
-	RootComponent = CapsuleComponent;
+	
 
 	//StaticMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("StaticMesh"));
 	//StaticMeshComponent->SetupAttachment(RootComponent);
@@ -72,6 +82,9 @@ void ASATORI_FujinKickAereo::BeginPlay()
 	PrimaryActorTick.bCanEverTick = true;
 
 	ADecalActor* decal = GetWorld()->SpawnActor<ADecalActor>(GetActorLocation(), FRotator());
+
+	
+
 
 	my_decal = decal;
 	if (my_decal)
@@ -185,16 +198,29 @@ void ASATORI_FujinKickAereo::OnComponentBeginOverlap(
 	ASATORI_Fujin* Fujin = Cast<ASATORI_Fujin>(OtherActor);
 	if (Fujin)
 	{
-		
-		Fujin_inside = true;
+		int a = 1;
+		//Fujin->GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_Player, ECR_Overlap);
+		//Fujin->GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_Pawn, ECR_Ignore);
+		Player->GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_Pawn, ECR_Overlap);
+
+
+		/*Fujin_inside = true;
 		if(player_inside)
 		{
+			Fujin->AddGameplayTag(FGameplayTag::RequestGameplayTag("Fujin.PlayerHitted"));
+			Fujin->GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_Pawn, ECR_Ignore);
 			//float dmg_done = USATORI_BlueprintLibrary::ApplyGameplayEffectDamage(OtherActor, Damage, OtherActor, DamageGameplayEffect);
-			int a = 2;
+			//Fujin->SetActorEnableCollision(false);
+			
+			
 		}
 		Fujin->AddGameplayTag(FGameplayTag::RequestGameplayTag("Fujin.KickDone"));
-		my_decal->Destroy();
-		Destroy();
+		*/
+		
+
+
+		//my_decal->Destroy();
+		//Destroy();
 
 	}
 
@@ -230,5 +256,83 @@ bool ASATORI_FujinKickAereo::CheckCollision()
 
 	}
 	return false;
+
+}
+
+
+void ASATORI_FujinKickAereo::OnComponentBeginOverlapPeque(
+	UPrimitiveComponent* OverlappedComponent,
+	AActor* OtherActor,
+	UPrimitiveComponent* OtherComp,
+	int32 OtherBodyIndex,
+	bool bFromSweep,
+	const FHitResult& SweepResult)
+{
+	ASATORI_Fujin* Fujin = Cast<ASATORI_Fujin>(OtherActor);
+	if (Fujin)
+	{
+		Fujin_inside = true;
+		if (player_inside)
+		{
+			Fujin->AddGameplayTag(FGameplayTag::RequestGameplayTag("Fujin.PlayerHitted"));
+			//Fujin->GetCapsuleComponent()->SetCollisionProfileName(FName("Pawn"));
+			//Player->GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_Pawn, ECR_Block);
+			GetWorld()->GetTimerManager().SetTimer(TimerHandle, this, &ASATORI_FujinKickAereo::enableCollision, 0.5f, false);
+			//my_decal->Destroy();
+			//Destroy();
+			//Fujin->GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_Pawn, ECR_Ignore);
+			//float dmg_done = USATORI_BlueprintLibrary::ApplyGameplayEffectDamage(OtherActor, Damage, OtherActor, DamageGameplayEffect);
+			//Fujin->SetActorEnableCollision(false);
+
+
+		}
+		Fujin->AddGameplayTag(FGameplayTag::RequestGameplayTag("Fujin.KickDone"));
+
+	}
+	
+
+		
+		/*Fujin->GetCapsuleComponent()->SetCollisionProfileName(FName("Pawn"));
+		
+		my_decal->Destroy();
+		Destroy();*/
+
+	
+
+
+
+
+}
+
+void ASATORI_FujinKickAereo::OnComponentEndOverlapPeque(
+	UPrimitiveComponent* OverlappedComponent,
+	AActor* OtherActor,
+	UPrimitiveComponent* OtherComp,
+	int32 OtherBodyIndex
+)
+{
+	
+
+}
+
+void ASATORI_FujinKickAereo::setCollisionFujin()
+{
+	//FujinVar->GetCapsuleComponent()->SetCollisionProfileName(FName("OverlapAll"));
+	//FujinVar->GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_Player, ECR_Overlap);
+	Player->GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_Pawn, ECR_Overlap);
+
+	
+}
+
+
+void ASATORI_FujinKickAereo::enableCollision()
+{
+	GetWorld()->GetTimerManager().ClearTimer(TimerHandle);
+	//FujinVar->GetCapsuleComponent()->SetCollisionProfileName(FName("Pawn"));
+	Player->GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_Pawn, ECR_Block);
+	my_decal->Destroy();
+	Destroy();
+	//FujinVar->SetActorEnableCollision(true);
+
 
 }

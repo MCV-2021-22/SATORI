@@ -20,7 +20,7 @@ class ASATORI_FujinLevantarCollision : public AActor
 public:
 	ASATORI_FujinLevantarCollision();
 
-	UPROPERTY(EditDefaultsOnly)
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
 		USphereComponent* SphereComponent = nullptr;
 
 	UPROPERTY(EditDefaultsOnly)

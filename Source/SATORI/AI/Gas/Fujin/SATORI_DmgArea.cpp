@@ -58,12 +58,28 @@ void USATORI_DmgArea::EventReceived(FGameplayTag EventTag, FGameplayEventData Ev
 
 				FTransform IATransform = CurrentActorInfo->AvatarActor->GetTransform();
 
+				/*ASATORI_Fujin* Fujin1 = Cast<ASATORI_Fujin>(CurrentActorInfo->AvatarActor);
+				if(Fujin1)
+				{
+					Fujin1->GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_Pawn, ECR_Overlap);
+					
+				}*/
+				
 
 				ASATORI_FujinKickAereo* Rayo = GetWorld()->SpawnActor<ASATORI_FujinKickAereo>(ProjectileClass,
 					Player->GetActorLocation(),
 					RotationOfIA);
 
-
+				if(Rayo)
+				{
+					ASATORI_Fujin* Fujin1 = Cast<ASATORI_Fujin>(CurrentActorInfo->AvatarActor);
+					if(Fujin1)
+					{
+						Rayo->FujinVar = Fujin1;
+						Rayo->setCollisionFujin();
+					}
+					
+				}
 				break;
 
 			}
@@ -86,7 +102,26 @@ void USATORI_DmgArea::OnCompleted(FGameplayTag EventTag, FGameplayEventData Even
 {
 	final = false;
 	GetWorld()->GetTimerManager().ClearTimer(TimerHandle);
-	EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true);
+
+	AActor* Actor = GetAvatarActorFromActorInfo();
+
+	ASATORI_Fujin* Fujin = Cast<ASATORI_Fujin>(Actor);
+	if(Fujin)
+	{
+		if (Fujin->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag(("Fujin.PlayerHitted"))))
+		{
+			
+			TimerDelegate = FTimerDelegate::CreateUObject(this, &USATORI_DmgArea::checkCollisionPlayer, CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo);
+			GetWorld()->GetTimerManager().SetTimer(TimerHandle, TimerDelegate, 0.1f, true);
+		}
+		else
+		{
+			EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true);
+		}
+	}
+	
+
+	//EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true);
 }
 
 void USATORI_DmgArea::CheckFujin(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo)
@@ -107,13 +142,60 @@ void USATORI_DmgArea::CheckFujin(const FGameplayAbilitySpecHandle Handle, const 
 					AnimInstance->Montage_JumpToSection(FName("recovery"), AnimInstance->GetCurrentActiveMontage());
 
 					Fujin->RemoveGameplayTag(FGameplayTag::RequestGameplayTag("Fujin.KickDone"));
-					//GetWorld()->GetTimerManager().ClearTimer(TimerHandle);
+
+					if (Fujin->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag(("Fujin.PlayerHitted"))) )
+					{
+						TArray< AActor* > enemigos;
+
+						UGameplayStatics::GetAllActorsWithTag(GetWorld(), FName("PossessedBy.Player"), enemigos);
+
+						for (AActor* Actor1 : enemigos)
+						{
+
+							//Actor->Tags.Add("PossessedBy.Player");
+							if (Cast<ASATORICharacter>(Actor1) != nullptr)
+							{
+								ASATORICharacter* Player1 = Cast<ASATORICharacter>(Actor1);
+								if (Player1)
+								{
+									FVector dest = Player1->GetActorLocation();
+
+									FRotator RotationOfIA = Actor1->GetActorRotation().GetInverse();
+
+									ASATORI_FujinLevantarCollision* Empuje = GetWorld()->SpawnActor<ASATORI_FujinLevantarCollision>(ProjectileClass1,
+										dest,
+										RotationOfIA);
+
+									Empuje->PushPlayer(Player1);
+									Player2 = Player1;
+									break;
+								}
+							}
+						}
+					}
 				}
 			}
-
-
 		}
 	}
-
 }
 
+void USATORI_DmgArea::checkCollisionPlayer(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo)
+{
+
+	if (Player2->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag("State.EndLevantado")))
+	{
+		AActor* Actor = GetAvatarActorFromActorInfo();
+
+		ASATORI_Fujin* Fujin = Cast<ASATORI_Fujin>(Actor);
+
+		Fujin->RemoveGameplayTag(FGameplayTag::RequestGameplayTag("Fujin.PlayerHitted"));
+		Player2->RemoveGameplayTag(FGameplayTag::RequestGameplayTag("State.EndLevantado"));
+		APlayerController* PlayerController = GetWorld()->GetFirstPlayerController();
+		Player2->EnableInput(PlayerController);
+
+		GetWorld()->GetTimerManager().ClearTimer(TimerHandle);
+		EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true);
+	}
+
+
+}
