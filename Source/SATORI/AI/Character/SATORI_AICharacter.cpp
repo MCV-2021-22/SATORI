@@ -437,25 +437,30 @@ void ASATORI_AICharacter::CheckImpactReceivedByPlayer(EComboState State)
 
 void ASATORI_AICharacter::SetDamagedColor()
 {
-	for (int i = 0; i < DynamicMaterials.Num(); i++)
+	bool HasBlckTag = this->GetAbilitySystemComponent()->HasMatchingGameplayTag(
+		FGameplayTag::RequestGameplayTag(FName("State.Special")));
+	if (!HasBlckTag)
 	{
-		if (DynamicMaterials[i])
+		for (int i = 0; i < DynamicMaterials.Num(); i++)
 		{
-			DynamicMaterials[i]->SetScalarParameterValue(FName(TEXT("BaseColor")), 1.0f);
-		}
-	}
-	
-	FTimerHandle WaitHandle;
-	GetWorld()->GetTimerManager().SetTimer(WaitHandle, [this]()
-		{
-			for (int i = 0; i < DynamicMaterials.Num(); i++)
+			if (DynamicMaterials[i])
 			{
-				if (DynamicMaterials[i])
-				{
-					DynamicMaterials[i]->SetScalarParameterValue(FName(TEXT("BaseColor")), 0.0f);
-				}
+				DynamicMaterials[i]->SetScalarParameterValue(FName(TEXT("BaseColor")), 1.0f);
 			}
-		}, 0.1f, false);
+		}
+
+		FTimerHandle WaitHandle;
+		GetWorld()->GetTimerManager().SetTimer(WaitHandle, [this]()
+			{
+				for (int i = 0; i < DynamicMaterials.Num(); i++)
+				{
+					if (DynamicMaterials[i])
+					{
+						DynamicMaterials[i]->SetScalarParameterValue(FName(TEXT("BaseColor")), 0.0f);
+					}
+				}
+			}, 0.1f, false);
+	}
 }
 
 void ASATORI_AICharacter::SpawnCointActorAfterDeath()
