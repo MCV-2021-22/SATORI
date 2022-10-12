@@ -479,6 +479,7 @@ void ASATORI_AICharacter::EnemyDissolveAfterDeath()
 		GetWorld()->GetTimerManager().SetTimer(MaterialWaitHandle, [this]()
 			{
 				DynamicMaterials[0]->SetScalarParameterValue(FName(TEXT("Appearance")), TimeCountDown);
+				TimeCountDown = TimeCountDown / 2;
 				TimeCountDown -= LocalRate;
 				if (TimeCountDown <= 0)
 				{
