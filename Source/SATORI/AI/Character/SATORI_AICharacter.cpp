@@ -437,25 +437,32 @@ void ASATORI_AICharacter::CheckImpactReceivedByPlayer(EComboState State)
 
 void ASATORI_AICharacter::SetDamagedColor()
 {
-	for (int i = 0; i < DynamicMaterials.Num(); i++)
+	bool HasBlckTag = this->GetAbilitySystemComponent()->HasMatchingGameplayTag(
+		FGameplayTag::RequestGameplayTag(FName("State.Special")));
+	if (!HasBlckTag)
 	{
-		if (DynamicMaterials[i])
+		for (int i = 0; i < DynamicMaterials.Num(); i++)
 		{
-			DynamicMaterials[i]->SetScalarParameterValue(FName(TEXT("BaseColor")), 1.0f);
-		}
-	}
-	
-	FTimerHandle WaitHandle;
-	GetWorld()->GetTimerManager().SetTimer(WaitHandle, [this]()
-		{
-			for (int i = 0; i < DynamicMaterials.Num(); i++)
+			if (DynamicMaterials[i])
 			{
-				if (DynamicMaterials[i])
-				{
-					DynamicMaterials[i]->SetScalarParameterValue(FName(TEXT("BaseColor")), 0.0f);
-				}
+				DynamicMaterials[i]->SetScalarParameterValue(FName(TEXT("BaseColor")), 1.0f);
 			}
+
 		}, 0.2f, false);
+		}
+
+		FTimerHandle WaitHandle;
+		GetWorld()->GetTimerManager().SetTimer(WaitHandle, [this]()
+			{
+				for (int i = 0; i < DynamicMaterials.Num(); i++)
+				{
+					if (DynamicMaterials[i])
+					{
+						DynamicMaterials[i]->SetScalarParameterValue(FName(TEXT("BaseColor")), 0.0f);
+					}
+				}
+			}, 0.1f, false);
+	}
 }
 
 void ASATORI_AICharacter::SpawnCointActorAfterDeath()
@@ -465,5 +472,22 @@ void ASATORI_AICharacter::SpawnCointActorAfterDeath()
 	{
 		ASATORI_CoinRewardActor* SpawnedActorRef = GetWorld()->SpawnActor<ASATORI_CoinRewardActor>(SpawnCoinActor, 
 			this->GetActorTransform(), SpawnParams);
+	}
+}
+void ASATORI_AICharacter::EnemyDissolveAfterDeath()
+{
+	if (DynamicMaterials.Num() > 0)
+	{
+		GetWorld()->GetTimerManager().SetTimer(MaterialWaitHandle, [this]()
+			{
+				DynamicMaterials[0]->SetScalarParameterValue(FName(TEXT("Appearance")), TimeCountDown);
+				TimeCountDown = TimeCountDown / 2;
+				TimeCountDown -= LocalRate;
+				if (TimeCountDown <= 0)
+				{
+					DynamicMaterials[0]->SetScalarParameterValue(FName(TEXT("Appearance")), -0.1f);
+					GetWorld()->GetTimerManager().ClearTimer(MaterialWaitHandle);
+				}
+			}, LocalRate, true);
 	}
 }

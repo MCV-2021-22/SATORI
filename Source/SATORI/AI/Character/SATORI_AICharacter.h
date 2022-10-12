@@ -86,15 +86,14 @@ public:
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "GameplayEffect")
 	TSubclassOf<UGameplayEffect> HeavyHitGameplayEffect;
 
-
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Spawn")
 	float DesiredZPosition;
-
 
 	//Ray Cast
 	// Check if the player is in front of the enemy and can do the parry
 	UFUNCTION(BlueprintCallable)
 	bool CheckPlayerWithRayCast();	
+
 	bool GetIsInFront() const { return isInFrontPlayer; }
 	
 	//Draw Debug
@@ -150,10 +149,13 @@ public:
 	// Check Impact Received
 	void CheckImpactReceivedByPlayer(EComboState State);
 
-
 	// Set Enemy color when received damage
+	UFUNCTION()
 	void SetDamagedColor();
 
+	// Dead disolver function
+	UFUNCTION(BlueprintCallable)
+	void EnemyDissolveAfterDeath();
 
 	SATORIEnemyType GetEnemyType() { return EnemyType; }
 protected:
@@ -192,7 +194,12 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	bool isInFrontPlayer = false;
 
+	// Material
 	TArray<UMaterialInstanceDynamic*> DynamicMaterials;
+
+	float TimeCountDown = 2.0f;
+	float LocalRate = 0.1f;
+	FTimerHandle MaterialWaitHandle;
 public: //Target System Interface related and Tag Abilities related (Nacho)
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Tag")

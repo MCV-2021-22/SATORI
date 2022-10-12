@@ -8,6 +8,7 @@
 
 class USkeletalMeshComponent;
 class UCapsuleComponent;
+class UMaterialInstanceDynamic;
 
 UCLASS()
 class SATORI_API ASATORI_Melee : public ASATORI_AICharacter
@@ -39,6 +40,20 @@ public:
 	TSubclassOf<UGameplayEffect> DamageEffect;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Attack")
-		FGameplayTag HeavyHitTag;
+	FGameplayTag HeavyHitTag;
 
+	void WeaponDissolveAfterDeath();
+
+protected:
+	virtual void BeginPlay() override;
+
+	// Material
+	TArray<UMaterialInstanceDynamic*> Left_WeaponDynamicMaterials;
+	TArray<UMaterialInstanceDynamic*> Right_WeaponDynamicMaterials;
+
+	float Left_Weapon_TimeCountDown = 1.0f;
+	float Right_Weapon_TimeCountDown = 1.0f;
+	float LocalRate = 0.1f;
+	FTimerHandle Left_MaterialWaitHandle;
+	FTimerHandle Right_MaterialWaitHandle;
 };

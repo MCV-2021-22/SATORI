@@ -5,6 +5,10 @@
 #include "GameFramework/ProjectileMovementComponent.h"
 #include "SATORI/FunctionLibrary/SATORI_BlueprintLibrary.h"
 #include "SATORI/AI/Character/SATORI_AICharacter.h"
+#include "NiagaraSystem.h"
+#include "NiagaraFunctionLibrary.h"
+#include "Particles/ParticleSystemComponent.h"
+#include "Particles/ParticleSystem.h"
 //Debug
 #include "DrawDebugHelpers.h"
 
@@ -30,6 +34,8 @@ ASATORI_TornadoActor::ASATORI_TornadoActor()
 	ProjectileMovementComponent->ConstrainNormalToPlane(FVector(0, 0, 1));
 	ProjectileMovementComponent->bShouldBounce = true;
 
+	ParticleEffect = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("Tornado Particle Effect"));
+	ParticleEffect->SetupAttachment(RootComponent);
 	//Debug
 	CollisionSphereComponent->bHiddenInGame = false;
 }
