@@ -52,10 +52,19 @@ void ASATORI_ArcherProjectile::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	if(!GameInstanceRef->TimeStop)
+	if (GameInstanceRef->TimeStop)
 	{
-		if(GameInstanceRef->TimeSlow)
-		{
+		FVector position = GetActorLocation();
+		FVector new_pos = position + direction * velocity * 0.1;
+
+		SetActorLocation(new_pos);
+		RootComponent->SetWorldLocation(new_pos);
+
+		inmunity -= DeltaTime * 0.1;
+		LifeTime -= DeltaTime * 0.1;
+	} 
+	else if(GameInstanceRef->TimeSlow)
+	{
 			FVector position = GetActorLocation();
 			FVector new_pos = position + direction * velocity * 0.25;
 
@@ -64,9 +73,9 @@ void ASATORI_ArcherProjectile::Tick(float DeltaTime)
 
 			inmunity -= DeltaTime * 0.25;
 			LifeTime -= DeltaTime * 0.25;
-		}
-		else
-		{
+	}
+	else
+	{
 			FVector position = GetActorLocation();
 			FVector new_pos = position + direction * velocity;
 
@@ -75,8 +84,8 @@ void ASATORI_ArcherProjectile::Tick(float DeltaTime)
 
 			inmunity -= DeltaTime;
 			LifeTime -= DeltaTime;
-		}
 	}
+	
 }
 
 

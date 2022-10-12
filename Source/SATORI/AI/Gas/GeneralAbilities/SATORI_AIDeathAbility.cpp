@@ -60,4 +60,5 @@ void USATORI_AIDeathAbility::ActivateAbility(
 	Character->GetCharacterMovement()->Velocity = FVector(0);
 	Character->GetCharacterMovement()->RotationRate = FRotator(0.0f, 0.0f, 0.0f);
 
+	Character->SpawnCointActorAfterDeath();
 }

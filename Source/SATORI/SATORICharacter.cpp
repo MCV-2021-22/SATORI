@@ -489,6 +489,11 @@ void ASATORICharacter::ResetCharacterDatas()
 		GameInstanceRef->SetPlayerStart(true);
 	}
 
+	if (this->ComboSystemComponent->isInBossFight)
+	{
+		this->ComboSystemComponent->isInBossFight = false;
+	}
+
 	// Reset current player reward abilities with the portal to zero
 	this->PlayerGameplayAbilityComponent->ResetCurrentPlayerAbilities();
 
@@ -683,7 +688,7 @@ void ASATORICharacter::PlayerSenseOfBlow(float DilationTime, float WaitTime)
 	// Camera shake
 	GetWorld()->GetFirstPlayerController()->PlayerCameraManager->StartCameraShake(CameraShake);
 
-	// Slow motion
+	// Slow motion (Shit version but works so...If I find the time and willpower will try to put pretty if not you can do it 0 problem is easy)
 	USATORI_GameInstance* GameInstanceRef = Cast<USATORI_GameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
 	if (GameInstanceRef->TimeSlow)
 	{
@@ -700,24 +705,26 @@ void ASATORICharacter::PlayerSenseOfBlow(float DilationTime, float WaitTime)
 				{
 					UGameplayStatics::SetGlobalTimeDilation(GetWorld(), 1.0f);
 				}
-			}), WaitTime, false);
+				GetWorld()->GetTimerManager().ClearTimer(WaitHandle);
+			}), 0.25f, false);
 	}
 	else if (GameInstanceRef->TimeStop)
 	{
-		UGameplayStatics::SetGlobalTimeDilation(GetWorld(), 0.00008f);
+		UGameplayStatics::SetGlobalTimeDilation(GetWorld(), 0.16f);
 		FTimerHandle WaitHandle;
 		GetWorld()->GetTimerManager().SetTimer(WaitHandle, FTimerDelegate::CreateLambda([&]()
 			{
 				USATORI_GameInstance* GameInstanceRef = Cast<USATORI_GameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
 				if (GameInstanceRef->TimeStop)
 				{
-					UGameplayStatics::SetGlobalTimeDilation(GetWorld(), 0.0001f);
+					UGameplayStatics::SetGlobalTimeDilation(GetWorld(), 0.2f);
 				}
 				else
 				{
 					UGameplayStatics::SetGlobalTimeDilation(GetWorld(), 1.0f);
 				}
-			}), WaitTime, false);
+				GetWorld()->GetTimerManager().ClearTimer(WaitHandle);
+			}), 0.1f, false);
 	}
 	else
 	{
@@ -726,6 +733,7 @@ void ASATORICharacter::PlayerSenseOfBlow(float DilationTime, float WaitTime)
 		GetWorld()->GetTimerManager().SetTimer(WaitHandle, FTimerDelegate::CreateLambda([&]()
 			{
 				UGameplayStatics::SetGlobalTimeDilation(GetWorld(), 1.0f);
+				GetWorld()->GetTimerManager().ClearTimer(WaitHandle);
 			}), WaitTime, false);
 	}
 }
