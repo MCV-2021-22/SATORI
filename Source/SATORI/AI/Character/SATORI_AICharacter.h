@@ -155,7 +155,7 @@ public:
 
 	// Dead disolver function
 	UFUNCTION(BlueprintCallable)
-	void EnemyDissolveAfterDeath();
+	void EnemyDissolveAfterDeath(float Timer = 2.0f);
 
 	SATORIEnemyType GetEnemyType() { return EnemyType; }
 protected:

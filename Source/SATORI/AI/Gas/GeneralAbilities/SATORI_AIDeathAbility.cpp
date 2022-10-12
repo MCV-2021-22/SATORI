@@ -46,7 +46,7 @@ void USATORI_AIDeathAbility::ActivateAbility(
 		Character->StopAnimMontage(AnimMontage);
 	}
 
-	Character->EnemyDissolveAfterDeath();
+	Character->EnemyDissolveAfterDeath(1.0f);
 
 	if (Character->GetEnemyType() == SATORIEnemyType::Melee)
 	{
