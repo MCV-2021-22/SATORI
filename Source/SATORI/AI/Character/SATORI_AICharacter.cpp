@@ -301,7 +301,7 @@ void ASATORI_AICharacter::CheckDamage(float Damage)
 		}
 	}
 
-	USATORI_BlueprintLibrary::ApplyGameplayEffect(this, HitGameplayEffect);
+	//USATORI_BlueprintLibrary::ApplyGameplayEffect(this, HitGameplayEffect);
 
 	//Death
 	if(GetHealth() <= 0.0f)
@@ -310,10 +310,7 @@ void ASATORI_AICharacter::CheckDamage(float Damage)
 		ASATORI_Spawned* Spawned = Cast<ASATORI_Spawned>(this);
 		ASATORI_Fujin* Fujin = Cast<ASATORI_Fujin>(this);
 		ASATORI_Raijin* Raijin = Cast<ASATORI_Raijin>(this);
-		if (Spawned != nullptr)
-		{
-			Spawned->SpawnedDie();
-		}
+		
 
 		//Melee
 		if (Melee)
@@ -346,6 +343,10 @@ void ASATORI_AICharacter::CheckDamage(float Damage)
 				AddGameplayTag(FGameplayTag::RequestGameplayTag("State.Downed"));
 				RemoveGameplayTag(FGameplayTag::RequestGameplayTag("Boss.Jugable"));
 			}
+		}
+		else if (Spawned)
+		{
+			Spawned->SpawnedDie();
 		}
 		else
 		{
@@ -437,25 +438,30 @@ void ASATORI_AICharacter::CheckImpactReceivedByPlayer(EComboState State)
 
 void ASATORI_AICharacter::SetDamagedColor()
 {
-	for (int i = 0; i < DynamicMaterials.Num(); i++)
+	bool HasBlckTag = this->GetAbilitySystemComponent()->HasMatchingGameplayTag(
+		FGameplayTag::RequestGameplayTag(FName("State.Special")));
+	if (!HasBlckTag)
 	{
-		if (DynamicMaterials[i])
+		for (int i = 0; i < DynamicMaterials.Num(); i++)
 		{
-			DynamicMaterials[i]->SetScalarParameterValue(FName(TEXT("BaseColor")), 1.0f);
-		}
-	}
-	
-	FTimerHandle WaitHandle;
-	GetWorld()->GetTimerManager().SetTimer(WaitHandle, [this]()
-		{
-			for (int i = 0; i < DynamicMaterials.Num(); i++)
+			if (DynamicMaterials[i])
 			{
-				if (DynamicMaterials[i])
-				{
-					DynamicMaterials[i]->SetScalarParameterValue(FName(TEXT("BaseColor")), 0.0f);
-				}
+				DynamicMaterials[i]->SetScalarParameterValue(FName(TEXT("BaseColor")), 1.0f);
 			}
-		}, 0.1f, false);
+		}
+
+		FTimerHandle WaitHandle;
+		GetWorld()->GetTimerManager().SetTimer(WaitHandle, [this]()
+			{
+				for (int i = 0; i < DynamicMaterials.Num(); i++)
+				{
+					if (DynamicMaterials[i])
+					{
+						DynamicMaterials[i]->SetScalarParameterValue(FName(TEXT("BaseColor")), 0.0f);
+					}
+				}
+			}, 0.1f, false);
+	}
 }
 
 void ASATORI_AICharacter::SpawnCointActorAfterDeath()

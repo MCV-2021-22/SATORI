@@ -41,7 +41,7 @@ void USATORI_TPUp::EventReceived(FGameplayTag EventTag, FGameplayEventData Event
 		{
 			Fujin->GetMesh()->SetVisibility(false);
 			Fujin->SetActorEnableCollision(false);
-
+			
 		}
 
 

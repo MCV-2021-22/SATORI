@@ -6,6 +6,7 @@
 #include "Components/DecalComponent.h"
 #include "SATORI_FujinKickAereo.generated.h"
 
+class ASATORI_Fujin;
 class ASATORICharacter;
 class ADecalActor;
 class UGameplayEffect;
@@ -33,6 +34,9 @@ public:
 
 	UPROPERTY(EditDefaultsOnly)
 	UCapsuleComponent* CapsuleComponent = nullptr;
+
+	UPROPERTY(EditDefaultsOnly)
+		UCapsuleComponent* CapsuleComponentPeque = nullptr;
 
 	UPROPERTY(EditDefaultsOnly)
 		UStaticMeshComponent* StaticMeshComponent = nullptr;
@@ -63,6 +67,24 @@ public:
 			int32 OtherBodyIndex
 			);
 
+	UFUNCTION()
+		void OnComponentBeginOverlapPeque(
+			UPrimitiveComponent* OverlappedComponent,
+			AActor* OtherActor,
+			UPrimitiveComponent* OtherComp,
+			int32 OtherBodyIndex,
+			bool bFromSweep,
+			const FHitResult& SweepResult);
+
+	UFUNCTION()
+		void OnComponentEndOverlapPeque(
+			UPrimitiveComponent* OverlappedComponent,
+			AActor* OtherActor,
+			UPrimitiveComponent* OtherComp,
+			int32 OtherBodyIndex
+		);
+
+	FTimerHandle TimerHandle;
 
 	UFUNCTION()
 		void OnComponentHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
@@ -73,6 +95,8 @@ public:
 
 	void setDirection(FVector newDirection);
 
+	void setCollisionFujin();
+
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Meta = (ExposeOnSpawn = true), Category = "Missile")
 		TSubclassOf<UGameplayEffect> DamageGameplayEffect;
 
@@ -80,10 +104,13 @@ public:
 
 	ADecalActor* my_decal = nullptr;
 
+	ASATORI_Fujin* FujinVar;
+
+	void enableCollision();
 
 protected:
 
-
+	
 
 	//UFUNCTION()
 	//void OnComponentHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);

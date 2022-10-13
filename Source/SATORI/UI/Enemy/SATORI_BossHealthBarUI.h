@@ -44,4 +44,7 @@ public:
 private:
 	class ASATORI_Fujin* Fujin = nullptr;
 	class ASATORI_Raijin* Raijin = nullptr;
+
+	float Raijin_MaxHealth = 0.0f;
+	float Fujin_MaxHealth = 0.0f;
 };
