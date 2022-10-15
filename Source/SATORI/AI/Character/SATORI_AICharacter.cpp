@@ -301,7 +301,7 @@ void ASATORI_AICharacter::CheckDamage(float Damage)
 		}
 	}
 
-	USATORI_BlueprintLibrary::ApplyGameplayEffect(this, HitGameplayEffect);
+	//USATORI_BlueprintLibrary::ApplyGameplayEffect(this, HitGameplayEffect);
 
 	//Death
 	if(GetHealth() <= 0.0f)
@@ -310,10 +310,7 @@ void ASATORI_AICharacter::CheckDamage(float Damage)
 		ASATORI_Spawned* Spawned = Cast<ASATORI_Spawned>(this);
 		ASATORI_Fujin* Fujin = Cast<ASATORI_Fujin>(this);
 		ASATORI_Raijin* Raijin = Cast<ASATORI_Raijin>(this);
-		if (Spawned != nullptr)
-		{
-			Spawned->SpawnedDie();
-		}
+		
 
 		//Melee
 		if (Melee)
@@ -346,6 +343,10 @@ void ASATORI_AICharacter::CheckDamage(float Damage)
 				AddGameplayTag(FGameplayTag::RequestGameplayTag("State.Downed"));
 				RemoveGameplayTag(FGameplayTag::RequestGameplayTag("Boss.Jugable"));
 			}
+		}
+		else if (Spawned)
+		{
+			Spawned->SpawnedDie();
 		}
 		else
 		{

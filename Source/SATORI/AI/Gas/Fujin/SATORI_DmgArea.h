@@ -9,6 +9,7 @@
 #include "AI/Components/Fujin/SATORI_FujinKickAereo.h"
 #include "GAS/SATORI_GameplayAbility.h"
 #include "SATORI/AbilityTask/SATORI_PlayMontageandWaitNotify.h"
+#include "AI/Components/Fujin/SATORI_FujinLevantarCollision.h"
 #include "SATORI_DmgArea.generated.h"
 
 
@@ -46,6 +47,11 @@ public:
 
 	void CheckFujin(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo);
 
+	UPROPERTY(BlueprintReadOnly, EditAnywhere)
+		TSubclassOf<ASATORI_FujinLevantarCollision> ProjectileClass1;
+
+	void checkCollisionPlayer(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo);
+
 protected:
 
 	int iteracion = 0;
@@ -59,6 +65,8 @@ protected:
 
 	UFUNCTION()
 		void EventReceived(FGameplayTag EventTag, FGameplayEventData EventData);
+
+	ASATORICharacter* Player2;
 private:
 
 	bool final = false;
