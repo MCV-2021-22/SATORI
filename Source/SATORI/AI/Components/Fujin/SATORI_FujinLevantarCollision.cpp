@@ -37,8 +37,8 @@ void ASATORI_FujinLevantarCollision::BeginPlay()
 	Super::BeginPlay();
 	PrimaryActorTick.bCanEverTick = true;
 	GameInstanceRef = Cast<USATORI_GameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
-
-
+	//SetActorEnableCollision(false);
+	SphereComponent->SetCollisionProfileName(FName("NoCollision"));
 	
 	
 
@@ -52,6 +52,10 @@ void ASATORI_FujinLevantarCollision::InmunityOff()
 {
 	GetWorld()->GetTimerManager().ClearTimer(TimerHandle);
 	inmunity = false;
+	SphereComponent->SetCollisionProfileName(FName("OverlapAll"));
+	
+	//SetActorEnableCollision(true);
+	
 }
 
 

@@ -9,6 +9,8 @@
 class UGameplayEffect;
 class UStaticMeshComponent;
 class USphereComponent;
+class UParticleSystem;
+class UParticleSystemComponent;
 
 UCLASS(Blueprintable, Abstract)
 class ASATORI_ArcherProjectile : public AActor
@@ -23,6 +25,12 @@ public:
 
 	UPROPERTY(EditDefaultsOnly)
 		UStaticMeshComponent* StaticMeshComponent = nullptr;
+
+	UPROPERTY(EditDefaultsOnly)
+		UParticleSystemComponent* Moving_Projectile = nullptr;
+
+	UPROPERTY(EditDefaultsOnly)
+		UParticleSystemComponent* Impact_Particle = nullptr;
 
 	UPROPERTY(BlueprintReadOnly, EditAnywhere)
 		float radius = 5.0f;

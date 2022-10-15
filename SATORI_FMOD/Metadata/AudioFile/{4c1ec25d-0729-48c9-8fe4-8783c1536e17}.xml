@@ -2,7 +2,7 @@
 <objects serializationModel="Studio.02.02.00">
 	<object class="AudioFile" id="{4c1ec25d-0729-48c9-8fe4-8783c1536e17}">
 		<property name="assetPath">
-			<value>FS_GRUNTS_GROANS_23.wav</value>
+			<value>Character/FS_GRUNTS_GROANS_23.wav</value>
 		</property>
 		<property name="frequencyInKHz">
 			<value>44.0999985</value>
