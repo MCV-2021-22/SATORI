@@ -568,6 +568,7 @@ void ASATORICharacter::RemoveCharacterAbilities()
 
 void ASATORICharacter::SetCharacterMask(SATORIMaskType GrantedMaskType)
 {
+	//UE_LOG(LogTemp, Warning, TEXT("Some warning message"));
 	if (GrantedMaskType != SATORIMaskType::NONE)
 	{
 		MaskType = GrantedMaskType;

@@ -7,6 +7,9 @@
 #include "GameplayEffectTypes.h"
 #include "SATORI_AbilityMask.generated.h"
 
+class UImage;
+class UTexture2D;
+
 UENUM(BlueprintType)
 enum class SATORIMaskType : uint8
 {
@@ -16,12 +19,25 @@ enum class SATORIMaskType : uint8
 	Midori UMETA(DisplayName = "Midori"),
 };
 
+USTRUCT(BlueprintType)
+struct FSATORI_PlayerPortrailImage
+{	
+	GENERATED_BODY()
+
+	UTexture2D* DefaultImage = nullptr;
+	UTexture2D* AkaImage = nullptr;
+	UTexture2D* AoImage = nullptr;
+	UTexture2D* MidoriImage = nullptr;
+};
+
 class UGameplayEffect;
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FSATORIPortrailImageChanges, UTexture2D*, ImageData);
 
 /*
 * SATORI Mask Class contain 3 Mask Type
 */
-UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
+UCLASS(BlueprintType)
 class SATORI_API USATORI_AbilityMask : public UActorComponent
 {
 	GENERATED_BODY()
@@ -36,6 +52,9 @@ public:
 	TSubclassOf<UGameplayEffect> ChooseMaskEffectoToApply(SATORIMaskType MaskType);
 
 	FActiveGameplayEffectHandle GetCurrentActiveGEHandle();
+
+	UPROPERTY(BlueprintAssignable)
+	FSATORIPortrailImageChanges PortrailImageChange;
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
@@ -52,6 +71,19 @@ public:
 	TSubclassOf<UGameplayEffect> MidoriGameplayEffect;
 	//TMap<SATORIMaskType, UGameplayEffect> MaskEffects;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "PortrailImage")
+	UTexture2D* DefaultImage = nullptr;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "PortrailImage")
+	UTexture2D* AkaImage = nullptr;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "PortrailImage")
+	UTexture2D* AoImage = nullptr;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "PortrailImage")
+	UTexture2D* MidoriImage = nullptr;
 private:
 	FActiveGameplayEffectHandle ActiveGEHandle;
+
+	UTexture2D* CurrentPortrailImage;
 };

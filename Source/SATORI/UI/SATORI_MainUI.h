@@ -14,6 +14,7 @@ class USATORI_MaksInteractUI;
 class USATORI_GeneralVendorInteractUI;
 class USATORI_BossHealthBarUI;
 class UTexture2D;
+class UImage;
 
 /*
 * Player Main UI, contain health bar, coins etc
@@ -24,6 +25,9 @@ class SATORI_API USATORI_MainUI : public UUserWidget
 	GENERATED_BODY()
 public:
 	bool Initialize() override;
+
+	virtual void NativeConstruct() override;
+	virtual void NativeDestruct() override;
 
 	// Health widge
 	UPROPERTY(meta = (BindWidget))
@@ -51,6 +55,14 @@ public:
 	// Boss UI
 	UPROPERTY(meta = (BindWidget))
 	USATORI_BossHealthBarUI* BossHealthBarUI;
+
+	// Player Icon
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (BindWidget))
+	UImage* PlayerPortrair;
+
+	// Set Player Mask Icon
+	UFUNCTION(BlueprintImplementableEvent)
+	void BP_SetPlayerMaskIcon(UTexture2D* PortrailImg);
 public:
 	// Health helper functions
 	void SetHealthBarPercentage(float value);
