@@ -89,6 +89,7 @@ public:
 
 	bool PlayerStart = true;
 
+	bool IsInBossFight = false;
 
 	UFUNCTION(BlueprintCallable)
 		int TimeChange() { if(TimeStop) return 2; if(TimeSlow) return 1; return 0; }

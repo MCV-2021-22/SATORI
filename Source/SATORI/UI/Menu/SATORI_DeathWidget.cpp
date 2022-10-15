@@ -6,6 +6,8 @@
 #include "Kismet/GameplayStatics.h"
 #include "Components/Button.h"
 #include "Kismet/KismetSystemLibrary.h"
+#include "SATORICharacter.h"
+#include "Components/Player/SATORI_ComboSystemComponent.h"
 
 bool USATORI_DeathWidget::Initialize()
 {
@@ -24,9 +26,9 @@ void USATORI_DeathWidget::NativeConstruct()
 		DeathButton->OnClicked.AddDynamic(this, &USATORI_DeathWidget::OnDeathButtonClicked);
 	}
 
-	if (QuitButton)
+	if (MainMenuButton)
 	{
-		QuitButton->OnClicked.AddDynamic(this, &USATORI_DeathWidget::OnQuitGameClicked);
+		MainMenuButton->OnClicked.AddDynamic(this, &USATORI_DeathWidget::OnMainMenuClicked);
 	}
 }
 
@@ -38,16 +40,34 @@ void USATORI_DeathWidget::NativeDestruct()
 void USATORI_DeathWidget::OnDeathButtonClicked()
 {
 	USATORI_GameInstance* GameInstanceRef = Cast<USATORI_GameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
-	if (GameInstanceRef)
+	ASATORICharacter* Character = Cast<ASATORICharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
+	if (GameInstanceRef && Character)
 	{
-		GameInstanceRef->SetPlayerStart(true);
-		UGameplayStatics::OpenLevel(GetWorld(), FName("ThirdPersonExampleMap"), false);
+		if (!Character->GetComboSystemComponent()->isInBossFight)
+		{
+			GameInstanceRef->SetPlayerStart(true);
+			Character->ResetCharacterDatas();
+			UGameplayStatics::OpenLevel(GetWorld(), FName("ThirdPersonExampleMap"), false);
+		}
+		else if (Character->GetComboSystemComponent()->isInBossFight)
+		{
+			GameInstanceRef->SetPlayerStart(false);
+			GameInstanceRef->IsInBossFight = true;
+			UGameplayStatics::OpenLevel(GetWorld(), FName("JARDIN_BOSS"), false);
+		}
 	}
 }
 
-void USATORI_DeathWidget::OnQuitGameClicked()
+void USATORI_DeathWidget::OnMainMenuClicked()
 {
-	UKismetSystemLibrary::QuitGame(GetWorld(), nullptr, EQuitPreference::Quit, false);
+	//UKismetSystemLibrary::QuitGame(GetWorld(), nullptr, EQuitPreference::Quit, false);
+	UGameplayStatics::OpenLevel(GetWorld(), FName("MainMenu"), false);
+	UGameplayStatics::SetGamePaused(GetWorld(), true);
+	ASATORICharacter* Character = Cast<ASATORICharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
+	if (Character)
+	{
+		Character->ResetCharacterDatas();
+	}
 }
 
 void USATORI_DeathWidget::OnRetryClicked()

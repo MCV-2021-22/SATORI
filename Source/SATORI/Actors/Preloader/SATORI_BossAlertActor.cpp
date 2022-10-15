@@ -50,13 +50,14 @@ void ASATORI_BossAlertActor::OnOverlapBegin(class UPrimitiveComponent* Overlappe
 				}
 			}
 		}
+		this->Destroy();
 	}
 }
 
 void ASATORI_BossAlertActor::OnOverlapEnd(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor,
 	class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
 {
-	if (OtherActor && (OtherActor != this) && OtherComp)
+	/*if (OtherActor && (OtherActor != this) && OtherComp)
 	{
 		PlayerCharacter = Cast<ASATORICharacter>(OtherActor);
 		if (PlayerCharacter)
@@ -71,6 +72,6 @@ void ASATORI_BossAlertActor::OnOverlapEnd(class UPrimitiveComponent* OverlappedC
 				}
 			}
 		}
-	}
+	}*/
 }
 

@@ -25,13 +25,13 @@ public:
 	UButton* DeathButton;
 
 	UPROPERTY(meta = (BindWidget))
-	UButton* QuitButton;
+	UButton* MainMenuButton;
 
 protected:
 	UFUNCTION()
 	void OnDeathButtonClicked();
 	UFUNCTION()
-	void OnQuitGameClicked();
+	void OnMainMenuClicked();
 	UFUNCTION()
 	void OnRetryClicked();
 };
