@@ -304,6 +304,24 @@ void ASATORI_AICharacter::CheckDamage(float Damage)
 	//USATORI_BlueprintLibrary::ApplyGameplayEffect(this, HitGameplayEffect);
 
 	//Death
+
+	if(GetHealth() <= GetHealth()*0.75 && HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag(("Boss.Fase.Inicial"))))
+	{
+		ASATORI_Fujin* Fujin = Cast<ASATORI_Fujin>(this);
+		ASATORI_Raijin* Raijin = Cast<ASATORI_Raijin>(this);
+
+		if(Fujin)
+		{
+			Fujin->Raijin->AddGameplayTag(FGameplayTag::RequestGameplayTag(("Boss.Fase.Final")));
+			Fujin->AddGameplayTag(FGameplayTag::RequestGameplayTag(("Boss.Fase.Final")));
+
+			Fujin->Raijin->RemoveGameplayTag(FGameplayTag::RequestGameplayTag("Boss.Fase.Inicial"));
+			Fujin->RemoveGameplayTag(FGameplayTag::RequestGameplayTag("Boss.Fase.Inicial"));
+
+
+		}
+	}
+
 	if(GetHealth() <= 0.0f)
 	{
 		//Spawned edge case
