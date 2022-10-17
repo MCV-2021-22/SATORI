@@ -197,8 +197,8 @@ protected:
 	// Material
 	TArray<UMaterialInstanceDynamic*> DynamicMaterials;
 
-	float TimeCountDown = 2.0f;
-	float LocalRate = 0.1f;
+	float TimeCountDown = 3.0f;
+	float LocalRate = 0.05f;
 	FTimerHandle MaterialWaitHandle;
 public: //Target System Interface related and Tag Abilities related (Nacho)
 
