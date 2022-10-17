@@ -277,7 +277,7 @@ void ASATORI_FujinKickAereo::OnComponentBeginOverlapPeque(
 			Fujin->AddGameplayTag(FGameplayTag::RequestGameplayTag("Fujin.PlayerHitted"));
 			//Fujin->GetCapsuleComponent()->SetCollisionProfileName(FName("Pawn"));
 			//Player->GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_Pawn, ECR_Block);
-			GetWorld()->GetTimerManager().SetTimer(TimerHandle, this, &ASATORI_FujinKickAereo::enableCollision, 0.5f, false);
+			
 			//my_decal->Destroy();
 			//Destroy();
 			//Fujin->GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_Pawn, ECR_Ignore);
@@ -287,6 +287,7 @@ void ASATORI_FujinKickAereo::OnComponentBeginOverlapPeque(
 
 		}
 		Fujin->AddGameplayTag(FGameplayTag::RequestGameplayTag("Fujin.KickDone"));
+		GetWorld()->GetTimerManager().SetTimer(TimerHandle, this, &ASATORI_FujinKickAereo::enableCollision, 0.5f, false);
 
 	}
 	
