@@ -2,10 +2,10 @@
 <objects serializationModel="Studio.02.02.00">
 	<object class="Event" id="{65958580-c2c7-4732-b5c7-26279986aa31}">
 		<property name="name">
-			<value>RANGEDAttack</value>
+			<value>RANGEDAttackBall</value>
 		</property>
 		<property name="outputFormat">
-			<value>0</value>
+			<value>1</value>
 		</property>
 		<relationship name="folder">
 			<destination>{bcb9d3dc-7a3b-4a87-be6a-650e4a924666}</destination>
@@ -59,11 +59,18 @@
 	<object class="EventAutomatableProperties" id="{101ca3b3-f46b-4702-a44b-be5ef45716ee}" />
 	<object class="MarkerTrack" id="{3f99d354-31b5-4ece-93b3-9dd4747621b7}" />
 	<object class="GroupTrack" id="{de2fcf5b-3347-46d9-8712-f032817eb148}">
+		<relationship name="modules">
+			<destination>{09ec9948-388e-45f2-9487-86aff7bbc274}</destination>
+		</relationship>
 		<relationship name="mixerGroup">
 			<destination>{e4b9ff9b-140f-40d1-9930-8da84353a1e9}</destination>
 		</relationship>
 	</object>
-	<object class="Timeline" id="{ae66f8d7-bbfd-4a08-8814-fc10309abb3b}" />
+	<object class="Timeline" id="{ae66f8d7-bbfd-4a08-8814-fc10309abb3b}">
+		<relationship name="modules">
+			<destination>{09ec9948-388e-45f2-9487-86aff7bbc274}</destination>
+		</relationship>
+	</object>
 	<object class="EventMixerMaster" id="{46f1a8f4-0543-44b1-bdfa-34a47460e30f}">
 		<relationship name="effectChain">
 			<destination>{2ff36963-9822-4b3e-a3ce-55448249d61f}</destination>
@@ -81,7 +88,18 @@
 		</relationship>
 	</object>
 	<object class="MixerBusPanner" id="{5a517ac2-2530-47ce-a80e-75c47a9c2bbd}" />
+	<object class="SingleSound" id="{09ec9948-388e-45f2-9487-86aff7bbc274}">
+		<property name="length">
+			<value>3.48</value>
+		</property>
+		<relationship name="audioFile">
+			<destination>{531a7280-3678-4f16-bc07-b34b0508028d}</destination>
+		</relationship>
+	</object>
 	<object class="EventMixerGroup" id="{e4b9ff9b-140f-40d1-9930-8da84353a1e9}">
+		<property name="volume">
+			<value>-7.5</value>
+		</property>
 		<property name="name">
 			<value>Audio 1</value>
 		</property>

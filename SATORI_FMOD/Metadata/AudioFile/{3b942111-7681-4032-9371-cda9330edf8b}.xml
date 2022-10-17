@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<objects serializationModel="Studio.02.02.00">
+	<object class="AudioFile" id="{3b942111-7681-4032-9371-cda9330edf8b}">
+		<property name="assetPath">
+			<value>Character/ranged_card_attack.mp3</value>
+		</property>
+		<property name="frequencyInKHz">
+			<value>48</value>
+		</property>
+		<property name="channelCount">
+			<value>2</value>
+		</property>
+		<property name="length">
+			<value>4.944</value>
+		</property>
+		<relationship name="masterAssetFolder">
+			<destination>{269b0b2d-b44d-4e19-a3ee-86e302406a27}</destination>
+		</relationship>
+	</object>
+</objects>
