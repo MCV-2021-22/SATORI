@@ -482,12 +482,15 @@ void ASATORI_AICharacter::EnemyDissolveAfterDeath(float Timer)
 		{
 			GetWorld()->GetTimerManager().SetTimer(MaterialWaitHandle, [this]()
 				{
-					DynamicMaterials[0]->SetScalarParameterValue(FName(TEXT("Appearance")), TimeCountDown);
-					TimeCountDown -= LocalRate;
-					if (TimeCountDown <= 0)
+					for (int i = 0; i < DynamicMaterials.Num(); i++)
 					{
-						DynamicMaterials[0]->SetScalarParameterValue(FName(TEXT("Appearance")), -0.1f);
-						GetWorld()->GetTimerManager().ClearTimer(MaterialWaitHandle);
+						DynamicMaterials[i]->SetScalarParameterValue(FName(TEXT("Appearance")), TimeCountDown);
+						TimeCountDown -= LocalRate;
+						if (TimeCountDown <= 0)
+						{
+							DynamicMaterials[i]->SetScalarParameterValue(FName(TEXT("Appearance")), -0.1f);
+							GetWorld()->GetTimerManager().ClearTimer(MaterialWaitHandle);
+						}
 					}
 				}, LocalRate, true);
 		}
@@ -495,13 +498,16 @@ void ASATORI_AICharacter::EnemyDissolveAfterDeath(float Timer)
 		{
 			GetWorld()->GetTimerManager().SetTimer(MaterialWaitHandle, [this]()
 				{
-					DynamicMaterials[0]->SetScalarParameterValue(FName(TEXT("Appearance")), TimeCountDown);
-					TimeCountDown = TimeCountDown / 2;
-					TimeCountDown -= LocalRate;
-					if (TimeCountDown <= 0)
+					for (int i = 0; i < DynamicMaterials.Num(); i++)
 					{
-						DynamicMaterials[0]->SetScalarParameterValue(FName(TEXT("Appearance")), -0.1f);
-						GetWorld()->GetTimerManager().ClearTimer(MaterialWaitHandle);
+						DynamicMaterials[i]->SetScalarParameterValue(FName(TEXT("Appearance")), TimeCountDown);
+						TimeCountDown = TimeCountDown / 2;
+						TimeCountDown -= LocalRate;
+						if (TimeCountDown <= 0)
+						{
+							DynamicMaterials[i]->SetScalarParameterValue(FName(TEXT("Appearance")), -0.1f);
+							GetWorld()->GetTimerManager().ClearTimer(MaterialWaitHandle);
+						}
 					}
 				}, LocalRate, true);
 		}

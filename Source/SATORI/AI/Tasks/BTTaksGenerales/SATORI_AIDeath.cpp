@@ -62,7 +62,12 @@ void USATORI_AIDeath::OnCompleted(FGameplayTag EventTag, FGameplayEventData Even
 	AActor* Actor = GetAvatarActorFromActorInfo();
 	GetWorld()->GetAuthGameMode<ASATORIGameMode>()->RemoveEnemyActor(Actor);
 
-	Actor->Destroy();
+	FTimerHandle WaitHandle;
+	GetWorld()->GetTimerManager().SetTimer(WaitHandle, FTimerDelegate::CreateLambda([&]()
+		{
+			Actor->Destroy();
+		}), 2.0f, false);
+	GetWorld()->GetTimerManager().ClearTimer(WaitHandle);
 
 	EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true);
 }
