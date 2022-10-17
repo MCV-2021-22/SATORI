@@ -6,6 +6,8 @@
 #include "GameFramework/ProjectileMovementComponent.h"
 #include "GameFramework/Actor.h"
 #include "Kismet/GameplayStatics.h"
+#include "Particles/ParticleSystem.h"
+#include "Particles/ParticleSystemComponent.h"
 
 ASATORI_ArcherProjectile::ASATORI_ArcherProjectile()
 {
@@ -24,9 +26,12 @@ ASATORI_ArcherProjectile::ASATORI_ArcherProjectile()
 	StaticMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("StaticMesh"));
 	StaticMeshComponent->SetupAttachment(RootComponent);
 
+	Moving_Projectile = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("Moving Projectile"));
+	Moving_Projectile->SetupAttachment(RootComponent);
+	Impact_Particle = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("Impact Particle"));
+
 	TArray< AActor* > enemigos;
 	UGameplayStatics::GetAllActorsWithTag(GetWorld(), FName("PossessedBy.Player"), enemigos);
-
 }
 
 void ASATORI_ArcherProjectile::setDirection(FVector newDirection)

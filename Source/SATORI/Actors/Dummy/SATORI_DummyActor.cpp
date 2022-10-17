@@ -71,7 +71,7 @@ void ASATORI_DummyActor::PlayAnimationWithDamage()
 	{
 		if (HeavyAttack || LightAttack_1 || LightAttack_2 || LightAttack_3)
 		{
-			GetMesh()->Stop();
+			DummyMesh->Stop();
 			int RandomNumber = FMath::RandRange(0, 2);
 			if (RandomNumber == 0)
 			{

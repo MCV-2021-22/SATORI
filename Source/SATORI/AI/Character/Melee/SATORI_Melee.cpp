@@ -5,6 +5,7 @@
 #include "SATORICharacter.h"
 #include "FunctionLibrary/SATORI_BlueprintLibrary.h"
 #include "Components/CapsuleComponent.h"
+#include "Materials/MaterialInstanceDynamic.h"
 
 ASATORI_Melee::ASATORI_Melee()
 {
@@ -44,6 +45,34 @@ ASATORI_Melee::ASATORI_Melee()
 	}
 }
 
+void ASATORI_Melee::BeginPlay()
+{
+	Super::BeginPlay();
+
+	TArray<UMaterialInterface*> Weapon_LeftMaterials = SwordComponentLeft->GetMaterials();
+	TArray<UMaterialInterface*> Weapon_RigthMaterials = SwordComponentRight->GetMaterials();
+
+	if (Weapon_LeftMaterials.Num() > 0)
+	{
+		for (int i = 0; i < Weapon_LeftMaterials.Num(); i++)
+		{
+			UMaterialInstanceDynamic* Material = UMaterialInstanceDynamic::Create(Weapon_LeftMaterials[i], this);
+			Left_WeaponDynamicMaterials.Add(Material);
+			SwordComponentLeft->SetMaterial(i, Left_WeaponDynamicMaterials[i]);
+		}
+	}
+
+	if (Weapon_RigthMaterials.Num() > 0)
+	{
+		for (int i = 0; i < Weapon_RigthMaterials.Num(); i++)
+		{
+			UMaterialInstanceDynamic* Material = UMaterialInstanceDynamic::Create(Weapon_RigthMaterials[i], this);
+			Right_WeaponDynamicMaterials.Add(Material);
+			SwordComponentRight->SetMaterial(i, Right_WeaponDynamicMaterials[i]);
+		}
+	}
+}
+
 void ASATORI_Melee::OnWeaponOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
 	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
@@ -64,5 +93,34 @@ void ASATORI_Melee::OnWeaponOverlapBegin(UPrimitiveComponent* OverlappedComp, AA
 			}
 			OverlappedComp->SetGenerateOverlapEvents(false);
 		}
+	}
+}
+
+void ASATORI_Melee::WeaponDissolveAfterDeath()
+{
+	if (Left_WeaponDynamicMaterials.Num() > 0)
+	{
+		GetWorld()->GetTimerManager().SetTimer(Left_MaterialWaitHandle, [this]()
+			{
+				Left_WeaponDynamicMaterials[0]->SetScalarParameterValue(FName(TEXT("Appearance")), Left_Weapon_TimeCountDown);
+				Left_Weapon_TimeCountDown -= LocalRate;
+				if (Left_Weapon_TimeCountDown <= 0)
+				{
+					GetWorld()->GetTimerManager().ClearTimer(Left_MaterialWaitHandle);
+				}
+			}, LocalRate, true);
+	}
+
+	if (Right_WeaponDynamicMaterials.Num() > 0)
+	{
+		GetWorld()->GetTimerManager().SetTimer(Right_MaterialWaitHandle, [this]()
+			{
+				Right_WeaponDynamicMaterials[0]->SetScalarParameterValue(FName(TEXT("Appearance")), Right_Weapon_TimeCountDown);
+				Right_Weapon_TimeCountDown -= LocalRate;
+				if (TimeCountDown <= 0)
+				{
+					GetWorld()->GetTimerManager().ClearTimer(Right_MaterialWaitHandle);
+				}
+			}, LocalRate, true);
 	}
 }

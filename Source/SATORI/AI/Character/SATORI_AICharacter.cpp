@@ -473,3 +473,37 @@ void ASATORI_AICharacter::SpawnCointActorAfterDeath()
 			this->GetActorTransform(), SpawnParams);
 	}
 }
+void ASATORI_AICharacter::EnemyDissolveAfterDeath(float Timer)
+{
+	if (DynamicMaterials.Num() > 0)
+	{
+		TimeCountDown = Timer;
+		if (EnemyType == SATORIEnemyType::Melee)
+		{
+			GetWorld()->GetTimerManager().SetTimer(MaterialWaitHandle, [this]()
+				{
+					DynamicMaterials[0]->SetScalarParameterValue(FName(TEXT("Appearance")), TimeCountDown);
+					TimeCountDown -= LocalRate;
+					if (TimeCountDown <= 0)
+					{
+						DynamicMaterials[0]->SetScalarParameterValue(FName(TEXT("Appearance")), -0.1f);
+						GetWorld()->GetTimerManager().ClearTimer(MaterialWaitHandle);
+					}
+				}, LocalRate, true);
+		}
+		else
+		{
+			GetWorld()->GetTimerManager().SetTimer(MaterialWaitHandle, [this]()
+				{
+					DynamicMaterials[0]->SetScalarParameterValue(FName(TEXT("Appearance")), TimeCountDown);
+					TimeCountDown = TimeCountDown / 2;
+					TimeCountDown -= LocalRate;
+					if (TimeCountDown <= 0)
+					{
+						DynamicMaterials[0]->SetScalarParameterValue(FName(TEXT("Appearance")), -0.1f);
+						GetWorld()->GetTimerManager().ClearTimer(MaterialWaitHandle);
+					}
+				}, LocalRate, true);
+		}
+	}
+}
