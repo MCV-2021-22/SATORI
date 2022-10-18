@@ -492,7 +492,7 @@ void ASATORI_AICharacter::EnemyDissolveAfterDeath(float Timer)
 							GetWorld()->GetTimerManager().ClearTimer(MaterialWaitHandle);
 						}
 					}
-				}, LocalRate, true);
+				}, LocalRate, true, 0.0f);
 		}
 		else
 		{
@@ -509,7 +509,7 @@ void ASATORI_AICharacter::EnemyDissolveAfterDeath(float Timer)
 							GetWorld()->GetTimerManager().ClearTimer(MaterialWaitHandle);
 						}
 					}
-				}, LocalRate, true);
+				}, LocalRate, true, 0.0f);
 		}
 	}
 }
