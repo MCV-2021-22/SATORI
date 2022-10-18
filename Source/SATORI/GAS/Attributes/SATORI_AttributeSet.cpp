@@ -24,7 +24,7 @@ void USATORI_AttributeSet::PreAttributeChange(const FGameplayAttribute& Attribut
 	}
 	else if (Attribute == GetHealthAttribute())
 	{
-		NewValue = FMath::Clamp<float>(NewValue, 0.001f, GetMaxHealth());
+		NewValue = FMath::Clamp<float>(NewValue, 0.00f, GetMaxHealth());
 	}
 	// Mana
 	else if (Attribute == GetMaxManaAttribute())

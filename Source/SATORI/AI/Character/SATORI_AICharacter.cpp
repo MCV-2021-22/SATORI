@@ -251,7 +251,18 @@ void ASATORI_AICharacter::Tick(float DeltaSeconds)
 	}
 	if(canDestroy)
 	{
+		/*
+		FTimerHandle WaitHandle;
+		GetWorld()->GetTimerManager().SetTimer(WaitHandle, FTimerDelegate::CreateLambda([&]()
+			{
+				Destroy();
+			}), 2.0f, false);
+		GetWorld()->GetTimerManager().ClearTimer(WaitHandle);
+		*/
+
 		Destroy();
+
+		
 	}
 
 }
