@@ -76,6 +76,7 @@ public:
 
 	bool isInBossFight = false;
 
+	bool isAbilityCanceled = false;
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;

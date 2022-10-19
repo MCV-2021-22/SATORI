@@ -248,6 +248,9 @@ protected:
 
 	void OnInteract();
 
+	void OnDash();
+	void OnDashReleases();
+
 	// Weapon Overlap
 	UFUNCTION()
 	void OnWeaponOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, 

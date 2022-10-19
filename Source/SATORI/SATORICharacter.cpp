@@ -777,6 +777,9 @@ void ASATORICharacter::SetupPlayerInputComponent(class UInputComponent* PlayerIn
 	PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &ACharacter::Jump);
 	PlayerInputComponent->BindAction("Jump", IE_Released, this, &ACharacter::StopJumping);
 
+	PlayerInputComponent->BindAction("Dash", IE_Pressed, this, &ASATORICharacter::OnDash);
+	PlayerInputComponent->BindAction("Dash", IE_Released, this, &ASATORICharacter::OnDashReleases);
+
 	PlayerInputComponent->BindAxis("MoveForward", this, &ASATORICharacter::MoveForward);
 	PlayerInputComponent->BindAxis("MoveRight", this, &ASATORICharacter::MoveRight);
 
@@ -865,6 +868,24 @@ void ASATORICharacter::MoveRight(float Value)
 void ASATORICharacter::OnInteract()
 {
 	InteractComponent->TryToInteract();
+}
+
+void ASATORICharacter::OnDash()
+{
+	if (ComboSystemComponent)
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 200, FColor::Green, FString::Printf(TEXT("DASHING")));
+		ComboSystemComponent->isAbilityCanceled = true;
+	}
+}
+
+void ASATORICharacter::OnDashReleases()
+{
+	if (ComboSystemComponent)
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 200, FColor::Green, FString::Printf(TEXT("DASHING Released")));
+		ComboSystemComponent->isAbilityCanceled = false;
+	}
 }
 
 void ASATORICharacter::SetComboJumpSection(USATORI_ANS_JumpSection* JumpSection)
