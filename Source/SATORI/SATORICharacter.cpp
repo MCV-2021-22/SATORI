@@ -170,6 +170,11 @@ void ASATORICharacter::PossessedBy(AController* NewController)
 		}
 
 		// Set Health to Max Health Value
+		if (GameInstanceRef->IsInBossFight)
+		{
+			RestartStats();
+			GameInstanceRef->IsInBossFight = false;
+		}
 	}
 
 	if (Cast<APlayerController>(NewController) != nullptr) {
@@ -489,11 +494,6 @@ void ASATORICharacter::ResetCharacterDatas()
 		GameInstanceRef->SetPlayerStart(true);
 	}
 
-	if (this->ComboSystemComponent->isInBossFight)
-	{
-		this->ComboSystemComponent->isInBossFight = false;
-	}
-
 	// Reset current player reward abilities with the portal to zero
 	this->PlayerGameplayAbilityComponent->ResetCurrentPlayerAbilities();
 
@@ -512,8 +512,11 @@ void ASATORICharacter::ResetCharacterDatas()
 
 void ASATORICharacter::CharacterDeath()
 {
-	ResetCharacterDatas();
-
+	if (!GetComboSystemComponent()->isInBossFight)
+	{
+		ResetCharacterDatas();
+	}
+	
 	// Set Collision
 	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	GetCharacterMovement()->GravityScale = 0;
@@ -565,6 +568,7 @@ void ASATORICharacter::RemoveCharacterAbilities()
 
 void ASATORICharacter::SetCharacterMask(SATORIMaskType GrantedMaskType)
 {
+	//UE_LOG(LogTemp, Warning, TEXT("Some warning message"));
 	if (GrantedMaskType != SATORIMaskType::NONE)
 	{
 		MaskType = GrantedMaskType;
@@ -603,9 +607,9 @@ void ASATORICharacter::OnWeaponOverlapBegin(UPrimitiveComponent* OverlappedComp,
 			if (EnemyCharacter->GetEnemyType() == SATORIEnemyType::Boss)
 			{
 				//this->ComboSystemComponent->BossHealthNotifyAbilityChanged();
-
 			}				
 
+			EnemyCharacter->SetDamagedColor();
 
 			// Send current damage type recived (light attack o heavy attack)
 			EnemyCharacter->CheckImpactReceivedByPlayer(this->ComboSystemComponent->GetCurrentComboState());
@@ -706,7 +710,7 @@ void ASATORICharacter::PlayerSenseOfBlow(float DilationTime, float WaitTime)
 				{
 					UGameplayStatics::SetGlobalTimeDilation(GetWorld(), 1.0f);
 				}
-				GetWorld()->GetTimerManager().ClearTimer(WaitHandle);
+				//GetWorld()->GetTimerManager().ClearTimer(WaitHandle);
 			}), 0.25f, false);
 	}
 	else if (GameInstanceRef->TimeStop)
@@ -724,7 +728,7 @@ void ASATORICharacter::PlayerSenseOfBlow(float DilationTime, float WaitTime)
 				{
 					UGameplayStatics::SetGlobalTimeDilation(GetWorld(), 1.0f);
 				}
-				GetWorld()->GetTimerManager().ClearTimer(WaitHandle);
+				//GetWorld()->GetTimerManager().ClearTimer(WaitHandle);
 			}), 0.1f, false);
 	}
 	else
@@ -734,7 +738,7 @@ void ASATORICharacter::PlayerSenseOfBlow(float DilationTime, float WaitTime)
 		GetWorld()->GetTimerManager().SetTimer(WaitHandle, FTimerDelegate::CreateLambda([&]()
 			{
 				UGameplayStatics::SetGlobalTimeDilation(GetWorld(), 1.0f);
-				GetWorld()->GetTimerManager().ClearTimer(WaitHandle);
+				//GetWorld()->GetTimerManager().ClearTimer(WaitHandle);
 			}), WaitTime, false);
 	}
 }

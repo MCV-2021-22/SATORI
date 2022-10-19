@@ -6,6 +6,7 @@
 #include "SATORI/Character/SATORI_PlayerState.h"
 #include "Kismet/GameplayStatics.h"
 #include "SATORI/GAS/SATORI_AbilitySystemComponent.h"
+#include "Engine/Texture2D.h"
 
 // Sets default values for this component's properties
 USATORI_AbilityMask::USATORI_AbilityMask()
@@ -38,6 +39,9 @@ void USATORI_AbilityMask::GrantedMaskEffects(SATORIMaskType MaskType)
 
 			TSubclassOf<UGameplayEffect> GameplayEffect = ChooseMaskEffectoToApply(MaskType);
 
+			// Broadcast
+			PortrailImageChange.Broadcast(CurrentPortrailImage);
+
 			FGameplayEffectSpecHandle NewHandle = AbilitySystemComponent->MakeOutgoingSpec(GameplayEffect,
 				PlayerCharacter->GetCharacterLevel(), EffectContext);
 
@@ -62,15 +66,31 @@ TSubclassOf<UGameplayEffect> USATORI_AbilityMask::ChooseMaskEffectoToApply(SATOR
 	switch (MaskType)
 	{
 	case SATORIMaskType::NONE:
+		if (DefaultImage)
+		{
+			CurrentPortrailImage = DefaultImage;
+		}
 		break;
 	case SATORIMaskType::Aka:
 		Effect = AkaGameplayEffect;
+		if (AkaImage)
+		{
+			CurrentPortrailImage = AkaImage;
+		}
 		break;
 	case SATORIMaskType::Ao:
 		Effect = AoGameplayEffect;
+		if (AoImage)
+		{
+			CurrentPortrailImage = AoImage;
+		}
 		break;
 	case SATORIMaskType::Midori:
 		Effect = MidoriGameplayEffect;
+		if (MidoriImage)
+		{
+			CurrentPortrailImage = MidoriImage;
+		}
 		break;
 	}
 

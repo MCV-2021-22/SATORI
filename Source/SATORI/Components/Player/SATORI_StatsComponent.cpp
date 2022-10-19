@@ -144,10 +144,7 @@ void USATORI_StatsComponent::HealthChanged(const FOnAttributeChangeData& Data)
 				USATORI_MainUI* MainUI = PlayerController->GetSatoriMainUI();
 				if (MainUI)
 				{
-					if (MainUI->BossHealthBarUI)
-					{
-						MainUI->SetBossUIVisibility(false);
-					}					
+					MainUI->SetBossUIVisibility(false);
 				}
 			}
 		}

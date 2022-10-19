@@ -10,6 +10,9 @@
 #include "Abilities/SATORI_ChangeAbilitiesWidget.h"
 #include "Enemy/SATORI_BossHealthBarUI.h"
 #include "Engine/Texture2D.h"
+#include "Kismet/GameplayStatics.h"
+#include "SATORICharacter.h"
+#include "Character/Mask/SATORI_AbilityMask.h"
 
 bool USATORI_MainUI::Initialize()
 {
@@ -32,6 +35,34 @@ bool USATORI_MainUI::Initialize()
 	//BossHealthBarUI->RemoveFromViewport();
 
 	return true;
+}
+
+void USATORI_MainUI::NativeConstruct()
+{
+	Super::NativeConstruct();
+	ASATORICharacter* Character = Cast<ASATORICharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
+	if (Character)
+	{
+		USATORI_AbilityMask* PlayerMask = Character->SATORIAbilityMaskComponent;
+		if (PlayerMask)
+		{
+			PlayerMask->PortrailImageChange.AddDynamic(this, &USATORI_MainUI::BP_SetPlayerMaskIcon);
+		}
+	}
+}
+
+void USATORI_MainUI::NativeDestruct()
+{
+	ASATORICharacter* Character = Cast<ASATORICharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
+	if (Character)
+	{
+		USATORI_AbilityMask* PlayerMask = Character->SATORIAbilityMaskComponent;
+		if (PlayerMask)
+		{
+			PlayerMask->PortrailImageChange.RemoveAll(this);
+		}
+	}
+	Super::NativeDestruct();
 }
 
 void USATORI_MainUI::SetHealthBarPercentage(float value)

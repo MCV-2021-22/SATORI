@@ -251,7 +251,18 @@ void ASATORI_AICharacter::Tick(float DeltaSeconds)
 	}
 	if(canDestroy)
 	{
+		/*
+		FTimerHandle WaitHandle;
+		GetWorld()->GetTimerManager().SetTimer(WaitHandle, FTimerDelegate::CreateLambda([&]()
+			{
+				Destroy();
+			}), 2.0f, false);
+		GetWorld()->GetTimerManager().ClearTimer(WaitHandle);
+		*/
+
 		Destroy();
+
+		
 	}
 
 }
@@ -471,5 +482,45 @@ void ASATORI_AICharacter::SpawnCointActorAfterDeath()
 	{
 		ASATORI_CoinRewardActor* SpawnedActorRef = GetWorld()->SpawnActor<ASATORI_CoinRewardActor>(SpawnCoinActor, 
 			this->GetActorTransform(), SpawnParams);
+	}
+}
+void ASATORI_AICharacter::EnemyDissolveAfterDeath(float Timer)
+{
+	if (DynamicMaterials.Num() > 0)
+	{
+		TimeCountDown = Timer;
+		if (EnemyType == SATORIEnemyType::Melee)
+		{
+			GetWorld()->GetTimerManager().SetTimer(MaterialWaitHandle, [this]()
+				{
+					for (int i = 0; i < DynamicMaterials.Num(); i++)
+					{
+						DynamicMaterials[i]->SetScalarParameterValue(FName(TEXT("Appearance")), TimeCountDown);
+						TimeCountDown -= LocalRate;
+						if (TimeCountDown <= 0)
+						{
+							DynamicMaterials[i]->SetScalarParameterValue(FName(TEXT("Appearance")), -0.1f);
+							GetWorld()->GetTimerManager().ClearTimer(MaterialWaitHandle);
+						}
+					}
+				}, LocalRate, true, 0.0f);
+		}
+		else
+		{
+			GetWorld()->GetTimerManager().SetTimer(MaterialWaitHandle, [this]()
+				{
+					for (int i = 0; i < DynamicMaterials.Num(); i++)
+					{
+						DynamicMaterials[i]->SetScalarParameterValue(FName(TEXT("Appearance")), TimeCountDown);
+						TimeCountDown = TimeCountDown / 2;
+						TimeCountDown -= LocalRate;
+						if (TimeCountDown <= 0)
+						{
+							DynamicMaterials[i]->SetScalarParameterValue(FName(TEXT("Appearance")), -0.1f);
+							GetWorld()->GetTimerManager().ClearTimer(MaterialWaitHandle);
+						}
+					}
+				}, LocalRate, true, 0.0f);
+		}
 	}
 }

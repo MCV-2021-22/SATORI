@@ -22,33 +22,43 @@ void USATORI_AttributeSet::PreAttributeChange(const FGameplayAttribute& Attribut
 	{
 		AdjustAttributeForMaxChange(Health, MaxHealth, NewValue, GetHealthAttribute());
 	}
-	else if (Attribute == GetMaxHealthAttribute())
+	else if (Attribute == GetHealthAttribute())
 	{
-		NewValue = FMath::Clamp<float>(NewValue, 0.001f, 10000.0f);
+		NewValue = FMath::Clamp<float>(NewValue, 0.00f, GetMaxHealth());
 	}
+	// Mana
+	else if (Attribute == GetMaxManaAttribute())
+	{
+		AdjustAttributeForMaxChange(Mana, MaxMana, NewValue, GetManaAttribute());
+	}
+	else if (Attribute == GetManaAttribute())
+	{
+		NewValue = FMath::Clamp<float>(NewValue, 0.001f, GetMaxMana());
+	}
+	// Move Speed
 	else if (Attribute == GetMoveSpeedAttribute())
 	{
 		NewValue = FMath::Clamp<float>(NewValue, 150, 1000);
 	}
+	// Attack
 	else if (Attribute == GetAttackAttribute())
 	{
 		NewValue = FMath::Clamp<float>(NewValue, 1, 100);
 	}
+	// Defense
 	else if (Attribute == GetDefenseAttribute())
 	{
 		NewValue = FMath::Clamp<float>(NewValue, 1, 100);
 	}
+	// Gold
 	else if (Attribute == GetGoldAttribute())
 	{
 		NewValue = FMath::Clamp<float>(NewValue, 0, 10000);
 	}
+	// Mov Multiplier
 	else if (Attribute == GetMoveSpeedMultiplierAttribute())
 	{
 		NewValue = FMath::Clamp<float>(NewValue, 1, 10);
-	}
-	else if (Attribute == GetMaxManaAttribute())
-	{
-		AdjustAttributeForMaxChange(Mana, MaxMana, NewValue, GetManaAttribute());
 	}
 }
 
