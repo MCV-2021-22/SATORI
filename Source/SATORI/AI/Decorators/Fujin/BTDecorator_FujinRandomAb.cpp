@@ -12,6 +12,8 @@ bool UBTDecorator_FujinRandomAb::CalculateRawConditionValue(UBehaviorTreeCompone
 	bool bSuccess = Super::CalculateRawConditionValue(OwnerComp, NodeMemory);
 	if (!bSuccess) return false;
 
+	float Probability = 33.0f;
+
 	AAIController* AIController = OwnerComp.GetAIOwner();
 	APawn* Pawn = AIController->GetPawn();
 
@@ -19,6 +21,54 @@ bool UBTDecorator_FujinRandomAb::CalculateRawConditionValue(UBehaviorTreeCompone
 
 	if (AI)
 	{
+		if(AI->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag(("Boss.Fase.Final"))))
+		{
+			
+			TArray<float> Probs = AI->GetArrayProbs(ComboRaijin);
+
+			if(Probs.Num()> (ComboFujin -1))
+			{
+				Probability = Probs[ComboFujin - 1];
+
+				if(Probs[ComboFujin - 1] - 5 >=0)
+				{
+					for(int i = 0; i < Probs.Num();i++)
+					{
+						if(i == (ComboFujin - 1))
+						{
+							Probs[i] += -5;
+						}
+						else
+						{
+							Probs[i] += 2.5;
+						}
+					}
+					
+				}
+				else if(Probs[ComboFujin - 1] > 0 )
+				{
+					float dif = Probs[ComboFujin - 1] / 2;
+
+					for (int i = 0; i < Probs.Num(); i++)
+					{
+						if (i == (ComboFujin - 1))
+						{
+							Probs[i] = 0;
+						}
+						else
+						{
+							Probs[i] += dif;
+						}
+					}
+
+
+				}
+
+			}
+
+		
+		}
+
 		// 25%
 		int randomnum = rand() % 100 + 1;
 

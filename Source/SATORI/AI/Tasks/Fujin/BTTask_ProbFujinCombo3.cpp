@@ -1,19 +1,19 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "AI/Tasks/BTTaksGenerales/BTTask_EndTurnBosses.h"
+#include "AI/Tasks/Fujin/BTTask_ProbFujinCombo3.h"
 #include "AIController.h"
 #include "SATORICharacter.h"
 #include "AI/Character/Raijin/SATORI_Raijin.h"
 #include "AI/Character/Fujin/SATORI_Fujin.h"
 #include "BehaviorTree/BlackboardComponent.h"
 
-UBTTask_EndTurnBosses::UBTTask_EndTurnBosses()
+UBTTask_ProbFujinCombo3::UBTTask_ProbFujinCombo3()
 {
 	bCreateNodeInstance = true;
 }
 
-EBTNodeResult::Type UBTTask_EndTurnBosses::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
+EBTNodeResult::Type UBTTask_ProbFujinCombo3::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
 {
 	EBTNodeResult::Type Result = EBTNodeResult::Failed;
 
@@ -60,7 +60,7 @@ EBTNodeResult::Type UBTTask_EndTurnBosses::ExecuteTask(UBehaviorTreeComponent& O
 	return Result;
 }
 
-EBTNodeResult::Type UBTTask_EndTurnBosses::AbortTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
+EBTNodeResult::Type UBTTask_ProbFujinCombo3::AbortTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
 {
 	EBTNodeResult::Type Result = EBTNodeResult::Failed;
 	Result = EBTNodeResult::Aborted;

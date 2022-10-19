@@ -93,12 +93,44 @@ void ASATORI_Fujin::BeginPlay()
 	CollisionL->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	CollisionR->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 
+	//init de las prob
+	for(int i=0;i<4;i++)
+	{
+		Prob_C1.Add(25.0f);
+		Prob_C2.Add(25.0f);
+		Prob_C3.Add(25.0f);
+		Prob_C4.Add(25.0f);
+	}
+	
 
 	GetWorld()->GetTimerManager().SetTimer(TimerHandle, this, &ASATORI_Fujin::setRaijin, 0.5f, false);
 
 
 
 }
+
+TArray<float> ASATORI_Fujin::GetArrayProbs(int Combo)
+{
+	if(Combo ==1)
+	{
+		return Prob_C1;
+	}
+	else if (Combo == 2)
+	{
+		return Prob_C2;
+	}
+	else if (Combo == 3)
+	{
+		return Prob_C3;
+	}
+	else
+	{
+		return Prob_C3;
+	}
+
+
+}
+
 void ASATORI_Fujin::Tick(float DeltaTime)
 {
 

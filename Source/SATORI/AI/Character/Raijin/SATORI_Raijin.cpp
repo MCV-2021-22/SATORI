@@ -36,6 +36,7 @@ void ASATORI_Raijin::BeginPlay()
 
 	AddGameplayTag(FGameplayTag::RequestGameplayTag("Boss.Jugable"));
 	AddGameplayTag(FGameplayTag::RequestGameplayTag("Boss.Fase.Inicial"));
+	
 
 	setSpawnPos(GetActorLocation());
 
@@ -97,6 +98,7 @@ void ASATORI_Raijin::setFujin()
 		if (Fuj)
 		{
 			Fujin = Fuj;
+			AddGameplayTag(FGameplayTag::RequestGameplayTag("Boss.Turno.Raijin"));
 		}
 
 	}
