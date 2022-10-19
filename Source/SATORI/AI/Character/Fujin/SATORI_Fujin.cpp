@@ -80,6 +80,7 @@ void ASATORI_Fujin::BeginPlay()
 	Super::BeginPlay();
 
 	AddGameplayTag(FGameplayTag::RequestGameplayTag("Boss.Jugable"));
+	AddGameplayTag(FGameplayTag::RequestGameplayTag("Boss.Fase.Inicial"));
 	//(UNiagaraSystem * SystemTemplate, USceneComponent * AttachToComponent, FName AttachPointName, FVector Location, FRotator Rotation, FVector Scale, EAttachLocation::Type LocationType, bool bAutoDestroy, ENCPoolMethod PoolingMethod, bool bAutoActivate = true, bool bPreCullCheck = true);
 	Nube1 = UNiagaraFunctionLibrary::SpawnSystemAttached(Nube, GetMesh(), TEXT("BckNubeFujin"), FVector(0), FRotator::ZeroRotator,FVector(0.1f,0.1f,0.1f), EAttachLocation::Type::KeepRelativeOffset, false,  ENCPoolMethod::None);
 	
@@ -92,12 +93,44 @@ void ASATORI_Fujin::BeginPlay()
 	CollisionL->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	CollisionR->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 
+	//init de las prob
+	for(int i=0;i<4;i++)
+	{
+		Prob_C1.Add(25.0f);
+		Prob_C2.Add(25.0f);
+		Prob_C3.Add(25.0f);
+		Prob_C4.Add(25.0f);
+	}
+	
 
 	GetWorld()->GetTimerManager().SetTimer(TimerHandle, this, &ASATORI_Fujin::setRaijin, 0.5f, false);
 
 
 
 }
+
+TArray<float> ASATORI_Fujin::GetArrayProbs(int Combo)
+{
+	if(Combo ==1)
+	{
+		return Prob_C1;
+	}
+	else if (Combo == 2)
+	{
+		return Prob_C2;
+	}
+	else if (Combo == 3)
+	{
+		return Prob_C3;
+	}
+	else
+	{
+		return Prob_C3;
+	}
+
+
+}
+
 void ASATORI_Fujin::Tick(float DeltaTime)
 {
 
@@ -223,6 +256,7 @@ void ASATORI_Fujin::setDowned(bool dw)
 void ASATORI_Fujin::startCDDowned()
 {
 	RemoveGameplayTag(FGameplayTag::RequestGameplayTag("State.Downed"));
+	AddGameplayTag(FGameplayTag::RequestGameplayTag("Boss.Downed"));
 	setDowned(true);
 	GetWorld()->GetTimerManager().SetTimer(TimerHandleDowned, this, &ASATORI_Fujin::revivirTag, CdTimeDowned, false);
 
@@ -230,6 +264,7 @@ void ASATORI_Fujin::startCDDowned()
 
 void ASATORI_Fujin::revivirTag()
 {
+	RemoveGameplayTag(FGameplayTag::RequestGameplayTag("Boss.Downed"));
 	AddGameplayTag(FGameplayTag::RequestGameplayTag("State.Revive"));
 
 }

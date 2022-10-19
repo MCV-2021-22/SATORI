@@ -7,6 +7,7 @@
 #include "AI/Components/Raijin/SATORI_RaijinRayoMovilSpawns.h"
 #include "Components/CapsuleComponent.h"
 #include "AbilityTask/SATORI_PlayMontageAndWaitEvent.h"
+#include "AI/Character/Fujin/SATORI_Fujin.h"
 #include "AI/Character/Raijin/SATORI_Raijin.h"
 #include "Kismet/GameplayStatics.h"
 #include "Widgets/Text/ISlateEditableTextWidget.h"
@@ -37,6 +38,8 @@ void USATORI_AreasPatron::ActivateAbility(const FGameplayAbilitySpecHandle Handl
 	if (Raijin)
 	{
 		Raijin->ArcoAltavoces->setAttacking(true);
+		Raijin->Fujin->AddGameplayTag(FGameplayTag::RequestGameplayTag("Boss.Raijin.C3"));
+		
 	}
 	//GetWorld()->GetTimerManager().ClearTimer(TimerHandle);
 
