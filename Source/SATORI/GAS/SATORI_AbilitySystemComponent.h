@@ -23,6 +23,7 @@ public:
 	//~ Begin UObject interface
 	virtual void BeginDestroy() override;
 
+	bool SatoriCheckIsAbilityActive(const FGameplayTagContainer* WithTags, UGameplayAbility* Ignore);
 protected:
 	UFUNCTION() // UFunction to be able to bind with dynamic delegate
 	void OnPawnControllerChanged(APawn* Pawn, AController* NewController);

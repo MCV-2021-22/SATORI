@@ -874,8 +874,17 @@ void ASATORICharacter::OnDash()
 {
 	if (ComboSystemComponent)
 	{
-		GEngine->AddOnScreenDebugMessage(-1, 200, FColor::Green, FString::Printf(TEXT("DASHING")));
+		//GEngine->AddOnScreenDebugMessage(-1, 200, FColor::Green, FString::Printf(TEXT("DASHING")));
 		ComboSystemComponent->isAbilityCanceled = true;
+
+		FGameplayTagContainer* WithGameplayTagContainer = nullptr;
+
+		WithGameplayTagContainer->AddTag(FGameplayTag::RequestGameplayTag(FName("Ability.Dash")));
+
+		if (AbilitySystemComponent->SatoriCheckIsAbilityActive(WithGameplayTagContainer, nullptr))
+		{
+			ComboSystemComponent->isAbilityCanceled = false;
+		}
 	}
 }
 
@@ -883,7 +892,7 @@ void ASATORICharacter::OnDashReleases()
 {
 	if (ComboSystemComponent)
 	{
-		GEngine->AddOnScreenDebugMessage(-1, 200, FColor::Green, FString::Printf(TEXT("DASHING Released")));
+		//GEngine->AddOnScreenDebugMessage(-1, 200, FColor::Green, FString::Printf(TEXT("DASHING Released")));
 		ComboSystemComponent->isAbilityCanceled = false;
 	}
 }
