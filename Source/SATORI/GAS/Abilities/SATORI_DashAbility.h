@@ -93,6 +93,7 @@ private:
 	const bool bStopWhenAbilityEnds = true;
 
 	ASATORI_CharacterBase* Character;
+	ASATORICharacter* PlayerCharacter;
 	FHitResult OutHit;
 	FCollisionQueryParams CollisionParams;
 	UCapsuleComponent* CapsuleComponent;
