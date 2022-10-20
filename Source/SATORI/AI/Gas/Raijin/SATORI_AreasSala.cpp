@@ -6,6 +6,7 @@
 #include "SATORICharacter.h"
 #include "Engine/DecalActor.h"
 #include "AbilityTask/SATORI_PlayMontageAndWaitEvent.h"
+#include "AI/Character/Fujin/SATORI_Fujin.h"
 #include "AI/Character/Raijin/SATORI_Raijin.h"
 #include "Kismet/GameplayStatics.h"
 #include "Widgets/Text/ISlateEditableTextWidget.h"
@@ -35,6 +36,8 @@ void USATORI_AreasSala::ActivateAbility(const FGameplayAbilitySpecHandle Handle,
 	if (Raijin)
 	{
 		Raijin->ArcoAltavoces->setAttacking(true);
+		Raijin->Fujin->AddGameplayTag(FGameplayTag::RequestGameplayTag("Boss.Raijin.C2"));
+		
 	}
 	//GetWorld()->GetTimerManager().ClearTimer(TimerHandle);
 

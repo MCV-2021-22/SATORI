@@ -16,9 +16,14 @@ class SATORI_API UBTDecorator_FujinRandomAb : public UBTDecorator
 public:
 
 	
-	UPROPERTY(BlueprintReadOnly, EditAnywhere)
-		float Probability = 20.0f;
 	
+	
+
+	UPROPERTY(BlueprintReadOnly, EditAnywhere)
+		int ComboFujin = 0;
+
+	UPROPERTY(BlueprintReadOnly, EditAnywhere)
+		int ComboRaijin = 0;
 
 
 	virtual bool CalculateRawConditionValue(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory) const override;

@@ -106,7 +106,7 @@ public:
 		);
 
 
-
+	TArray< float > GetArrayProbs(int Combo);
 
 protected:
 
@@ -124,6 +124,14 @@ protected:
 	bool downed = false;
 
 	float CdTimeDowned = 10.0f;
+
+	TArray< float > Prob_C1;
+	TArray< float > Prob_C2;
+	TArray< float > Prob_C3;
+	TArray< float > Prob_C4;
+	
+
+
 	
 };
 
