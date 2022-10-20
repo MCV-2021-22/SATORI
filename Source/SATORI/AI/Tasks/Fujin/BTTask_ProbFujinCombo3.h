@@ -21,8 +21,9 @@ class SATORI_API UBTTask_ProbFujinCombo3 : public UBTTaskNode
 public:
 	
 
-	UPROPERTY(EditAnywhere)
-		FBlackboardKeySelector MyBlackboardKey;
+
+	UPROPERTY(BlueprintReadOnly, EditAnywhere)
+		int ComboRaijin = 0;
 
 	
 

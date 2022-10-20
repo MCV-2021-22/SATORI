@@ -25,15 +25,53 @@ EBTNodeResult::Type UBTTask_ProbFujinCombo3::ExecuteTask(UBehaviorTreeComponent&
 
 	if(Fujin)
 	{
-		Fujin->RemoveGameplayTag(FGameplayTag::RequestGameplayTag("Boss.Turno.Fujin"));
-		Fujin->Raijin->AddGameplayTag(FGameplayTag::RequestGameplayTag("Boss.Turno.Raijin"));
+		if (Fujin->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag(("Boss.Fase.Final"))))
+		{
+			TArray<float> Probs = Fujin->GetArrayProbs(ComboRaijin);
+
+			if (Probs.Num() > 2)
+			{
+				if (Probs[2] - 5 >= 0)
+				{
+					for (int i = 0; i < Probs.Num(); i++)
+					{
+						if (i == 2)
+						{
+							Probs[i] += -5;
+						}
+						else
+						{
+							Probs[i] += 2.5;
+						}
+					}
+
+				}
+				else if (Probs[2] > 0)
+				{
+					float dif = Probs[2] / 2;
+
+					for (int i = 0; i < Probs.Num(); i++)
+					{
+						if (i == 2)
+						{
+							Probs[i] = 0;
+						}
+						else
+						{
+							Probs[i] += dif;
+						}
+					}
+
+
+				}
+
+
+			}
+
+		}
 
 	}
-	else if (Raijin)
-	{
-		Raijin->RemoveGameplayTag(FGameplayTag::RequestGameplayTag("Boss.Turno.Raijin"));
-		Raijin->Fujin->AddGameplayTag(FGameplayTag::RequestGameplayTag("Boss.Turno.Fujin"));
-	}
+	
 
 	//ASATORI_CharacterBase* Player1 = Cast<ASATORI_CharacterBase>(OwnerComp.GetBlackboardComponent()->GetValueAsObject(MyBlackboardKey.SelectedKeyName));
 
