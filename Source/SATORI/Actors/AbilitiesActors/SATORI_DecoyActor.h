@@ -29,6 +29,10 @@ public:
 	UPROPERTY(EditDefaultsOnly, Category = "Decoy")
 	USphereComponent* CollisionSphereComponent = nullptr;
 
+	// Particles
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Particle")
+	UNiagaraComponent* Decoy_Particle = nullptr;
+
 	UPROPERTY(EditDefaultsOnly, Category = "Decoy")
 	UStaticMeshComponent* StaticMeshComponent = nullptr;
 
