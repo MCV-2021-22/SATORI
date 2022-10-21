@@ -8,6 +8,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "Particles/ParticleSystem.h"
 #include "Particles/ParticleSystemComponent.h"
+#include "Kismet/GameplayStatics.h"
 
 ASATORI_ArcherProjectile::ASATORI_ArcherProjectile()
 {
@@ -28,7 +29,6 @@ ASATORI_ArcherProjectile::ASATORI_ArcherProjectile()
 
 	Moving_Projectile = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("Moving Projectile"));
 	Moving_Projectile->SetupAttachment(RootComponent);
-	Impact_Particle = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("Impact Particle"));
 
 	TArray< AActor* > enemigos;
 	UGameplayStatics::GetAllActorsWithTag(GetWorld(), FName("PossessedBy.Player"), enemigos);
@@ -138,6 +138,11 @@ void ASATORI_ArcherProjectile::OnComponentBeginOverlap(
 		if(Player)
 		{
 			float dmg_done= USATORI_BlueprintLibrary::ApplyGameplayEffectDamage(OtherActor, damage, OtherActor, DamageGameplayEffect);
+		}
+		// Particles
+		if (Impact_Particle)
+		{
+			UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), Impact_Particle, GetActorLocation(), FRotator::ZeroRotator, true);
 		}
 		Destroy();
 	}
