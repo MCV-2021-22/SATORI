@@ -12,6 +12,7 @@
 
 class UBoxComponent;
 class UStaticMeshComponent;
+class UNiagaraSystem;
 
 UCLASS()
 class SATORI_API ASATORI_PushActor : public AActor
@@ -27,6 +28,10 @@ public:
 
 	UPROPERTY(BlueprintReadOnly, Meta = (ExposeOnSpawn = true), Category = "Push")
 	TSubclassOf<UGameplayEffect> DamageGameplayEffect;
+
+	// Particles
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Particle")
+	UNiagaraSystem* Push_Particle = nullptr;
 
 	UPROPERTY(BlueprintReadOnly, Meta = (ExposeOnSpawn = true), Category = "Push")
 	float Damage;

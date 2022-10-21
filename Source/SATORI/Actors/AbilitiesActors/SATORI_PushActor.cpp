@@ -4,6 +4,8 @@
 #include "Components/BoxComponent.h"
 #include "SATORI/AI/Character/SATORI_AICharacter.h"
 #include "SATORI/FunctionLibrary/SATORI_BlueprintLibrary.h"
+#include "NiagaraComponent.h"
+#include "NiagaraFunctionLibrary.h"
 //Debug
 #include "DrawDebugHelpers.h"
 
@@ -111,6 +113,13 @@ void ASATORI_PushActor::BeginPlay()
 
 	FTimerHandle TimerHandleDestroy;
 	GetWorldTimerManager().SetTimer(TimerHandleDestroy, this, &ASATORI_PushActor::DestroyMyself, TimeToFinish, false);
+
+	FVector SpawnLocation = CollisionBoxComponent->GetComponentLocation();
+
+	if (Push_Particle)
+	{
+		UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), Push_Particle, SpawnLocation);
+	}
 }
 
 void ASATORI_PushActor::Tick(float DeltaTime)

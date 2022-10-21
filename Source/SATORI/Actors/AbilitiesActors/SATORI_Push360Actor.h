@@ -11,6 +11,8 @@
 
 class USphereComponent;
 class UStaticMeshComponent;
+class UParticleSystem;
+class UParticleSystemComponent;
 
 UCLASS()
 class SATORI_API ASATORI_Push360Actor : public AActor
@@ -26,6 +28,9 @@ public:
 
 	UPROPERTY(BlueprintReadOnly, Meta = (ExposeOnSpawn = true), Category = "Push")
 	TSubclassOf<UGameplayEffect> DamageGameplayEffect;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	UParticleSystemComponent* PushParticle = nullptr;
 
 	UPROPERTY(BlueprintReadOnly, Meta = (ExposeOnSpawn = true), Category = "Push")
 	float Damage;
