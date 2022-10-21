@@ -7,9 +7,8 @@
 #include "GAS/SATORI_GameplayAbility.h"
 #include "SATORI_TimeStopAbility.generated.h"
 
-/**
- * 
- */
+class UParticleSystem;
+
 UCLASS()
 class SATORI_API USATORI_TimeStop : public USATORI_GameplayAbility
 {
@@ -37,6 +36,9 @@ public:
 
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Ability|Tags")
 	FGameplayTag TagSpawnAbility;
+
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Particle")
+	UParticleSystem* P_Particle;
 
 	FTimerDelegate TimerDelegate;
 

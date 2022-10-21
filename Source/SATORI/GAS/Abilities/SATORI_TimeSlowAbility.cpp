@@ -6,6 +6,7 @@
 #include "TimerManager.h"
 #include "SATORI/AbilityTask/SATORI_PlayMontageAndWaitEvent.h"
 #include "SATORICharacter.h"
+#include "Kismet/GameplayStatics.h"
 
 USATORI_TimeSlow::USATORI_TimeSlow()
 {
@@ -53,6 +54,15 @@ void USATORI_TimeSlow::EventReceived(FGameplayTag EventTag, FGameplayEventData E
 	if (EventTag == TagSpawnAbility)
 	{
 		StartTimeSlow();
+
+		AActor* Player = GetAvatarActorFromActorInfo();
+
+		if (P_Particle && Player)
+		{
+			FVector NewLocationVector(Player->GetActorLocation().X, Player->GetActorLocation().Y - Subtract_Particle_Loc_Num,
+				Player->GetActorLocation().Z);
+			UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), P_Particle, NewLocationVector, FRotator::ZeroRotator, true);
+		}
 	}
 }
 
