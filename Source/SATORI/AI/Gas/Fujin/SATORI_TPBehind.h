@@ -10,10 +10,8 @@
 #include "SATORI/AbilityTask/SATORI_PlayMontageandWaitNotify.h"
 #include "SATORI_TPBehind.generated.h"
 
+class UNiagaraSystem;
 
-/**
- * 
- */
 UCLASS()
 class SATORI_API USATORI_TPBehind : public UGameplayAbility
 {
@@ -42,7 +40,9 @@ public:
 
 	void Teleport(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo);
 
-	
+	// Particles
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Particle")
+	UNiagaraSystem* Teleport_Particle = nullptr;
 
 protected:
 

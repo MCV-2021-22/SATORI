@@ -11,9 +11,8 @@
 #include "SATORI_TPUp.generated.h"
 
 
-/**
- * 
- */
+class UNiagaraSystem;
+
 UCLASS()
 class SATORI_API USATORI_TPUp : public UGameplayAbility
 {
@@ -44,7 +43,9 @@ public:
 
 	void Teleport(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo);
 
-	
+	// Particles
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Particle")
+	UNiagaraSystem* Teleport_Particle = nullptr;
 
 protected:
 
