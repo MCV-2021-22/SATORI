@@ -12,9 +12,8 @@
 #include "SATORI_AreasPatron.generated.h"
 
 
-/**
- * 
- */
+class UParticleSystem;
+
 UCLASS()
 class SATORI_API USATORI_AreasPatron : public UGameplayAbility
 {
@@ -32,11 +31,13 @@ public:
 
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Ability|Tags")
 		FGameplayTag TagEndAbility;
-
 	
+	// Particle
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	UParticleSystem* Area_Particle = nullptr;
+
 	virtual void ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, 
 		const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData) override;
-
 
 	UPROPERTY(BlueprintReadOnly, EditAnywhere)
 		TSubclassOf<ASATORI_RaijinRayoMovil> ProjectileClass;

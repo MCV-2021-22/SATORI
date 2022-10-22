@@ -7,8 +7,8 @@
 #include "GameFramework/Actor.h"
 #include "Kismet/GameplayStatics.h"
 #include "AI/Character/Fujin/SATORI_Fujin.h"
-
-
+#include "NiagaraFunctionLibrary.h"
+#include "Components/BoxComponent.h"
 
 ASATORI_FujinCharm::ASATORI_FujinCharm()
 {
@@ -29,7 +29,8 @@ ASATORI_FujinCharm::ASATORI_FujinCharm()
 	StaticMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("StaticMesh"));
 	StaticMeshComponent->SetupAttachment(RootComponent);
 
-
+	HitAreaComponent = CreateDefaultSubobject<UBoxComponent>(TEXT("HitAreaComponent"));
+	HitAreaComponent->SetupAttachment(RootComponent);
 
 
 }
@@ -105,7 +106,6 @@ void ASATORI_FujinCharm::OnComponentHit(UPrimitiveComponent* HitComponent, AActo
 	IGameplayTagAssetInterface* InstigatorTagInterface = Cast<IGameplayTagAssetInterface>(InstigatorPawn);
 	IGameplayTagAssetInterface* OtherTagInterface = Cast<IGameplayTagAssetInterface>(OtherActor);
 
-
 	Destroy();
 
 	/*if (IsHostile(InstigatorTagInterface, OtherTagInterface)) {
@@ -147,7 +147,15 @@ void ASATORI_FujinCharm::OnComponentBeginOverlap(
 	{
 		ReturnToFujin = true;
 
-		
+		// Particles
+		FVector SpawnLocation = HitAreaComponent->GetComponentLocation();
+
+		if (Charm_Hit_Particle)
+		{
+			UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), Charm_Hit_Particle, SpawnLocation);
+		}
+
+
 		//SetActorHiddenInGame(true);
 		StaticMeshComponent->SetVisibility(false);
 		

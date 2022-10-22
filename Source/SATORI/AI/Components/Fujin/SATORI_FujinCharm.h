@@ -11,6 +11,8 @@ class ASATORI_Fujin;
 class UGameplayEffect;
 class UStaticMeshComponent;
 class USphereComponent;
+class UBoxComponent;
+class UNiagaraSystem;
 
 UCLASS(Blueprintable, Abstract)
 class ASATORI_FujinCharm : public AActor
@@ -21,12 +23,13 @@ public:
 	ASATORI_FujinCharm();
 
 	UPROPERTY(EditDefaultsOnly)
-		USphereComponent* SphereComponent = nullptr;
+	USphereComponent* SphereComponent = nullptr;
 
 	UPROPERTY(EditDefaultsOnly)
-		UStaticMeshComponent* StaticMeshComponent = nullptr;
+	UStaticMeshComponent* StaticMeshComponent = nullptr;
 
-
+	UPROPERTY(EditDefaultsOnly)
+	UBoxComponent* HitAreaComponent = nullptr;
 	//UPROPERTY(BlueprintReadWrite, EditAnywhere, Meta = (ExposeOnSpawn = true), Category = "Missile")
 	float damage = 10.0f;
 
@@ -50,6 +53,9 @@ public:
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Meta = (ExposeOnSpawn = true), Category = "Missile")
 		TSubclassOf<UGameplayEffect> DamageGameplayEffect;
+
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Particle")
+	UNiagaraSystem* Charm_Hit_Particle = nullptr;
 
 	bool ReturnToFujin = false;
 

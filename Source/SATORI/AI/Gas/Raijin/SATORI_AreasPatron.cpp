@@ -11,6 +11,7 @@
 #include "AI/Character/Raijin/SATORI_Raijin.h"
 #include "Kismet/GameplayStatics.h"
 #include "Widgets/Text/ISlateEditableTextWidget.h"
+#include "Kismet/GameplayStatics.h"
 
 USATORI_AreasPatron::USATORI_AreasPatron()
 {
@@ -55,16 +56,18 @@ void USATORI_AreasPatron::EventReceived(FGameplayTag EventTag, FGameplayEventDat
 
 		TArray< AActor* > Spawns;
 
+		// Particles
+		if (Area_Particle)
+		{
+			UGameplayStatics::SpawnEmitterAtLocation(GetWorld(),
+				Area_Particle, IA_POS, FRotator::ZeroRotator, true);
+		}
 
 		FName tag = "PossessedBy.Player";
 
 		UGameplayStatics::GetAllActorsWithTag(GetWorld(), FName("Raijin.SpawnMovil"), Spawns);
 
-
 		int array_dim = Spawns.Num();
-
-
-
 
 		for (int i = 0; i < 3; i++)
 		{

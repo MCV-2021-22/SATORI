@@ -9,6 +9,7 @@
 #include "AI/Character/Raijin/SATORI_Raijin.h"
 #include "Kismet/GameplayStatics.h"
 #include "Widgets/Text/ISlateEditableTextWidget.h"
+#include "Kismet/GameplayStatics.h"
 
 USATORI_AreaExtensible::USATORI_AreaExtensible()
 {
@@ -19,7 +20,6 @@ USATORI_AreaExtensible::USATORI_AreaExtensible()
 
 void USATORI_AreaExtensible::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData)
 {
-
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
 
 	//Handling of events
@@ -56,6 +56,13 @@ void USATORI_AreaExtensible::EventReceived(FGameplayTag EventTag, FGameplayEvent
 		FName tag = "PossessedBy.Player";
 
 		UGameplayStatics::GetAllActorsWithTag(GetWorld(), FName("PossessedBy.Player"), enemigos);
+
+		// Particles
+		if (Area_Particle)
+		{
+			UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), 
+				Area_Particle, IA_POS, FRotator::ZeroRotator, true);
+		}
 
 		//UGameplayStatics::GetAllActorsOfClass(GetWorld(), ASATORICharacter::StaticClass(), enemigos);
 

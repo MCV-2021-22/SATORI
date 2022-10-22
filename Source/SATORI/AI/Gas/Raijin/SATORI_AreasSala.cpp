@@ -10,6 +10,7 @@
 #include "AI/Character/Raijin/SATORI_Raijin.h"
 #include "Kismet/GameplayStatics.h"
 #include "Widgets/Text/ISlateEditableTextWidget.h"
+#include "Kismet/GameplayStatics.h"
 
 USATORI_AreasSala::USATORI_AreasSala()
 {
@@ -51,6 +52,13 @@ void USATORI_AreasSala::EventReceived(FGameplayTag EventTag, FGameplayEventData 
 	if (EventTag == TagSpawnAbility)
 	{
 		FVector IA_POS = CurrentActorInfo->AvatarActor->GetActorLocation();
+
+		// Particles
+		if (Area_Particle)
+		{
+			UGameplayStatics::SpawnEmitterAtLocation(GetWorld(),
+				Area_Particle, IA_POS, FRotator::ZeroRotator, true);
+		}
 
 		TArray< AActor* > enemigos;
 
