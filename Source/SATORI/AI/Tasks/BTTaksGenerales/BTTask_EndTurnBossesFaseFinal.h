@@ -4,26 +4,25 @@
 
 #include "CoreMinimal.h"
 #include "BehaviorTree/BTTaskNode.h"
-#include "BTTask_ProbFujinCombo3.generated.h"
+#include "BTTask_EndTurnBossesFaseFinal.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class SATORI_API UBTTask_ProbFujinCombo3 : public UBTTaskNode
+class SATORI_API UBTTask_EndTurnBossesFaseFinal : public UBTTaskNode
 {
 	GENERATED_BODY()
 
-		UBTTask_ProbFujinCombo3();
+		UBTTask_EndTurnBossesFaseFinal();
 	virtual EBTNodeResult::Type ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory) override;
 	virtual EBTNodeResult::Type AbortTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory) override;
 
 public:
 	
 
-
-	UPROPERTY(BlueprintReadOnly, EditAnywhere)
-		int ComboRaijin = 0;
+	UPROPERTY(EditAnywhere)
+		FBlackboardKeySelector MyBlackboardKey;
 
 	
 
