@@ -1,19 +1,19 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "AI/Tasks/Fujin/BTTask_ProbFujinCombo3.h"
+#include "AI/Tasks/BTTaksGenerales/BTTask_ActivateInmuneBosses.h"
 #include "AIController.h"
 #include "SATORICharacter.h"
 #include "AI/Character/Raijin/SATORI_Raijin.h"
 #include "AI/Character/Fujin/SATORI_Fujin.h"
 #include "BehaviorTree/BlackboardComponent.h"
 
-UBTTask_ProbFujinCombo3::UBTTask_ProbFujinCombo3()
+UBTTask_ActivateInmuneBosses::UBTTask_ActivateInmuneBosses()
 {
 	bCreateNodeInstance = true;
 }
 
-EBTNodeResult::Type UBTTask_ProbFujinCombo3::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
+EBTNodeResult::Type UBTTask_ActivateInmuneBosses::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
 {
 	EBTNodeResult::Type Result = EBTNodeResult::Failed;
 
@@ -25,53 +25,38 @@ EBTNodeResult::Type UBTTask_ProbFujinCombo3::ExecuteTask(UBehaviorTreeComponent&
 
 	if(Fujin)
 	{
-		if (Fujin->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag(("Boss.Fase.Final"))))
+		if(!activar)
 		{
-			TArray<float> Probs = Fujin->GetArrayProbs(ComboRaijin);
-
-			if (Probs.Num() > 2)
+			Fujin->AddGameplayTag(FGameplayTag::RequestGameplayTag("Boss.Inmune"));
+		}
+		else
+		{
+			Fujin->RemoveGameplayTag(FGameplayTag::RequestGameplayTag("Boss.Inmune"));
+			if (Fujin->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag("Boss.FaseFinal.Listos")))
 			{
-				if (Probs[2] - 5 >= 0)
-				{
-					for (int i = 0; i < Probs.Num(); i++)
-					{
-						if (i == 2)
-						{
-							Probs[i] += -5;
-						}
-						else
-						{
-							Probs[i] += 2.5;
-						}
-					}
-
-				}
-				else if (Probs[2] > 0)
-				{
-					float dif = Probs[2] / 2;
-
-					for (int i = 0; i < Probs.Num(); i++)
-					{
-						if (i == 2)
-						{
-							Probs[i] = 0;
-						}
-						else
-						{
-							Probs[i] += dif;
-						}
-					}
-
-
-				}
-
-
+				Fujin->RemoveGameplayTag(FGameplayTag::RequestGameplayTag("Boss.FaseFinal.Listos"));
 			}
-
 		}
 
+		
 	}
-	
+	else if (Raijin)
+	{
+		if (!activar)
+		{
+			Raijin->AddGameplayTag(FGameplayTag::RequestGameplayTag("Boss.Inmune"));
+		}
+		else
+		{
+			Raijin->RemoveGameplayTag(FGameplayTag::RequestGameplayTag("Boss.Inmune"));
+			if (Raijin->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag("Boss.FaseFinal.Listos")))
+			{
+				Raijin->RemoveGameplayTag(FGameplayTag::RequestGameplayTag("Boss.FaseFinal.Listos"));
+			}
+		}
+
+		
+	}
 
 	//ASATORI_CharacterBase* Player1 = Cast<ASATORI_CharacterBase>(OwnerComp.GetBlackboardComponent()->GetValueAsObject(MyBlackboardKey.SelectedKeyName));
 
@@ -98,7 +83,7 @@ EBTNodeResult::Type UBTTask_ProbFujinCombo3::ExecuteTask(UBehaviorTreeComponent&
 	return Result;
 }
 
-EBTNodeResult::Type UBTTask_ProbFujinCombo3::AbortTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
+EBTNodeResult::Type UBTTask_ActivateInmuneBosses::AbortTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
 {
 	EBTNodeResult::Type Result = EBTNodeResult::Failed;
 	Result = EBTNodeResult::Aborted;

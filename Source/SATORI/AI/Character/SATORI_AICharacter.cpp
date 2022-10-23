@@ -316,7 +316,7 @@ void ASATORI_AICharacter::CheckDamage(float Damage)
 
 	//Death
 
-	/*if (GetHealth() <= GetHealth() * 0.75 && HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag(("Boss.Fase.Inicial"))))
+	if (GetHealth() <= GetMaxHealth() * 0.75 && HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag(("Boss.Fase.Inicial"))))
 	{
 		ASATORI_Fujin* Fujin = Cast<ASATORI_Fujin>(this);
 		ASATORI_Raijin* Raijin = Cast<ASATORI_Raijin>(this);
@@ -339,7 +339,7 @@ void ASATORI_AICharacter::CheckDamage(float Damage)
 			Raijin->RemoveGameplayTag(FGameplayTag::RequestGameplayTag("Boss.Fase.Inicial"));
 			Raijin->Fujin->RemoveGameplayTag(FGameplayTag::RequestGameplayTag("Boss.Fase.Inicial"));
 		}
-	}*/
+	}
 
 	if(GetHealth() <= 0.0f)
 	{

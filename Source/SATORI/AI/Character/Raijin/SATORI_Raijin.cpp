@@ -36,7 +36,7 @@ void ASATORI_Raijin::BeginPlay()
 
 	AddGameplayTag(FGameplayTag::RequestGameplayTag("Boss.Jugable"));
 	AddGameplayTag(FGameplayTag::RequestGameplayTag("Boss.Fase.Inicial"));
-	
+	AddGameplayTag(FGameplayTag::RequestGameplayTag("Boss.Inmune"));
 
 	setSpawnPos(GetActorLocation());
 
