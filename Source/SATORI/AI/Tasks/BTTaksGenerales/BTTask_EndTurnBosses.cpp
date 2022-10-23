@@ -26,13 +26,32 @@ EBTNodeResult::Type UBTTask_EndTurnBosses::ExecuteTask(UBehaviorTreeComponent& O
 	if(Fujin)
 	{
 		Fujin->RemoveGameplayTag(FGameplayTag::RequestGameplayTag("Boss.Turno.Fujin"));
-		Fujin->Raijin->AddGameplayTag(FGameplayTag::RequestGameplayTag("Boss.Turno.Raijin"));
+
+		if(Fujin->Raijin->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag(("Boss.Fase.Final"))) || Fujin->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag(("Boss.Fase.Final"))))
+		{
+			Fujin->AddGameplayTag(FGameplayTag::RequestGameplayTag(("Boss.FaseFinal.Listos")));
+			Fujin->Raijin->AddGameplayTag(FGameplayTag::RequestGameplayTag(("Boss.FaseFinal.Listos")));
+		}
+		else
+		{
+			Fujin->Raijin->AddGameplayTag(FGameplayTag::RequestGameplayTag("Boss.Turno.Raijin"));
+		}
+		
 
 	}
 	else if (Raijin)
 	{
 		Raijin->RemoveGameplayTag(FGameplayTag::RequestGameplayTag("Boss.Turno.Raijin"));
-		Raijin->Fujin->AddGameplayTag(FGameplayTag::RequestGameplayTag("Boss.Turno.Fujin"));
+		if (Raijin->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag(("Boss.Fase.Final"))) || Raijin->Fujin->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag(("Boss.Fase.Final"))))
+		{
+			Raijin->AddGameplayTag(FGameplayTag::RequestGameplayTag(("Boss.FaseFinal.Listos")));
+			Raijin->Fujin->AddGameplayTag(FGameplayTag::RequestGameplayTag(("Boss.FaseFinal.Listos")));
+		}
+		else
+		{
+			Raijin->Fujin->AddGameplayTag(FGameplayTag::RequestGameplayTag("Boss.Turno.Fujin"));
+		}
+		
 	}
 
 	//ASATORI_CharacterBase* Player1 = Cast<ASATORI_CharacterBase>(OwnerComp.GetBlackboardComponent()->GetValueAsObject(MyBlackboardKey.SelectedKeyName));
