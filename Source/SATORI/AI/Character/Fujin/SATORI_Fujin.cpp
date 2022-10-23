@@ -81,6 +81,7 @@ void ASATORI_Fujin::BeginPlay()
 
 	AddGameplayTag(FGameplayTag::RequestGameplayTag("Boss.Jugable"));
 	AddGameplayTag(FGameplayTag::RequestGameplayTag("Boss.Fase.Inicial"));
+	AddGameplayTag(FGameplayTag::RequestGameplayTag("Boss.Inmune"));
 	//(UNiagaraSystem * SystemTemplate, USceneComponent * AttachToComponent, FName AttachPointName, FVector Location, FRotator Rotation, FVector Scale, EAttachLocation::Type LocationType, bool bAutoDestroy, ENCPoolMethod PoolingMethod, bool bAutoActivate = true, bool bPreCullCheck = true);
 	Nube1 = UNiagaraFunctionLibrary::SpawnSystemAttached(Nube, GetMesh(), TEXT("BckNubeFujin"), FVector(0), FRotator::ZeroRotator,FVector(0.1f,0.1f,0.1f), EAttachLocation::Type::KeepRelativeOffset, false,  ENCPoolMethod::None);
 	
