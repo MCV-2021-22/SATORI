@@ -8,6 +8,8 @@
 #include "DrawDebugHelpers.h"
 #include "GameplayFramework/SATORI_GameInstance.h"
 #include "Kismet/GameplayStatics.h"
+#include "GAS/SATORI_AbilitySystemComponent.h"
+#include "Components/Player/SATORI_ComboSystemComponent.h"
 
 USATORI_DashAbility::USATORI_DashAbility()
 {
@@ -37,6 +39,14 @@ void USATORI_DashAbility::ActivateAbility(
 	}
 
 	Character = Cast<ASATORI_CharacterBase>(GetAvatarActorFromActorInfo());
+	if (!Character)
+	{
+		UE_LOG(LogTemp, Display, TEXT("[%s] USATORI_DashAbility: Cannot Cast ASATORICharacter ... "), *GetName());
+		Super::EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true);
+		return;
+	}
+
+	PlayerCharacter = Cast<ASATORICharacter>(GetAvatarActorFromActorInfo());
 	if (!Character)
 	{
 		UE_LOG(LogTemp, Display, TEXT("[%s] USATORI_DashAbility: Cannot Cast ASATORICharacter ... "), *GetName());
@@ -183,6 +193,8 @@ void USATORI_DashAbility::EventReceived(FGameplayTag EventTag, FGameplayEventDat
 void USATORI_DashAbility::EndDash()
 {
 	bBraking = true;
+
+	PlayerCharacter->GetComboSystemComponent()->isAbilityCanceled = false;
 
 	if (USkeletalMeshComponent* Mesh = Character->GetMesh())
 	{
