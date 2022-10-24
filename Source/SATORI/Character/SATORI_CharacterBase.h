@@ -14,6 +14,17 @@ class UCapsuleComponent;
 class UAnimMontage;
 class USATORI_GameplayAbility;
 
+USTRUCT(BlueprintType) struct FDialogueStruct
+{
+	GENERATED_BODY()
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FText DialogueText;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int BossNum;
+};
+
 UCLASS()
 class SATORI_API ASATORI_CharacterBase : public ACharacter, public IAbilitySystemInterface
 {
