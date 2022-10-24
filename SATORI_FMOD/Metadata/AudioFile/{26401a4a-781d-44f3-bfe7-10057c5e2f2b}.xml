@@ -1,17 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <objects serializationModel="Studio.02.02.00">
-	<object class="AudioFile" id="{98a1108e-0bd4-462b-bd43-0ad29fd211a6}">
+	<object class="AudioFile" id="{26401a4a-781d-44f3-bfe7-10057c5e2f2b}">
 		<property name="assetPath">
-			<value>Footstep/Rock/Footstep_Rock4.wav</value>
+			<value>Enviroment/Lobby/SFX_pray_04.mp3</value>
+		</property>
+		<property name="isStreaming">
+			<value>true</value>
 		</property>
 		<property name="frequencyInKHz">
-			<value>48</value>
+			<value>44.0999985</value>
 		</property>
 		<property name="channelCount">
 			<value>2</value>
 		</property>
 		<property name="length">
-			<value>0.40106249999999999</value>
+			<value>22.204081632653061</value>
 		</property>
 		<relationship name="masterAssetFolder">
 			<destination>{269b0b2d-b44d-4e19-a3ee-86e302406a27}</destination>

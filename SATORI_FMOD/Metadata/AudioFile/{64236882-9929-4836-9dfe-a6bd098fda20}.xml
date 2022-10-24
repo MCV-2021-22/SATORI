@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <objects serializationModel="Studio.02.02.00">
-	<object class="AudioFile" id="{87252497-2306-4a25-a581-3cd7c8e2cfb2}">
+	<object class="AudioFile" id="{64236882-9929-4836-9dfe-a6bd098fda20}">
 		<property name="assetPath">
-			<value>Footstep/Rock/Footstep_Rock3.wav</value>
+			<value>Footstep/Rock/Footsteps_stone_03.mp3</value>
 		</property>
 		<property name="frequencyInKHz">
-			<value>48</value>
+			<value>44.0999985</value>
 		</property>
 		<property name="channelCount">
-			<value>2</value>
+			<value>1</value>
 		</property>
 		<property name="length">
-			<value>0.40110416666666665</value>
+			<value>0.4179591836734694</value>
 		</property>
 		<relationship name="masterAssetFolder">
 			<destination>{269b0b2d-b44d-4e19-a3ee-86e302406a27}</destination>
