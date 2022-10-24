@@ -24,6 +24,7 @@ ASATORI_Spawner::ASATORI_Spawner()
 
 void ASATORI_Spawner::Tick(float DeltaSeconds)
 {
+	Super::Tick(DeltaSeconds);
 	SpawnTime += DeltaSeconds;
 }
 

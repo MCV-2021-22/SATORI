@@ -38,12 +38,12 @@ void ASATORI_Spawned::SpawnedDie()
 	if(MySpawn)
 	{
 		MySpawn->AddNumEnemies(-1);
-		this->Destroy();
 		GetWorld()->GetAuthGameMode<ASATORIGameMode>()->RemoveEnemyActor(this);
+		this->Destroy();
 	}
 	else
 	{
-		this->Destroy();
 		GetWorld()->GetAuthGameMode<ASATORIGameMode>()->RemoveEnemyActor(this);
+		this->Destroy();
 	}
 }
