@@ -63,7 +63,30 @@ void USATORI_LightAttackAbility::CancelAbility(const FGameplayAbilitySpecHandle 
 	const FGameplayAbilityActivationInfo ActivationInfo,
 	bool bReplicateCancelAbility)
 {
+	if (PlayerCharacter)
+	{
+		USATORI_AbilitySystemComponent* AbilitySystemComponent =
+			Cast<USATORI_AbilitySystemComponent>(PlayerCharacter->GetAbilitySystemComponent());
+		if (AbilitySystemComponent)
+		{
+			AbilitySystemComponent->CurrentMontageStop();
+		}
+	}
 
+	UAnimInstance* AnimInstance = PlayerCharacter->GetMesh()->GetAnimInstance();
+	if (AnimInstance && AnimMontage)
+	{
+		FAnimMontageInstance* MontageInstance = AnimInstance->GetActiveInstanceForMontage(AnimMontage);
+		if (MontageInstance)
+		{
+			MontageInstance->OnMontageBlendingOutStarted.Unbind();
+			MontageInstance->OnMontageEnded.Unbind();
+			FAlphaBlend* AlfaBlend = nullptr;
+			MontageInstance->Stop(*AlfaBlend);
+		}
+	}
+
+	SourceBlockedTags.Reset();
 
 	Super::CancelAbility(Handle, ActorInfo, ActivationInfo, bReplicateCancelAbility);
 }
