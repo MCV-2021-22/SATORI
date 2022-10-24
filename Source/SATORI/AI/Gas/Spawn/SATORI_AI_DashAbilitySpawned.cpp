@@ -161,13 +161,15 @@ void USATORI_AI_DashAbilitySpawned::Tick(float DeltaTime)
 		Spawned->SetActorLocation(NextPosition);
 	}
 
-	//Stop dashing - It activates when actorreaches collision box in DashActor 
-	if(Spawned->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag("Dash.Stop")))
+	//Stop dashing - It activates when actorreaches collision box in DashActor
+	if(Spawned)
 	{
-		bDashing = false;
-		Explode();
+		if (Spawned->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag("Dash.Stop")))
+		{
+			bDashing = false;
+			Explode();
+		}
 	}
-
 }
 
 void USATORI_AI_DashAbilitySpawned::Explode()
