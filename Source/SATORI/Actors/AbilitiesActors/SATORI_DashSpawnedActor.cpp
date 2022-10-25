@@ -6,6 +6,7 @@
 #include "SATORI/FunctionLibrary/SATORI_BlueprintLibrary.h"
 #include "DrawDebugHelpers.h"
 #include "SATORICharacter.h"
+#include "SATORIGameMode.h"
 #include "Components/DecalComponent.h"
 #include "Kismet/GameplayStatics.h"
 
@@ -63,6 +64,7 @@ void ASATORI_DashSpawnedActor::OnOverlapCollisionSphere(UPrimitiveComponent* Ove
 		USATORI_BlueprintLibrary::ApplyGameplayEffect(Character, HeavyHitGameplayEffect);
 		UFMODBlueprintStatics::PlayEvent2D(GetWorld(), EventExplosion, true);
 		Destroy();
+		GetWorld()->GetAuthGameMode<ASATORIGameMode>()->RemoveEnemyActor(OwnerSpawned);
 		OwnerSpawned->Destroy();
 	}
 }

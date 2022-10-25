@@ -45,7 +45,7 @@ void USATORI_AIDeath::EventReceived(FGameplayTag EventTag, FGameplayEventData Ev
 	{
 		
 		AActor* Actor = GetAvatarActorFromActorInfo();
-		GetWorld()->GetAuthGameMode<ASATORIGameMode>()->RemoveEnemyActor(Actor);
+		
 		ASATORI_AICharacter* Character = Cast<ASATORI_AICharacter>(Actor);
 		
 
@@ -57,6 +57,7 @@ void USATORI_AIDeath::EventReceived(FGameplayTag EventTag, FGameplayEventData Ev
 			if(Fujin->getDead())
 			{
 				Character->SetActorEnableCollision(false);
+				Character->SpawnCointActorAfterDeath();
 				Character->EnemyDissolveAfterDeath(7.5);
 				Fujin->setDead(false);
 				FTimerHandle WaitHandle;
@@ -66,6 +67,8 @@ void USATORI_AIDeath::EventReceived(FGameplayTag EventTag, FGameplayEventData Ev
 						ASATORI_AICharacter* Character1 = Cast<ASATORI_AICharacter>(Actor1);
 
 						if (Character1) {
+							GetWorld()->GetAuthGameMode<ASATORIGameMode>()->RemoveEnemyActor(Actor1);
+							Character1->SpawnCointActorAfterDeath();
 							Character1->canDestroy = true;
 							GetWorld()->GetTimerManager().ClearTimer(WaitHandle);
 						}
@@ -80,6 +83,7 @@ void USATORI_AIDeath::EventReceived(FGameplayTag EventTag, FGameplayEventData Ev
 			if(Raijin->getDead())
 			{
 				Character->SetActorEnableCollision(false);
+				Character->SpawnCointActorAfterDeath();
 				Character->EnemyDissolveAfterDeath(7.5);
 				Raijin->setDead(false);
 				FTimerHandle WaitHandle;
@@ -89,6 +93,8 @@ void USATORI_AIDeath::EventReceived(FGameplayTag EventTag, FGameplayEventData Ev
 						ASATORI_AICharacter* Character1 = Cast<ASATORI_AICharacter>(Actor1);
 
 						if (Character1) {
+							GetWorld()->GetAuthGameMode<ASATORIGameMode>()->RemoveEnemyActor(Actor1);
+							Character1->SpawnCointActorAfterDeath();
 							Character1->canDestroy = true;
 							GetWorld()->GetTimerManager().ClearTimer(WaitHandle);
 						}
@@ -100,7 +106,9 @@ void USATORI_AIDeath::EventReceived(FGameplayTag EventTag, FGameplayEventData Ev
 		}
 		else
 		{
+
 			Character->SetActorEnableCollision(false);
+			Character->SpawnCointActorAfterDeath();
 			Character->EnemyDissolveAfterDeath(7.5);
 			FTimerHandle WaitHandle;
 			GetWorld()->GetTimerManager().SetTimer(WaitHandle, FTimerDelegate::CreateLambda([&]()
@@ -109,6 +117,8 @@ void USATORI_AIDeath::EventReceived(FGameplayTag EventTag, FGameplayEventData Ev
 					ASATORI_AICharacter* Character1 = Cast<ASATORI_AICharacter>(Actor1);
 
 					if (Character1) {
+						GetWorld()->GetAuthGameMode<ASATORIGameMode>()->RemoveEnemyActor(Actor1);
+						
 						Character1->canDestroy = true;
 						GetWorld()->GetTimerManager().ClearTimer(WaitHandle);
 					}
