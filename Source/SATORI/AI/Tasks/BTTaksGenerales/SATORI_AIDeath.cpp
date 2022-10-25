@@ -47,6 +47,7 @@ void USATORI_AIDeath::EventReceived(FGameplayTag EventTag, FGameplayEventData Ev
 		Character->canDestroy = true;
 
 		Character->SpawnCointActorAfterDeath();
+		Character->RemoveGameplayTag(FGameplayTag::RequestGameplayTag("State.Dead"));
 
 		//Actor->Destroy();
 		EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true);
