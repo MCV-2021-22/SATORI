@@ -2,7 +2,7 @@
 <objects serializationModel="Studio.02.02.00">
 	<object class="AudioFile" id="{dd411ae2-9f98-4f8f-93c0-2458066e981d}">
 		<property name="assetPath">
-			<value>FS_WOP_05.wav</value>
+			<value>Character/MONK/Abilities/FS_WOP_05.wav</value>
 		</property>
 		<property name="frequencyInKHz">
 			<value>44.0999985</value>

@@ -46,19 +46,19 @@ void USATORI_AIDeathAbility::ActivateAbility(
 		Character->StopAnimMontage(AnimMontage);
 	}
 
-	Character->EnemyDissolveAfterDeath(1.0f);
+	//Character->EnemyDissolveAfterDeath(1.0f);
 
-	if (Character->GetEnemyType() == SATORIEnemyType::Melee)
-	{
-		ASATORI_Melee* Melee = Cast<ASATORI_Melee>(Actor);
-		if (Melee)
-		{
-			Melee->WeaponDissolveAfterDeath();
-		}
-	}
+	//if (Character->GetEnemyType() == SATORIEnemyType::Melee)
+	//{
+	//	ASATORI_Melee* Melee = Cast<ASATORI_Melee>(Actor);
+	//	if (Melee)
+	//	{
+	//		Melee->WeaponDissolveAfterDeath();
+	//	}
+	//}
 
 	Character->GetCharacterMovement()->Velocity = FVector(0);
 	Character->GetCharacterMovement()->RotationRate = FRotator(0.0f, 0.0f, 0.0f);
 
-	Character->SpawnCointActorAfterDeath();
+	//Character->SpawnCointActorAfterDeath();
 }
