@@ -43,9 +43,6 @@ public:
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "SFX")
 	UFMODEvent* EventExplosion;
 
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "SFX")
-	UFMODEvent* EventHit;
-
 	UPROPERTY(BlueprintReadOnly, Meta = (ExposeOnSpawn = true), Category = "Dash")
 	float Damage;
 
