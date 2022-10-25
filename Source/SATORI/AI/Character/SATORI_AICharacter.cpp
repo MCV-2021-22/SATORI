@@ -515,38 +515,18 @@ void ASATORI_AICharacter::EnemyDissolveAfterDeath(float Timer)
 	if (DynamicMaterials.Num() > 0)
 	{
 		TimeCountDown = Timer;
-		if (EnemyType == SATORIEnemyType::Melee)
-		{
-			GetWorld()->GetTimerManager().SetTimer(MaterialWaitHandle, [this]()
+		GetWorld()->GetTimerManager().SetTimer(MaterialWaitHandle, [this]()
+			{
+				for (int i = 0; i < DynamicMaterials.Num(); i++)
 				{
-					for (int i = 0; i < DynamicMaterials.Num(); i++)
+					DynamicMaterials[i]->SetScalarParameterValue(FName(TEXT("Appearance")), TimeCountDown);
+					TimeCountDown -= LocalRate;
+					if (TimeCountDown <= 0)
 					{
-						DynamicMaterials[i]->SetScalarParameterValue(FName(TEXT("Appearance")), TimeCountDown);
-						TimeCountDown -= LocalRate;
-						if (TimeCountDown <= 0)
-						{
-							DynamicMaterials[i]->SetScalarParameterValue(FName(TEXT("Appearance")), -0.1f);
-							GetWorld()->GetTimerManager().ClearTimer(MaterialWaitHandle);
-						}
+						DynamicMaterials[i]->SetScalarParameterValue(FName(TEXT("Appearance")), -0.1f);
+						GetWorld()->GetTimerManager().ClearTimer(MaterialWaitHandle);
 					}
-				}, LocalRate, true, 0.0f);
-		}
-		else
-		{
-			GetWorld()->GetTimerManager().SetTimer(MaterialWaitHandle, [this]()
-				{
-					for (int i = 0; i < DynamicMaterials.Num(); i++)
-					{
-						DynamicMaterials[i]->SetScalarParameterValue(FName(TEXT("Appearance")), TimeCountDown);
-						TimeCountDown = TimeCountDown / 2;
-						TimeCountDown -= LocalRate;
-						if (TimeCountDown <= 0)
-						{
-							DynamicMaterials[i]->SetScalarParameterValue(FName(TEXT("Appearance")), -0.1f);
-							GetWorld()->GetTimerManager().ClearTimer(MaterialWaitHandle);
-						}
-					}
-				}, LocalRate, true, 0.0f);
-		}
+				}
+			}, LocalRate, true, 0.0f);
 	}
 }
