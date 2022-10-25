@@ -124,5 +124,6 @@ void ASATORI_MissileActor::DamageEnemy(AActor* Actor)
 {
 	ASATORI_AICharacter* Character = Cast<ASATORI_AICharacter>(Actor);
 	USATORI_BlueprintLibrary::ApplyGameplayEffectDamage(Actor, Damage, Actor, DamageGameplayEffect);
+	USATORI_BlueprintLibrary::ApplyGameplayEffect(Actor, StunGameplayEffect);
 	Character->CheckDamage(Damage);
 }
