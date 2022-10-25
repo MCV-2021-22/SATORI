@@ -69,12 +69,12 @@ void USATORI_AI_DashAbilitySpawned::EndAbility(const FGameplayAbilitySpecHandle 
 
 void USATORI_AI_DashAbilitySpawned::OnCancelled(FGameplayTag EventTag, FGameplayEventData EventData)
 {
-	EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true);
+	//EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true);
 }
 
 void USATORI_AI_DashAbilitySpawned::OnCompleted(FGameplayTag EventTag, FGameplayEventData EventData)
 {
-	EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, false);
+	//EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, false);
 }
 
 void USATORI_AI_DashAbilitySpawned::EventReceived(FGameplayTag EventTag, FGameplayEventData EventData)
@@ -100,7 +100,7 @@ void USATORI_AI_DashAbilitySpawned::EventReceived(FGameplayTag EventTag, FGamepl
 		bool bHit = GetWorld()->LineTraceSingleByChannel(HitResult, Spawned->GetActorLocation(), DashActorVisibility, ECollisionChannel::ECC_Visibility, Params);
 		if (bHit)
 		{
-			EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true);
+			//EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true);
 		}
 
 		bDashing = true;
@@ -162,7 +162,7 @@ void USATORI_AI_DashAbilitySpawned::Tick(float DeltaTime)
 	}
 
 	//Stop dashing - It activates when actorreaches collision box in DashActor
-	if(Spawned)
+	if(Spawned && bDashing)
 	{
 		if (Spawned->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag("Dash.Stop")))
 		{
