@@ -48,7 +48,12 @@ public:
 	UFUNCTION(BlueprintType, BlueprintCallable)
 		bool getDowned();
 
+	UFUNCTION(BlueprintType, BlueprintCallable)
+		bool getDead();
+
 	void setDowned(bool dw);
+
+	void setDead(bool dw);
 
 	void startCDDowned();
 
@@ -122,6 +127,8 @@ protected:
 	float close_dist = 100.0f;
 
 	bool downed = false;
+
+	bool dead = false;
 
 	float CdTimeDowned = 10.0f;
 

@@ -358,6 +358,8 @@ void ASATORI_AICharacter::CheckDamage(float Damage)
 		{
 			if(Fujin->getRaijinDowned())
 			{
+				Fujin->setDead(true);
+				Fujin->Raijin->setDead(true);
 				AddGameplayTag(FGameplayTag::RequestGameplayTag("State.Dead"));
 				Fujin->Raijin->AddGameplayTag(FGameplayTag::RequestGameplayTag("State.Dead"));
 			}
@@ -372,6 +374,11 @@ void ASATORI_AICharacter::CheckDamage(float Damage)
 		{
 			if (Raijin->getFujinDowned())
 			{
+				Raijin->setDowned(false);
+				Raijin->Fujin->setDowned(false);
+
+				Raijin->setDead(true);
+				Raijin->Fujin->setDead(true);
 				AddGameplayTag(FGameplayTag::RequestGameplayTag("State.Dead"));
 				Raijin->Fujin->AddGameplayTag(FGameplayTag::RequestGameplayTag("State.Dead"));
 			}

@@ -246,10 +246,21 @@ bool ASATORI_Fujin::getDowned()
 	return downed;
 }
 
+bool ASATORI_Fujin::getDead()
+{
+	return dead;
+}
 
 void ASATORI_Fujin::setDowned(bool dw)
 {
 	downed = dw;
+
+
+}
+
+void ASATORI_Fujin::setDead(bool dw)
+{
+	dead = dw;
 
 
 }
@@ -265,21 +276,29 @@ void ASATORI_Fujin::startCDDowned()
 
 void ASATORI_Fujin::revivirTag()
 {
-	RemoveGameplayTag(FGameplayTag::RequestGameplayTag("Boss.Downed"));
-	AddGameplayTag(FGameplayTag::RequestGameplayTag("State.Revive"));
+	if (!HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag("State.Dead")))
+	{
+
+		RemoveGameplayTag(FGameplayTag::RequestGameplayTag("Boss.Downed"));
+		AddGameplayTag(FGameplayTag::RequestGameplayTag("State.Revive"));
+	}
 
 }
 
 
 void ASATORI_Fujin::revivir()
 {
-	setDowned(false);
-	RemoveGameplayTag(FGameplayTag::RequestGameplayTag("State.Revive"));
-	GetWorld()->GetTimerManager().ClearTimer(TimerHandleDowned);
+	if(!HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag("State.Dead")))
+	{
+		setDowned(false);
+		RemoveGameplayTag(FGameplayTag::RequestGameplayTag("State.Revive"));
+		GetWorld()->GetTimerManager().ClearTimer(TimerHandleDowned);
 
-	SetHealth(GetMaxHealth() * 0.25f);
-	AddGameplayTag(FGameplayTag::RequestGameplayTag("Boss.Jugable"));
+		SetHealth(GetMaxHealth() * 0.25f);
+		AddGameplayTag(FGameplayTag::RequestGameplayTag("Boss.Jugable"));
 
+	}
+	
 }
 
 bool ASATORI_Fujin::getRaijinDowned()
