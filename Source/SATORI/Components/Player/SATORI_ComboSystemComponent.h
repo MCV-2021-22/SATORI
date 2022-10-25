@@ -48,6 +48,9 @@ public:
 	void HeavyAttack();
 
 	UFUNCTION(BlueprintCallable)
+	void SetMainWidgetVisibility(bool Value = false);
+
+	UFUNCTION(BlueprintCallable)
 	bool CanComboAttack();
 
 	void ResetAllAttribute();

@@ -160,6 +160,9 @@ void ASATORICharacter::PossessedBy(AController* NewController)
 			StatsComponent->InitializeStatsAttributes(PS);
 			PlayerGameplayAbilityComponent->SetSavedAbilitiesWithGameInstance(GameInstanceRef);
 			IsAbilityUpgrated = GameInstanceRef->isAbilityUpgrated;
+
+			// UI Hide
+			GetComboSystemComponent()->SetMainWidgetVisibility(GameInstanceRef->bIsShowingMainWidget);
 		}
 		else
 		{
@@ -167,6 +170,9 @@ void ASATORICharacter::PossessedBy(AController* NewController)
 			SATORIAbilityMaskComponent->GrantedMaskEffects(GameInstanceRef->MaskType);
 			PlayerGameplayAbilityComponent->SetSavedAbilitiesWithGameInstance(GameInstanceRef);
 			IsAbilityUpgrated = GameInstanceRef->isAbilityUpgrated;
+
+			// UI Visible
+			GetComboSystemComponent()->SetMainWidgetVisibility(GameInstanceRef->bIsShowingMainWidget);
 		}
 
 		// Set Health to Max Health Value
@@ -492,6 +498,7 @@ void ASATORICharacter::ResetCharacterDatas()
 	{
 		GameInstanceRef->ResetPortalRewardAbilities();
 		GameInstanceRef->SetPlayerStart(true);
+		GameInstanceRef->bIsShowingMainWidget = false;
 	}
 
 	// Reset current player reward abilities with the portal to zero

@@ -138,7 +138,7 @@ void ASATORI_Portal::SetCurrentGameplayAbilityData(FSATORI_PortalAbilitiesDatasR
 void ASATORI_Portal::ActivatePortal()
 {
 	Active = true;
-	UE_LOG(LogTemp, Display, TEXT("[%s] ASATORI_Portal: Portal is Active ... "), *GetName());
+	//UE_LOG(LogTemp, Display, TEXT("[%s] ASATORI_Portal: Portal is Active ... "), *GetName());
 	
 	SphereComponent->SetCollisionProfileName(FName("IgnoreAllOverlapOnlyPlayer"));
 
@@ -168,6 +168,9 @@ void ASATORI_Portal::ChangeLevel(ASATORICharacter* Character)
 		GameInstanceRef->Attack = Character->GetAttack();
 		GameInstanceRef->MoveSpeed = Character->GetMoveSpeed();
 		GameInstanceRef->Gold = Character->GetGold();
+		GameInstanceRef->bIsShowingMainWidget = true;
+
+		// Abilities
 		GameInstanceRef->NormalAbilities = Character->GetPlayerAbilityComponent()->GetCharacterAbilities();
 		GameInstanceRef->UpgratedAbilities = Character->GetPlayerAbilityComponent()->GetCharacterAbilities();
 		GameInstanceRef->CurrentPlayerAbilityId = Character->GetPlayerAbilityComponent()->CurrentAbilityValue;

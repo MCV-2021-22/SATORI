@@ -33,8 +33,6 @@ void USATORI_ANS_CanceAbility::NotifyBegin(USkeletalMeshComponent* MeshComp, UAn
 					CancelAbilityTag.AddTag(TagToCancelAbility);
 
 					AbilitySystemComponent->CancelAbilities(&CancelAbilityTag);
-
-					StopPlayMontage(MeshComp, PlayerCharacter);
 				}
 			}
 		}
@@ -61,8 +59,6 @@ void USATORI_ANS_CanceAbility::NotifyTick(USkeletalMeshComponent* MeshComp, UAni
 					CancelAbilityTag.AddTag(TagToCancelAbility);
 
 					PlayerCharacter->PlayerCancelAbilityWithTag(CancelAbilityTag);
-
-					StopPlayMontage(MeshComp, PlayerCharacter);
 				}
 			}
 		}
@@ -72,37 +68,4 @@ void USATORI_ANS_CanceAbility::NotifyTick(USkeletalMeshComponent* MeshComp, UAni
 void USATORI_ANS_CanceAbility::NotifyEnd(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation)
 {
 	Super::NotifyEnd(MeshComp, Animation);
-}
-
-void USATORI_ANS_CanceAbility::StopPlayMontage(USkeletalMeshComponent* MeshComponent, ASATORICharacter* PlayerCharacter)
-{
-	/*UAnimInstance* AnimInstance = MeshComponent->GetAnimInstance();
-	if (AnimInstance && MontageToPlay)
-	{
-		FAnimMontageInstance* MontageInstance = AnimInstance->GetActiveInstanceForMontage(MontageToPlay);
-		if (MontageInstance)
-		{
-			MontageInstance->OnMontageBlendingOutStarted.Unbind();
-			MontageInstance->OnMontageEnded.Unbind();
-		}
-	}
-	if (PlayerCharacter)
-	{
-		USATORI_AbilitySystemComponent* AbilitySystemComponent = 
-			Cast<USATORI_AbilitySystemComponent>(PlayerCharacter->GetAbilitySystemComponent());
-		if (AbilitySystemComponent)
-		{
-			AbilitySystemComponent->CurrentMontageStop();
-			FGameplayTag Combo_1_Tag = FGameplayTag::RequestGameplayTag("Ability.Input.Combo1");
-			FGameplayTag Combo_2_Tag = FGameplayTag::RequestGameplayTag("Ability.Input.Combo2");
-			if (AbilitySystemComponent->HasMatchingGameplayTag(Combo_1_Tag))
-			{
-				AbilitySystemComponent->RemoveLooseGameplayTag(Combo_1_Tag);
-			}
-			if (AbilitySystemComponent->HasMatchingGameplayTag(Combo_2_Tag))
-			{
-				AbilitySystemComponent->RemoveLooseGameplayTag(Combo_2_Tag);
-			}
-		}
-	}*/
 }

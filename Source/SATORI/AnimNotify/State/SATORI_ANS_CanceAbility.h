@@ -27,6 +27,4 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Montage")
 	UAnimMontage* MontageToPlay = nullptr;
-private:
-	void StopPlayMontage(USkeletalMeshComponent* MeshComponent, ASATORICharacter* PlayerCharacter);
 };
