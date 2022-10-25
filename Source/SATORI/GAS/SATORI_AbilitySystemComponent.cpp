@@ -18,6 +18,27 @@
 //	}
 //}
 
+bool USATORI_AbilitySystemComponent::SatoriCheckIsAbilityActive(const FGameplayTagContainer* WithTags, UGameplayAbility* Ignore)
+{
+	ABILITYLIST_SCOPE_LOCK();
+
+	for (FGameplayAbilitySpec& Spec : ActivatableAbilities.Items)
+	{
+		if (!Spec.IsActive() || Spec.Ability == nullptr || Spec.Ability == Ignore)
+		{
+			continue;
+		}
+
+		const bool WithTagPass = (!WithTags || Spec.Ability->AbilityTags.HasAny(*WithTags));
+
+		if (WithTagPass)
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
 void USATORI_AbilitySystemComponent::OnPawnControllerChanged(APawn* Pawn, AController* NewController)
 {
 	if (AbilityActorInfo && AbilityActorInfo->OwnerActor == Pawn && AbilityActorInfo->PlayerController != NewController)

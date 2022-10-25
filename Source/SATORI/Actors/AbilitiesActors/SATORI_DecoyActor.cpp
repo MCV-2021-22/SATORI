@@ -5,6 +5,7 @@
 #include "GameFramework/ProjectileMovementComponent.h"
 #include "AI/Character/SATORI_AICharacter.h"
 #include "SATORI/FunctionLibrary/SATORI_BlueprintLibrary.h"
+#include "NiagaraComponent.h"
 //Debug
 #include "DrawDebugHelpers.h"
 
@@ -31,6 +32,9 @@ ASATORI_DecoyActor::ASATORI_DecoyActor()
 	//Debug
 	CollisionSphereComponent->bHiddenInGame = false;
 
+	// Particles
+	Decoy_Particle = CreateDefaultSubobject<UNiagaraComponent>(TEXT("PushParticle"));
+	Decoy_Particle->SetupAttachment(RootComponent);
 }
 
 //Collision for luring

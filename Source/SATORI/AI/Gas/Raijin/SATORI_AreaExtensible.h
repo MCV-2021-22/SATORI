@@ -11,10 +11,8 @@
 #include "AI/Components/Raijin/SATORI_RaijinRayoExtensible.h"
 #include "SATORI_AreaExtensible.generated.h"
 
+class UParticleSystem;
 
-/**
- * 
- */
 UCLASS()
 class SATORI_API USATORI_AreaExtensible : public UGameplayAbility
 {
@@ -41,6 +39,9 @@ public:
 	UPROPERTY(BlueprintReadOnly, EditAnywhere)
 		TSubclassOf<ASATORI_RaijinRayoExtensible> ProjectileClass;
 
+	// Particle
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	UParticleSystem* Area_Particle = nullptr;
 
 	FTimerDelegate TimerDelegate;
 	FTimerHandle TimerHandle;

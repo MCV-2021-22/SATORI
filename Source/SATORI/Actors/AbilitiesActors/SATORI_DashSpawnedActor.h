@@ -8,6 +8,7 @@
 #include "GameplayEffect.h"
 #include "AI/Character/Spawned/SATORI_Spawned.h"
 #include "Components/BoxComponent.h"
+#include "FMODBlueprintStatics.h"
 #include "SATORI_DashSpawnedActor.generated.h"
 
 class USphereComponent;
@@ -38,6 +39,9 @@ public:
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "GameplayEffect")
 	TSubclassOf<UGameplayEffect> HeavyHitGameplayEffect;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "SFX")
+	UFMODEvent* EventExplosion;
 
 	UPROPERTY(BlueprintReadOnly, Meta = (ExposeOnSpawn = true), Category = "Dash")
 	float Damage;

@@ -160,6 +160,9 @@ void ASATORICharacter::PossessedBy(AController* NewController)
 			StatsComponent->InitializeStatsAttributes(PS);
 			PlayerGameplayAbilityComponent->SetSavedAbilitiesWithGameInstance(GameInstanceRef);
 			IsAbilityUpgrated = GameInstanceRef->isAbilityUpgrated;
+
+			// UI Hide
+			GetComboSystemComponent()->SetMainWidgetVisibility(GameInstanceRef->bIsShowingMainWidget);
 		}
 		else
 		{
@@ -167,6 +170,9 @@ void ASATORICharacter::PossessedBy(AController* NewController)
 			SATORIAbilityMaskComponent->GrantedMaskEffects(GameInstanceRef->MaskType);
 			PlayerGameplayAbilityComponent->SetSavedAbilitiesWithGameInstance(GameInstanceRef);
 			IsAbilityUpgrated = GameInstanceRef->isAbilityUpgrated;
+
+			// UI Visible
+			GetComboSystemComponent()->SetMainWidgetVisibility(GameInstanceRef->bIsShowingMainWidget);
 		}
 
 		// Set Health to Max Health Value
@@ -492,6 +498,7 @@ void ASATORICharacter::ResetCharacterDatas()
 	{
 		GameInstanceRef->ResetPortalRewardAbilities();
 		GameInstanceRef->SetPlayerStart(true);
+		GameInstanceRef->bIsShowingMainWidget = false;
 	}
 
 	// Reset current player reward abilities with the portal to zero
@@ -508,6 +515,30 @@ void ASATORICharacter::ResetCharacterDatas()
 
 		AbilitySystemComponent->AddLooseGameplayTag(DeadTag);
 	}
+}
+
+bool ASATORICharacter::PlayerCancelAbilityWithTag(FGameplayTagContainer& GameplayTagContainer)
+{
+	if (AbilitySystemComponent.IsValid())
+	{
+		TArray<FGameplayAbilitySpec*> AbilitiesToActivate;
+		AbilitySystemComponent->GetActivatableGameplayAbilitySpecsByAllMatchingTags(GameplayTagContainer, AbilitiesToActivate);
+		if (AbilitiesToActivate.Num() > 0)
+		{
+			for (auto& CurrentAbility : AbilitiesToActivate)
+			{
+				if (CurrentAbility->IsActive())
+				{
+					/*GEngine->AddOnScreenDebugMessage(-1, 200, FColor::Green, FString::Printf(TEXT("Ability Cancel Name :  %s"),
+						*CurrentAbility->Ability->GetName()));*/
+					AbilitySystemComponent->CancelAbility(CurrentAbility->Ability);
+					return true;
+				}
+			}
+		}
+	}
+
+	return false;
 }
 
 void ASATORICharacter::CharacterDeath()
@@ -753,6 +784,9 @@ void ASATORICharacter::SetupPlayerInputComponent(class UInputComponent* PlayerIn
 	PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &ACharacter::Jump);
 	PlayerInputComponent->BindAction("Jump", IE_Released, this, &ACharacter::StopJumping);
 
+	PlayerInputComponent->BindAction("Dash", IE_Pressed, this, &ASATORICharacter::OnDash);
+	PlayerInputComponent->BindAction("Dash", IE_Released, this, &ASATORICharacter::OnDashReleases);
+
 	PlayerInputComponent->BindAxis("MoveForward", this, &ASATORICharacter::MoveForward);
 	PlayerInputComponent->BindAxis("MoveRight", this, &ASATORICharacter::MoveRight);
 
@@ -841,6 +875,24 @@ void ASATORICharacter::MoveRight(float Value)
 void ASATORICharacter::OnInteract()
 {
 	InteractComponent->TryToInteract();
+}
+
+void ASATORICharacter::OnDash()
+{
+	if (ComboSystemComponent)
+	{
+		//GEngine->AddOnScreenDebugMessage(-1, 200, FColor::Green, FString::Printf(TEXT("DASHING")));
+		ComboSystemComponent->isAbilityCanceled = true;
+	}
+}
+
+void ASATORICharacter::OnDashReleases()
+{
+	if (ComboSystemComponent)
+	{
+		//GEngine->AddOnScreenDebugMessage(-1, 200, FColor::Green, FString::Printf(TEXT("DASHING Released")));
+		ComboSystemComponent->isAbilityCanceled = false;
+	}
 }
 
 void ASATORICharacter::SetComboJumpSection(USATORI_ANS_JumpSection* JumpSection)

@@ -2,7 +2,7 @@
 <objects serializationModel="Studio.02.02.00">
 	<object class="AudioFile" id="{049270a1-fc81-4a1c-b3a0-e8e8c9e166d3}">
 		<property name="assetPath">
-			<value>block.ogg</value>
+			<value>Character/MONK/Abilities/block.ogg</value>
 		</property>
 		<property name="frequencyInKHz">
 			<value>44.0999985</value>

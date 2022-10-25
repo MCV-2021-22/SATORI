@@ -4,6 +4,8 @@
 #include "Components/SphereComponent.h"
 #include "SATORI/AI/Character/SATORI_AICharacter.h"
 #include "SATORI/FunctionLibrary/SATORI_BlueprintLibrary.h"
+#include "NiagaraComponent.h"
+#include "Particles/ParticleSystemComponent.h"
 //Debug
 #include "DrawDebugHelpers.h"
 
@@ -21,6 +23,10 @@ ASATORI_Push360Actor::ASATORI_Push360Actor()
 
 	//Debug
 	CollisionSphereComponent->bHiddenInGame = false;
+
+	//Particles
+	PushParticle = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("PushParticle"));
+	PushParticle->SetupAttachment(RootComponent);
 }
 
 void ASATORI_Push360Actor::OnOverlapCollisionSphere(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)

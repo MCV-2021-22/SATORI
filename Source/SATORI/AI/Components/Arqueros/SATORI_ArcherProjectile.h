@@ -29,8 +29,8 @@ public:
 	UPROPERTY(EditDefaultsOnly)
 		UParticleSystemComponent* Moving_Projectile = nullptr;
 
-	UPROPERTY(EditDefaultsOnly)
-		UParticleSystemComponent* Impact_Particle = nullptr;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Particle")
+		UParticleSystem* Impact_Particle = nullptr;
 
 	UPROPERTY(BlueprintReadOnly, EditAnywhere)
 		float radius = 5.0f;

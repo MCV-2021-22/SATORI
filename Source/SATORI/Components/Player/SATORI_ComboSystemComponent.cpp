@@ -8,6 +8,8 @@
 #include "Components/BoxComponent.h"
 #include "AI/Character/SATORI_AICharacter.h"
 #include "AbilitySystemComponent.h"
+#include "Character/SATORI_PlayerController.h"
+#include "UI/SATORI_MainUI.h"
 
 // Sets default values for this component's properties
 USATORI_ComboSystemComponent::USATORI_ComboSystemComponent()
@@ -92,6 +94,33 @@ bool USATORI_ComboSystemComponent::CanComboAttack()
 void USATORI_ComboSystemComponent::SetComboState(EComboState State)
 {
 	CurrentComboState = State;
+}
+
+void USATORI_ComboSystemComponent::SetMainWidgetVisibility(bool ShowVisibility)
+{
+	ASATORICharacter* PlayerCharacter = Cast<ASATORICharacter>(GetOwner());
+	ESlateVisibility EVisibility = ESlateVisibility::Hidden;
+	if (PlayerCharacter)
+	{
+		ASATORI_PlayerController* PlayerController = Cast<ASATORI_PlayerController>(PlayerCharacter->GetController());
+		if (PlayerController)
+		{
+			USATORI_MainUI* MainUI = PlayerController->GetSatoriMainUI();
+			if (MainUI)
+			{
+				if (ShowVisibility)
+				{
+					EVisibility = ESlateVisibility::Visible;
+					MainUI->SetVisibility(EVisibility);
+				}
+				else if (!ShowVisibility)
+				{
+					EVisibility = ESlateVisibility::Hidden;
+					MainUI->SetVisibility(EVisibility);
+				}
+			}
+		}
+	}
 }
 
 void USATORI_ComboSystemComponent::ApplyKnockBackTagToEnemy(ASATORI_AICharacter* Enemy)

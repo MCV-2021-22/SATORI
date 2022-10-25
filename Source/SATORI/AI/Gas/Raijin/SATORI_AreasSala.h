@@ -33,7 +33,10 @@ public:
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Ability|Tags")
 		FGameplayTag TagEndAbility;
 
-	
+	// Particle
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	UParticleSystem* Area_Particle = nullptr;
+
 	virtual void ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, 
 		const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData) override;
 

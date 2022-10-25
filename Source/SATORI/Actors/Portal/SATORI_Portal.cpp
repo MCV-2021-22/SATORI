@@ -19,6 +19,9 @@
 #include "Components/WidgetComponent.h"
 #include "Components/Player/SATORI_GameplayAbilityComponent.h"
 #include "Kismet/GameplayStatics.h"
+#include "Character/SATORI_PlayerController.h"
+#include "NiagaraSystem.h"
+#include "NiagaraFunctionLibrary.h"
 
 // Sets default values
 ASATORI_Portal::ASATORI_Portal()
@@ -27,6 +30,9 @@ ASATORI_Portal::ASATORI_Portal()
 
 	StaticMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("StaticMeshComponent"));
 	StaticMeshComponent->SetupAttachment(RootComponent);
+
+	SpawnParticleComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("SpawnParticleComponent"));
+	SpawnParticleComponent->SetupAttachment(RootComponent);
 
 	TextRenderComponent = CreateDefaultSubobject<UTextRenderComponent>(TEXT("TextRenderComponent"));
 	TextRenderComponent->SetupAttachment(RootComponent);
@@ -132,7 +138,7 @@ void ASATORI_Portal::SetCurrentGameplayAbilityData(FSATORI_PortalAbilitiesDatasR
 void ASATORI_Portal::ActivatePortal()
 {
 	Active = true;
-	UE_LOG(LogTemp, Display, TEXT("[%s] ASATORI_Portal: Portal is Active ... "), *GetName());
+	//UE_LOG(LogTemp, Display, TEXT("[%s] ASATORI_Portal: Portal is Active ... "), *GetName());
 	
 	SphereComponent->SetCollisionProfileName(FName("IgnoreAllOverlapOnlyPlayer"));
 
@@ -162,18 +168,45 @@ void ASATORI_Portal::ChangeLevel(ASATORICharacter* Character)
 		GameInstanceRef->Attack = Character->GetAttack();
 		GameInstanceRef->MoveSpeed = Character->GetMoveSpeed();
 		GameInstanceRef->Gold = Character->GetGold();
+		GameInstanceRef->bIsShowingMainWidget = true;
+
+		// Abilities
 		GameInstanceRef->NormalAbilities = Character->GetPlayerAbilityComponent()->GetCharacterAbilities();
 		GameInstanceRef->UpgratedAbilities = Character->GetPlayerAbilityComponent()->GetCharacterAbilities();
 		GameInstanceRef->CurrentPlayerAbilityId = Character->GetPlayerAbilityComponent()->CurrentAbilityValue;
 		RemoveGameinstanceAbilities(GameInstanceRef, CurrentId);
 	}
 
-	if (LevelNames.Num() != 0)
+	FVector SpawnLocation = Character->GetActorLocation();
+	ASATORI_PlayerController* PlayerController = Cast<ASATORI_PlayerController>(Character->GetController());
+
+	SpawnParticleLocation.X = SpawnLocation.X;
+	SpawnParticleLocation.Y = SpawnLocation.Y;
+	//SpawnParticleLocation.Z = SpawnLocation.Z;
+
+	if (Door_Particles)
 	{
-		int NumLevels = LevelNames.Num() - 1;
-		int  Level = FMath::RandRange(0, NumLevels);
-		UGameplayStatics::OpenLevel(GetWorld(), FName(LevelNames[Level]));
+		UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), Door_Particles, SpawnParticleLocation);
 	}
+
+	if (PlayerController)
+	{
+		PlayerController->bShowMouseCursor = true;
+		PlayerController->bEnableClickEvents = true;
+		PlayerController->bEnableMouseOverEvents = true;
+		Character->DisableInput(PlayerController);
+	}
+
+	FTimerHandle WaitHandle;
+	GetWorld()->GetTimerManager().SetTimer(WaitHandle, FTimerDelegate::CreateLambda([&]()
+		{
+			if (LevelNames.Num() != 0)
+			{
+				int NumLevels = LevelNames.Num() - 1;
+				int Level = FMath::RandRange(0, NumLevels);
+				UGameplayStatics::OpenLevel(GetWorld(), FName(LevelNames[Level]));
+			}
+		}), 1.0f, false);
 }
 
 void ASATORI_Portal::Interact(AActor* ActorInteracting)

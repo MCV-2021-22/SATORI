@@ -19,6 +19,7 @@ class USATORI_PortalPassiveDataAsset;
 class UBillboardComponent;
 class UWidgetComponent;
 class USATORI_GameInstance;
+class UNiagaraSystem;
 
 USTRUCT(BlueprintType)
 struct FSATORI_PortalAbilitiesDatasReward
@@ -79,6 +80,9 @@ public:
 	UStaticMeshComponent* StaticMeshComponent = nullptr;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
+	UStaticMeshComponent* SpawnParticleComponent = nullptr;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
 	USphereComponent* SphereComponent = nullptr;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
@@ -98,12 +102,18 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "GameplayAbility")
 	FSATORI_PortalAbilitiesDatasReward PortalAbilityToApply;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "SpawnLocation")
+	FVector SpawnParticleLocation;
+
 	// Widgets
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "UI")
 	TSubclassOf<USATORI_MainUI> SATORIMainUI;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "UI")
-	USATORI_DoorInteractUI* DoorInteractUI;
+	USATORI_DoorInteractUI* DoorInteractUI = nullptr;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Particles")
+	UNiagaraSystem* Door_Particles = nullptr;
 
 	/*UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "PassiveDataAsset")
 	USATORI_PortalPassiveDataAsset* PassiveDataAsset;*/

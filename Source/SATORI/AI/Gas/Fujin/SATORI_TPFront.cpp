@@ -8,6 +8,7 @@
 #include "AI/Character/Fujin/SATORI_Fujin.h"
 #include "Kismet/GameplayStatics.h"
 #include "Widgets/Text/ISlateEditableTextWidget.h"
+#include "NiagaraFunctionLibrary.h"
 
 USATORI_TPFront::USATORI_TPFront()
 {
@@ -42,6 +43,13 @@ void USATORI_TPFront::EventReceived(FGameplayTag EventTag, FGameplayEventData Ev
 			Fujin->GetMesh()->SetVisibility(false);
 			Fujin->SetActorEnableCollision(false);
 
+			// TP Particle
+			FVector SpawnLocation = GetAvatarActorFromActorInfo()->GetActorLocation();
+
+			if (Teleport_Particle)
+			{
+				UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), Teleport_Particle, SpawnLocation);
+			}
 		}
 
 

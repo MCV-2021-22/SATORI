@@ -143,7 +143,12 @@ public:
 	
 	virtual void RemoveCharacterAbilities() override;
 
+	// Reset All character Datas
 	void ResetCharacterDatas();
+
+	// Cancel Ability With Tag
+	bool PlayerCancelAbilityWithTag(FGameplayTagContainer& GameplayTagContainer);
+
 	// Getters
 	bool GetIsAbilityUpgrated() { return IsAbilityUpgrated; }
 	void SetIsAbilityUpgrated(bool Value) { IsAbilityUpgrated = Value; }
@@ -242,6 +247,9 @@ protected:
 	void TouchStopped(ETouchIndex::Type FingerIndex, FVector Location);
 
 	void OnInteract();
+
+	void OnDash();
+	void OnDashReleases();
 
 	// Weapon Overlap
 	UFUNCTION()

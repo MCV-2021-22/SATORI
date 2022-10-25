@@ -14,7 +14,7 @@ class UStaticMeshComponent;
 class UNiagaraComponent;
 class UGameplayEffect;
 class UProjectileMovementComponent;
-
+class UNiagaraSystem;
 
 UCLASS()
 class SATORI_API ASATORI_MissileActor : public AActor
@@ -33,6 +33,16 @@ public:
 
 	UPROPERTY(BlueprintReadOnly, Meta = (ExposeOnSpawn = true), Category = "Missile")
 	TSubclassOf<UGameplayEffect> DamageGameplayEffect;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "GameplayEffect")
+	TSubclassOf<UGameplayEffect> StunGameplayEffect;
+
+	// Particles
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Particle")
+	UNiagaraComponent* Missile_Particle = nullptr;
+
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Particle")
+	UNiagaraSystem* Missile_Hit_Particle = nullptr;
 
 	UPROPERTY(BlueprintReadOnly, Meta = (ExposeOnSpawn = true), Category = "Missile")
 	float Damage;

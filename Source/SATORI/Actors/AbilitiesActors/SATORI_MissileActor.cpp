@@ -8,6 +8,8 @@
 #include "SATORI/FunctionLibrary/SATORI_BlueprintLibrary.h"
 #include "SATORICharacter.h"
 #include "SATORIGameMode.h"
+#include "NiagaraComponent.h"
+#include "NiagaraFunctionLibrary.h"
 
 ASATORI_MissileActor::ASATORI_MissileActor()
 {
@@ -27,6 +29,10 @@ ASATORI_MissileActor::ASATORI_MissileActor()
 
 	//Debug
 	CollisionSphereComponent->bHiddenInGame = false;
+
+	// Particle
+	Missile_Particle = CreateDefaultSubobject<UNiagaraComponent>(TEXT("MissileParticle"));
+	Missile_Particle->SetupAttachment(RootComponent);
 }
 
 //Collision for exploding
@@ -37,9 +43,15 @@ void ASATORI_MissileActor::OnOverlapCollisionSphere(UPrimitiveComponent* Overlap
 	CollisionSphereComponent->SetCollisionProfileName(UCollisionProfile::NoCollision_ProfileName);
 	ASATORI_AICharacter* Character = Cast<ASATORI_AICharacter>(OtherActor);
 
+	FVector SpawnLocation = CollisionSphereComponent->GetComponentLocation();
+
 	// Walls
 	if (!Character)
 	{
+		if (Missile_Hit_Particle)
+		{
+			UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), Missile_Hit_Particle, SpawnLocation);
+		}
 		DestroyMyself();
 		return;
 	}
@@ -47,6 +59,10 @@ void ASATORI_MissileActor::OnOverlapCollisionSphere(UPrimitiveComponent* Overlap
 	// Enemies
 	if (Character->HasMatchingGameplayTag(EnemyTag))
 	{
+		if (Missile_Hit_Particle)
+		{
+			UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), Missile_Hit_Particle, SpawnLocation);
+		}
 		DamageEnemy(OtherActor);
 	}
 
@@ -108,5 +124,6 @@ void ASATORI_MissileActor::DamageEnemy(AActor* Actor)
 {
 	ASATORI_AICharacter* Character = Cast<ASATORI_AICharacter>(Actor);
 	USATORI_BlueprintLibrary::ApplyGameplayEffectDamage(Actor, Damage, Actor, DamageGameplayEffect);
+	USATORI_BlueprintLibrary::ApplyGameplayEffect(Actor, StunGameplayEffect);
 	Character->CheckDamage(Damage);
 }
