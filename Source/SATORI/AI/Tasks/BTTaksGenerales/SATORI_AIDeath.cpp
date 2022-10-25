@@ -29,11 +29,11 @@ void USATORI_AIDeath::ActivateAbility(
 	Task->EventReceived.AddDynamic(this, &USATORI_AIDeath::EventReceived);
 	Task->ReadyForActivation();
 	
-	ASATORI_AICharacter* Character = Cast<ASATORI_AICharacter>(GetAvatarActorFromActorInfo());
+	/*ASATORI_AICharacter* Character = Cast<ASATORI_AICharacter>(GetAvatarActorFromActorInfo());
 	if (Character)
 	{
-		Character->EnemyDissolveAfterDeath();
-	}
+		Character->EnemyDissolveAfterDeath(200);
+	}*/
 }
 
 
@@ -46,22 +46,22 @@ void USATORI_AIDeath::EventReceived(FGameplayTag EventTag, FGameplayEventData Ev
 		ASATORI_AICharacter* Character = Cast<ASATORI_AICharacter>(Actor);
 		Character->canDestroy = true;
 
-		Character->SpawnCointActorAfterDeath();
-		Character->RemoveGameplayTag(FGameplayTag::RequestGameplayTag("State.Dead"));
+		//Character->SpawnCointActorAfterDeath();
+		//Character->RemoveGameplayTag(FGameplayTag::RequestGameplayTag("State.Dead"));
 
 		//Actor->Destroy();
-		EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true);
+		//EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true);
 	}
 }
 
 void USATORI_AIDeath::OnCancelled(FGameplayTag EventTag, FGameplayEventData EventData)
 {
-	EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true);
+	//EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true);
 }
 void USATORI_AIDeath::OnCompleted(FGameplayTag EventTag, FGameplayEventData EventData)
 {
-	AActor* Actor = GetAvatarActorFromActorInfo();
-	GetWorld()->GetAuthGameMode<ASATORIGameMode>()->RemoveEnemyActor(Actor);
+	//AActor* Actor = GetAvatarActorFromActorInfo();
+	//GetWorld()->GetAuthGameMode<ASATORIGameMode>()->RemoveEnemyActor(Actor);
 
-	EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true);
+	//EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true);
 }
