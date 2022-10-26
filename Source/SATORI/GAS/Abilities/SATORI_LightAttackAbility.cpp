@@ -86,6 +86,9 @@ void USATORI_LightAttackAbility::CancelAbility(const FGameplayAbilitySpecHandle 
 		}
 	}
 
+	// This dont work good no way omg
+	//PlayerCharacter->LaunchCharacter(FVector(0.0f, 0.0f, 1.0f), false, false);
+
 	SourceBlockedTags.Reset();
 
 	Super::CancelAbility(Handle, ActorInfo, ActivationInfo, bReplicateCancelAbility);
