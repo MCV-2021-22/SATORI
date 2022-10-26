@@ -45,6 +45,12 @@ public:
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Ability|Tags")
 		FGameplayTag TagPunchHeavyEnd;
 
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Ability|Tags")
+		FGameplayTag TagPunchHeavyL;
+
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Ability|Tags")
+		FGameplayTag TagPunchHeavyLEnd;
+
 	FTimerDelegate TimerDelegate;
 
 	FTimerHandle TimerHandle;

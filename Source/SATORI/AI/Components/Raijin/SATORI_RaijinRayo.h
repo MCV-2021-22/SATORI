@@ -100,7 +100,8 @@ protected:
 
 	float time_to_overlap = 0.5;
 
-	float time_to_destroy = 1.5;
+	//float time_to_destroy = 1.5;
+	float time_to_destroy = 0.5;
 
 	float time_actual = 0;
 

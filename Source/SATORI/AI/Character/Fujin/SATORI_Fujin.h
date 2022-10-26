@@ -63,6 +63,10 @@ public:
 
 	bool getRaijinDowned();
 
+	bool getGolpeFuerte();
+
+	void setGolpeFuerte(bool golpe);
+
 
 	FVector posinicial;
 
@@ -76,6 +80,10 @@ public:
 
 	UPROPERTY(EditDefaultsOnly)
 		UNiagaraSystem* Nube = nullptr;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Meta = (ExposeOnSpawn = true), Category = "Missile")
+		TSubclassOf<UGameplayEffect> DamageGameplayEffect;
+
 
 	UFUNCTION()
 		void OnOverlapLeft(
@@ -113,6 +121,19 @@ public:
 
 	TArray< float > GetArrayProbs(int Combo);
 
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Meta = (ExposeOnSpawn = true), Category = "Missile")
+		float dmg_right_low = 0.001;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Meta = (ExposeOnSpawn = true), Category = "Missile")
+		float dmg_right_huge = 0.001;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Meta = (ExposeOnSpawn = true), Category = "Missile")
+		float dmg_left_low = 0.001;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Meta = (ExposeOnSpawn = true), Category = "Missile")
+		float dmg_left_huge = 0.001;
+
+
 protected:
 
 
@@ -131,6 +152,10 @@ protected:
 	bool dead = false;
 
 	float CdTimeDowned = 10.0f;
+
+	bool golpe_fuerte = false;
+
+	
 
 	TArray< float > Prob_C1;
 	TArray< float > Prob_C2;
