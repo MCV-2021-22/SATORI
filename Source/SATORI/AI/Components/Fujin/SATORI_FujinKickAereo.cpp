@@ -274,6 +274,7 @@ void ASATORI_FujinKickAereo::OnComponentBeginOverlapPeque(
 		Fujin_inside = true;
 		if (player_inside)
 		{
+			float dmg_done = USATORI_BlueprintLibrary::ApplyGameplayEffectDamage(Player, Damage, Player, DamageGameplayEffect);
 			Fujin->AddGameplayTag(FGameplayTag::RequestGameplayTag("Fujin.PlayerHitted"));
 			//Fujin->GetCapsuleComponent()->SetCollisionProfileName(FName("Pawn"));
 			//Player->GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_Pawn, ECR_Block);

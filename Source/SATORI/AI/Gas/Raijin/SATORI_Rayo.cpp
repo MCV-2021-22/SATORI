@@ -86,6 +86,11 @@ void USATORI_Rayo::OnBucleRayos(const FGameplayAbilitySpecHandle Handle, const F
 				Player->GetActorLocation(),
 				RotationOfIA);
 
+			if (Rayo)
+			{
+				Rayo->Damage = Damage/5;
+			}
+
 
 			break;
 

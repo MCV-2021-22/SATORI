@@ -100,6 +100,7 @@ void USATORI_AreasPatron::EventReceived(FGameplayTag EventTag, FGameplayEventDat
 
 					if (Rayo)
 					{
+						Rayo->Damage = Damage;
 						FVector newForward = Player->CapsuleComponentFinal->GetRelativeLocation() - Player->CapsuleComponentInicio->GetRelativeLocation();
 						newForward.Normalize();
 						Rayo->setDirection(newForward);

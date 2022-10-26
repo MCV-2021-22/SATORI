@@ -3,7 +3,7 @@
 
 #include "AI/Character/Fujin/SATORI_Fujin.h"
 // Fill out your copyright notice in the Description page of Project Settings.
-
+#include "SATORICharacter.h"
 #include "AI/Character/Raijin/SATORI_Raijin.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Kismet/GameplayStatics.h"
@@ -11,6 +11,7 @@
 #include "NiagaraComponent.h"
 #include "NiagaraFunctionLibrary.h"
 #include "Components/CapsuleComponent.h"
+#include "FunctionLibrary/SATORI_BlueprintLibrary.h"
 
 
 ASATORI_Fujin::ASATORI_Fujin()
@@ -160,11 +161,20 @@ float ASATORI_Fujin::getCloseDist()
 void ASATORI_Fujin::OnOverlapLeft(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 	ASATORI_Fujin* Character = Cast<ASATORI_Fujin>(OtherActor);
+	ASATORICharacter* Player1 = Cast<ASATORICharacter>(OtherActor);
 
-	if (!Character)
+	if (Player1)
 	{
-		canMove = false;
-		AddGameplayTag(FGameplayTag::RequestGameplayTag("State.Left"));
+		if (golpe_fuerte)
+		{
+			float dmg_done = USATORI_BlueprintLibrary::ApplyGameplayEffectDamage(Player1, dmg_left_huge, Player1, DamageGameplayEffect);
+		}
+		else
+		{
+			float dmg_done = USATORI_BlueprintLibrary::ApplyGameplayEffectDamage(Player1, dmg_left_low, Player1, DamageGameplayEffect);
+		}
+		CollisionL->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+		
 
 	}
 
@@ -174,10 +184,21 @@ void ASATORI_Fujin::OnOverlapRight(UPrimitiveComponent* OverlappedComp, AActor* 
 {
 	ASATORI_Fujin* Character = Cast<ASATORI_Fujin>(OtherActor);
 
-	if (!Character)
+	ASATORICharacter* Player1 = Cast<ASATORICharacter>(OtherActor);
+
+	if (Player1)
 	{
-		canMove = false;
-		AddGameplayTag(FGameplayTag::RequestGameplayTag("State.BlockRight"));
+		if(golpe_fuerte)
+		{
+			float dmg_done = USATORI_BlueprintLibrary::ApplyGameplayEffectDamage(Player1, dmg_right_huge, Player1, DamageGameplayEffect);
+		}
+		else
+		{
+			float dmg_done = USATORI_BlueprintLibrary::ApplyGameplayEffectDamage(Player1, dmg_right_low, Player1, DamageGameplayEffect);
+		}
+		
+		CollisionR->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+
 
 	}
 
@@ -192,11 +213,11 @@ void ASATORI_Fujin::OnEndOverlapLeft(
 {
 	ASATORI_Fujin* Character = Cast<ASATORI_Fujin>(OtherActor);
 
-	if (!Character)
+	/*if (!Character)
 	{
 		canMove = true;
 		RemoveGameplayTag(FGameplayTag::RequestGameplayTag("State.BlockLeft"));
-	}
+	}*/
 
 }
 
@@ -210,11 +231,11 @@ void ASATORI_Fujin::OnEndOverlapRight(
 {
 	ASATORI_Fujin* Character = Cast<ASATORI_Fujin>(OtherActor);
 
-	if (!Character)
+	/*if (!Character)
 	{
 		canMove = true;
 		RemoveGameplayTag(FGameplayTag::RequestGameplayTag("State.BlockRight"));
-	}
+	}*/
 
 }
 
@@ -304,5 +325,15 @@ void ASATORI_Fujin::revivir()
 bool ASATORI_Fujin::getRaijinDowned()
 {
 	return Raijin->getDowned();
+}
+
+bool ASATORI_Fujin::getGolpeFuerte()
+{
+	return golpe_fuerte;
+}
+
+void ASATORI_Fujin::setGolpeFuerte(bool golpe)
+{
+	golpe_fuerte = golpe;
 }
 
