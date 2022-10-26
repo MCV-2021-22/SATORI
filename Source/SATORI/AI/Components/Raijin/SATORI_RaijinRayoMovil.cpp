@@ -25,6 +25,7 @@ ASATORI_RaijinRayoMovil::ASATORI_RaijinRayoMovil()
 	CapsuleComponent->InitCapsuleSize(decal_size, 1000.0f);
 	CapsuleComponent->SetCollisionProfileName(UCollisionProfile::NoCollision_ProfileName);
 	CapsuleComponent->OnComponentBeginOverlap.AddUniqueDynamic(this, &ASATORI_RaijinRayoMovil::OnComponentBeginOverlap);
+	CapsuleComponent->OnComponentEndOverlap.AddUniqueDynamic(this, &ASATORI_RaijinRayoMovil::OnComponentEndOverlap);
 
 	
 
@@ -121,7 +122,20 @@ void ASATORI_RaijinRayoMovil::Tick(float DeltaTime)
 	{
 		UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), Trueno, RayoLocation);
 	}
+	time_to_dmg -= DeltaTime;
 
+	if(time_to_dmg<=0.0f)
+	{
+		time_to_dmg = time_to_dmg_max;
+		if (Player && player_inside)
+		{
+
+			float dmg_done = USATORI_BlueprintLibrary::ApplyGameplayEffectDamage(Player, Damage, Player, DamageGameplayEffect);
+
+
+		}
+	}
+	
 	
 }
 
@@ -168,16 +182,11 @@ void ASATORI_RaijinRayoMovil::OnComponentBeginOverlap(
 	bool bFromSweep,
 	const FHitResult& SweepResult)
 {
-	ASATORICharacter* Player = Cast<ASATORICharacter>(OtherActor);
-	if(Player)
+	ASATORICharacter* Player1 = Cast<ASATORICharacter>(OtherActor);
+	if (Player1)
 	{
-
-		float dmg_done = USATORI_BlueprintLibrary::ApplyGameplayEffectDamage(Player, Damage, Player, DamageGameplayEffect);
-
-		//my_decal->Destroy();
-		//Destroy();
-
-		int a = 2;
+		Player = Player1;
+		player_inside = true;
 		//float dmg_done = USATORI_BlueprintLibrary::ApplyGameplayEffectDamage(OtherActor, Damage, OtherActor, DamageGameplayEffect);
 
 	}
@@ -194,6 +203,24 @@ void ASATORI_RaijinRayoMovil::OnComponentBeginOverlap(
 		//Destroy();
 
 		//float dmg_done = USATORI_BlueprintLibrary::ApplyGameplayEffectDamage(OtherActor, Damage, OtherActor, DamageGameplayEffect);
+
+	}
+
+}
+
+void ASATORI_RaijinRayoMovil::OnComponentEndOverlap(
+	UPrimitiveComponent* OverlappedComponent,
+	AActor* OtherActor,
+	UPrimitiveComponent* OtherComp,
+	int32 OtherBodyIndex
+)
+{
+	ASATORICharacter* Player1 = Cast<ASATORICharacter>(OtherActor);
+	if (Player1)
+	{
+		//Player = Player1;
+		player_inside = false;
+
 
 	}
 

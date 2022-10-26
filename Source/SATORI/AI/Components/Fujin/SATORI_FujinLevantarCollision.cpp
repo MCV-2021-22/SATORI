@@ -58,6 +58,12 @@ void ASATORI_FujinLevantarCollision::InmunityOff()
 	
 }
 
+void ASATORI_FujinLevantarCollision::ApplyDmg(ASATORICharacter* Player1)
+{
+	float dmg_done = USATORI_BlueprintLibrary::ApplyGameplayEffectDamage(Player1, Damage, Player1, DamageGameplayEffect);
+	//SetActorEnableCollision(true);
+
+}
 
 
 void ASATORI_FujinLevantarCollision::OnComponentHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
