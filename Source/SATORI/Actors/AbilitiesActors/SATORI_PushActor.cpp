@@ -39,7 +39,7 @@ void ASATORI_PushActor::OnOverlapCollisionBox(UPrimitiveComponent* OverlappedCom
 	}
 
 	//Enemies
-	if(Character->HasMatchingGameplayTag(EnemyTag) && !Character->HasMatchingGameplayTag(PushedTag) && !Pushing)
+	if(Character->HasMatchingGameplayTag(EnemyTag) && !Character->HasMatchingGameplayTag(PushedTag) && !Pushing && !Character->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag("State.Dead")))
 	{	
 		Pushing = true;
 		StopAction(Character);
