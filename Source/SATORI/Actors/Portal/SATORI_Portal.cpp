@@ -123,6 +123,10 @@ TSubclassOf<UGameplayEffect> ASATORI_Portal::GetCurrentGameplayEffect()
 	return PortalEffectsToApply.PassiveEffect;
 }
 
+void ASATORI_Portal::PlayAnimationAndEffectsPortal_Implementation()
+{
+}
+
 void ASATORI_Portal::SetCurrentGameplayEffectData(FSATORI_DoorPassiveReward CurrentEffectData)
 {
 	PortalEffectsToApply = CurrentEffectData;
@@ -188,6 +192,8 @@ void ASATORI_Portal::ChangeLevel(ASATORICharacter* Character)
 	{
 		UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), Door_Particles, SpawnParticleLocation);
 	}
+
+	PlayAnimationAndEffectsPortal();
 
 	if (PlayerController)
 	{

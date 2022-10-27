@@ -118,6 +118,24 @@ void ASATORICharacter::BeginPlay()
 	Super::BeginPlay();
 }
 
+void ASATORICharacter::Tick(float DeltaSeconds)
+{
+	Super::Tick(DeltaSeconds);
+
+	if (acti_rayo)
+	{
+		timeRayo += DeltaSeconds;
+		if (timeRayo >= maxTimeRayo)
+		{
+			acti_rayo = false;
+			timeRayo = 0.0f;
+		
+		}
+	}
+	
+
+}
+
 void ASATORICharacter::PossessedBy(AController* NewController)
 {
 	Super::PossessedBy(NewController);

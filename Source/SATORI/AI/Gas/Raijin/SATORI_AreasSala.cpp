@@ -100,6 +100,11 @@ void USATORI_AreasSala::EventReceived(FGameplayTag EventTag, FGameplayEventData 
 							ASATORI_RaijinRayo* Rayo = GetWorld()->SpawnActor<ASATORI_RaijinRayo>(ProjectileClass,
 								Player->GetActorLocation(),
 								RotationOfIA);
+
+							if(Rayo)
+							{
+								Rayo->Damage = Damage;
+							}
 						}
 						else
 						{
@@ -110,6 +115,11 @@ void USATORI_AreasSala::EventReceived(FGameplayTag EventTag, FGameplayEventData 
 							ASATORI_RaijinRayo* Rayo = GetWorld()->SpawnActor<ASATORI_RaijinRayo>(ProjectileClass,
 								finalpos,
 								RotationOfIA);
+
+							if (Rayo)
+							{
+								Rayo->Damage = Damage;
+							}
 
 							//miramos si colisiona en algun lugar, tanto con el borde del mapa como con los propios rayos
 							if (!Rayo->CheckCollision())

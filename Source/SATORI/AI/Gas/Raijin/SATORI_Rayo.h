@@ -46,6 +46,9 @@ public:
 
 	void OnBucleRayos(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo);
 
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Meta = (ExposeOnSpawn = true), Category = "Missile")
+		float Damage = 0.001;
+
 protected:
 	UFUNCTION()
 		void OnCancelled(FGameplayTag EventTag, FGameplayEventData EventData);
@@ -57,7 +60,8 @@ protected:
 		void EventReceived(FGameplayTag EventTag, FGameplayEventData EventData);
 
 	int iteracion = 0;
-	int max_iteracion = 4;
+	//int max_iteracion = 4;
+	int max_iteracion = 5;
 
 private:
 

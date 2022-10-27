@@ -62,6 +62,15 @@ public:
 			const FHitResult& SweepResult);
 
 	UFUNCTION()
+		void OnComponentEndOverlap(
+			UPrimitiveComponent* OverlappedComponent,
+			AActor* OtherActor,
+			UPrimitiveComponent* OtherComp,
+			int32 OtherBodyIndex
+		);
+
+
+	UFUNCTION()
 		void OnComponentBeginOverlapFinal(
 			UPrimitiveComponent* OverlappedComponent,
 			AActor* OtherActor,
@@ -114,6 +123,13 @@ protected:
 
 	bool destruido = false;
 
+	bool player_inside = true;
+
+	ASATORICharacter* Player = nullptr;
+
+	float time_to_dmg = 0.5f;
+
+	float time_to_dmg_max = 0.5f;
 };
 
 

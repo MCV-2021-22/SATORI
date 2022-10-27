@@ -47,6 +47,9 @@ public:
 
 	void EndRayos(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo);
 
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Meta = (ExposeOnSpawn = true), Category = "Missile")
+		float Damage = 0.001;
+
 
 protected:
 	TArray< AActor* > Rayos;

@@ -136,6 +136,9 @@ public:
 
 	TSubclassOf<UGameplayEffect> GetCurrentGameplayEffect();
 
+	UFUNCTION(BlueprintNativeEvent)
+	void PlayAnimationAndEffectsPortal();
+
 private:
 	TSubclassOf<UGameplayEffect> CurrentGameplayEffect;
 

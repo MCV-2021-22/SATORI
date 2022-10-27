@@ -132,6 +132,8 @@ public:
 	// Cheat Function
 	void SetEasyMode(bool Value) { IsGodMode = Value; }
 	bool GetEasyMode() { return IsGodMode; }
+
+
 protected:
 
 	virtual void BeginPlay() override;
