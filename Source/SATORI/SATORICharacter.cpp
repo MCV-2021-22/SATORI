@@ -165,11 +165,6 @@ void ASATORICharacter::PossessedBy(AController* NewController)
 			SatoriPlayerController->CreateMainHUD();
 		}
 
-		// Test Mask Effect
-		/*MaskType = SATORIMaskType::Aka;
-		SATORIAbilityMaskComponent->GrantedMaskEffects(MaskType);*/
-		// -------------------
-		
 		if(GameInstanceRef->PlayerStart)
 		{
 			SetHealth(GetMaxHealth());
@@ -199,6 +194,9 @@ void ASATORICharacter::PossessedBy(AController* NewController)
 			RestartStats();
 			GameInstanceRef->IsInBossFight = false;
 		}
+
+		// Apply Mask to Icon
+		SATORIAbilityMaskComponent->SelectMaskToPortrail(GameInstanceRef->MaskType);
 	}
 
 	if (Cast<APlayerController>(NewController) != nullptr) {
@@ -521,6 +519,7 @@ void ASATORICharacter::ResetCharacterDatas()
 		GameInstanceRef->ResetPortalRewardAbilities();
 		GameInstanceRef->SetPlayerStart(true);
 		GameInstanceRef->bIsShowingMainWidget = false;
+		GameInstanceRef->MaskType = SATORIMaskType::NONE;
 	}
 
 	// Reset current player reward abilities with the portal to zero
