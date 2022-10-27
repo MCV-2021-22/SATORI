@@ -2,6 +2,7 @@
 
 #include "AI/Gas/Spawn/SATORI_AI_DashAbilitySpawned.h"
 #include "SATORICharacter.h"
+#include "SATORIGameMode.h"
 #include "Actors/AbilitiesActors/SATORI_DashMeleeActor.h"
 #include "AI/Character/SATORI_AICharacter.h"
 #include "GameFramework/CharacterMovementComponent.h"
@@ -60,8 +61,10 @@ void USATORI_AI_DashAbilitySpawned::ActivateAbility(
 void USATORI_AI_DashAbilitySpawned::EndAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateEndAbility, bool bWasCancelled)
 {
 	Spawned->RemoveGameplayTag(FGameplayTag::RequestGameplayTag("Dash.Stop"));
+	
 	if(DashActor)
 	{
+
 		DashActor->Destroy();
 	}
 	Super::EndAbility(Handle, ActorInfo, ActivationInfo, bReplicateEndAbility, bWasCancelled);

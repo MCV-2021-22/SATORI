@@ -78,6 +78,7 @@ void USATORI_PunchRaf::EventReceived(FGameplayTag EventTag, FGameplayEventData E
 
 		if (Fujin)
 		{
+			Fujin->setGolpeFuerte(true);
 			Fujin->CollisionR->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
 		}
 	}
@@ -87,7 +88,28 @@ void USATORI_PunchRaf::EventReceived(FGameplayTag EventTag, FGameplayEventData E
 
 		if (Fujin)
 		{
+			Fujin->setGolpeFuerte(false);
 			Fujin->CollisionR->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+		}
+	}
+	else if (EventTag == TagPunchHeavyL)
+	{
+		ASATORI_Fujin* Fujin = Cast<ASATORI_Fujin>(GetAvatarActorFromActorInfo());
+
+		if (Fujin)
+		{
+			Fujin->setGolpeFuerte(true);
+			Fujin->CollisionL->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+		}
+	}
+	else if (EventTag == TagPunchHeavyLEnd)
+	{
+		ASATORI_Fujin* Fujin = Cast<ASATORI_Fujin>(GetAvatarActorFromActorInfo());
+
+		if (Fujin)
+		{
+			Fujin->setGolpeFuerte(false);
+			Fujin->CollisionL->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 		}
 	}
 }

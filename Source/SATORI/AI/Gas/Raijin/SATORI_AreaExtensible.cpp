@@ -84,6 +84,7 @@ void USATORI_AreaExtensible::EventReceived(FGameplayTag EventTag, FGameplayEvent
 					RotationOfIA);
 				if(Rayo)
 				{
+					Rayo->Damage = Damage;
 					Rayo1 = Rayo;
 				}
 

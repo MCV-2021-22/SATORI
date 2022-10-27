@@ -65,7 +65,11 @@ void USATORI_PunchLevantar::EventReceived(FGameplayTag EventTag, FGameplayEventD
 					dest,
 					RotationOfIA);
 
+				Empuje->ApplyDmg(Player1);
+
 				Empuje->PushPlayer(Player1);
+
+
 
 				Player = Player1;
 

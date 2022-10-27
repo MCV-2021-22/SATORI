@@ -114,9 +114,14 @@ void ASATORI_RaijinRayo::Tick(float DeltaTime)
 	}
 	else if(time_actual < time_to_destroy)
 	{
-		if(Player)
+		if(Player && player_inside)
 		{
-			float dmg_done = USATORI_BlueprintLibrary::ApplyGameplayEffectDamage(Player, Damage, Player, DamageGameplayEffect);
+			if(!Player->acti_rayo)
+			{
+				Player->acti_rayo = true;
+				float dmg_done = USATORI_BlueprintLibrary::ApplyGameplayEffectDamage(Player, Damage, Player, DamageGameplayEffect);
+			}
+			
 		}
 		
 	}

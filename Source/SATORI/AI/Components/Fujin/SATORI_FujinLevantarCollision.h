@@ -61,6 +61,8 @@ public:
 
 	void InmunityOff();
 
+	void ApplyDmg(ASATORICharacter* Player);
+
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Meta = (ExposeOnSpawn = true), Category = "Missile")
 		TSubclassOf<UGameplayEffect> DamageGameplayEffect;
 
@@ -75,6 +77,10 @@ public:
 
 	UPROPERTY(EditAnywhere)
 		float ImpulseForce;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Meta = (ExposeOnSpawn = true), Category = "Missile")
+		float Damage = 0.001;
+
 
 protected:
 

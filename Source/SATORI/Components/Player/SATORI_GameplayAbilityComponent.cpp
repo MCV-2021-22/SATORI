@@ -134,7 +134,9 @@ void USATORI_GameplayAbilityComponent::SetPrevAbility()
 		{
 			CurrentAbilityValue--;
 			if (CurrentAbilityValue < 0)
+			{
 				CurrentAbilityValue = PortalRewardAbilities.Num() - 1;
+			}
 		}
 		else
 		{
@@ -151,7 +153,7 @@ TSubclassOf<USATORI_GameplayAbility> USATORI_GameplayAbilityComponent::GetCurren
 {
 	if (!IsAllHabilityTesting)
 	{
-		if (PortalRewardAbilities.Num() > 0)
+		if (PortalRewardAbilities.Num() > 0 && CurrentAbilityValue < 3)
 		{
 			const FSATORI_AbilitiesDatas* AbilityData = &PortalRewardAbilities[CurrentAbilityValue];
 			if (AbilityData)
@@ -162,7 +164,19 @@ TSubclassOf<USATORI_GameplayAbility> USATORI_GameplayAbilityComponent::GetCurren
 					return CurrentGameplayAbility;
 				}
 			}
-
+		}
+		else
+		{
+			CurrentAbilityValue = 0;
+			const FSATORI_AbilitiesDatas* AbilityData = &PortalRewardAbilities[CurrentAbilityValue];
+			if (AbilityData)
+			{
+				CurrentGameplayAbility = AbilityData->CurrentAbility;
+				if (CurrentGameplayAbility)
+				{
+					return CurrentGameplayAbility;
+				}
+			}
 		}
 	}
 	// Test for Ability 

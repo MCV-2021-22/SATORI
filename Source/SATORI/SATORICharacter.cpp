@@ -118,6 +118,24 @@ void ASATORICharacter::BeginPlay()
 	Super::BeginPlay();
 }
 
+void ASATORICharacter::Tick(float DeltaSeconds)
+{
+	Super::Tick(DeltaSeconds);
+
+	if (acti_rayo)
+	{
+		timeRayo += DeltaSeconds;
+		if (timeRayo >= maxTimeRayo)
+		{
+			acti_rayo = false;
+			timeRayo = 0.0f;
+		
+		}
+	}
+	
+
+}
+
 void ASATORICharacter::PossessedBy(AController* NewController)
 {
 	Super::PossessedBy(NewController);
@@ -188,6 +206,10 @@ void ASATORICharacter::PossessedBy(AController* NewController)
 		AddGameplayTag(FGameplayTag::RequestGameplayTag("PossessedBy.Player"));
 		//AddGameplayTag(FGameplayTag::RequestGameplayTag("PossessedBy.AI"));
 	}
+
+	// Move Weapon Multiplier Here
+	WeaponDamage *= GetAttack();
+	WeaponSavedDamage *= GetAttack();
 }
 
 void ASATORICharacter::ApplyDefaultAbilities()
@@ -774,6 +796,11 @@ void ASATORICharacter::PlayerSenseOfBlow(float DilationTime, float WaitTime)
 	}
 }
 
+void ASATORICharacter::ActivatePlayerCheat()
+{
+	SetEasyMode(true);
+}
+
 //////////////////////////////////////////////////////////////////////////
 // Input
 
@@ -786,6 +813,8 @@ void ASATORICharacter::SetupPlayerInputComponent(class UInputComponent* PlayerIn
 
 	PlayerInputComponent->BindAction("Dash", IE_Pressed, this, &ASATORICharacter::OnDash);
 	PlayerInputComponent->BindAction("Dash", IE_Released, this, &ASATORICharacter::OnDashReleases);
+
+	PlayerInputComponent->BindAction("ActivateCheat", IE_Pressed, this, &ASATORICharacter::ActivatePlayerCheat);
 
 	PlayerInputComponent->BindAxis("MoveForward", this, &ASATORICharacter::MoveForward);
 	PlayerInputComponent->BindAxis("MoveRight", this, &ASATORICharacter::MoveRight);

@@ -7,6 +7,7 @@
 #include "GameplayEffect.h"
 #include "SATORI/AbilityTask/SATORI_PlayMontageAndWaitEvent.h"
 #include "Actors/AbilitiesActors/SATORI_Push360Actor.h"
+#include "SATORI/Character/SATORI_CharacterBase.h"
 #include "SATORI_Push360Ability.generated.h"
 
 UCLASS()
@@ -61,5 +62,7 @@ protected:
 private:
 
 	const bool bStopWhenAbilityEnds = true;
+
+	ASATORI_CharacterBase* Character;
 
 };

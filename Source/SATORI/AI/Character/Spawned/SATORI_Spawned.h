@@ -26,11 +26,11 @@ public:
 	float GetDistAttack() const;
 
 	void SpawnedDie();
+
+	ASATORI_Spawner* MySpawn;
 	
 
 protected:
-
-	ASATORI_Spawner* MySpawn;
 
 	float DistAttack = 700.f;
 };

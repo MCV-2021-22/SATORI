@@ -143,6 +143,16 @@ public:
 	
 	virtual void RemoveCharacterAbilities() override;
 
+	virtual void Tick(float DeltaSeconds) override;
+
+	bool acti_rayo = false;
+
+	bool activoRayo = false;
+
+	float maxTimeRayo = 1.0f;
+
+	float timeRayo = 0.0f;
+
 	// Reset All character Datas
 	void ResetCharacterDatas();
 
@@ -250,6 +260,9 @@ protected:
 
 	void OnDash();
 	void OnDashReleases();
+
+	// Cheat
+	void ActivatePlayerCheat();
 
 	// Weapon Overlap
 	UFUNCTION()

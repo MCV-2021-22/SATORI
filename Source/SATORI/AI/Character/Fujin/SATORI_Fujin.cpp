@@ -3,7 +3,7 @@
 
 #include "AI/Character/Fujin/SATORI_Fujin.h"
 // Fill out your copyright notice in the Description page of Project Settings.
-
+#include "SATORICharacter.h"
 #include "AI/Character/Raijin/SATORI_Raijin.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Kismet/GameplayStatics.h"
@@ -11,6 +11,7 @@
 #include "NiagaraComponent.h"
 #include "NiagaraFunctionLibrary.h"
 #include "Components/CapsuleComponent.h"
+#include "FunctionLibrary/SATORI_BlueprintLibrary.h"
 
 
 ASATORI_Fujin::ASATORI_Fujin()
@@ -81,7 +82,7 @@ void ASATORI_Fujin::BeginPlay()
 
 	AddGameplayTag(FGameplayTag::RequestGameplayTag("Boss.Jugable"));
 	AddGameplayTag(FGameplayTag::RequestGameplayTag("Boss.Fase.Inicial"));
-	//AddGameplayTag(FGameplayTag::RequestGameplayTag("Boss.Inmune"));
+	AddGameplayTag(FGameplayTag::RequestGameplayTag("Boss.Inmune"));
 	//(UNiagaraSystem * SystemTemplate, USceneComponent * AttachToComponent, FName AttachPointName, FVector Location, FRotator Rotation, FVector Scale, EAttachLocation::Type LocationType, bool bAutoDestroy, ENCPoolMethod PoolingMethod, bool bAutoActivate = true, bool bPreCullCheck = true);
 	Nube1 = UNiagaraFunctionLibrary::SpawnSystemAttached(Nube, GetMesh(), TEXT("BckNubeFujin"), FVector(0), FRotator::ZeroRotator,FVector(0.1f,0.1f,0.1f), EAttachLocation::Type::KeepRelativeOffset, false,  ENCPoolMethod::None);
 	
@@ -160,11 +161,20 @@ float ASATORI_Fujin::getCloseDist()
 void ASATORI_Fujin::OnOverlapLeft(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 	ASATORI_Fujin* Character = Cast<ASATORI_Fujin>(OtherActor);
+	ASATORICharacter* Player1 = Cast<ASATORICharacter>(OtherActor);
 
-	if (!Character)
+	if (Player1)
 	{
-		canMove = false;
-		AddGameplayTag(FGameplayTag::RequestGameplayTag("State.Left"));
+		if (golpe_fuerte)
+		{
+			float dmg_done = USATORI_BlueprintLibrary::ApplyGameplayEffectDamage(Player1, dmg_left_huge, Player1, DamageGameplayEffect);
+		}
+		else
+		{
+			float dmg_done = USATORI_BlueprintLibrary::ApplyGameplayEffectDamage(Player1, dmg_left_low, Player1, DamageGameplayEffect);
+		}
+		CollisionL->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+		
 
 	}
 
@@ -174,10 +184,21 @@ void ASATORI_Fujin::OnOverlapRight(UPrimitiveComponent* OverlappedComp, AActor* 
 {
 	ASATORI_Fujin* Character = Cast<ASATORI_Fujin>(OtherActor);
 
-	if (!Character)
+	ASATORICharacter* Player1 = Cast<ASATORICharacter>(OtherActor);
+
+	if (Player1)
 	{
-		canMove = false;
-		AddGameplayTag(FGameplayTag::RequestGameplayTag("State.BlockRight"));
+		if(golpe_fuerte)
+		{
+			float dmg_done = USATORI_BlueprintLibrary::ApplyGameplayEffectDamage(Player1, dmg_right_huge, Player1, DamageGameplayEffect);
+		}
+		else
+		{
+			float dmg_done = USATORI_BlueprintLibrary::ApplyGameplayEffectDamage(Player1, dmg_right_low, Player1, DamageGameplayEffect);
+		}
+		
+		CollisionR->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+
 
 	}
 
@@ -192,11 +213,11 @@ void ASATORI_Fujin::OnEndOverlapLeft(
 {
 	ASATORI_Fujin* Character = Cast<ASATORI_Fujin>(OtherActor);
 
-	if (!Character)
+	/*if (!Character)
 	{
 		canMove = true;
 		RemoveGameplayTag(FGameplayTag::RequestGameplayTag("State.BlockLeft"));
-	}
+	}*/
 
 }
 
@@ -210,11 +231,11 @@ void ASATORI_Fujin::OnEndOverlapRight(
 {
 	ASATORI_Fujin* Character = Cast<ASATORI_Fujin>(OtherActor);
 
-	if (!Character)
+	/*if (!Character)
 	{
 		canMove = true;
 		RemoveGameplayTag(FGameplayTag::RequestGameplayTag("State.BlockRight"));
-	}
+	}*/
 
 }
 
@@ -246,10 +267,21 @@ bool ASATORI_Fujin::getDowned()
 	return downed;
 }
 
+bool ASATORI_Fujin::getDead()
+{
+	return dead;
+}
 
 void ASATORI_Fujin::setDowned(bool dw)
 {
 	downed = dw;
+
+
+}
+
+void ASATORI_Fujin::setDead(bool dw)
+{
+	dead = dw;
 
 
 }
@@ -265,25 +297,43 @@ void ASATORI_Fujin::startCDDowned()
 
 void ASATORI_Fujin::revivirTag()
 {
-	RemoveGameplayTag(FGameplayTag::RequestGameplayTag("Boss.Downed"));
-	AddGameplayTag(FGameplayTag::RequestGameplayTag("State.Revive"));
+	if (!HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag("State.Dead")))
+	{
+
+		RemoveGameplayTag(FGameplayTag::RequestGameplayTag("Boss.Downed"));
+		AddGameplayTag(FGameplayTag::RequestGameplayTag("State.Revive"));
+	}
 
 }
 
 
 void ASATORI_Fujin::revivir()
 {
-	setDowned(false);
-	RemoveGameplayTag(FGameplayTag::RequestGameplayTag("State.Revive"));
-	GetWorld()->GetTimerManager().ClearTimer(TimerHandleDowned);
+	if(!HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag("State.Dead")))
+	{
+		setDowned(false);
+		RemoveGameplayTag(FGameplayTag::RequestGameplayTag("State.Revive"));
+		GetWorld()->GetTimerManager().ClearTimer(TimerHandleDowned);
 
-	SetHealth(GetMaxHealth() * 0.25f);
-	AddGameplayTag(FGameplayTag::RequestGameplayTag("Boss.Jugable"));
+		SetHealth(GetMaxHealth() * 0.25f);
+		AddGameplayTag(FGameplayTag::RequestGameplayTag("Boss.Jugable"));
 
+	}
+	
 }
 
 bool ASATORI_Fujin::getRaijinDowned()
 {
 	return Raijin->getDowned();
+}
+
+bool ASATORI_Fujin::getGolpeFuerte()
+{
+	return golpe_fuerte;
+}
+
+void ASATORI_Fujin::setGolpeFuerte(bool golpe)
+{
+	golpe_fuerte = golpe;
 }
 

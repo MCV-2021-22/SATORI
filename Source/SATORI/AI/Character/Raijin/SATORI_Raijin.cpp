@@ -36,7 +36,7 @@ void ASATORI_Raijin::BeginPlay()
 
 	AddGameplayTag(FGameplayTag::RequestGameplayTag("Boss.Jugable"));
 	AddGameplayTag(FGameplayTag::RequestGameplayTag("Boss.Fase.Inicial"));
-	//AddGameplayTag(FGameplayTag::RequestGameplayTag("Boss.Inmune"));
+	AddGameplayTag(FGameplayTag::RequestGameplayTag("Boss.Inmune"));
 
 	setSpawnPos(GetActorLocation());
 
@@ -112,11 +112,22 @@ void ASATORI_Raijin::setDowned(bool dw)
 	
 }
 
+void ASATORI_Raijin::setDead(bool dw)
+{
+	dead = dw;
+
+
+}
+
 bool ASATORI_Raijin::getDowned()
 {
 	return downed;
 }
 
+bool ASATORI_Raijin::getDead()
+{
+	return dead;
+}
 void ASATORI_Raijin::startCDDowned()
 {
 
@@ -129,19 +140,26 @@ void ASATORI_Raijin::startCDDowned()
 
 void ASATORI_Raijin::revivirTag()
 {
-	RemoveGameplayTag(FGameplayTag::RequestGameplayTag("Boss.Downed"));
-	AddGameplayTag(FGameplayTag::RequestGameplayTag("State.Revive"));
-
+	if (!HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag("State.Dead")))
+	{
+		RemoveGameplayTag(FGameplayTag::RequestGameplayTag("Boss.Downed"));
+		AddGameplayTag(FGameplayTag::RequestGameplayTag("State.Revive"));
+	}
 }
 
 void ASATORI_Raijin::revivir()
 {
-	setDowned(false);
-	RemoveGameplayTag(FGameplayTag::RequestGameplayTag("State.Revive"));
-	GetWorld()->GetTimerManager().ClearTimer(TimerHandleDowned);
+	if (!HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag("State.Dead")))
+	{
+		setDowned(false);
+		RemoveGameplayTag(FGameplayTag::RequestGameplayTag("State.Revive"));
+		GetWorld()->GetTimerManager().ClearTimer(TimerHandleDowned);
 
-	SetHealth(GetMaxHealth() * 0.25f);
-	AddGameplayTag(FGameplayTag::RequestGameplayTag("Boss.Jugable"));
+		SetHealth(GetMaxHealth() * 0.25f);
+		AddGameplayTag(FGameplayTag::RequestGameplayTag("Boss.Jugable"));
+
+	}
+	
 
 }
 

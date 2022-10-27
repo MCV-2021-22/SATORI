@@ -6,6 +6,7 @@
 #include "SATORI/FunctionLibrary/SATORI_BlueprintLibrary.h"
 #include "DrawDebugHelpers.h"
 #include "SATORICharacter.h"
+#include "SATORIGameMode.h"
 #include "Components/DecalComponent.h"
 #include "Kismet/GameplayStatics.h"
 
@@ -39,10 +40,10 @@ void ASATORI_DashSpawnedActor::OnOverlapCollisionBox(UPrimitiveComponent* Overla
 	//If Melee overlaps ends dash
 	if(IsValid(OwnerSpawned) && OwnerSpawned == OtherActor)
 	{
-		ASATORI_Spawned* Melee = Cast<ASATORI_Spawned>(OtherActor);
-		if (Melee)
+		ASATORI_Spawned* Spawned = Cast<ASATORI_Spawned>(OtherActor);
+		if (Spawned)
 		{
-			Melee->AddGameplayTag(DashStopTag);
+			Spawned->AddGameplayTag(DashStopTag);
 		}
 	}
 }
@@ -63,6 +64,9 @@ void ASATORI_DashSpawnedActor::OnOverlapCollisionSphere(UPrimitiveComponent* Ove
 		USATORI_BlueprintLibrary::ApplyGameplayEffect(Character, HeavyHitGameplayEffect);
 		UFMODBlueprintStatics::PlayEvent2D(GetWorld(), EventExplosion, true);
 		Destroy();
+		if (SpawnedCharacter && SpawnedCharacter->MySpawn) 
+			SpawnedCharacter->MySpawn->AddNumEnemies(-1);
+		GetWorld()->GetAuthGameMode<ASATORIGameMode>()->RemoveEnemyActor(OwnerSpawned);
 		OwnerSpawned->Destroy();
 	}
 }
