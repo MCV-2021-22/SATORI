@@ -82,7 +82,7 @@ void USATORI_DamageExecutionCalc::Execute_Implementation(const FGameplayEffectCu
 
 	float UnmitigatedDamage = Damage; // Can multiply any damage boosters here
 
-	float MitigatedDamage = (UnmitigatedDamage) * (100 / (100 + Defense));
+	float MitigatedDamage = (UnmitigatedDamage) * (1 / (1 + Defense));
 
 	if (MitigatedDamage > 0.0f)
 	{

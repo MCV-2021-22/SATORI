@@ -180,7 +180,7 @@ void ASATORICharacter::PossessedBy(AController* NewController)
 		else
 		{
 			StatsComponent->InitializeStatsAttributesByInstance(PS, GameInstanceRef);
-			SATORIAbilityMaskComponent->GrantedMaskEffects(GameInstanceRef->MaskType);
+			//SATORIAbilityMaskComponent->GrantedMaskEffects(GameInstanceRef->MaskType);
 			PlayerGameplayAbilityComponent->SetSavedAbilitiesWithGameInstance(GameInstanceRef);
 			IsAbilityUpgrated = GameInstanceRef->isAbilityUpgrated;
 
