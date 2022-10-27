@@ -63,7 +63,12 @@ void USATORI_TargetSystemComponent::TickComponent(const float DeltaTime, const E
 
 	if (ASATORI_AICharacter* IsDead = Cast<ASATORI_AICharacter>(LockedOnTargetActor))
 	{
-		if(IsDead->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag("State.Dead")))
+		if(IsDead->IsPendingKill())
+		{
+			TargetLockOff();
+			return;
+		}
+		if (IsDead->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag("State.Dead")))
 		{
 			TargetLockOff();
 			return;
