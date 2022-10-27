@@ -18,7 +18,7 @@ struct SATORIDamageStatics
 		// Capture optional Damage set on the damage GE as a CalculationModifier under the ExecutionCalculation
 		DEFINE_ATTRIBUTE_CAPTUREDEF(USATORI_AttributeSet, Damage, Source, false);
 
-		DEFINE_ATTRIBUTE_CAPTUREDEF(USATORI_AttributeSet, Attack, Source, false);
+		DEFINE_ATTRIBUTE_CAPTUREDEF(USATORI_AttributeSet, Attack, Target, false);
 
 		DEFINE_ATTRIBUTE_CAPTUREDEF(USATORI_AttributeSet, Defense, Target, false);
 	}

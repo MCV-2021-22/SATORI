@@ -251,6 +251,9 @@ protected:
 	void OnDash();
 	void OnDashReleases();
 
+	// Cheat
+	void ActivatePlayerCheat();
+
 	// Weapon Overlap
 	UFUNCTION()
 	void OnWeaponOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, 

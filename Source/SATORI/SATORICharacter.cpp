@@ -774,6 +774,11 @@ void ASATORICharacter::PlayerSenseOfBlow(float DilationTime, float WaitTime)
 	}
 }
 
+void ASATORICharacter::ActivatePlayerCheat()
+{
+	SetEasyMode(true);
+}
+
 //////////////////////////////////////////////////////////////////////////
 // Input
 
@@ -786,6 +791,8 @@ void ASATORICharacter::SetupPlayerInputComponent(class UInputComponent* PlayerIn
 
 	PlayerInputComponent->BindAction("Dash", IE_Pressed, this, &ASATORICharacter::OnDash);
 	PlayerInputComponent->BindAction("Dash", IE_Released, this, &ASATORICharacter::OnDashReleases);
+
+	PlayerInputComponent->BindAction("ActivateCheat", IE_Pressed, this, &ASATORICharacter::ActivatePlayerCheat);
 
 	PlayerInputComponent->BindAxis("MoveForward", this, &ASATORICharacter::MoveForward);
 	PlayerInputComponent->BindAxis("MoveRight", this, &ASATORICharacter::MoveRight);
