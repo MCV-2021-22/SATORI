@@ -44,6 +44,20 @@ void USATORI_Push360Ability::ActivateAbility(
 		return;
 	}
 
+	Character = Cast<ASATORI_CharacterBase>(GetAvatarActorFromActorInfo());
+	if (!Character)
+	{
+		UE_LOG(LogTemp, Display, TEXT("[%s] USATORI_Push360Ability: Cannot Cast CharacterBase ... "), *GetName());
+		Super::EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true);
+		return;
+	}
+
+	ASATORI_PlayerController* Controller = Cast<ASATORI_PlayerController>(Character->GetController());
+	if (Controller)
+	{
+		Character->DisableInput(Controller);
+	}
+
 	//Handling of events
 	USATORI_PlayMontageAndWaitEvent* Task = USATORI_PlayMontageAndWaitEvent::PlayMontageAndWaitForEvent(this, NAME_None, AnimMontage, FGameplayTagContainer(), 1.0f, NAME_None, bStopWhenAbilityEnds, 1.0f);
 	Task->OnBlendOut.AddDynamic(this, &USATORI_Push360Ability::OnCompleted);
@@ -57,11 +71,21 @@ void USATORI_Push360Ability::ActivateAbility(
 
 void USATORI_Push360Ability::OnCancelled(FGameplayTag EventTag, FGameplayEventData EventData)
 {
+	ASATORI_PlayerController* Controller = Cast<ASATORI_PlayerController>(Character->GetController());
+	if (Controller)
+	{
+		Character->EnableInput(Controller);
+	}
 	Super::EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true);
 }
 
 void USATORI_Push360Ability::OnCompleted(FGameplayTag EventTag, FGameplayEventData EventData)
 {
+	ASATORI_PlayerController* Controller = Cast<ASATORI_PlayerController>(Character->GetController());
+	if (Controller)
+	{
+		Character->EnableInput(Controller);
+	}
 	FTimerHandle TimerHandleEndAbility;
 	GetWorld()->GetTimerManager().SetTimer(TimerHandleEndAbility, this, &USATORI_Push360Ability::FinishWaitingForEnd, TimeToEndAbility, false);
 }
@@ -75,13 +99,6 @@ void USATORI_Push360Ability::EventReceived(FGameplayTag EventTag, FGameplayEvent
 {
 	if (EventTag == TagSpawnAbility)
 	{
-		ASATORICharacter* Character = Cast<ASATORICharacter>(GetAvatarActorFromActorInfo());
-		if (!Character)
-		{
-			UE_LOG(LogTemp, Display, TEXT("[%s] USATORI_Push360Ability: Cannot Cast ASATORICharacter ... "), *GetName());
-			Super::EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true);
-		}
-
 		FTransform SpawnTransform = Character->GetTransform();
 
 		//Push Actor creation
