@@ -18,7 +18,7 @@ struct SATORIDamageStatics
 		// Capture optional Damage set on the damage GE as a CalculationModifier under the ExecutionCalculation
 		DEFINE_ATTRIBUTE_CAPTUREDEF(USATORI_AttributeSet, Damage, Source, false);
 
-		DEFINE_ATTRIBUTE_CAPTUREDEF(USATORI_AttributeSet, Attack, Target, false);
+		DEFINE_ATTRIBUTE_CAPTUREDEF(USATORI_AttributeSet, Attack, Source, false);
 
 		DEFINE_ATTRIBUTE_CAPTUREDEF(USATORI_AttributeSet, Defense, Target, false);
 	}
@@ -82,7 +82,7 @@ void USATORI_DamageExecutionCalc::Execute_Implementation(const FGameplayEffectCu
 
 	float UnmitigatedDamage = Damage; // Can multiply any damage boosters here
 
-	float MitigatedDamage = (UnmitigatedDamage) * (AttackPower / (1.0f + Defense));
+	float MitigatedDamage = (UnmitigatedDamage) * (100 / (100 + Defense));
 
 	if (MitigatedDamage > 0.0f)
 	{

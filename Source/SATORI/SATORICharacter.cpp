@@ -206,6 +206,10 @@ void ASATORICharacter::PossessedBy(AController* NewController)
 		AddGameplayTag(FGameplayTag::RequestGameplayTag("PossessedBy.Player"));
 		//AddGameplayTag(FGameplayTag::RequestGameplayTag("PossessedBy.AI"));
 	}
+
+	// Move Weapon Multiplier Here
+	WeaponDamage *= GetAttack();
+	WeaponSavedDamage *= GetAttack();
 }
 
 void ASATORICharacter::ApplyDefaultAbilities()
