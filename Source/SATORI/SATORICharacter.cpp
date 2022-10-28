@@ -574,6 +574,12 @@ void ASATORICharacter::CharacterDeath()
 	GetCharacterMovement()->GravityScale = 0;
 	GetCharacterMovement()->Velocity = FVector(0);
 
+	// Cancel All habilities
+	if (AbilitySystemComponent.IsValid())
+	{
+		AbilitySystemComponent->CancelAllAbilities();
+	}
+
 	// Playe Death montage
 	if (DeathMontage)
 	{
@@ -585,6 +591,7 @@ void ASATORICharacter::CharacterDeath()
 			SatoriController->SetShowMouseCursor(true);
 			ShowDeathWidget();
 		}
+
 		// Play montages
 		PlayAnimMontage(DeathMontage);
 	}
