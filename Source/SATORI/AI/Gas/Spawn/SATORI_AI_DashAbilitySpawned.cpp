@@ -50,34 +50,20 @@ void USATORI_AI_DashAbilitySpawned::ActivateAbility(
 
 	//Handling of events
 	USATORI_PlayMontageAndWaitEvent* Task = USATORI_PlayMontageAndWaitEvent::PlayMontageAndWaitForEvent(this, NAME_None, AnimMontage, FGameplayTagContainer(), 1.0f, NAME_None, bStopWhenAbilityEnds, 1.0f);
-	//Task->OnBlendOut.AddDynamic(this, &USATORI_AI_DashAbilitySpawned::OnCompleted);
-	//Task->OnCompleted.AddDynamic(this, &USATORI_AI_DashAbilitySpawned::OnCompleted);
-	//Task->OnInterrupted.AddDynamic(this, &USATORI_AI_DashAbilitySpawned::OnCancelled);
-	//Task->OnCancelled.AddDynamic(this, &USATORI_AI_DashAbilitySpawned::OnCancelled);
 	Task->EventReceived.AddDynamic(this, &USATORI_AI_DashAbilitySpawned::EventReceived);
 	Task->ReadyForActivation();
 }
 
 void USATORI_AI_DashAbilitySpawned::EndAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateEndAbility, bool bWasCancelled)
 {
-	Spawned->RemoveGameplayTag(FGameplayTag::RequestGameplayTag("Dash.Stop"));
+	if (Spawned)
+		Spawned->RemoveGameplayTag(FGameplayTag::RequestGameplayTag("Dash.Stop"));
 	
 	if(DashActor)
 	{
-
 		DashActor->Destroy();
 	}
 	Super::EndAbility(Handle, ActorInfo, ActivationInfo, bReplicateEndAbility, bWasCancelled);
-}
-
-void USATORI_AI_DashAbilitySpawned::OnCancelled(FGameplayTag EventTag, FGameplayEventData EventData)
-{
-	//EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true);
-}
-
-void USATORI_AI_DashAbilitySpawned::OnCompleted(FGameplayTag EventTag, FGameplayEventData EventData)
-{
-	//EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, false);
 }
 
 void USATORI_AI_DashAbilitySpawned::EventReceived(FGameplayTag EventTag, FGameplayEventData EventData)
@@ -90,8 +76,9 @@ void USATORI_AI_DashAbilitySpawned::EventReceived(FGameplayTag EventTag, FGamepl
 	//Starts Dashing towards DashActor
 	if (EventTag == TagStartDash)
 	{
-		bTargeting = false;		
-		DashActorPosition = DashActor->GetActorLocation();
+		bTargeting = false;
+		if(DashActor)
+			DashActorPosition = DashActor->GetActorLocation();
 	
 		//CheckVisibility
 		FHitResult HitResult;
