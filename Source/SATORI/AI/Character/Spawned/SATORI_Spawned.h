@@ -26,10 +26,11 @@ public:
 
 	void SpawnedDie();
 
-	ASATORI_Spawner* MySpawn;
+	ASATORI_Spawner* MySpawn = nullptr;
 	
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Particle Effect")
-	UNiagaraSystem* NS_ParticleEffect;
+	UNiagaraSystem* NS_ParticleEffect = nullptr;
+
 protected:
 
 	float DistAttack = 700.f;

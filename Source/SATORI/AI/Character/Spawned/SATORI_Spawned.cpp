@@ -37,30 +37,15 @@ float ASATORI_Spawned::GetDistAttack() const
 
 void ASATORI_Spawned::SpawnedDie()
 {
-
-	FVector SpawnLocation = GetActorLocation();
-
 	if(MySpawn)
 	{
 		MySpawn->AddNumEnemies(-1);
 		GetWorld()->GetAuthGameMode<ASATORIGameMode>()->RemoveEnemyActor(this);
-
-		if (NS_ParticleEffect)
-		{
-			UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), NS_ParticleEffect, SpawnLocation);
-		}
-
 		this->Destroy();
 	}
 	else
 	{
 		GetWorld()->GetAuthGameMode<ASATORIGameMode>()->RemoveEnemyActor(this);
-
-		if (NS_ParticleEffect)
-		{
-			UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), NS_ParticleEffect, SpawnLocation);
-		}
-
 		this->Destroy();
 	}
 }
