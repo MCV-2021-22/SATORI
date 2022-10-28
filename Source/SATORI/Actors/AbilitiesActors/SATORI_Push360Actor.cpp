@@ -42,7 +42,7 @@ void ASATORI_Push360Actor::OnOverlapCollisionSphere(UPrimitiveComponent* Overlap
 	}
 
 	//Enemies
-	if(Character->HasMatchingGameplayTag(EnemyTag) && !Character->HasMatchingGameplayTag(LaunchTag))
+	if(Character->HasMatchingGameplayTag(EnemyTag) && !Character->HasMatchingGameplayTag(LaunchTag) && !Character->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag("State.Dead")))
 	{	
 		StopAction(Character);
 		RotateEnemy(OtherActor);
