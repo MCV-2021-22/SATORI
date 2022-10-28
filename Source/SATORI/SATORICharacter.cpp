@@ -206,8 +206,10 @@ void ASATORICharacter::PossessedBy(AController* NewController)
 	}
 
 	// Move Weapon Multiplier Here
-	WeaponDamage *= GetAttack();
-	WeaponSavedDamage *= GetAttack();
+	float AttackPower = GetAttack();
+	WeaponDamage = AttackPower == 1 ? WeaponDamage : AttackPower * WeaponDamage;
+	WeaponSavedDamage = WeaponDamage;
+	//GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Red, FString::Printf(TEXT("Weapon Damage: %f"), WeaponDamage));
 }
 
 void ASATORICharacter::ApplyDefaultAbilities()
