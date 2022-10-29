@@ -180,12 +180,17 @@ protected:
 	void GrantAbilityToPlayer(FGameplayAbilitySpec Ability);
 	void InitializePassiveAttributes();
 
+	// Check if the enemy is in front
 	bool IsEnemyInFront(const FVector StartPosition, const FVector EndPosition, FHitResult& LocalHitResult, int RotationSize = 1);
 
 	TWeakObjectPtr<AActor> FindNearestEnemy(TArray<TWeakObjectPtr<AActor>> Actors);
 
+	// Parry
 	bool DoParryBlockAllEnemies();
 	bool DoParryBlockOneEnemies();
+
+	// Set Anim Instance class 
+	void InitializeAnimIntance();
 protected:
 
 	// The core ActorComponent for interfacing with the GameplayAbilities System

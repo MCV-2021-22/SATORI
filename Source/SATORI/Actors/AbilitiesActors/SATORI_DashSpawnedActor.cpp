@@ -5,6 +5,7 @@
 #include "SATORI/AI/Character/SATORI_AICharacter.h"
 #include "SATORI/FunctionLibrary/SATORI_BlueprintLibrary.h"
 #include "DrawDebugHelpers.h"
+#include "NiagaraFunctionLibrary.h"
 #include "SATORICharacter.h"
 #include "SATORIGameMode.h"
 #include "Components/DecalComponent.h"
@@ -63,6 +64,14 @@ void ASATORI_DashSpawnedActor::OnOverlapCollisionSphere(UPrimitiveComponent* Ove
 		USATORI_BlueprintLibrary::ApplyGameplayEffectDamage(Character, Damage, Character, DamageGameplayEffect);
 		USATORI_BlueprintLibrary::ApplyGameplayEffect(Character, HeavyHitGameplayEffect);
 		UFMODBlueprintStatics::PlayEvent2D(GetWorld(), EventExplosion, true);
+		if (SpawnedCharacter)
+		{
+			FVector SpawnLocation = SpawnedCharacter->GetActorLocation();
+			if (SpawnedCharacter->NS_ParticleEffect)
+			{
+				UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), SpawnedCharacter->NS_ParticleEffect, SpawnLocation);
+			}
+		}
 		Destroy();
 		if (SpawnedCharacter && SpawnedCharacter->MySpawn) 
 			SpawnedCharacter->MySpawn->AddNumEnemies(-1);

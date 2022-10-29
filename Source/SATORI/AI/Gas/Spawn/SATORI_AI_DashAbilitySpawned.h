@@ -61,12 +61,6 @@ protected:
 	float Damage = 1.0f;
 
 	UFUNCTION()
-	void OnCancelled(FGameplayTag EventTag, FGameplayEventData EventData);
-
-	UFUNCTION()
-	void OnCompleted(FGameplayTag EventTag, FGameplayEventData EventData);
-
-	UFUNCTION()
 	void EventReceived(FGameplayTag EventTag, FGameplayEventData EventData);
 
 private:

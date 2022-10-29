@@ -7,6 +7,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "SATORI/GAS/SATORI_AbilitySystemComponent.h"
 #include "Engine/Texture2D.h"
+#include "GameplayFramework/SATORI_GameInstance.h"
 
 // Sets default values for this component's properties
 USATORI_AbilityMask::USATORI_AbilityMask()
@@ -52,6 +53,13 @@ void USATORI_AbilityMask::GrantedMaskEffects(SATORIMaskType MaskType)
 			}
 		}
 	}
+
+	USATORI_GameInstance* GameInstanceRef = 
+		Cast<USATORI_GameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
+	if (GameInstanceRef)
+	{
+		GameInstanceRef->MaskType = MaskType;
+	}
 }
 
 FActiveGameplayEffectHandle USATORI_AbilityMask::GetCurrentActiveGEHandle()
@@ -95,4 +103,25 @@ TSubclassOf<UGameplayEffect> USATORI_AbilityMask::ChooseMaskEffectoToApply(SATOR
 	}
 
 	return Effect;
+}
+
+UTexture2D* USATORI_AbilityMask::SelectMaskToPortrail(SATORIMaskType MaskType)
+{
+	if (MaskType == SATORIMaskType::NONE)
+	{
+		return CurrentPortrailImage;
+	}
+	else if (MaskType == SATORIMaskType::Aka && AkaImage)
+	{
+		return AkaImage;
+	}
+	else if (MaskType == SATORIMaskType::Ao && AoImage)
+	{
+		return AoImage;
+	}
+	else if (MaskType == SATORIMaskType::Midori && MidoriImage)
+	{
+		return MidoriImage;
+	}
+	return CurrentPortrailImage;
 }

@@ -53,7 +53,7 @@ void USATORI_AreasPatron::EventReceived(FGameplayTag EventTag, FGameplayEventDat
 	if (EventTag == TagSpawnAbility)
 	{
 		FVector IA_POS = CurrentActorInfo->AvatarActor->GetActorLocation();
-
+		ASATORI_Raijin* Raijin = Cast<ASATORI_Raijin>(GetAvatarActorFromActorInfo());
 		TArray< AActor* > Spawns;
 
 		// Particles
@@ -69,7 +69,7 @@ void USATORI_AreasPatron::EventReceived(FGameplayTag EventTag, FGameplayEventDat
 
 		int array_dim = Spawns.Num();
 
-		for (int i = 0; i < 3; i++)
+		for (int i = 0; i < Raijin->getNumRayosExtensibles(); i++)
 		{
 			if (Spawns.Num() > 0)
 			{

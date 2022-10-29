@@ -165,11 +165,6 @@ void ASATORICharacter::PossessedBy(AController* NewController)
 			SatoriPlayerController->CreateMainHUD();
 		}
 
-		// Test Mask Effect
-		/*MaskType = SATORIMaskType::Aka;
-		SATORIAbilityMaskComponent->GrantedMaskEffects(MaskType);*/
-		// -------------------
-		
 		if(GameInstanceRef->PlayerStart)
 		{
 			SetHealth(GetMaxHealth());
@@ -185,7 +180,7 @@ void ASATORICharacter::PossessedBy(AController* NewController)
 		else
 		{
 			StatsComponent->InitializeStatsAttributesByInstance(PS, GameInstanceRef);
-			SATORIAbilityMaskComponent->GrantedMaskEffects(GameInstanceRef->MaskType);
+			//SATORIAbilityMaskComponent->GrantedMaskEffects(GameInstanceRef->MaskType);
 			PlayerGameplayAbilityComponent->SetSavedAbilitiesWithGameInstance(GameInstanceRef);
 			IsAbilityUpgrated = GameInstanceRef->isAbilityUpgrated;
 
@@ -199,6 +194,9 @@ void ASATORICharacter::PossessedBy(AController* NewController)
 			RestartStats();
 			GameInstanceRef->IsInBossFight = false;
 		}
+
+		// Apply Mask to Icon
+		SATORIAbilityMaskComponent->SelectMaskToPortrail(GameInstanceRef->MaskType);
 	}
 
 	if (Cast<APlayerController>(NewController) != nullptr) {
@@ -207,9 +205,14 @@ void ASATORICharacter::PossessedBy(AController* NewController)
 		//AddGameplayTag(FGameplayTag::RequestGameplayTag("PossessedBy.AI"));
 	}
 
+	// Init Anim Instance
+	InitializeAnimIntance();
+
 	// Move Weapon Multiplier Here
-	WeaponDamage *= GetAttack();
-	WeaponSavedDamage *= GetAttack();
+	float AttackPower = GetAttack();
+	WeaponDamage = AttackPower == 1 ? WeaponDamage : AttackPower * WeaponDamage;
+	WeaponSavedDamage = WeaponDamage;
+	//GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Red, FString::Printf(TEXT("Weapon Damage: %f"), WeaponDamage));
 }
 
 void ASATORICharacter::ApplyDefaultAbilities()
@@ -259,7 +262,7 @@ bool ASATORICharacter::DoParryBlockAllEnemies()
 
 	FVector CenterOfBox = ((EndPosition - StartPosition) / 2) + StartPosition;
 
-	DrawDebugBox(GetWorld(), CenterOfBox, CollisionShape.GetExtent(), FColor::Green, true);
+	//DrawDebugBox(GetWorld(), CenterOfBox, CollisionShape.GetExtent(), FColor::Green, true);
 
 	bool isHit = GetWorld()->SweepMultiByChannel(HitResults, StartPosition, EndPosition, FQuat::Identity, ECC, CollisionShape);
 
@@ -501,11 +504,14 @@ void ASATORICharacter::ApplyGameplayeEffectToPlayerWithParam(TSubclassOf<UGamepl
 	FGameplayEffectContextHandle EffectContext = AbilitySystemComponent->MakeEffectContext();
 	EffectContext.AddSourceObject(this);
 
-	FGameplayEffectSpecHandle NewHandle = AbilitySystemComponent->MakeOutgoingSpec(GameplayEffect, GetCharacterLevel(), EffectContext);
-	if (NewHandle.IsValid())
+	if (GameplayEffect.Get())
 	{
-		FActiveGameplayEffectHandle ActiveGEHandle = AbilitySystemComponent->ApplyGameplayEffectSpecToTarget(*NewHandle.Data.Get(),
-			AbilitySystemComponent.Get());
+		FGameplayEffectSpecHandle NewHandle = AbilitySystemComponent->MakeOutgoingSpec(GameplayEffect, GetCharacterLevel(), EffectContext);
+		if (NewHandle.IsValid())
+		{
+			FActiveGameplayEffectHandle ActiveGEHandle = AbilitySystemComponent->ApplyGameplayEffectSpecToTarget(*NewHandle.Data.Get(),
+				AbilitySystemComponent.Get());
+		}
 	}
 }
 
@@ -521,6 +527,7 @@ void ASATORICharacter::ResetCharacterDatas()
 		GameInstanceRef->ResetPortalRewardAbilities();
 		GameInstanceRef->SetPlayerStart(true);
 		GameInstanceRef->bIsShowingMainWidget = false;
+		GameInstanceRef->MaskType = SATORIMaskType::NONE;
 	}
 
 	// Reset current player reward abilities with the portal to zero
@@ -536,6 +543,17 @@ void ASATORICharacter::ResetCharacterDatas()
 		int32 NumEffectsRemoved = AbilitySystemComponent->RemoveActiveEffectsWithTags(EffectTagsToRemove);
 
 		AbilitySystemComponent->AddLooseGameplayTag(DeadTag);
+	}
+}
+
+void ASATORICharacter::InitializeAnimIntance()
+{
+	UAnimInstance* AnimInstance = this->GetMesh()->GetAnimInstance();
+	if (AnimInstance)
+	{
+		AnimInstance->InitializeAnimation(true);
+		//AnimInstance->BlueprintInitializeAnimation();
+		//AnimInstance->BlueprintLinkedAnimationLayersInitialized();
 	}
 }
 
@@ -575,6 +593,12 @@ void ASATORICharacter::CharacterDeath()
 	GetCharacterMovement()->GravityScale = 0;
 	GetCharacterMovement()->Velocity = FVector(0);
 
+	// Cancel All habilities
+	if (AbilitySystemComponent.IsValid())
+	{
+		AbilitySystemComponent->CancelAllAbilities();
+	}
+
 	// Playe Death montage
 	if (DeathMontage)
 	{
@@ -586,6 +610,7 @@ void ASATORICharacter::CharacterDeath()
 			SatoriController->SetShowMouseCursor(true);
 			ShowDeathWidget();
 		}
+
 		// Play montages
 		PlayAnimMontage(DeathMontage);
 	}

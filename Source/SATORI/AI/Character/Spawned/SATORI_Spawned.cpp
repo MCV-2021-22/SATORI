@@ -4,6 +4,8 @@
 #include "AI/Character/Spawned/SATORI_Spawned.h"
 #include "AIController.h"
 #include "SATORIGameMode.h"
+#include "NiagaraSystem.h"
+#include "NiagaraFunctionLibrary.h"
 
 ASATORI_Spawned::ASATORI_Spawned()
 {

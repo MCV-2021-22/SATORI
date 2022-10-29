@@ -7,9 +7,8 @@
 #include "AI/Character/Spawner/SATORI_Spawner.h"
 #include "SATORI_Spawned.generated.h"
 
-/**
- * 
- */
+class UNiagaraSystem;
+
 UCLASS()
 class SATORI_API ASATORI_Spawned : public ASATORI_AICharacter
 {
@@ -27,8 +26,10 @@ public:
 
 	void SpawnedDie();
 
-	ASATORI_Spawner* MySpawn;
+	ASATORI_Spawner* MySpawn = nullptr;
 	
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Particle Effect")
+	UNiagaraSystem* NS_ParticleEffect = nullptr;
 
 protected:
 

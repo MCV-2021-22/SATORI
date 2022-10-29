@@ -97,7 +97,7 @@ void USATORI_ChangeAbilitiesWidget::HabilityCooldownDatas(FSATORI_CooldownDatas 
 	{
 		if (Datas.IsCooldownAvaiable && Datas.TimeRemained >= 0.0f)
 		{
-			FirstAbilityIcon->SetOpacity(0.25f);
+			FirstAbilityIcon->SetOpacity(0.50f);
 			Cooldown_1->SetVisibility(ESlateVisibility::Visible);
 			HabilityCDTimeText_1->SetVisibility(ESlateVisibility::Visible);
 
@@ -116,7 +116,7 @@ void USATORI_ChangeAbilitiesWidget::HabilityCooldownDatas(FSATORI_CooldownDatas 
 	{
 		if (Datas.IsCooldownAvaiable && Datas.TimeRemained >= 0.0f)
 		{
-			SecondAbilityIcon->SetOpacity(0.25f);
+			SecondAbilityIcon->SetOpacity(0.50f);
 			Cooldown_2->SetVisibility(ESlateVisibility::Visible);
 			HabilityCDTimeText_2->SetVisibility(ESlateVisibility::Visible);
 
@@ -135,7 +135,7 @@ void USATORI_ChangeAbilitiesWidget::HabilityCooldownDatas(FSATORI_CooldownDatas 
 	{
 		if (Datas.IsCooldownAvaiable && Datas.TimeRemained >= 0.0f)
 		{
-			LastAbilityIcon->SetOpacity(0.25f);
+			LastAbilityIcon->SetOpacity(0.50f);
 			Cooldown_3->SetVisibility(ESlateVisibility::Visible);
 			HabilityCDTimeText_3->SetVisibility(ESlateVisibility::Visible);
 

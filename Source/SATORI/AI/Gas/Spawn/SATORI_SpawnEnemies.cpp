@@ -44,17 +44,8 @@ void USATORI_SpawnEnemies::ActivateAbility(
 
 	//Handling of events
 	USATORI_PlayMontageAndWaitEvent* Task = USATORI_PlayMontageAndWaitEvent::PlayMontageAndWaitForEvent(this, NAME_None, AnimMontage, FGameplayTagContainer(), 1.0f, NAME_None, bStopWhenAbilityEnds, 1.0f);
-	//Task->OnBlendOut.AddDynamic(this, &USATORI_SpawnEnemies::OnCompleted);
-	//Task->OnCompleted.AddDynamic(this, &USATORI_SpawnEnemies::OnCompleted);
-	//Task->OnInterrupted.AddDynamic(this, &USATORI_SpawnEnemies::OnCancelled);
-	//Task->OnCancelled.AddDynamic(this, &USATORI_SpawnEnemies::OnCancelled);
 	Task->EventReceived.AddDynamic(this, &USATORI_SpawnEnemies::EventReceived);
 	Task->ReadyForActivation();
-
-
-	
-
-	//EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true);
 }
 
 void USATORI_SpawnEnemies::EndAbility(
@@ -81,29 +72,25 @@ void USATORI_SpawnEnemies::EventReceived(FGameplayTag EventTag, FGameplayEventDa
 {
 	if (EventTag == SpawnTag)
 	{
-		Spawner->spawning = true;
+		if (Spawner)
+		{
+			Spawner->spawning = true;
 
-		FActorSpawnParameters SpawnParams;
-		SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
+			FActorSpawnParameters SpawnParams;
+			SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
 
-		FRotator RotationOfIA = GetAvatarActorFromActorInfo()->GetActorRotation();
-		ASATORI_Spawned* EnemySpawned = GetWorld()->SpawnActor<ASATORI_Spawned>(EnemyToSpawn,
-			GetAvatarActorFromActorInfo()->GetActorLocation() + GetAvatarActorFromActorInfo()->GetActorForwardVector() * 100,
-			RotationOfIA, SpawnParams);
+			FRotator RotationOfIA = GetAvatarActorFromActorInfo()->GetActorRotation();
+			ASATORI_Spawned* EnemySpawned = GetWorld()->SpawnActor<ASATORI_Spawned>(EnemyToSpawn,
+				GetAvatarActorFromActorInfo()->GetActorLocation() + GetAvatarActorFromActorInfo()->GetActorForwardVector() * 100,
+				RotationOfIA, SpawnParams);
 
-		EnemySpawned->SpawnDefaultController();
-		EnemySpawned->SetMySpawn(Spawner);
+			EnemySpawned->SpawnDefaultController();
+			EnemySpawned->SetMySpawn(Spawner);
 
-		Spawner->AddNumEnemies(1);
+			Spawner->AddNumEnemies(1);
 
-		Spawner->ResetSpawnTime();
-
+			Spawner->ResetSpawnTime();
+		}
 		EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true);
 	}
 }
-
-
-
-
-
-

@@ -29,13 +29,13 @@ struct FSATORI_PortalAbilitiesDatasReward
 	TSubclassOf<USATORI_GameplayAbility> CurrentAbility;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	UTexture2D* AbilitiyIcon;
+	UTexture2D* AbilitiyIcon = nullptr;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	FText AbilityName;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	bool isUpgrated;
+	bool isUpgrated = false;
 };
 
 USTRUCT(BlueprintType)
@@ -48,7 +48,7 @@ public:
 	TSubclassOf<UGameplayEffect> PassiveEffect;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	UTexture2D* PassiveIcon;
+	UTexture2D* PassiveIcon = nullptr;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	FText Description;
