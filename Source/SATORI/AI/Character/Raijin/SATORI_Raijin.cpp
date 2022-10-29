@@ -62,6 +62,23 @@ float ASATORI_Raijin::getSoCloseDist()
 	return SoCloseDist;
 }
 
+float ASATORI_Raijin::getSoCloseDistExt()
+{
+	return SoCloseDistExt;
+}
+
+void ASATORI_Raijin::setNumRayosExtensibles(int num)
+{
+	num_rayos_extensibles = num;
+}
+
+int ASATORI_Raijin::getNumRayosExtensibles()
+{
+	return num_rayos_extensibles;
+}
+
+
+
 void ASATORI_Raijin::setArcoAltavoces()
 {
 	TSubclassOf<ASATORI_ArcoAltavoces> classToFind;

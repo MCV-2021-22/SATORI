@@ -23,6 +23,8 @@ public:
 
 	float getSoCloseDist();
 
+	float getSoCloseDistExt();
+
 	UFUNCTION(BlueprintCallable)
 	FVector getSpawnPos();
 
@@ -62,6 +64,10 @@ public:
 
 	bool getFujinDowned();
 
+	void setNumRayosExtensibles(int num);
+
+	int getNumRayosExtensibles();
+
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Weapon")
 		UStaticMeshComponent* SwordComponentRight;
 
@@ -71,10 +77,14 @@ protected:
 
 	float SoCloseDist = 250.0f;
 
+	float SoCloseDistExt = 1750.0f;
+
 	bool downed = false;
 
 	bool dead = false;
 
 	float CdTimeDowned = 10.0f;
+
+	int num_rayos_extensibles = 3;
 
 };
