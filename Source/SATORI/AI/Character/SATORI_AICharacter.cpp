@@ -341,6 +341,33 @@ void ASATORI_AICharacter::CheckDamage(float Damage)
 		}
 	}
 
+	if(GetHealth() <= GetMaxHealth()*0.25)
+	{
+		ASATORI_Raijin* Raijin = Cast<ASATORI_Raijin>(this);
+		if(Raijin)
+		{
+			Raijin->setNumRayosExtensibles(6);
+		}
+		
+	}
+	else if(GetHealth() <= GetMaxHealth()*0.5)
+	{
+		ASATORI_Raijin* Raijin = Cast<ASATORI_Raijin>(this);
+		if (Raijin)
+		{
+			Raijin->setNumRayosExtensibles(5);
+		}
+		
+	}
+	else if(GetHealth() <= GetMaxHealth()* 0.75)
+	{
+		ASATORI_Raijin* Raijin = Cast<ASATORI_Raijin>(this);
+		if (Raijin)
+		{
+			Raijin->setNumRayosExtensibles(4);
+		}
+	}
+
 	if(GetHealth() <= 0.0f)
 	{
 		//Spawned edge case
