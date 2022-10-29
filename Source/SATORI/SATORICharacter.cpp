@@ -259,7 +259,7 @@ bool ASATORICharacter::DoParryBlockAllEnemies()
 
 	FVector CenterOfBox = ((EndPosition - StartPosition) / 2) + StartPosition;
 
-	DrawDebugBox(GetWorld(), CenterOfBox, CollisionShape.GetExtent(), FColor::Green, true);
+	//DrawDebugBox(GetWorld(), CenterOfBox, CollisionShape.GetExtent(), FColor::Green, true);
 
 	bool isHit = GetWorld()->SweepMultiByChannel(HitResults, StartPosition, EndPosition, FQuat::Identity, ECC, CollisionShape);
 
@@ -501,11 +501,14 @@ void ASATORICharacter::ApplyGameplayeEffectToPlayerWithParam(TSubclassOf<UGamepl
 	FGameplayEffectContextHandle EffectContext = AbilitySystemComponent->MakeEffectContext();
 	EffectContext.AddSourceObject(this);
 
-	FGameplayEffectSpecHandle NewHandle = AbilitySystemComponent->MakeOutgoingSpec(GameplayEffect, GetCharacterLevel(), EffectContext);
-	if (NewHandle.IsValid())
+	if (GameplayEffect.Get())
 	{
-		FActiveGameplayEffectHandle ActiveGEHandle = AbilitySystemComponent->ApplyGameplayEffectSpecToTarget(*NewHandle.Data.Get(),
-			AbilitySystemComponent.Get());
+		FGameplayEffectSpecHandle NewHandle = AbilitySystemComponent->MakeOutgoingSpec(GameplayEffect, GetCharacterLevel(), EffectContext);
+		if (NewHandle.IsValid())
+		{
+			FActiveGameplayEffectHandle ActiveGEHandle = AbilitySystemComponent->ApplyGameplayEffectSpecToTarget(*NewHandle.Data.Get(),
+				AbilitySystemComponent.Get());
+		}
 	}
 }
 
