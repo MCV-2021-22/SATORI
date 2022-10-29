@@ -205,6 +205,9 @@ void ASATORICharacter::PossessedBy(AController* NewController)
 		//AddGameplayTag(FGameplayTag::RequestGameplayTag("PossessedBy.AI"));
 	}
 
+	// Init Anim Instance
+	InitializeAnimIntance();
+
 	// Move Weapon Multiplier Here
 	float AttackPower = GetAttack();
 	WeaponDamage = AttackPower == 1 ? WeaponDamage : AttackPower * WeaponDamage;
@@ -540,6 +543,17 @@ void ASATORICharacter::ResetCharacterDatas()
 		int32 NumEffectsRemoved = AbilitySystemComponent->RemoveActiveEffectsWithTags(EffectTagsToRemove);
 
 		AbilitySystemComponent->AddLooseGameplayTag(DeadTag);
+	}
+}
+
+void ASATORICharacter::InitializeAnimIntance()
+{
+	UAnimInstance* AnimInstance = this->GetMesh()->GetAnimInstance();
+	if (AnimInstance)
+	{
+		AnimInstance->InitializeAnimation(true);
+		//AnimInstance->BlueprintInitializeAnimation();
+		//AnimInstance->BlueprintLinkedAnimationLayersInitialized();
 	}
 }
 
