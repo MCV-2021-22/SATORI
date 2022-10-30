@@ -25,6 +25,8 @@ public:
 	UPROPERTY(BlueprintReadOnly, EditAnywhere)
 		int ComboRaijin = 0;
 
+	UPROPERTY(EditAnywhere)
+		bool raijin_muerto = false;
 
 	virtual bool CalculateRawConditionValue(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory) const override;
 

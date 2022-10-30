@@ -21,7 +21,7 @@ bool UBTDecorator_FujinRandomAb::CalculateRawConditionValue(UBehaviorTreeCompone
 
 	if (AI)
 	{
-		if(AI->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag(("Boss.Fase.Final"))))
+		if(AI->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag(("Boss.Fase.Final"))) && !raijin_muerto)
 		{
 			
 			TArray<float> Probs = AI->GetArrayProbs(ComboRaijin);
@@ -30,38 +30,49 @@ bool UBTDecorator_FujinRandomAb::CalculateRawConditionValue(UBehaviorTreeCompone
 			{
 				Probability = Probs[ComboFujin - 1];
 
-				if(Probs[ComboFujin - 1] - 5 >=0)
+				int randomnum = rand() % 100 + 1;
+
+				if (randomnum < Probability)
 				{
-					for(int i = 0; i < Probs.Num();i++)
+				
+					if(Probs[ComboFujin - 1] - 5 >=0)
 					{
-						if(i == (ComboFujin - 1))
+						for(int i = 0; i < Probs.Num();i++)
 						{
-							Probs[i] += -5;
+							if(i == (ComboFujin - 1))
+							{
+								Probs[i] += -5;
+							}
+							else
+							{
+								Probs[i] += 2.5;
+							}
 						}
-						else
-						{
-							Probs[i] += 2.5;
-						}
+						
 					}
-					
+					else if(Probs[ComboFujin - 1] > 0 )
+					{
+						float dif = Probs[ComboFujin - 1] / 2;
+
+						for (int i = 0; i < Probs.Num(); i++)
+						{
+							if (i == (ComboFujin - 1))
+							{
+								Probs[i] = 0;
+							}
+							else
+							{
+								Probs[i] += dif;
+							}
+						}
+
+
+					}
+					return true;
 				}
-				else if(Probs[ComboFujin - 1] > 0 )
+				else
 				{
-					float dif = Probs[ComboFujin - 1] / 2;
-
-					for (int i = 0; i < Probs.Num(); i++)
-					{
-						if (i == (ComboFujin - 1))
-						{
-							Probs[i] = 0;
-						}
-						else
-						{
-							Probs[i] += dif;
-						}
-					}
-
-
+					return false;
 				}
 
 			}
@@ -70,9 +81,9 @@ bool UBTDecorator_FujinRandomAb::CalculateRawConditionValue(UBehaviorTreeCompone
 		}
 
 		// 25%
-		int randomnum = rand() % 100 + 1;
+		int randomnum1 = rand() % 100 + 1;
 
-		if (randomnum < Probability)
+		if (randomnum1 < Probability)
 		{
 			return true;
 		}
