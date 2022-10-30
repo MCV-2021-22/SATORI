@@ -669,7 +669,7 @@ void ASATORICharacter::OnWeaponOverlapBegin(UPrimitiveComponent* OverlappedComp,
 	{
 		if (ASATORI_AICharacter* EnemyCharacter = Cast<ASATORI_AICharacter>(OtherActor))
 		{
-			PlayerSenseOfBlow();
+			//PlayerSenseOfBlow();
 
 			// Other Stuff
 			UAbilitySystemComponent* EnemyAbilitySystem = EnemyCharacter->GetAbilitySystemComponent();
@@ -768,9 +768,7 @@ void ASATORICharacter::OnParryOverlapEnd(class UPrimitiveComponent* OverlappedCo
 
 void ASATORICharacter::PlayerSenseOfBlow(float DilationTime, float WaitTime)
 {
-	// Camera shake
-	GetWorld()->GetFirstPlayerController()->PlayerCameraManager->StartCameraShake(CameraShake);
-
+	PlayerCameraShake();
 	// Slow motion (Shit version but works so...If I find the time and willpower will try to put pretty if not you can do it 0 problem is easy)
 	USATORI_GameInstance* GameInstanceRef = Cast<USATORI_GameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
 	if (GameInstanceRef->TimeSlow)
@@ -819,6 +817,12 @@ void ASATORICharacter::PlayerSenseOfBlow(float DilationTime, float WaitTime)
 				//GetWorld()->GetTimerManager().ClearTimer(WaitHandle);
 			}), WaitTime, false);
 	}
+}
+
+void ASATORICharacter::PlayerCameraShake()
+{
+	// Camera shake
+	GetWorld()->GetFirstPlayerController()->PlayerCameraManager->StartCameraShake(CameraShake);
 }
 
 void ASATORICharacter::ActivatePlayerCheat()

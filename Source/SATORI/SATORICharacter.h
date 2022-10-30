@@ -132,6 +132,10 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void PlayerSenseOfBlow(float DilationTime = 0.8f, float WaitTime = 0.5f);
 
+	// Player Camera Shake
+	UFUNCTION(BlueprintCallable)
+	void PlayerCameraShake();
+
 	UFUNCTION(BlueprintImplementableEvent)
 	void ShowDeathWidget();
 
@@ -191,6 +195,7 @@ protected:
 
 	// Set Anim Instance class 
 	void InitializeAnimIntance();
+
 protected:
 
 	// The core ActorComponent for interfacing with the GameplayAbilities System

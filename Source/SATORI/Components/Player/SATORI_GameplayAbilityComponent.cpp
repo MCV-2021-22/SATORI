@@ -111,6 +111,12 @@ void USATORI_GameplayAbilityComponent::SetNextAbility()
 			CurrentAbilityValue = 0;
 		}
 	}
+
+	if (CurrentAbilityValue < 0)
+	{
+		CurrentAbilityValue = 0;
+	}
+
 	UE_LOG(LogTemp, Display, TEXT(" Set Next Current Ability Value : [%d] "), CurrentAbilityValue);
 
 	NotifyAbilityChanged();
@@ -142,6 +148,11 @@ void USATORI_GameplayAbilityComponent::SetPrevAbility()
 		{
 			CurrentAbilityValue = 0;
 		}
+	}
+
+	if (CurrentAbilityValue < 0)
+	{
+		CurrentAbilityValue = 0;
 	}
 
 	UE_LOG(LogTemp, Display, TEXT(" Set Prev Current Ability Value : [%d] "), CurrentAbilityValue);
@@ -184,7 +195,7 @@ TSubclassOf<USATORI_GameplayAbility> USATORI_GameplayAbilityComponent::GetCurren
 		}
 	}
 	// Test for Ability 
-	else
+	else if(IsAllHabilityTesting)
 	{
 		if (PlayerGameplayAbility.Num() > 0)
 		{
@@ -199,7 +210,7 @@ TSubclassOf<USATORI_GameplayAbility> USATORI_GameplayAbilityComponent::GetCurren
 			}
 		}
 	}
-	return nullptr;
+	return CurrentGameplayAbility.Get() ? CurrentGameplayAbility : nullptr;
 }
 
 
