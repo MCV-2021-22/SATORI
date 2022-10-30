@@ -53,7 +53,7 @@ void USATORI_AIBossRevivir::EventReceived(FGameplayTag EventTag, FGameplayEventD
 		}
 		else if (Raijin)
 		{
-			Raijin->Fujin->RemoveGameplayTag(FGameplayTag::RequestGameplayTag("Boss.Downed.Fujin"));
+			Raijin->Fujin->RemoveGameplayTag(FGameplayTag::RequestGameplayTag("Boss.Downed.Raijin"));
 			Raijin->revivir();
 		}
 	}
