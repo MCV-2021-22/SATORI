@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<objects serializationModel="Studio.02.02.00">
+	<object class="AudioFile" id="{2fd98b1a-d24e-4745-a143-eac0fe1788d9}">
+		<property name="assetPath">
+			<value>Character/Fujin/SFX_FUJIN_whoosh_04.mp3</value>
+		</property>
+		<property name="frequencyInKHz">
+			<value>44.0999985</value>
+		</property>
+		<property name="channelCount">
+			<value>1</value>
+		</property>
+		<property name="length">
+			<value>0.70530612244897961</value>
+		</property>
+		<relationship name="masterAssetFolder">
+			<destination>{269b0b2d-b44d-4e19-a3ee-86e302406a27}</destination>
+		</relationship>
+	</object>
+</objects>
