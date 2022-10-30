@@ -5,7 +5,7 @@
 			<value>MELEEDash</value>
 		</property>
 		<property name="outputFormat">
-			<value>1</value>
+			<value>2</value>
 		</property>
 		<relationship name="folder">
 			<destination>{aef1ee8c-95c4-4d77-8201-f04c4d75567a}</destination>
@@ -119,6 +119,7 @@
 	<object class="MixerBusEffectChain" id="{75ff4cc9-1a2a-478a-b83b-f6fe84b2d8c5}">
 		<relationship name="effects">
 			<destination>{642630cb-344e-41ba-a767-a56176429efc}</destination>
+			<destination>{e324ffa9-b487-4e59-bf59-f38226084c88}</destination>
 		</relationship>
 	</object>
 	<object class="MixerBusPanner" id="{e2d83e06-6d8d-4677-bf52-11dbd9f3df84}" />
@@ -130,5 +131,10 @@
 	</object>
 	<object class="MixerBusPanner" id="{590bff5c-aff8-4e0b-bc33-88941b5b36bd}" />
 	<object class="MixerBusFader" id="{642630cb-344e-41ba-a767-a56176429efc}" />
+	<object class="SpatialiserEffect" id="{e324ffa9-b487-4e59-bf59-f38226084c88}">
+		<property name="distanceRolloffType">
+			<value>4</value>
+		</property>
+	</object>
 	<object class="MixerBusFader" id="{51f11ddf-be69-470e-9cdc-c2ab8714d9b3}" />
 </objects>

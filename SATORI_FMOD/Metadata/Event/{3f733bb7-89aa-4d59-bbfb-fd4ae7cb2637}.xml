@@ -5,7 +5,7 @@
 			<value>MeleeAttack</value>
 		</property>
 		<property name="outputFormat">
-			<value>1</value>
+			<value>2</value>
 		</property>
 		<relationship name="folder">
 			<destination>{aef1ee8c-95c4-4d77-8201-f04c4d75567a}</destination>
@@ -126,6 +126,7 @@
 	<object class="MixerBusEffectChain" id="{6b9d451d-7a5b-4178-93e5-6766f439761e}">
 		<relationship name="effects">
 			<destination>{31acaa55-76da-4110-bc77-af097e13136b}</destination>
+			<destination>{12c51fb5-0b55-4fb0-8627-a6bda88a5bcc}</destination>
 		</relationship>
 	</object>
 	<object class="MixerBusPanner" id="{4350a288-117f-4a50-ac23-4ffa7c547426}" />
@@ -162,5 +163,10 @@
 	</object>
 	<object class="MixerBusPanner" id="{21dffc3d-efb0-4276-a9a3-9fe9a8bfae97}" />
 	<object class="MixerBusFader" id="{31acaa55-76da-4110-bc77-af097e13136b}" />
+	<object class="SpatialiserEffect" id="{12c51fb5-0b55-4fb0-8627-a6bda88a5bcc}">
+		<property name="distanceRolloffType">
+			<value>4</value>
+		</property>
+	</object>
 	<object class="MixerBusFader" id="{364fc475-e459-44fb-b412-04bb065c5952}" />
 </objects>
