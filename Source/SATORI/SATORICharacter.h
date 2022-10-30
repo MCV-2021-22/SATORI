@@ -147,6 +147,8 @@ public:
 
 	bool acti_rayo = false;
 
+	bool singlerayo = false;
+
 	bool activoRayo = false;
 
 	float maxTimeRayo = 1.0f;

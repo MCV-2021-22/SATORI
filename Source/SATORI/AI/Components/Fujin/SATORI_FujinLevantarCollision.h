@@ -98,7 +98,7 @@ protected:
 
 	bool inmunity = true;
 
-	float LifeTime = 8.f;
+	float LifeTime = 2.5f;
 
 	USATORI_GameInstance* GameInstanceRef;
 
