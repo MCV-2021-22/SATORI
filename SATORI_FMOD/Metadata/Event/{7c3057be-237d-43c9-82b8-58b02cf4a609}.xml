@@ -5,7 +5,7 @@
 			<value>MeleeBlock</value>
 		</property>
 		<property name="outputFormat">
-			<value>1</value>
+			<value>2</value>
 		</property>
 		<relationship name="folder">
 			<destination>{aef1ee8c-95c4-4d77-8201-f04c4d75567a}</destination>
@@ -116,6 +116,7 @@
 	<object class="MixerBusEffectChain" id="{b8248a0f-fc6e-44fc-b03a-b7ec76b90bed}">
 		<relationship name="effects">
 			<destination>{a4ec2e4c-11d1-4d37-84e6-ca079fdb2d19}</destination>
+			<destination>{27a91894-134f-4bb9-8176-7f0177ba3d93}</destination>
 		</relationship>
 	</object>
 	<object class="MixerBusPanner" id="{5a245988-354f-4343-8cc0-c234f0b3ed48}" />
@@ -127,5 +128,10 @@
 	</object>
 	<object class="MixerBusPanner" id="{1d4f901a-afa8-4cd5-aaa6-96127af0ba18}" />
 	<object class="MixerBusFader" id="{a4ec2e4c-11d1-4d37-84e6-ca079fdb2d19}" />
+	<object class="SpatialiserEffect" id="{27a91894-134f-4bb9-8176-7f0177ba3d93}">
+		<property name="distanceRolloffType">
+			<value>4</value>
+		</property>
+	</object>
 	<object class="MixerBusFader" id="{5af1dfef-77b3-4476-b6f2-f16ec3f48c00}" />
 </objects>

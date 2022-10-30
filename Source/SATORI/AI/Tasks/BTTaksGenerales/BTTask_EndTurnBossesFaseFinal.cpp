@@ -25,6 +25,22 @@ EBTNodeResult::Type UBTTask_EndTurnBossesFaseFinal::ExecuteTask(UBehaviorTreeCom
 
 	if(Fujin)
 	{
+		if (Fujin->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag("Boss.Raijin.C4")))
+		{
+			Fujin->RemoveGameplayTag(FGameplayTag::RequestGameplayTag("Boss.Raijin.C4"));
+		}
+		if (Fujin->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag("Boss.Raijin.C1")))
+		{
+			Fujin->RemoveGameplayTag(FGameplayTag::RequestGameplayTag("Boss.Raijin.C1"));
+		}
+		if (Fujin->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag("Boss.Raijin.C2")))
+		{
+			Fujin->RemoveGameplayTag(FGameplayTag::RequestGameplayTag("Boss.Raijin.C2"));
+		}
+		if (Fujin->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag("Boss.Raijin.C3")))
+		{
+			Fujin->RemoveGameplayTag(FGameplayTag::RequestGameplayTag("Boss.Raijin.C3"));
+		}
 		Fujin->AddGameplayTag(FGameplayTag::RequestGameplayTag("Boss.FaseFinal.Fujin"));
 		if(Fujin->Raijin->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag("Boss.FaseFinal.Raijin")))
 		{
@@ -34,22 +50,7 @@ EBTNodeResult::Type UBTTask_EndTurnBossesFaseFinal::ExecuteTask(UBehaviorTreeCom
 			Fujin->Raijin->AddGameplayTag(FGameplayTag::RequestGameplayTag("Boss.FaseFinal.Listos"));
 			
 		}
-		if(Fujin->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag("Boss.Raijin.C4")))
-		{
-			Fujin->RemoveGameplayTag(FGameplayTag::RequestGameplayTag("Boss.Raijin.C4"));
-		}
-		else if (Fujin->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag("Boss.Raijin.C1")))
-		{
-			Fujin->RemoveGameplayTag(FGameplayTag::RequestGameplayTag("Boss.Raijin.C1"));
-		}
-		else if (Fujin->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag("Boss.Raijin.C2")))
-		{
-			Fujin->RemoveGameplayTag(FGameplayTag::RequestGameplayTag("Boss.Raijin.C2"));
-		}
-		else if (Fujin->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag("Boss.Raijin.C3")))
-		{
-			Fujin->RemoveGameplayTag(FGameplayTag::RequestGameplayTag("Boss.Raijin.C3"));
-		}
+		
 
 
 	}

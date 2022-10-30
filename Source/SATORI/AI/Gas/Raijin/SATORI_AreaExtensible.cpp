@@ -36,7 +36,11 @@ void USATORI_AreaExtensible::ActivateAbility(const FGameplayAbilitySpecHandle Ha
 	if(Raijin)
 	{
 		Raijin->ArcoAltavoces->setAttacking(true);
-		Raijin->Fujin->AddGameplayTag(FGameplayTag::RequestGameplayTag("Boss.Raijin.C4"));
+
+		if (Raijin->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag(("Boss.Fase.Final"))))
+		{
+			Raijin->Fujin->AddGameplayTag(FGameplayTag::RequestGameplayTag("Boss.Raijin.C3"));
+		}
 		
 	}
 	//GetWorld()->GetTimerManager().ClearTimer(TimerHandle);

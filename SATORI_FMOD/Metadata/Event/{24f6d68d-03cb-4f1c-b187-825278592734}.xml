@@ -5,7 +5,7 @@
 			<value>SPAWNEDHit</value>
 		</property>
 		<property name="outputFormat">
-			<value>1</value>
+			<value>2</value>
 		</property>
 		<relationship name="folder">
 			<destination>{c495dd8a-27d7-44b0-9b3d-9731f4023d1e}</destination>
@@ -118,6 +118,7 @@
 	<object class="MixerBusEffectChain" id="{21b3c003-782b-4740-a96a-e9dcca1cfcc7}">
 		<relationship name="effects">
 			<destination>{b5c6ebfe-e5b5-439c-ab7e-8be4e99976f1}</destination>
+			<destination>{3b5a0b0f-38a6-4440-bc59-c2e932b50db3}</destination>
 		</relationship>
 	</object>
 	<object class="MixerBusPanner" id="{2430526a-29c5-417c-82c1-d4305c7d99c3}" />
@@ -144,5 +145,10 @@
 	</object>
 	<object class="MixerBusPanner" id="{506c35f8-7ba4-4c39-bbcf-8cd72f8f7b61}" />
 	<object class="MixerBusFader" id="{b5c6ebfe-e5b5-439c-ab7e-8be4e99976f1}" />
+	<object class="SpatialiserEffect" id="{3b5a0b0f-38a6-4440-bc59-c2e932b50db3}">
+		<property name="distanceRolloffType">
+			<value>4</value>
+		</property>
+	</object>
 	<object class="MixerBusFader" id="{662ab948-f3d2-49e9-9321-a94900839d81}" />
 </objects>
