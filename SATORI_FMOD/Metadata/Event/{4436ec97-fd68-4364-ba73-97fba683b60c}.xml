@@ -5,7 +5,7 @@
 			<value>EnemyDropMoney</value>
 		</property>
 		<property name="outputFormat">
-			<value>1</value>
+			<value>2</value>
 		</property>
 		<relationship name="folder">
 			<destination>{0bc7015c-3313-4851-8195-ceb720780b63}</destination>
@@ -116,6 +116,7 @@
 	<object class="MixerBusEffectChain" id="{123aa75e-ac30-4cf9-ab07-eba605150913}">
 		<relationship name="effects">
 			<destination>{56ff35d5-87ff-4bee-bb79-e495fb1e3f08}</destination>
+			<destination>{2d45bcb6-2a41-490f-89d7-5ec2f15bd86a}</destination>
 		</relationship>
 	</object>
 	<object class="MixerBusPanner" id="{3994c24d-4632-4d7e-915d-9dfa0c12d5a7}" />
@@ -127,5 +128,10 @@
 	</object>
 	<object class="MixerBusPanner" id="{4d0ee62e-a59a-478b-bace-499b008f8ffe}" />
 	<object class="MixerBusFader" id="{56ff35d5-87ff-4bee-bb79-e495fb1e3f08}" />
+	<object class="SpatialiserEffect" id="{2d45bcb6-2a41-490f-89d7-5ec2f15bd86a}">
+		<property name="distanceRolloffType">
+			<value>4</value>
+		</property>
+	</object>
 	<object class="MixerBusFader" id="{7e8e662e-1c07-4b3f-bfd9-ddbc88e0f693}" />
 </objects>

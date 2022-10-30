@@ -5,7 +5,7 @@
 			<value>RANGEDDamage</value>
 		</property>
 		<property name="outputFormat">
-			<value>1</value>
+			<value>2</value>
 		</property>
 		<relationship name="folder">
 			<destination>{bcb9d3dc-7a3b-4a87-be6a-650e4a924666}</destination>
@@ -123,6 +123,7 @@
 	<object class="MixerBusEffectChain" id="{66d863db-bcff-4f33-a7de-0fe9918b9197}">
 		<relationship name="effects">
 			<destination>{cb387e28-21de-49f1-b533-40fde5d117fb}</destination>
+			<destination>{b6aa7b51-c644-4db5-a118-5cb1c4b32a06}</destination>
 		</relationship>
 	</object>
 	<object class="MixerBusPanner" id="{de5d1382-e06f-43f6-b9a6-6743c4158c2e}" />
@@ -159,5 +160,10 @@
 	</object>
 	<object class="MixerBusPanner" id="{68770f13-1708-4404-94c4-ca7fcae12d29}" />
 	<object class="MixerBusFader" id="{cb387e28-21de-49f1-b533-40fde5d117fb}" />
+	<object class="SpatialiserEffect" id="{b6aa7b51-c644-4db5-a118-5cb1c4b32a06}">
+		<property name="distanceRolloffType">
+			<value>4</value>
+		</property>
+	</object>
 	<object class="MixerBusFader" id="{54e561cc-6662-4539-8a83-80ae208485c3}" />
 </objects>

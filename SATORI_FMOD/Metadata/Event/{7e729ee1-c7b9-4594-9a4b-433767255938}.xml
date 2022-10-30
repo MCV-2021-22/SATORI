@@ -5,7 +5,7 @@
 			<value>SPAWNEDScretch</value>
 		</property>
 		<property name="outputFormat">
-			<value>1</value>
+			<value>2</value>
 		</property>
 		<relationship name="folder">
 			<destination>{c495dd8a-27d7-44b0-9b3d-9731f4023d1e}</destination>
@@ -98,7 +98,7 @@
 	</object>
 	<object class="EventMixerGroup" id="{f84899e6-8470-4664-b9f1-50f836178b89}">
 		<property name="volume">
-			<value>-5</value>
+			<value>-9</value>
 		</property>
 		<property name="name">
 			<value>Audio 1</value>
@@ -116,6 +116,7 @@
 	<object class="MixerBusEffectChain" id="{10e959ec-e6ab-42b3-bf81-a9ec3d5e6a69}">
 		<relationship name="effects">
 			<destination>{80822e96-06f1-4706-bd02-ef191a6f0bc6}</destination>
+			<destination>{ededf22d-616e-498c-abb2-d52a32fa8a62}</destination>
 		</relationship>
 	</object>
 	<object class="MixerBusPanner" id="{f61b068d-0955-4ba8-aafe-0cd539a4bbd7}" />
@@ -127,5 +128,10 @@
 	</object>
 	<object class="MixerBusPanner" id="{c58bfe16-de82-4205-ac68-63b236921bff}" />
 	<object class="MixerBusFader" id="{80822e96-06f1-4706-bd02-ef191a6f0bc6}" />
+	<object class="SpatialiserEffect" id="{ededf22d-616e-498c-abb2-d52a32fa8a62}">
+		<property name="distanceRolloffType">
+			<value>4</value>
+		</property>
+	</object>
 	<object class="MixerBusFader" id="{4c08f00d-c230-4816-a951-0ae3f5b20ed8}" />
 </objects>
