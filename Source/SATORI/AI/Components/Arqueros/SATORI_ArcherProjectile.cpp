@@ -144,6 +144,8 @@ void ASATORI_ArcherProjectile::OnComponentBeginOverlap(
 		if(Player)
 		{
 			float dmg_done= USATORI_BlueprintLibrary::ApplyGameplayEffectDamage(OtherActor, damage, OtherActor, DamageGameplayEffect);
+			USATORI_BlueprintLibrary::ApplyGameplayEffect(Player, HitGameplayEffect);
+
 		}
 		// Particles
 		if (Impact_Particle)
