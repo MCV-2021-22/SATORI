@@ -168,15 +168,19 @@ TSubclassOf<USATORI_GameplayAbility> USATORI_GameplayAbilityComponent::GetCurren
 		else
 		{
 			CurrentAbilityValue = 0;
-			const FSATORI_AbilitiesDatas* AbilityData = &PortalRewardAbilities[CurrentAbilityValue];
-			if (AbilityData)
+			if(PortalRewardAbilities.Num() > 0 && CurrentAbilityValue < PortalRewardAbilities.Num())
 			{
-				CurrentGameplayAbility = AbilityData->CurrentAbility;
-				if (CurrentGameplayAbility)
+				const FSATORI_AbilitiesDatas* AbilityData = &PortalRewardAbilities[CurrentAbilityValue];
+				if (AbilityData)
 				{
-					return CurrentGameplayAbility;
+					CurrentGameplayAbility = AbilityData->CurrentAbility;
+					if (CurrentGameplayAbility)
+					{
+						return CurrentGameplayAbility;
+					}
 				}
 			}
+			
 		}
 	}
 	// Test for Ability 
