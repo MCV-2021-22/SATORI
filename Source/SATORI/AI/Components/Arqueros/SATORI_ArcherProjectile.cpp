@@ -85,6 +85,11 @@ void ASATORI_ArcherProjectile::Tick(float DeltaTime)
 			inmunity -= DeltaTime;
 			LifeTime -= DeltaTime;
 	}
+
+	if (LifeTime <= 0)
+	{
+		Destroy();
+	}
 	
 }
 
@@ -128,16 +133,19 @@ void ASATORI_ArcherProjectile::OnComponentBeginOverlap(
 {
 	ASATORI_ArcherProjectile* Choque = Cast<ASATORI_ArcherProjectile>(OtherActor);
 
-	if(Choque)
+	if(Choque && inmunity <= 0)
 	{
 		ASATORICharacter* Player = Cast<ASATORICharacter>(OtherActor);
+		Destroy();
 	}
-	else if (!Choque || inmunity <= 0 || LifeTime <= 0)
+	else if (!Choque )
 	{
 		ASATORICharacter* Player = Cast<ASATORICharacter>(OtherActor);
 		if(Player)
 		{
 			float dmg_done= USATORI_BlueprintLibrary::ApplyGameplayEffectDamage(OtherActor, damage, OtherActor, DamageGameplayEffect);
+			USATORI_BlueprintLibrary::ApplyGameplayEffect(Player, HitGameplayEffect);
+
 		}
 		// Particles
 		if (Impact_Particle)
@@ -146,6 +154,7 @@ void ASATORI_ArcherProjectile::OnComponentBeginOverlap(
 		}
 		Destroy();
 	}
+	
 }
 
 void ASATORI_ArcherProjectile::DestroySelfByParry()

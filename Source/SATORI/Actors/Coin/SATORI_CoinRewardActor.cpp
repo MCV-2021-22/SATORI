@@ -2,6 +2,7 @@
 
 
 #include "Actors/Coin/SATORI_CoinRewardActor.h"
+
 #include "Components/SphereComponent.h"
 #include "SATORI/SATORICharacter.h"
 #include "SATORI/GAS/SATORI_AbilitySystemComponent.h"
@@ -68,6 +69,8 @@ void ASATORI_CoinRewardActor::OnComponentBeginOverlap(UPrimitiveComponent* Overl
 				{
 					ActiveGEHandle = AbilitySystemComponent->ApplyGameplayEffectSpecToTarget(*NewHandle.Data.Get(),
 						AbilitySystemComponent);
+
+					UFMODBlueprintStatics::PlayEvent2D(GetWorld(), EventTakeCoin, true);
 
 					OnCoinDestroy();
 				}

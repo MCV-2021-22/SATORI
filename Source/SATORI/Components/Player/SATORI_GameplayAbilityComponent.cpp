@@ -111,6 +111,12 @@ void USATORI_GameplayAbilityComponent::SetNextAbility()
 			CurrentAbilityValue = 0;
 		}
 	}
+
+	if (CurrentAbilityValue < 0)
+	{
+		CurrentAbilityValue = 0;
+	}
+
 	UE_LOG(LogTemp, Display, TEXT(" Set Next Current Ability Value : [%d] "), CurrentAbilityValue);
 
 	NotifyAbilityChanged();
@@ -144,6 +150,11 @@ void USATORI_GameplayAbilityComponent::SetPrevAbility()
 		}
 	}
 
+	if (CurrentAbilityValue < 0)
+	{
+		CurrentAbilityValue = 0;
+	}
+
 	UE_LOG(LogTemp, Display, TEXT(" Set Prev Current Ability Value : [%d] "), CurrentAbilityValue);
 
 	NotifyAbilityChanged();
@@ -168,19 +179,23 @@ TSubclassOf<USATORI_GameplayAbility> USATORI_GameplayAbilityComponent::GetCurren
 		else
 		{
 			CurrentAbilityValue = 0;
-			const FSATORI_AbilitiesDatas* AbilityData = &PortalRewardAbilities[CurrentAbilityValue];
-			if (AbilityData)
+			if(PortalRewardAbilities.Num() > 0 && CurrentAbilityValue < PortalRewardAbilities.Num())
 			{
-				CurrentGameplayAbility = AbilityData->CurrentAbility;
-				if (CurrentGameplayAbility)
+				const FSATORI_AbilitiesDatas* AbilityData = &PortalRewardAbilities[CurrentAbilityValue];
+				if (AbilityData)
 				{
-					return CurrentGameplayAbility;
+					CurrentGameplayAbility = AbilityData->CurrentAbility;
+					if (CurrentGameplayAbility)
+					{
+						return CurrentGameplayAbility;
+					}
 				}
 			}
+			
 		}
 	}
 	// Test for Ability 
-	else
+	else if(IsAllHabilityTesting)
 	{
 		if (PlayerGameplayAbility.Num() > 0)
 		{
@@ -195,7 +210,7 @@ TSubclassOf<USATORI_GameplayAbility> USATORI_GameplayAbilityComponent::GetCurren
 			}
 		}
 	}
-	return nullptr;
+	return CurrentGameplayAbility.Get() ? CurrentGameplayAbility : nullptr;
 }
 
 
