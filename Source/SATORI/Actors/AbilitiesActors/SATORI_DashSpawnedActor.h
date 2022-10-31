@@ -41,7 +41,7 @@ public:
 	TSubclassOf<UGameplayEffect> HeavyHitGameplayEffect;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "SFX")
-	UFMODEvent* EventExplosion;
+	UFMODEvent* EventExplosion = nullptr;
 
 	UPROPERTY(BlueprintReadOnly, Meta = (ExposeOnSpawn = true), Category = "Dash")
 	float Damage;

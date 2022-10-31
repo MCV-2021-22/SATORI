@@ -84,6 +84,9 @@ void USATORI_HeavyAttackAbility::EventReceived(FGameplayTag EventTag, FGameplayE
 				Super::EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true);
 			}
 
+			// Camera Shade
+			Character->PlayerCameraShake();
+
 			FTransform SpawnTransform = Character->GetTransform();
 
 			ASATORI_Push360Actor* Push360 = GetWorld()->SpawnActorDeferred<ASATORI_Push360Actor>(Push360Actor, SpawnTransform, GetOwningActorFromActorInfo(),

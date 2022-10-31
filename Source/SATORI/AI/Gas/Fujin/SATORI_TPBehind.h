@@ -8,6 +8,7 @@
 #include "GameplayTagAssetInterface.h"
 #include "GAS/SATORI_GameplayAbility.h"
 #include "SATORI/AbilityTask/SATORI_PlayMontageandWaitNotify.h"
+#include "FMODBlueprintStatics.h"
 #include "SATORI_TPBehind.generated.h"
 
 class UNiagaraSystem;
@@ -22,13 +23,16 @@ public:
 	USATORI_TPBehind();
 
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Ability")
-		UAnimMontage* AnimMontage;
+		UAnimMontage* AnimMontage = nullptr;
 
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Ability|Tags")
 		FGameplayTag TagSpawnAbility;
 
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Ability|Tags")
 		FGameplayTag TagEndAbility;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "SFX")
+	UFMODEvent* EventLaugh = nullptr;
 
 	FTimerDelegate TimerDelegate;
 
