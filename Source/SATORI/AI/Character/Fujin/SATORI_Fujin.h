@@ -121,6 +121,8 @@ public:
 
 	TArray< float > GetArrayProbs(int Combo);
 
+	void SetArrayProbs(int Combo, TArray<float> newArray);
+
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Meta = (ExposeOnSpawn = true), Category = "Missile")
 		float dmg_right_low = 0.001;
 
