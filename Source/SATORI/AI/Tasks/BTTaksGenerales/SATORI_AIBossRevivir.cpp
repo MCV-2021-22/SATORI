@@ -51,15 +51,19 @@ void USATORI_AIBossRevivir::EventReceived(FGameplayTag EventTag, FGameplayEventD
 			Fujin->Raijin->RemoveGameplayTag(FGameplayTag::RequestGameplayTag("Boss.Downed.Fujin"));
 			if (Fujin->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag(("Boss.Fase.Final"))))
 			{
-				Fujin->AddGameplayTag(FGameplayTag::RequestGameplayTag("Boss.FaseFinal.Fujin"));
-				if (Fujin->Raijin->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag("Boss.FaseFinal.Raijin")))
+				if (!Fujin->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag(("Boss.FaseFinal.Fujin"))))
 				{
-					Fujin->RemoveGameplayTag(FGameplayTag::RequestGameplayTag("Boss.FaseFinal.Fujin"));
-					Fujin->Raijin->RemoveGameplayTag(FGameplayTag::RequestGameplayTag("Boss.FaseFinal.Raijin"));
-					Fujin->AddGameplayTag(FGameplayTag::RequestGameplayTag("Boss.FaseFinal.Listos"));
-					Fujin->Raijin->AddGameplayTag(FGameplayTag::RequestGameplayTag("Boss.FaseFinal.Listos"));
+					Fujin->AddGameplayTag(FGameplayTag::RequestGameplayTag("Boss.FaseFinal.Fujin"));
+					if (Fujin->Raijin->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag("Boss.FaseFinal.Raijin")))
+					{
+						Fujin->RemoveGameplayTag(FGameplayTag::RequestGameplayTag("Boss.FaseFinal.Fujin"));
+						Fujin->Raijin->RemoveGameplayTag(FGameplayTag::RequestGameplayTag("Boss.FaseFinal.Raijin"));
+						Fujin->AddGameplayTag(FGameplayTag::RequestGameplayTag("Boss.FaseFinal.Listos"));
+						Fujin->Raijin->AddGameplayTag(FGameplayTag::RequestGameplayTag("Boss.FaseFinal.Listos"));
 
+					}
 				}
+				
 			}
 			Fujin->revivir();
 		}
@@ -68,15 +72,19 @@ void USATORI_AIBossRevivir::EventReceived(FGameplayTag EventTag, FGameplayEventD
 			Raijin->Fujin->RemoveGameplayTag(FGameplayTag::RequestGameplayTag("Boss.Downed.Raijin"));
 			if (Raijin->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag(("Boss.Fase.Final"))))
 			{
-				Raijin->AddGameplayTag(FGameplayTag::RequestGameplayTag("Boss.FaseFinal.Raijin"));
-				if (Raijin->Fujin->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag("Boss.FaseFinal.Fujin")))
+				if(!Raijin->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag(("Boss.FaseFinal.Raijin"))))
 				{
-					Raijin->Fujin->RemoveGameplayTag(FGameplayTag::RequestGameplayTag("Boss.FaseFinal.Fujin"));
-					Raijin->RemoveGameplayTag(FGameplayTag::RequestGameplayTag("Boss.FaseFinal.Raijin"));
-					Raijin->AddGameplayTag(FGameplayTag::RequestGameplayTag("Boss.FaseFinal.Listos"));
-					Raijin->Fujin->AddGameplayTag(FGameplayTag::RequestGameplayTag("Boss.FaseFinal.Listos"));
+					Raijin->AddGameplayTag(FGameplayTag::RequestGameplayTag("Boss.FaseFinal.Raijin"));
+					if (Raijin->Fujin->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag("Boss.FaseFinal.Fujin")))
+					{
+						Raijin->Fujin->RemoveGameplayTag(FGameplayTag::RequestGameplayTag("Boss.FaseFinal.Fujin"));
+						Raijin->RemoveGameplayTag(FGameplayTag::RequestGameplayTag("Boss.FaseFinal.Raijin"));
+						Raijin->AddGameplayTag(FGameplayTag::RequestGameplayTag("Boss.FaseFinal.Listos"));
+						Raijin->Fujin->AddGameplayTag(FGameplayTag::RequestGameplayTag("Boss.FaseFinal.Listos"));
 
+					}
 				}
+				
 			}
 			Raijin->revivir();
 		}
