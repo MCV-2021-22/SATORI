@@ -161,7 +161,7 @@ TSubclassOf<USATORI_GameplayAbility> USATORI_GameplayAbilityComponent::GetCurren
 {
 	if (!IsAllHabilityTesting)
 	{
-		if (PortalRewardAbilities.Num() > 0 && CurrentAbilityValue < 3)
+		if (PortalRewardAbilities.Num() > 0 && CurrentAbilityValue < PortalRewardAbilities.Num())
 		{
 			const FSATORI_AbilitiesDatas* AbilityData = &PortalRewardAbilities[CurrentAbilityValue];
 			if (AbilityData)
@@ -173,7 +173,7 @@ TSubclassOf<USATORI_GameplayAbility> USATORI_GameplayAbilityComponent::GetCurren
 				}
 			}
 		}
-		// Avoid for the time stop
+		// Avoid for the time stop value out of the array index IDK if work
 		else if ((CurrentAbilityValue > 3 || CurrentAbilityValue < 0) && PortalRewardAbilities.Num() > 0)
 		{
 			CurrentAbilityValue = 0;
