@@ -56,7 +56,7 @@ public:
 	UPROPERTY(BlueprintAssignable)
 	FSATORIPortrailImageChanges PortrailImageChange;
 
-	UTexture2D* SelectMaskToPortrail(SATORIMaskType MaskType);
+	void SelectMaskToPortrail(SATORIMaskType MaskType);
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
