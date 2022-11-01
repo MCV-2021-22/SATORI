@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "GameplayEffectTypes.h"
+#include "FMODBlueprintStatics.h"
 #include "SATORI_CoinRewardActor.generated.h"
 
 class UStaticMeshComponent;
@@ -38,6 +39,9 @@ public:
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Particle Effect")
 	UNiagaraSystem* NS_ParticleEffect;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "SFX")
+	UFMODEvent* EventTakeCoin = nullptr;
 
 	virtual void Tick(float DeltaTime) override;
 protected:

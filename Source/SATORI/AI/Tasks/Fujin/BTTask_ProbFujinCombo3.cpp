@@ -38,10 +38,12 @@ EBTNodeResult::Type UBTTask_ProbFujinCombo3::ExecuteTask(UBehaviorTreeComponent&
 						if (i == 2)
 						{
 							Probs[i] += -5;
+							UE_LOG(LogTemp, Warning, TEXT("New Probabilidad: %f, Combo: %d"), Probs[i], i+1);
 						}
 						else
 						{
 							Probs[i] += 2.5;
+							UE_LOG(LogTemp, Warning, TEXT("New Probabilidad: %f, Combo: %d"), Probs[i], i + 1);
 						}
 					}
 
@@ -55,16 +57,19 @@ EBTNodeResult::Type UBTTask_ProbFujinCombo3::ExecuteTask(UBehaviorTreeComponent&
 						if (i == 2)
 						{
 							Probs[i] = 0;
+							UE_LOG(LogTemp, Warning, TEXT("New Probabilidad: %f, Combo: %d"), Probs[i], i + 1);
 						}
 						else
 						{
 							Probs[i] += dif;
+							UE_LOG(LogTemp, Warning, TEXT("New Probabilidad: %f, Combo: %d"), Probs[i], i + 1);
 						}
 					}
 
 
 				}
 
+				Fujin->SetArrayProbs(ComboRaijin, Probs);
 
 			}
 
