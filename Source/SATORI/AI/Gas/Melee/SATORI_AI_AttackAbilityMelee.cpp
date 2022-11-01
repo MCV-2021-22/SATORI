@@ -129,26 +129,28 @@ void USATORI_AI_AttackAbilityMelee::MovementToTarget(float DeltaTime)
 
 void USATORI_AI_AttackAbilityMelee::Tick(float DeltaTime)
 {
-	//Targets smoothly player
-	if (Melee->HasMatchingGameplayTag(TargetingTag))
-	{
-		RotateToTargetGradual(DeltaTime);
-	}
-
-	//Targets Fast once and snapy, also moves
-	if (Melee->HasMatchingGameplayTag(CanMoveTag))
-	{
-		if (!RotationChanged)
+	if (Melee && !Melee->IsPendingKill()) {
+		//Targets smoothly player
+		if (Melee->HasMatchingGameplayTag(TargetingTag))
 		{
-			RotateToTargetSnap();
-			RotationChanged = true;
+			RotateToTargetGradual(DeltaTime);
 		}
 
-		MovementToTarget(DeltaTime);
-	}
-	else
-	{
-		RotationChanged = false;
+		//Targets Fast once and snapy, also moves
+		if (Melee->HasMatchingGameplayTag(CanMoveTag))
+		{
+			if (!RotationChanged)
+			{
+				RotateToTargetSnap();
+				RotationChanged = true;
+			}
+
+			MovementToTarget(DeltaTime);
+		}
+		else
+		{
+			RotationChanged = false;
+		}
 	}
 }
 
