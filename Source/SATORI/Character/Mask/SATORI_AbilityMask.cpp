@@ -107,10 +107,10 @@ TSubclassOf<UGameplayEffect> USATORI_AbilityMask::ChooseMaskEffectoToApply(SATOR
 
 void USATORI_AbilityMask::SelectMaskToPortrail(SATORIMaskType MaskType)
 {
-	if (MaskType == SATORIMaskType::NONE)
+	if (MaskType == SATORIMaskType::NONE && DefaultImage)
 	{
 		// Broadcast
-		PortrailImageChange.Broadcast(CurrentPortrailImage);
+		PortrailImageChange.Broadcast(DefaultImage);
 	}
 	else if (MaskType == SATORIMaskType::Aka && AkaImage)
 	{
