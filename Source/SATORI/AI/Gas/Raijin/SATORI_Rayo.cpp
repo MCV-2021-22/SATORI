@@ -91,6 +91,7 @@ void USATORI_Rayo::OnBucleRayos(const FGameplayAbilitySpecHandle Handle, const F
 
 			if (Rayo)
 			{
+				Player->singlerayo = true;
 				Rayo->Damage = Damage/5;
 			}
 
@@ -108,6 +109,20 @@ void USATORI_Rayo::OnBucleRayos(const FGameplayAbilitySpecHandle Handle, const F
 		GetWorld()->GetTimerManager().ClearTimer(TimerHandle);
 		iteracion = 0;
 		ASATORI_Raijin* Raijin = Cast<ASATORI_Raijin>(GetAvatarActorFromActorInfo());
+		for (AActor* Actor : enemigos)
+		{
+
+			//Actor->Tags.Add("PossessedBy.Player");
+			if (Cast<ASATORICharacter>(Actor) != nullptr)
+			{
+				ASATORICharacter* Player = Cast<ASATORICharacter>(Actor);
+				Player->singlerayo = false;
+				break;
+			}
+		}
+		
+
+
 		if (Raijin)
 		{
 			Raijin->ArcoAltavoces->setAttacking(false);

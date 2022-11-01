@@ -321,7 +321,11 @@ void ASATORI_FujinKickAereo::setCollisionFujin()
 {
 	//FujinVar->GetCapsuleComponent()->SetCollisionProfileName(FName("OverlapAll"));
 	//FujinVar->GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_Player, ECR_Overlap);
-	Player->GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_Pawn, ECR_Overlap);
+	if(Player)
+	{
+		Player->GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_Pawn, ECR_Overlap);
+	}
+	
 
 	
 }
@@ -331,7 +335,10 @@ void ASATORI_FujinKickAereo::enableCollision()
 {
 	GetWorld()->GetTimerManager().ClearTimer(TimerHandle);
 	//FujinVar->GetCapsuleComponent()->SetCollisionProfileName(FName("Pawn"));
-	Player->GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_Pawn, ECR_Block);
+	if(Player)
+	{
+		Player->GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_Pawn, ECR_Block);
+	}
 	my_decal->Destroy();
 	Destroy();
 	//FujinVar->SetActorEnableCollision(true);
