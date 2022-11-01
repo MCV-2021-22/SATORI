@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <objects serializationModel="Studio.02.02.00">
-	<object class="AudioFile" id="{1a1d3c4e-c809-4b28-bef7-2c710bebbabc}">
+	<object class="AudioFile" id="{e8b7969f-4be6-42f1-bca3-aab686a929a0}">
 		<property name="assetPath">
-			<value>Character/Ranged/ranged_death.mp3</value>
+			<value>Character/Melee/SFX_ENEMY01_HIT-L_03.mp3</value>
 		</property>
 		<property name="frequencyInKHz">
 			<value>48</value>
@@ -11,7 +11,7 @@
 			<value>2</value>
 		</property>
 		<property name="length">
-			<value>1.944</value>
+			<value>1.008</value>
 		</property>
 		<relationship name="masterAssetFolder">
 			<destination>{269b0b2d-b44d-4e19-a3ee-86e302406a27}</destination>
