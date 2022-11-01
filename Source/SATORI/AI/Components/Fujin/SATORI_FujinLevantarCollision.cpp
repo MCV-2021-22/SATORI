@@ -179,4 +179,19 @@ void ASATORI_FujinLevantarCollision::Tick(float DeltaTime)
 		}
 	}
 
+	LifeTime -= DeltaTime;
+
+	if(LifeTime <0)
+	{
+		if (Player )
+		{
+
+			Player->AddGameplayTag(FGameplayTag::RequestGameplayTag("State.EndLevantado"));
+			
+
+		}
+		Destroy();
+		
+	}
+
 }

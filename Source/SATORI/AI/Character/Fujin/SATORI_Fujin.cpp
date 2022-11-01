@@ -96,12 +96,12 @@ void ASATORI_Fujin::BeginPlay()
 	CollisionR->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 
 	//init de las prob
-	for(int i=0;i<4;i++)
+	for(int i=0;i<3;i++)
 	{
-		Prob_C1.Add(25.0f);
-		Prob_C2.Add(25.0f);
-		Prob_C3.Add(25.0f);
-		Prob_C4.Add(25.0f);
+		Prob_C1.Add(33.0f);
+		Prob_C2.Add(33.0f);
+		Prob_C3.Add(33.0f);
+		Prob_C4.Add(33.0f);
 	}
 	
 
@@ -127,7 +127,29 @@ TArray<float> ASATORI_Fujin::GetArrayProbs(int Combo)
 	}
 	else
 	{
-		return Prob_C3;
+		return Prob_C4;
+	}
+
+
+}
+
+void ASATORI_Fujin::SetArrayProbs(int Combo, TArray<float> newArray)
+{
+	if (Combo == 1)
+	{
+		Prob_C1 = newArray;
+	}
+	else if (Combo == 2)
+	{
+		Prob_C2 = newArray;
+	}
+	else if (Combo == 3)
+	{
+		Prob_C3 = newArray;
+	}
+	else
+	{
+		Prob_C4 = newArray;
 	}
 
 

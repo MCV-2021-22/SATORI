@@ -108,11 +108,19 @@ void ASATORI_RaijinRayo::Tick(float DeltaTime)
 			UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), Trueno, RayoLocation);
 		}
 		
-		
+		if (Player && player_inside)
+		{
+			if (!Player->acti_rayo)
+			{
+				Player->acti_rayo = true;
+				float dmg_done = USATORI_BlueprintLibrary::ApplyGameplayEffectDamage(Player, Damage, Player, DamageGameplayEffect);
+			}
+
+		}
 		time_to_overlap = 100.0f;
 		
 	}
-	else if(time_actual < time_to_destroy)
+	/*else if (time_actual < time_to_destroy)
 	{
 		if(Player && player_inside)
 		{
@@ -124,9 +132,16 @@ void ASATORI_RaijinRayo::Tick(float DeltaTime)
 			
 		}
 		
-	}
+	}*/
 	else if(time_actual >= time_to_destroy)
 	{
+		if(Player)
+		{
+			if(Player->singlerayo)
+			{
+				Player->acti_rayo = false;
+			}
+		}
 		my_decal->Destroy();
 		Destroy();
 	}
