@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "Interfaces/SATORI_InteractInterface.h"
+#include "FMODBlueprintStatics.h"
 #include "SATORI_GeneralVendor.generated.h"
 
 class UWidgetComponent;
@@ -28,6 +29,12 @@ public:
 
 	UPROPERTY(EditDefaultsOnly)
 	UStaticMeshComponent* GeneralVendorMesh = nullptr;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "SFX")
+	UFMODEvent* VendorOpen = nullptr;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "SFX")
+	UFMODEvent* VendorClose = nullptr;
 
 protected:
 	// Called when the game starts or when spawned

@@ -36,8 +36,8 @@ void USATORI_PauseMenuUI::NativeDestruct()
 
 void USATORI_PauseMenuUI::OnResumeClicked()
 {
-	UGameplayStatics::SetGamePaused(GetWorld(), false);
 	this->RemoveFromParent();
+	UGameplayStatics::SetGamePaused(GetWorld(), false);
 	ASATORICharacter* Character = Cast<ASATORICharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
 	if(Character)
 	{
