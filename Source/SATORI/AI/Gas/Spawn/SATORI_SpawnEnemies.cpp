@@ -84,9 +84,11 @@ void USATORI_SpawnEnemies::EventReceived(FGameplayTag EventTag, FGameplayEventDa
 				GetAvatarActorFromActorInfo()->GetActorLocation() + GetAvatarActorFromActorInfo()->GetActorForwardVector() * 100,
 				RotationOfIA, SpawnParams);
 
-			EnemySpawned->SpawnDefaultController();
-			EnemySpawned->SetMySpawn(Spawner);
-
+			if(EnemySpawned)
+			{
+				EnemySpawned->SpawnDefaultController();
+				EnemySpawned->SetMySpawn(Spawner);
+			}
 			Spawner->AddNumEnemies(1);
 
 			Spawner->ResetSpawnTime();

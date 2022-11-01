@@ -46,12 +46,14 @@ void ASATORI_GeneralVendor::Interact(AActor* ActorInteracting)
 		if (!isPanelOpened)
 		{
 			isPanelOpened = true;
+			UFMODBlueprintStatics::PlayEvent2D(GetWorld(), VendorOpen, true);
 			CheckPanelIsOpenedStatus(isPanelOpened);
 		}
 		else
 		{
 			isPanelOpened = false;
-			CheckPanelIsOpenedStatus(isPanelOpened);
+			UFMODBlueprintStatics::PlayEvent2D(GetWorld(), VendorOpen, true);
+			CheckPanelIsOpenedStatus(true);
 		}
 	}
 }
