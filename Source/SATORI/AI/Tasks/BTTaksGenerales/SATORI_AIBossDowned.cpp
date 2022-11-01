@@ -48,7 +48,7 @@ void USATORI_AIBossDowned::EventReceived(FGameplayTag EventTag, FGameplayEventDa
 
 		if (Fujin)
 		{
-			
+			Fujin->AddGameplayTag(FGameplayTag::RequestGameplayTag("Boss.Inmune"));
 			Fujin->Raijin->AddGameplayTag(FGameplayTag::RequestGameplayTag("Boss.Downed.Fujin"));
 
 			if(Fujin->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag(("Boss.Fase.Final"))))
@@ -67,6 +67,7 @@ void USATORI_AIBossDowned::EventReceived(FGameplayTag EventTag, FGameplayEventDa
 		}
 		else if (Raijin)
 		{
+			Raijin->AddGameplayTag(FGameplayTag::RequestGameplayTag("Boss.Inmune"));
 			Raijin->Fujin->AddGameplayTag(FGameplayTag::RequestGameplayTag("Boss.Downed.Raijin"));
 			if (Raijin->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag(("Boss.Fase.Final"))))
 			{
