@@ -173,6 +173,20 @@ TSubclassOf<USATORI_GameplayAbility> USATORI_GameplayAbilityComponent::GetCurren
 				}
 			}
 		}
+		// Avoid for the time stop
+		else if ((CurrentAbilityValue > 3 || CurrentAbilityValue < 0) && PortalRewardAbilities.Num() > 0)
+		{
+			CurrentAbilityValue = 0;
+			const FSATORI_AbilitiesDatas* AbilityData = &PortalRewardAbilities[CurrentAbilityValue];
+			if (AbilityData)
+			{
+				CurrentGameplayAbility = AbilityData->CurrentAbility;
+				if (CurrentGameplayAbility)
+				{
+					return CurrentGameplayAbility;
+				}
+			}
+		}
 		else
 		{
 			CurrentAbilityValue = 0;
