@@ -107,7 +107,8 @@ void ASATORI_RaijinRayoMovil::Tick(float DeltaTime)
 
 	//Velocity
 	
-	FVector NewPos = GetActorLocation() + direction * velocity;
+	FVector NewPos = GetActorLocation() + direction * velocity * 2;
+	//FVector NewPos = GetActorLocation() + direction * velocity * 0.2;
 	
 	SetActorRelativeLocation(NewPos);
 	//SetActorLocation(NewPos);

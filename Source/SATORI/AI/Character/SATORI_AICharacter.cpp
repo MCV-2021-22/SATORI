@@ -329,6 +329,7 @@ void ASATORI_AICharacter::CheckDamage(float Damage)
 			Fujin->Raijin->RemoveGameplayTag(FGameplayTag::RequestGameplayTag("Boss.Fase.Inicial"));
 			Fujin->RemoveGameplayTag(FGameplayTag::RequestGameplayTag("Boss.Fase.Inicial"));
 
+			Fujin->Raijin->AddGameplayTag(FGameplayTag::RequestGameplayTag("Boss.FaseFinal.Raijin"));
 
 		}
 		else if(Raijin)
@@ -338,6 +339,8 @@ void ASATORI_AICharacter::CheckDamage(float Damage)
 
 			Raijin->RemoveGameplayTag(FGameplayTag::RequestGameplayTag("Boss.Fase.Inicial"));
 			Raijin->Fujin->RemoveGameplayTag(FGameplayTag::RequestGameplayTag("Boss.Fase.Inicial"));
+
+			Raijin->Fujin->AddGameplayTag(FGameplayTag::RequestGameplayTag("Boss.FaseFinal.Fujin"));
 		}
 	}
 
