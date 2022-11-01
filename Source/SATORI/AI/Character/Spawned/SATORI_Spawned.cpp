@@ -37,6 +37,7 @@ float ASATORI_Spawned::GetDistAttack() const
 
 void ASATORI_Spawned::SpawnedDie()
 {
+	UFMODBlueprintStatics::PlayEventAtLocation(GetWorld(), SpawnedDeath, this->GetActorTransform(), true);
 	if(MySpawn)
 	{
 		MySpawn->AddNumEnemies(-1);

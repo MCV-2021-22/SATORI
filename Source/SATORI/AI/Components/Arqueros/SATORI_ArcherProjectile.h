@@ -4,6 +4,7 @@
 
 #include "GameplayTagAssetInterface.h"
 #include "GameplayFramework/SATORI_GameInstance.h"
+#include "FMODBlueprintStatics.h"
 #include "SATORI_ArcherProjectile.generated.h"
 
 class UGameplayEffect;

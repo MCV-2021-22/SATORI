@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "AI/Character/SATORI_AICharacter.h"
 #include "AI/Character/Spawner/SATORI_Spawner.h"
+#include "FMODBlueprintStatics.h"
 #include "SATORI_Spawned.generated.h"
 
 class UNiagaraSystem;
@@ -30,6 +31,9 @@ public:
 	
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Particle Effect")
 	UNiagaraSystem* NS_ParticleEffect = nullptr;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "SFX")
+	UFMODEvent* SpawnedDeath = nullptr;
 
 protected:
 
