@@ -66,6 +66,9 @@ public:
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "GameplayEffect")
 		TSubclassOf<UGameplayEffect> HitGameplayEffect;
 
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "SFX")
+		UFMODEvent* ProjectileHit = nullptr;
+
 	void DestroySelfByParry();
 protected:
 

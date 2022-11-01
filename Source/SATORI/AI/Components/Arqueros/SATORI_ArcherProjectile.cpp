@@ -145,7 +145,7 @@ void ASATORI_ArcherProjectile::OnComponentBeginOverlap(
 		{
 			float dmg_done= USATORI_BlueprintLibrary::ApplyGameplayEffectDamage(OtherActor, damage, OtherActor, DamageGameplayEffect);
 			USATORI_BlueprintLibrary::ApplyGameplayEffect(Player, HitGameplayEffect);
-
+			UFMODBlueprintStatics::PlayEventAtLocation(GetWorld(), ProjectileHit, this->GetActorTransform(), true);
 		}
 		// Particles
 		if (Impact_Particle)
