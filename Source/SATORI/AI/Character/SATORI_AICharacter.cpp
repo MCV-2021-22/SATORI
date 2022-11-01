@@ -511,7 +511,10 @@ void ASATORI_AICharacter::SetDamagedColor()
 {
 	bool HasBlckTag = this->GetAbilitySystemComponent()->HasMatchingGameplayTag(
 		FGameplayTag::RequestGameplayTag(FName("State.Special")));
-	if (!HasBlckTag)
+
+	bool IsBossInmmune = this->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag("Boss.Inmune"));
+
+	if (!HasBlckTag || !IsBossInmmune)
 	{
 		for (int i = 0; i < DynamicMaterials.Num(); i++)
 		{
