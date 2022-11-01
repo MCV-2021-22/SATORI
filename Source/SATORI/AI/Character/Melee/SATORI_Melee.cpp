@@ -86,10 +86,12 @@ void ASATORI_Melee::OnWeaponOverlapBegin(UPrimitiveComponent* OverlappedComp, AA
 			if (this->HasMatchingGameplayTag(HeavyHitTag))
 			{
 				USATORI_BlueprintLibrary::ApplyGameplayEffect(PlayerCharacter, HeavyHitGameplayEffect);
+				UFMODBlueprintStatics::PlayEventAtLocation(GetWorld(), MeleeAttack, this->GetActorTransform(), true);
 			}
 			else
 			{ 
 				USATORI_BlueprintLibrary::ApplyGameplayEffect(PlayerCharacter, HitGameplayEffect);
+				UFMODBlueprintStatics::PlayEventAtLocation(GetWorld(), MeleeAttack, this->GetActorTransform(), true);
 			}
 			OverlappedComp->SetGenerateOverlapEvents(false);
 		}

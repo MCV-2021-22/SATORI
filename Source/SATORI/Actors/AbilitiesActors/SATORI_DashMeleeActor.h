@@ -9,6 +9,7 @@
 #include "Engine/DecalActor.h"
 #include "AI/Character/Melee/SATORI_Melee.h"
 #include "Components/BoxComponent.h"
+#include "FMODBlueprintStatics.h"
 #include "SATORI_DashMeleeActor.generated.h"
 
 class USphereComponent;
@@ -69,6 +70,9 @@ public:
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Dash|Tags")
 	FGameplayTag  DashStopTag;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "SFX")
+	UFMODEvent* MeleeDashAttack = nullptr;
 
 protected:
 

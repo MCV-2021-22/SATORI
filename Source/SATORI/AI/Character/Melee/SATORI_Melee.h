@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "AI/Character/SATORI_AICharacter.h"
+#include "FMODBlueprintStatics.h"
 #include "SATORI_Melee.generated.h"
 
 class USkeletalMeshComponent;
@@ -43,6 +44,9 @@ public:
 	FGameplayTag HeavyHitTag;
 
 	void WeaponDissolveAfterDeath();
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "SFX")
+	UFMODEvent* MeleeAttack = nullptr;
 
 protected:
 	virtual void BeginPlay() override;
