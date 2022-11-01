@@ -47,6 +47,7 @@ void USATORI_GameplayAbilityComponent::BeginPlay()
 		}
 	}
 	
+	// Cooldown Timer Info
 	FAbilityCooldownTimerInfo LocalAbilityCD_Info;
 	LocalAbilityCD_Info.AbilityID = 0;
 	LocalAbilityCD_Info.TimeRemaining = 0.f;
@@ -54,18 +55,14 @@ void USATORI_GameplayAbilityComponent::BeginPlay()
 	FSATORI_CooldownDatas LocalCooldownData;
 	LocalCooldownData.TimeRemained = 0.0f;
 	LocalCooldownData.IsCooldownAvaiable = false;
-	//// Fill Empty CD Info Array
-	//for (int i = 0; i < 2; i++)
-	//{
-	//	AbilityCD_Infos.Add(LocalAbilityCD_Info);
-	//	M_CooldownDatas.Add(LocalCooldownData);
-	//}
-
+	
 	AbilityCD_Infos.Init(LocalAbilityCD_Info, 3);
 	M_CooldownDatas.Init(LocalCooldownData, 3);
 
+	// Noity Changes
 	NotifyAbilityChanged();
 
+	// Testing
 	if (IsAllHabilityTesting)
 	{
 		GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Red, PlayerAbilitiesNames[CurrentAbilityValue].ToString());
@@ -257,59 +254,12 @@ void USATORI_GameplayAbilityComponent::NotifyCooldownAbilityChanged(float TimeRe
 
 		CheckCooldownTimeRemaines(AbilityCD_Infos[CurrentAbilityValue].AbilityID);
 	}
-
-	//UE_LOG(LogTemp, Warning, TEXT("Time Remain, %f"), TimeRemaining);
-	//if (CurrentAbilityValue == 0 && !CooldownData.FirstIconDatas.IsCooldownAvaiable)
-	//{
-	//	CooldownData.FirstIconDatas.IsCooldownAvaiable = true;
-	//	CooldownData.FirstIconDatas.TimeRemained = TimeRemaining;
-	//	CooldownData.FirstIconDatas.AbilityID = 0;
-	//	CooldownAbilityIconChange.Broadcast(CooldownData);
-
-	//	// Fill the ability CD Info
-	//	AbilityCD_Infos[CurrentAbilityValue].AbilityID = CurrentAbilityValue;
-	//	AbilityCD_Infos[CurrentAbilityValue].TimeRemaining = TimeRemaining;
-
-	//	CheckCooldownTimeRemaines(CurrentAbilityValue);
-	//}
-
-	//else if (CurrentAbilityValue == 1 && !CooldownData.SecondIconDatas.IsCooldownAvaiable)
-	//{
-	//	CooldownData.SecondIconDatas.IsCooldownAvaiable = true;
-	//	CooldownData.SecondIconDatas.TimeRemained = TimeRemaining;
-	//	CooldownData.SecondIconDatas.AbilityID = 1;
-	//	CooldownAbilityIconChange.Broadcast(CooldownData);
-
-	//	// Fill the ability CD Info
-	//	AbilityCD_Infos[CurrentAbilityValue].AbilityID = CurrentAbilityValue;
-	//	AbilityCD_Infos[CurrentAbilityValue].TimeRemaining = TimeRemaining;
-
-	//	CheckCooldownTimeRemaines(CurrentAbilityValue);
-	//}
-
-	//else if (CurrentAbilityValue == 2 && !CooldownData.ThirstIconDatas.IsCooldownAvaiable)
-	//{
-	//	CooldownData.ThirstIconDatas.IsCooldownAvaiable = true;
-	//	CooldownData.ThirstIconDatas.TimeRemained = TimeRemaining;
-	//	CooldownData.ThirstIconDatas.AbilityID = 2;
-	//	CooldownAbilityIconChange.Broadcast(CooldownData);
-
-	//	// Fill the ability CD Info
-	//	AbilityCD_Infos[CurrentAbilityValue].AbilityID = CurrentAbilityValue;
-	//	AbilityCD_Infos[CurrentAbilityValue].TimeRemaining = TimeRemaining;
-
-	//	CheckCooldownTimeRemaines(CurrentAbilityValue);
-	//}
 }
 
 void USATORI_GameplayAbilityComponent::CheckAbilitiesStatus(FSATORI_AbilitiesIconsDatas& AbilitiesDatas)
 {
 	if (PortalRewardAbilities.Num() > 0)
 	{
-		/*SecondAbilityData = &PortalRewardAbilities[MidAbilityValue] ? &PortalRewardAbilities[MidAbilityValue] : nullptr;
-		LastAbilityData = &PortalRewardAbilities[LastAbilityValue] ? &PortalRewardAbilities[LastAbilityValue] : nullptr;
-		FirstAbilityData = &PortalRewardAbilities[FirstAbilityValue] ? &PortalRewardAbilities[FirstAbilityValue] : nullptr;*/
-
 		if (PortalRewardAbilities.Num() == 1)
 		{
 			FirstAbilityData = &PortalRewardAbilities[0];
@@ -348,6 +298,7 @@ void USATORI_GameplayAbilityComponent::CheckAbilitiesStatus(FSATORI_AbilitiesIco
 			AbilitiesDatas.LastAbilitiyIcon = LastAbilityData->AbilitiyIcon;
 		}
 	}
+	// All empty Icon
 	else if (PortalRewardAbilities.Num() == 0)
 	{
 		AbilitiesDatas.FirstAbilitiyIcon = EmptyAbilitiyIcon;
@@ -420,38 +371,5 @@ void USATORI_GameplayAbilityComponent::CooldownCountDown(int HabilityID)
 		AbilityCD_Infos[HabilityID].AbilityID = 0;
 		AbilityCD_Infos[HabilityID].TimeRemaining = 0.f;
 		GetWorld()->GetTimerManager().ClearTimer(AbilityCD_Infos[HabilityID].WaitHandle);
-		//if (HabilityID == 0)
-		//{
-		//	CooldownData.FirstIconDatas.IsCooldownAvaiable = false;
-		//	CooldownData.FirstIconDatas.TimeRemained = 0.0f;
-		//	CooldownData.FirstIconDatas.AbilityID = 0;
-		//	CooldownAbilityIconChange.Broadcast(CooldownData);
-		//	AbilityCD_Infos[HabilityID].AbilityID = 0;
-		//	AbilityCD_Infos[HabilityID].TimeRemaining = 0.f;
-		//	GetWorld()->GetTimerManager().ClearTimer(AbilityCD_Infos[HabilityID].WaitHandle);
-		//	//UE_LOG(LogTemp, Warning, TEXT("Entering Here"));
-		//}
-
-		//if (HabilityID == 1)
-		//{
-		//	CooldownData.SecondIconDatas.IsCooldownAvaiable = false;
-		//	CooldownData.SecondIconDatas.TimeRemained = 0.0f;
-		//	CooldownData.SecondIconDatas.AbilityID = 0;
-		//	CooldownAbilityIconChange.Broadcast(CooldownData);
-		//	AbilityCD_Infos[HabilityID].AbilityID = 0;
-		//	AbilityCD_Infos[HabilityID].TimeRemaining = 0.f;
-		//	GetWorld()->GetTimerManager().ClearTimer(AbilityCD_Infos[HabilityID].WaitHandle);
-		//}
-
-		//if (HabilityID == 2/* && CooldownData.ThirstIconDatas.IsCooldownAvaiable*/)
-		//{
-		//	CooldownData.ThirstIconDatas.IsCooldownAvaiable = false;
-		//	CooldownData.ThirstIconDatas.TimeRemained = 0.0f;
-		//	CooldownData.ThirstIconDatas.AbilityID = 0;
-		//	CooldownAbilityIconChange.Broadcast(CooldownData);
-		//	AbilityCD_Infos[HabilityID].AbilityID = 0;
-		//	AbilityCD_Infos[HabilityID].TimeRemaining = 0.f;
-		//	GetWorld()->GetTimerManager().ClearTimer(AbilityCD_Infos[HabilityID].WaitHandle);
-		//}
 	}
 }
