@@ -109,18 +109,26 @@ UTexture2D* USATORI_AbilityMask::SelectMaskToPortrail(SATORIMaskType MaskType)
 {
 	if (MaskType == SATORIMaskType::NONE)
 	{
+		// Broadcast
+		PortrailImageChange.Broadcast(CurrentPortrailImage);
 		return CurrentPortrailImage;
 	}
 	else if (MaskType == SATORIMaskType::Aka && AkaImage)
 	{
+		// Broadcast
+		PortrailImageChange.Broadcast(AkaImage);
 		return AkaImage;
 	}
 	else if (MaskType == SATORIMaskType::Ao && AoImage)
 	{
+		// Broadcast
+		PortrailImageChange.Broadcast(AoImage);
 		return AoImage;
 	}
 	else if (MaskType == SATORIMaskType::Midori && MidoriImage)
 	{
+		// Broadcast
+		PortrailImageChange.Broadcast(MidoriImage);
 		return MidoriImage;
 	}
 	return CurrentPortrailImage;
