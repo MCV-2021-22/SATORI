@@ -122,7 +122,7 @@
 	</object>
 	<object class="SingleSound" id="{5d1d566c-7cc2-4f39-b0bd-8e70ed5ad984}">
 		<property name="length">
-			<value>60.969795918367346</value>
+			<value>109.76653061224489</value>
 		</property>
 		<relationship name="audioFile">
 			<destination>{48b6ef7c-86e3-4e3e-8350-62ce64b4b839}</destination>
@@ -155,7 +155,7 @@
 	</object>
 	<object class="SingleSound" id="{132af6d4-dd67-4e6b-a85a-8ca58bc10255}">
 		<property name="length">
-			<value>130.32489795918369</value>
+			<value>109.76653061224489</value>
 		</property>
 		<relationship name="audioFile">
 			<destination>{a8f2e89a-d43c-47ed-9e2c-632ee94709f4}</destination>
@@ -183,7 +183,7 @@
 			<value>0</value>
 		</property>
 		<property name="length">
-			<value>130.32489795918369</value>
+			<value>109.76653061224489</value>
 		</property>
 		<property name="triggerConditionMode">
 			<value>1</value>
@@ -271,7 +271,7 @@
 			<value>0.012274959083469723</value>
 		</property>
 		<property name="value">
-			<value>-6</value>
+			<value>-10</value>
 		</property>
 	</object>
 	<object class="AutomationPoint" id="{9614727f-b8d1-4655-b72d-4145e7e8a511}">
@@ -279,7 +279,7 @@
 			<value>0.97999999999999998</value>
 		</property>
 		<property name="value">
-			<value>-6</value>
+			<value>-10</value>
 		</property>
 	</object>
 	<object class="AutomationPoint" id="{82155a89-60e1-466a-b345-707de37b576a}">
@@ -287,7 +287,7 @@
 			<value>0.98002083333333334</value>
 		</property>
 		<property name="value">
-			<value>-36</value>
+			<value>-80</value>
 		</property>
 	</object>
 	<object class="AutomationPoint" id="{f4b68e90-eaf5-44a4-ab92-ef2e05fdebb0}">
@@ -295,7 +295,7 @@
 			<value>0.97999999999999998</value>
 		</property>
 		<property name="value">
-			<value>-11</value>
+			<value>-15.5</value>
 		</property>
 	</object>
 	<object class="AutomationPoint" id="{834bf52e-0cad-436f-a290-b0d820d28c0c}">

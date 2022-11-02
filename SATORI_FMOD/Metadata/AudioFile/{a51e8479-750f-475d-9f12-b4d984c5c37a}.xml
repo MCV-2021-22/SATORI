@@ -2,7 +2,7 @@
 <objects serializationModel="Studio.02.02.00">
 	<object class="AudioFile" id="{a51e8479-750f-475d-9f12-b4d984c5c37a}">
 		<property name="assetPath">
-			<value>Enviroment/Water/5min Relax-Sleep easy-Tranquil calming sounds-Water flowing dripping-3D Nature without music.mp3</value>
+			<value>Enviroment/Sala1/Water/5min Relax-Sleep easy-Tranquil calming sounds-Water flowing dripping-3D Nature without music.mp3</value>
 		</property>
 		<property name="isStreaming">
 			<value>true</value>
