@@ -89,6 +89,11 @@ void ASATORI_RaijinRayoMovil::BeginPlay()
 		//decal->SetLifeSpan(8);
 		//m_previousActionDecal = decal;
 	}
+	if (Trueno)
+	{
+		FVector RayoLocation = GetActorLocation()- FVector(0,10,0);
+		ParticleEffect = UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), Trueno, RayoLocation, FRotator(90.0, 0, 0));
+	}
 }
 
 
@@ -116,13 +121,11 @@ void ASATORI_RaijinRayoMovil::Tick(float DeltaTime)
 	if(my_decal)
 	{
 		my_decal->SetActorLocation(NewPos);
+		ParticleEffect->SetRelativeLocation(NewPos);
 	}
-	FVector RayoLocation = GetActorLocation();
+	
 
-	if (Trueno)
-	{
-		UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), Trueno, RayoLocation);
-	}
+	
 	time_to_dmg -= DeltaTime;
 
 	if(time_to_dmg<=0.0f)
@@ -199,6 +202,7 @@ void ASATORI_RaijinRayoMovil::OnComponentBeginOverlap(
 		//float dmg_done = USATORI_BlueprintLibrary::ApplyGameplayEffectDamage(Player, Damage, Player, DamageGameplayEffect);
 
 		my_decal->Destroy();
+		ParticleEffect->DestroyComponent();
 
 		destruido = true;
 		//Destroy();
@@ -242,6 +246,7 @@ void ASATORI_RaijinRayoMovil::OnComponentBeginOverlapFinal(
 		//float dmg_done = USATORI_BlueprintLibrary::ApplyGameplayEffectDamage(Player, Damage, Player, DamageGameplayEffect);
 
 		my_decal->Destroy();
+		ParticleEffect->DestroyComponent();
 
 		destruido = true;
 		//Destroy();
@@ -252,12 +257,14 @@ void ASATORI_RaijinRayoMovil::OnComponentBeginOverlapFinal(
 
 
 	
+	
 
 }
 
 void ASATORI_RaijinRayoMovil::destroyDecal()
 {
 	my_decal->Destroy();
+	ParticleEffect->DestroyComponent();
 }
 
 

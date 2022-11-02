@@ -3,6 +3,7 @@
 #include "CoreMinimal.h"
 
 #include "GameplayTagAssetInterface.h"
+#include "NiagaraComponent.h"
 #include "Components/DecalComponent.h"
 #include "SATORI_RaijinRayoMovil.generated.h"
 
@@ -30,6 +31,9 @@ public:
 
 	UPROPERTY(EditDefaultsOnly)
 		UNiagaraSystem* Trueno = nullptr;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
+		UNiagaraComponent* ParticleEffect = nullptr;
 
 	UPROPERTY(EditDefaultsOnly)
 	UCapsuleComponent* CapsuleComponent = nullptr;
