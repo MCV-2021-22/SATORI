@@ -24,5 +24,6 @@ public:
 	UTextBlock* PandaCoinText;
 
 public:
+	UFUNCTION()
 	void SetCurrencyText(FText value);
 };

@@ -29,8 +29,13 @@ public:
 	UPROPERTY(meta = (BindWidget))
 	UButton* ResumeButton;
 
+	UPROPERTY(meta = (BindWidget))
 	USATORI_MaskVendorPopUp* AkaPopUp = nullptr;
+
+	UPROPERTY(meta = (BindWidget))
 	USATORI_MaskVendorPopUp* AoPopUp = nullptr;
+
+	UPROPERTY(meta = (BindWidget))
 	USATORI_MaskVendorPopUp* MidoriPopUp = nullptr;
 
 	virtual void NativeConstruct() override;

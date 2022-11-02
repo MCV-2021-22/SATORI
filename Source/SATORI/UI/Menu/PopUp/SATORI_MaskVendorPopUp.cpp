@@ -28,6 +28,5 @@ void USATORI_MaskVendorPopUp::NativeDestruct()
 
 void USATORI_MaskVendorPopUp::OnWindowClosed()
 {
-	this->RemoveFromViewport();
-	this->RemoveFromParent();
+	this->SetVisibility(ESlateVisibility::Hidden);
 }

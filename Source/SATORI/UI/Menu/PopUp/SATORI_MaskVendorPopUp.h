@@ -39,5 +39,6 @@ public:
 	virtual void NativeDestruct() override;
 
 protected:
+	UFUNCTION()
 	void OnWindowClosed();
 };
