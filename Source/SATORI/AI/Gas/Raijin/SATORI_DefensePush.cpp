@@ -47,6 +47,13 @@ void USATORI_DefensePush::EventReceived(FGameplayTag EventTag, FGameplayEventDat
 
 		UGameplayStatics::GetAllActorsWithTag(GetWorld(), FName("PossessedBy.Player"), enemigos);
 
+		// Particles
+		if (Area_Particle)
+		{
+			UGameplayStatics::SpawnEmitterAtLocation(GetWorld(),
+				Area_Particle, IA_POS, FRotator::ZeroRotator, true);
+		}
+
 		for (AActor* Actor : enemigos)
 		{
 

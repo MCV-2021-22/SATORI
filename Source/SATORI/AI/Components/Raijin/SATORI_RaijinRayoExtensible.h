@@ -44,6 +44,8 @@ public:
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Meta = (ExposeOnSpawn = true), Category = "Missile")
 	float Damage = 20;
 
+	
+
 	UFUNCTION()
 		void OnComponentBeginOverlap(
 			UPrimitiveComponent* OverlappedComponent,

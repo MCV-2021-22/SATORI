@@ -56,7 +56,9 @@ void ASATORI_RaijinDefensePush::OnOverlapSphere(
 }
 
 void ASATORI_RaijinDefensePush::DestroyMyself()
-{	
+{
+	//APlayerController* PlayerController = GetWorld()->GetFirstPlayerController();
+	//Player1->DisableInput(PlayerController);
 	Destroy();
 }
 
@@ -101,7 +103,7 @@ void ASATORI_RaijinDefensePush::PushPlayer(ASATORICharacter* Player)
 		FVector resultante = GetActorForwardVector() * ImpulseForce ;
 
 		//Player->GetMesh()->AddImpulse(FVector(100000000, 100000000,0));
-
+		Player1 = Player;
 		APlayerController* PlayerController = GetWorld()->GetFirstPlayerController();
 		Player->DisableInput(PlayerController);
 		Player->GetCharacterMovement()->AddImpulse(FVector(resultante.X / 5, resultante.Y / 5, ImpulseForce / 5));
