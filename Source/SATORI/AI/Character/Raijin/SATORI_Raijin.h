@@ -7,6 +7,8 @@
 #include "AI/Components/Raijin/SATORI_ArcoAltavoces.h"
 #include "SATORI_Raijin.generated.h"
 
+class UNiagaraComponent;
+class UNiagaraSystem;
 class ASATORI_Fujin;
 /**
  * 
@@ -29,6 +31,13 @@ public:
 	FVector getSpawnPos();
 
 	void setSpawnPos(FVector Pos);
+
+	UPROPERTY(EditDefaultsOnly)
+		UNiagaraSystem* ArcoPart = nullptr;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
+		UNiagaraComponent* ParticleEffectArco = nullptr;
+
 
 	ASATORI_ArcoAltavoces* ArcoAltavoces;
 
@@ -67,6 +76,10 @@ public:
 	void setNumRayosExtensibles(int num);
 
 	int getNumRayosExtensibles();
+
+	void StartPartArco();
+
+	void EndPartArco();
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Weapon")
 		UStaticMeshComponent* SwordComponentRight;

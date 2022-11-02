@@ -1,5 +1,5 @@
 #include "SATORI_RaijinRayoMovil.h"
-
+#include "NiagaraComponent.h"
 #include "SATORICharacter.h"
 #include "Components/CapsuleComponent.h"
 #include "Components/SphereComponent.h"
@@ -91,9 +91,10 @@ void ASATORI_RaijinRayoMovil::BeginPlay()
 	}
 	if (Trueno)
 	{
-		FVector RayoLocation = GetActorLocation()- FVector(0,10,0);
+		FVector RayoLocation = GetActorLocation()- FVector(0,0,500);
 		ParticleEffect = UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), Trueno, RayoLocation, FRotator(90.0, 0, 0));
 	}
+
 }
 
 
@@ -112,7 +113,7 @@ void ASATORI_RaijinRayoMovil::Tick(float DeltaTime)
 
 	//Velocity
 	
-	FVector NewPos = GetActorLocation() + direction * velocity * 2;
+	FVector NewPos = GetActorLocation() + direction * velocity * 1.5;
 	//FVector NewPos = GetActorLocation() + direction * velocity * 0.2;
 	
 	SetActorRelativeLocation(NewPos);

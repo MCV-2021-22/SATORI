@@ -3,10 +3,11 @@
 #include "CoreMinimal.h"
 
 #include "GameplayTagAssetInterface.h"
-#include "NiagaraComponent.h"
+
 #include "Components/DecalComponent.h"
 #include "SATORI_RaijinRayoMovil.generated.h"
 
+class UNiagaraComponent;
 class ASATORICharacter;
 class ADecalActor;
 class UGameplayEffect;
@@ -35,6 +36,7 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
 		UNiagaraComponent* ParticleEffect = nullptr;
 
+	
 	UPROPERTY(EditDefaultsOnly)
 	UCapsuleComponent* CapsuleComponent = nullptr;
 
@@ -95,7 +97,7 @@ public:
 	void setDirection(FVector newDirection);
 
 	void destroyDecal();
-
+	
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Meta = (ExposeOnSpawn = true), Category = "Missile")
 		TSubclassOf<UGameplayEffect> DamageGameplayEffect;
 

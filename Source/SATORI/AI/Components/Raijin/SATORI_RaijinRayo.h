@@ -6,6 +6,7 @@
 #include "Components/DecalComponent.h"
 #include "SATORI_RaijinRayo.generated.h"
 
+class UNiagaraComponent;
 class ASATORICharacter;
 class ADecalActor;
 class UGameplayEffect;
