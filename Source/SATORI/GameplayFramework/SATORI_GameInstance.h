@@ -102,6 +102,9 @@ public:
 	bool isInteractWithMaskVendor = false;
 
 	bool isAbilityUpgrated = false; 
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Timer")
+	float LoadingTimerValue = 5.0f;
 	// Abilities
 	TArray<FSATORI_AbilitiesDatas> NormalAbilities;
 	TArray<FSATORI_AbilitiesDatas> UpgratedAbilities;

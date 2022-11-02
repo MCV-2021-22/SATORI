@@ -56,8 +56,13 @@ void USATORI_GameInstance::EndLoadingScreen(UWorld* InLoadedWorld)
     {
         if (LoadingWidget)
         {
-            LoadingWidget->RemoveFromParent();
-            LoadingWidget->MarkPendingKill();
+            FTimerHandle WaitHandle;
+
+            GetWorld()->GetTimerManager().SetTimer(WaitHandle, FTimerDelegate::CreateLambda([&]()
+                {
+                    LoadingWidget->RemoveFromParent();
+                    LoadingWidget->MarkPendingKill();
+                }), LoadingTimerValue, false);
         }
     }
 }
