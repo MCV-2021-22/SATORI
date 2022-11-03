@@ -101,15 +101,33 @@ void USATORI_AI_DashAbilitySpawned::EventReceived(FGameplayTag EventTag, FGamepl
 void USATORI_AI_DashAbilitySpawned::GetTarget()
 {
 	UBlackboardComponent* Blackboard = UAIBlueprintHelperLibrary::GetBlackboard(GetAvatarActorFromActorInfo());
+
 	if (IsValid(Blackboard))
 	{
+		FName Clone = "Clone";
 		FName Player = "Target";
-		ASATORI_CharacterBase* Target = Cast<ASATORI_CharacterBase>(Blackboard->GetValueAsObject(Player));
 
+		ASATORI_CharacterBase* Target = nullptr;
+		Target = Cast<ASATORI_CharacterBase>(Blackboard->GetValueAsObject(Clone));
+
+		//Check clone
 		if (IsValid(Target))
 		{
 			Enemy = Target;
 			SpawnActor();
+
+		}
+		//If clone fails then checks for player
+		else
+		{
+			Target = Cast<ASATORI_CharacterBase>(Blackboard->GetValueAsObject(Player));
+
+			if (IsValid(Target))
+			{
+				Enemy = Target;
+				SpawnActor();
+
+			}
 		}
 	}
 }

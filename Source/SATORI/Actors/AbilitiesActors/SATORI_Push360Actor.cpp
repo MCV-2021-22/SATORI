@@ -6,6 +6,8 @@
 #include "SATORI/FunctionLibrary/SATORI_BlueprintLibrary.h"
 #include "NiagaraComponent.h"
 #include "Particles/ParticleSystemComponent.h"
+#include "AI/Character/Spawner/SATORI_Spawner.h"
+
 //Debug
 #include "DrawDebugHelpers.h"
 
@@ -42,6 +44,9 @@ void ASATORI_Push360Actor::OnOverlapCollisionSphere(UPrimitiveComponent* Overlap
 	}
 
 	//Enemies
+	ASATORI_Spawner* Spawner = Cast<ASATORI_Spawner>(Character);
+	if (Spawner) return;
+
 	if(Character->HasMatchingGameplayTag(EnemyTag) && !Character->HasMatchingGameplayTag(LaunchTag) && !Character->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag("State.Dead")) && !Character->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag("Boss.InmunityHabs")))
 	{	
 		StopAction(Character);

@@ -11,6 +11,7 @@
 #include "Particles/ParticleSystem.h"
 //Debug
 #include "DrawDebugHelpers.h"
+#include "AI/Character/Spawner/SATORI_Spawner.h"
 
 ASATORI_TornadoActor::ASATORI_TornadoActor()
 {
@@ -51,6 +52,8 @@ void ASATORI_TornadoActor::OnOverlapCollisionSphere(UPrimitiveComponent* Overlap
 	{
 		return;
 	}
+
+	
 
 	//Enemies
 	if (Character->HasMatchingGameplayTag(EnemyTag) && !Character->HasMatchingGameplayTag(PushedTag) && ArrayActorsTrapped.Num() < MaxEnemies)
@@ -148,9 +151,14 @@ void ASATORI_TornadoActor::Tick(float DeltaTime)
 	{
 		if (IsValid(Actor))
 		{
+			ASATORI_Spawner* Spawner = Cast<ASATORI_Spawner>(Actor);
 			DamageEnemy(Actor);
-			MoveTrappedEnemies(DeltaTime, Actor, Num);
-			RotateEnemy(Actor);
+			if (!Spawner)
+			{
+				MoveTrappedEnemies(DeltaTime, Actor, Num);
+				RotateEnemy(Actor);
+			}
+				
 			Num++;
 		}
 	}

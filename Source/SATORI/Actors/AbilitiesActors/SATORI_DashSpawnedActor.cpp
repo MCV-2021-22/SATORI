@@ -52,12 +52,12 @@ void ASATORI_DashSpawnedActor::OnOverlapCollisionBox(UPrimitiveComponent* Overla
 void ASATORI_DashSpawnedActor::OnOverlapCollisionSphere(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 	//Damage player once
-	ASATORICharacter* Character = Cast<ASATORICharacter>(OtherActor);
+	ASATORI_CharacterBase* Character = Cast<ASATORI_CharacterBase>(OtherActor);
+
 	if (!Character)
 	{
 		return;
 	}
-
 	if (Character && !bDamagePlayer)
 	{
 		bDamagePlayer = true;
