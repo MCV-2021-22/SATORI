@@ -23,4 +23,7 @@ public:
 
 	UFUNCTION(Exec)
 	void IncreasedAttack();
+
+	UFUNCTION(Exec)
+	void ShowMainUI();
 };

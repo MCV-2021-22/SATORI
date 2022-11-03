@@ -682,13 +682,17 @@ void ASATORICharacter::OnWeaponOverlapBegin(UPrimitiveComponent* OverlappedComp,
 			{
 				AttackingCollision->SetGenerateOverlapEvents(false);
 			}
+
 			// Adding Knock Back to enemy
 			this->ComboSystemComponent->ApplyKnockBackTagToEnemy(EnemyCharacter);
+
+			// Boss UI Notification changes
 			if (EnemyCharacter->GetEnemyType() == SATORIEnemyType::Boss)
 			{
-				//this->ComboSystemComponent->BossHealthNotifyAbilityChanged();
+				this->ComboSystemComponent->BossHealthNotifyAbilityChanged();
 			}				
 
+			// Enemy change the color when is been hitted
 			EnemyCharacter->SetDamagedColor();
 
 			// Send current damage type recived (light attack o heavy attack)
