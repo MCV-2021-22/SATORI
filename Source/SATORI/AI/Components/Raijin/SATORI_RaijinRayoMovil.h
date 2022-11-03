@@ -24,10 +24,10 @@ class ASATORI_RaijinRayoMovil : public AActor
 public:
 	ASATORI_RaijinRayoMovil();
 
-	UPROPERTY(EditDefaultsOnly)
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
 		USphereComponent* SphereComponent = nullptr;
 
-	UPROPERTY(EditDefaultsOnly)
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
 		UCapsuleComponent* CapsuleComponentFinal = nullptr;
 
 	UPROPERTY(EditDefaultsOnly)
