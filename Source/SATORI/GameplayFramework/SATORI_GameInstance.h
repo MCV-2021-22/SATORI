@@ -105,6 +105,10 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Timer")
 	float LoadingTimerValue = 5.0f;
+
+	// Boolean for intro cinematic
+	bool isPlayingCinematic = true;
+
 	// Abilities
 	TArray<FSATORI_AbilitiesDatas> NormalAbilities;
 	TArray<FSATORI_AbilitiesDatas> UpgratedAbilities;

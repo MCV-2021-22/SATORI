@@ -33,20 +33,38 @@ void USATORI_GameInstance::BeginLoadingScreen(const FString& MapName)
 {
     if (!IsRunningDedicatedServer())
     {
-        FLoadingScreenAttributes LoadingScreen;
-        LoadingScreen.bAutoCompleteWhenLoadingCompletes = true;
-      
-        LoadingWidget = CreateWidget<UUserWidget>(this, WidgetTemplate);
+        if (isPlayingCinematic)
+        {
+            isPlayingCinematic = false;
+            FLoadingScreenAttributes LoadingScreen;
+            LoadingScreen.bAutoCompleteWhenLoadingCompletes = true;
 
-        TSharedPtr<SWidget> WidgetPtr = LoadingWidget->TakeWidget();
-        LoadingScreen.WidgetLoadingScreen = WidgetPtr;
+            LoadingWidget = CreateWidget<UUserWidget>(this, WidgetTemplate);
 
-        // - Play Movies Setting
-        //LoadingScreen.bMoviesAreSkippable = true;//
-        //LoadingScreen.bWaitForManualStop = true;//
-        //LoadingScreen.PlaybackType = EMoviePlaybackType::MT_Looped;
-        //LoadingScreen.MoviePaths.Add("VID_20191121_165521");
-        GetMoviePlayer()->SetupLoadingScreen(LoadingScreen);
+            TSharedPtr<SWidget> WidgetPtr = LoadingWidget->TakeWidget();
+            LoadingScreen.WidgetLoadingScreen = WidgetPtr;
+
+            // - Play Movies Setting
+            LoadingScreen.bMoviesAreSkippable = true; //
+            LoadingScreen.bWaitForManualStop = true; //
+            LoadingScreen.PlaybackType = EMoviePlaybackType::MT_Normal;
+            LoadingScreen.MoviePaths.Add("NARRATIVA_placeholder");
+            GetMoviePlayer()->SetupLoadingScreen(LoadingScreen);
+        }
+        else
+        {
+            isPlayingCinematic = false;
+            FLoadingScreenAttributes LoadingScreen;
+            LoadingScreen.bAutoCompleteWhenLoadingCompletes = true;
+
+            LoadingWidget = CreateWidget<UUserWidget>(this, WidgetTemplate);
+
+            TSharedPtr<SWidget> WidgetPtr = LoadingWidget->TakeWidget();
+            LoadingScreen.WidgetLoadingScreen = WidgetPtr;
+
+            GetMoviePlayer()->SetupLoadingScreen(LoadingScreen);
+
+        }
     }
 }
 
