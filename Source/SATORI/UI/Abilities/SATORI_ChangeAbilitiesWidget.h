@@ -90,7 +90,9 @@ public:
 	class UTextBlock* HabilityCDTimeText_3;
 
 private:
+	UFUNCTION()
 	void CooldownTimerCounter(FSATORI_CooldownDatas CooldownData);
+	UFUNCTION()
 	void HabilityCooldownCounter(FSATORI_CooldownDatas CooldownData);
 
 	/*FTimerHandle FirstIconWaitHandle;
@@ -99,5 +101,6 @@ private:
 
 	TArray<FWidgetCooldownTimerInfo> WidgetCD_Infos;
 
+	UFUNCTION()
 	void CheckCooldownRemainForUI(int HabilityId);
 };

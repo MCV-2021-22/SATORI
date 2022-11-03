@@ -6,12 +6,17 @@
 #include "Kismet/GameplayStatics.h"
 #include "SATORICharacter.h"
 #include "Character/SATORI_PlayerController.h"
+#include "UI/Menu/PopUp/SATORI_MaskVendorPopUp.h"
 
 bool USATORI_MaksInteractUI::Initialize()
 {
 	bool Success = Super::Initialize();
 
 	if (!Success) { return false; }
+
+	AkaPopUp->SetVisibility(ESlateVisibility::Hidden);
+	AoPopUp->SetVisibility(ESlateVisibility::Hidden);
+	MidoriPopUp->SetVisibility(ESlateVisibility::Hidden);
 
 	return true;
 }
@@ -54,6 +59,12 @@ void USATORI_MaksInteractUI::AkaMaskButtonOnClicked()
 		Character->SetCharacterMask(SATORIMaskType::Aka);
 		ASATORI_PlayerController* PlayerController = Cast<ASATORI_PlayerController>(Character->GetController());
 	}
+
+	// Pop up
+	if (AkaPopUp)
+	{
+		AkaPopUp->SetVisibility(ESlateVisibility::Visible);
+	}
 }
 
 void USATORI_MaksInteractUI::AoMaskButtonOnClicked()
@@ -69,6 +80,12 @@ void USATORI_MaksInteractUI::AoMaskButtonOnClicked()
 		Character->SetCharacterMask(SATORIMaskType::Ao);
 		ASATORI_PlayerController* PlayerController = Cast<ASATORI_PlayerController>(Character->GetController());
 	}
+
+	// Pop up
+	if (AoPopUp)
+	{
+		AoPopUp->SetVisibility(ESlateVisibility::Visible);
+	}
 }
 
 void USATORI_MaksInteractUI::MidoriMaskButtonOnClicked()
@@ -83,6 +100,12 @@ void USATORI_MaksInteractUI::MidoriMaskButtonOnClicked()
 		}
 		Character->SetCharacterMask(SATORIMaskType::Midori);
 		ASATORI_PlayerController* PlayerController = Cast<ASATORI_PlayerController>(Character->GetController());
+	}
+
+	// Pop up
+	if (MidoriPopUp)
+	{
+		MidoriPopUp->SetVisibility(ESlateVisibility::Visible);
 	}
 }
 

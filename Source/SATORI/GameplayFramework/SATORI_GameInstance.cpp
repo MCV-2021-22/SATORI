@@ -33,20 +33,38 @@ void USATORI_GameInstance::BeginLoadingScreen(const FString& MapName)
 {
     if (!IsRunningDedicatedServer())
     {
-        FLoadingScreenAttributes LoadingScreen;
-        LoadingScreen.bAutoCompleteWhenLoadingCompletes = true;
-      
-        LoadingWidget = CreateWidget<UUserWidget>(this, WidgetTemplate);
+        if (isPlayingCinematic)
+        {
+            isPlayingCinematic = false;
+            FLoadingScreenAttributes LoadingScreen;
+            LoadingScreen.bAutoCompleteWhenLoadingCompletes = true;
 
-        TSharedPtr<SWidget> WidgetPtr = LoadingWidget->TakeWidget();
-        LoadingScreen.WidgetLoadingScreen = WidgetPtr;
+            LoadingWidget = CreateWidget<UUserWidget>(this, WidgetTemplate);
 
-        // - Play Movies Setting
-        //LoadingScreen.bMoviesAreSkippable = true;//
-        //LoadingScreen.bWaitForManualStop = true;//
-        //LoadingScreen.PlaybackType = EMoviePlaybackType::MT_Looped;
-        //LoadingScreen.MoviePaths.Add("VID_20191121_165521");
-        GetMoviePlayer()->SetupLoadingScreen(LoadingScreen);
+            TSharedPtr<SWidget> WidgetPtr = LoadingWidget->TakeWidget();
+            LoadingScreen.WidgetLoadingScreen = WidgetPtr;
+
+            // - Play Movies Setting
+            LoadingScreen.bMoviesAreSkippable = true; //
+            LoadingScreen.bWaitForManualStop = true; //
+            LoadingScreen.PlaybackType = EMoviePlaybackType::MT_Normal;
+            LoadingScreen.MoviePaths.Add("NARRATIVA_placeholder");
+            GetMoviePlayer()->SetupLoadingScreen(LoadingScreen);
+        }
+        else
+        {
+            isPlayingCinematic = false;
+            FLoadingScreenAttributes LoadingScreen;
+            LoadingScreen.bAutoCompleteWhenLoadingCompletes = true;
+
+            LoadingWidget = CreateWidget<UUserWidget>(this, WidgetTemplate);
+
+            TSharedPtr<SWidget> WidgetPtr = LoadingWidget->TakeWidget();
+            LoadingScreen.WidgetLoadingScreen = WidgetPtr;
+
+            GetMoviePlayer()->SetupLoadingScreen(LoadingScreen);
+
+        }
     }
 }
 
@@ -56,8 +74,13 @@ void USATORI_GameInstance::EndLoadingScreen(UWorld* InLoadedWorld)
     {
         if (LoadingWidget)
         {
-            LoadingWidget->RemoveFromParent();
-            LoadingWidget->MarkPendingKill();
+            FTimerHandle WaitHandle;
+
+            GetWorld()->GetTimerManager().SetTimer(WaitHandle, FTimerDelegate::CreateLambda([&]()
+                {
+                    LoadingWidget->RemoveFromParent();
+                    LoadingWidget->MarkPendingKill();
+                }), LoadingTimerValue, false);
         }
     }
 }
@@ -116,8 +139,8 @@ void USATORI_GameInstance::FillPortalGrantedAbilityWithData()
         }
     }
 
-    ShuffleArray(PortalGrantedNormalAbilityToApply);
-    ShuffleArray(PortalGrantedUpgratedAbilityToApply);
+   /* ShuffleArray(PortalGrantedNormalAbilityToApply);
+    ShuffleArray(PortalGrantedUpgratedAbilityToApply);*/
 }
 
 void USATORI_GameInstance::RemoveElementonFromNormalAbilities(int Id)
@@ -147,7 +170,7 @@ void USATORI_GameInstance::RemoveElementonFromNormalAbilities(int Id)
             UE_LOG(LogTemp, Warning, TEXT(" Player Normal Ability Name : %s "), *AbilityString);
             PortalGrantedNormalAbilityToApply.RemoveAt(Index);
         }
-        ShuffleArray(PortalGrantedNormalAbilityToApply);
+        //ShuffleArray(PortalGrantedNormalAbilityToApply);
     }
 }
 
@@ -178,7 +201,7 @@ void USATORI_GameInstance::RemoveElementonFromUpgratedAbilities(int Id)
             UE_LOG(LogTemp, Warning, TEXT(" Player Upgrated Ability Name : %s "), *AbilityString);
             PortalGrantedUpgratedAbilityToApply.RemoveAt(Index);
         }
-        ShuffleArray(PortalGrantedUpgratedAbilityToApply);
+        //ShuffleArray(PortalGrantedUpgratedAbilityToApply);
     }
 }
 
@@ -196,8 +219,8 @@ void USATORI_GameInstance::ResetPortalRewardAbilities()
     PortalGrantedUpgratedAbilityToApply = PortalRecicledUpgratedAbility;
     PortalGrantedNormalAbilityToApply = PortalRecicledNormalAbility;
 
-    ShuffleArray(PortalGrantedNormalAbilityToApply);
-    ShuffleArray(PortalGrantedUpgratedAbilityToApply);
+   /* ShuffleArray(PortalGrantedNormalAbilityToApply);
+    ShuffleArray(PortalGrantedUpgratedAbilityToApply);*/
 }
 
 void USATORI_GameInstance::ShuffleArray(TArray<FSATORI_PortalAbilitiesDatasReward>& myArray)
