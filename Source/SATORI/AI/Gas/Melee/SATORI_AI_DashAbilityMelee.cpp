@@ -141,6 +141,12 @@ void USATORI_AI_DashAbilityMelee::SpawnActor()
 
 void USATORI_AI_DashAbilityMelee::Tick(float DeltaTime)
 {
+
+	if (Melee->IsPendingKill())
+	{
+		return;
+	}
+
 	//Follow for a brief moment player moment and rotate facing target
 	if (bTargeting)
 	{

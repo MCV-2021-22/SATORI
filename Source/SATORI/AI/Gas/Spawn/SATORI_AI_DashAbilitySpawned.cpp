@@ -131,6 +131,12 @@ void USATORI_AI_DashAbilitySpawned::SpawnActor()
 
 void USATORI_AI_DashAbilitySpawned::Tick(float DeltaTime)
 {
+
+	if (Spawned->IsPendingKill())
+	{
+		return;
+	}
+
 	//Follow for a brief moment player moment and rotate facing target
 	if (bTargeting)
 	{
@@ -152,7 +158,7 @@ void USATORI_AI_DashAbilitySpawned::Tick(float DeltaTime)
 	}
 
 	//Stop dashing - It activates when actorreaches collision box in DashActor
-	if(Spawned && bDashing)
+	if(bDashing)
 	{
 		if (Spawned->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag("Dash.Stop")))
 		{
