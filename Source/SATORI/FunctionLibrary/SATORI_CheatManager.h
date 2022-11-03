@@ -26,4 +26,7 @@ public:
 
 	UFUNCTION(Exec)
 	void ShowMainUI();
+
+	UFUNCTION(Exec)
+	void SetPlayerHealthToOne();
 };

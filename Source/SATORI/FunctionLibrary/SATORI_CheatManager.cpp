@@ -51,3 +51,12 @@ void USATORI_CheatManager::ShowMainUI()
 		}
 	}
 }
+
+void USATORI_CheatManager::SetPlayerHealthToOne()
+{
+	ASATORICharacter* Character = Cast<ASATORICharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
+	if (Character)
+	{
+		Character->SetHealth(1);
+	}
+}
