@@ -114,6 +114,7 @@ void ASATORI_RaijinRayo::Tick(float DeltaTime)
 			{
 				Player->acti_rayo = true;
 				float dmg_done = USATORI_BlueprintLibrary::ApplyGameplayEffectDamage(Player, Damage, Player, DamageGameplayEffect);
+				USATORI_BlueprintLibrary::ApplyGameplayEffect(Player, HitGameplayEffect);
 			}
 
 		}

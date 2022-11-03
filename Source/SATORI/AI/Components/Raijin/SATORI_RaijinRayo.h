@@ -77,6 +77,9 @@ public:
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Meta = (ExposeOnSpawn = true), Category = "Missile")
 		TSubclassOf<UGameplayEffect> DamageGameplayEffect;
 
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "GameplayEffect")
+		TSubclassOf<UGameplayEffect> HitGameplayEffect;
+
 	bool CheckCollision();
 
 	ADecalActor* my_decal = nullptr;
