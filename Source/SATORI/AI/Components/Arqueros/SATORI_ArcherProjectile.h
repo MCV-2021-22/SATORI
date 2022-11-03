@@ -4,6 +4,7 @@
 
 #include "GameplayTagAssetInterface.h"
 #include "GameplayFramework/SATORI_GameInstance.h"
+#include "FMODBlueprintStatics.h"
 #include "SATORI_ArcherProjectile.generated.h"
 
 class UGameplayEffect;
@@ -64,6 +65,9 @@ public:
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "GameplayEffect")
 		TSubclassOf<UGameplayEffect> HitGameplayEffect;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "SFX")
+		UFMODEvent* ProjectileHit = nullptr;
 
 	void DestroySelfByParry();
 protected:

@@ -2,7 +2,8 @@
 
 
 #include "AI/Character/Raijin/SATORI_Raijin.h"
-
+#include "NiagaraComponent.h"
+#include "NiagaraFunctionLibrary.h"
 #include "AI/Character/Fujin/SATORI_Fujin.h"
 #include "Kismet/GameplayStatics.h"
 
@@ -184,4 +185,22 @@ void ASATORI_Raijin::revivir()
 bool ASATORI_Raijin::getFujinDowned()
 {
 	return Fujin->getDowned();
+}
+
+void ASATORI_Raijin::StartPartArco()
+{
+	if (ArcoPart && ArcoAltavoces)
+	{
+		ParticleEffectArco = UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), ArcoPart, ArcoAltavoces->GetActorLocation() + FVector(-250, 0, 150));
+	}
+
+}
+
+void ASATORI_Raijin::EndPartArco()
+{
+	if (ParticleEffectArco)
+	{
+		ParticleEffectArco->DestroyComponent();
+	}
+
 }

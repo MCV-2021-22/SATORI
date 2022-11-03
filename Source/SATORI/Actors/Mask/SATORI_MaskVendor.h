@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "Interfaces/SATORI_InteractInterface.h"
+#include "FMODBlueprintStatics.h"
 #include "SATORI_MaskVendor.generated.h"
 
 class UWidgetComponent;
@@ -29,6 +30,12 @@ public:
 
 	UPROPERTY(EditDefaultsOnly)
 	UStaticMeshComponent* MaskVendorMesh = nullptr;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "SFX")
+	UFMODEvent* MaskOpen = nullptr;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "SFX")
+	UFMODEvent* MaskClose = nullptr;
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;

@@ -35,7 +35,13 @@ void USATORI_AreaExtensible::ActivateAbility(const FGameplayAbilitySpecHandle Ha
 	ASATORI_Raijin* Raijin = Cast<ASATORI_Raijin>(GetAvatarActorFromActorInfo());
 	if(Raijin)
 	{
-		Raijin->ArcoAltavoces->setAttacking(true);
+		if(Raijin->ArcoAltavoces)
+		{
+			Raijin->ArcoAltavoces->setAttacking(true);
+			//Raijin->StartPartArco();
+		}
+		
+		
 
 		if (Raijin->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag(("Boss.Fase.Final"))))
 		{
@@ -127,9 +133,14 @@ void USATORI_AreaExtensible::EndRayos(const FGameplayAbilitySpecHandle Handle, c
 			Rayo1->Destroy();
 
 			ASATORI_Raijin* Raijin = Cast<ASATORI_Raijin>(GetAvatarActorFromActorInfo());
+
 			if (Raijin)
 			{
-				Raijin->ArcoAltavoces->setAttacking(false);
+				if (Raijin->ArcoAltavoces)
+				{
+					Raijin->ArcoAltavoces->setAttacking(false);
+					//Raijin->EndPartArco();
+				}
 			}
 
 			EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true);
@@ -143,9 +154,14 @@ void USATORI_AreaExtensible::EndRayos(const FGameplayAbilitySpecHandle Handle, c
 void USATORI_AreaExtensible::OnCancelled(FGameplayTag EventTag, FGameplayEventData EventData)
 {
 	ASATORI_Raijin* Raijin = Cast<ASATORI_Raijin>(GetAvatarActorFromActorInfo());
+
 	if (Raijin)
 	{
-		Raijin->ArcoAltavoces->setAttacking(false);
+		if (Raijin->ArcoAltavoces)
+		{
+			Raijin->ArcoAltavoces->setAttacking(false);
+			//Raijin->EndPartArco();
+		}
 	}
 	EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true);
 }

@@ -8,6 +8,7 @@
 #include "NiagaraFunctionLibrary.h"
 //Debug
 #include "DrawDebugHelpers.h"
+#include <AI/Character/Spawned/SATORI_Spawned.h>
 
 ASATORI_PushActor::ASATORI_PushActor()
 {
@@ -37,6 +38,9 @@ void ASATORI_PushActor::OnOverlapCollisionBox(UPrimitiveComponent* OverlappedCom
 		DestroyMyself();
 		return;
 	}
+
+	ASATORI_Spawner* Spawner = Cast<ASATORI_Spawner>(Character);
+	if (Spawner) return;
 
 	//Enemies
 	if(Character->HasMatchingGameplayTag(EnemyTag) && !Character->HasMatchingGameplayTag(PushedTag) && !Pushing && !Character->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag("State.Dead")) && !Character->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag("Boss.InmunityHabs")))
@@ -132,9 +136,12 @@ void ASATORI_PushActor::Tick(float DeltaTime)
 	SetActorLocation(ActorPosition + ActorForward * Speed * DeltaTime);
 
 	StayGrounded(DeltaTime);
+
+	
 	
 	if (IsValid(PushedActor))
 	{
+
 		//Move enemy
 		HeightCorrection += DeltaTime;
 		ActorPosition.Z += HeightCorrection;

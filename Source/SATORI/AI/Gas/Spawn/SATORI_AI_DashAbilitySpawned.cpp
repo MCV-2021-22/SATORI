@@ -101,15 +101,33 @@ void USATORI_AI_DashAbilitySpawned::EventReceived(FGameplayTag EventTag, FGamepl
 void USATORI_AI_DashAbilitySpawned::GetTarget()
 {
 	UBlackboardComponent* Blackboard = UAIBlueprintHelperLibrary::GetBlackboard(GetAvatarActorFromActorInfo());
+
 	if (IsValid(Blackboard))
 	{
+		FName Clone = "Clone";
 		FName Player = "Target";
-		ASATORI_CharacterBase* Target = Cast<ASATORI_CharacterBase>(Blackboard->GetValueAsObject(Player));
 
+		ASATORI_CharacterBase* Target = nullptr;
+		Target = Cast<ASATORI_CharacterBase>(Blackboard->GetValueAsObject(Clone));
+
+		//Check clone
 		if (IsValid(Target))
 		{
 			Enemy = Target;
 			SpawnActor();
+
+		}
+		//If clone fails then checks for player
+		else
+		{
+			Target = Cast<ASATORI_CharacterBase>(Blackboard->GetValueAsObject(Player));
+
+			if (IsValid(Target))
+			{
+				Enemy = Target;
+				SpawnActor();
+
+			}
 		}
 	}
 }
@@ -131,6 +149,12 @@ void USATORI_AI_DashAbilitySpawned::SpawnActor()
 
 void USATORI_AI_DashAbilitySpawned::Tick(float DeltaTime)
 {
+
+	if (Spawned->IsPendingKill())
+	{
+		return;
+	}
+
 	//Follow for a brief moment player moment and rotate facing target
 	if (bTargeting)
 	{
@@ -152,7 +176,7 @@ void USATORI_AI_DashAbilitySpawned::Tick(float DeltaTime)
 	}
 
 	//Stop dashing - It activates when actorreaches collision box in DashActor
-	if(Spawned && bDashing)
+	if(bDashing)
 	{
 		if (Spawned->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag("Dash.Stop")))
 		{

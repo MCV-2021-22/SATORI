@@ -78,6 +78,11 @@ void ASATORI_DashMeleeActor::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 	
+	if (OwnerMelee->IsPendingKill() || MeleeCharacter->IsPendingKill())
+	{
+		return;
+	}
+
 	//When Melee is close enough starts attack parte of animation
 	if (!bEndDash && FVector::Dist(OwnerMelee->GetActorLocation(), GetActorLocation()) < 150.0f)
 	{

@@ -87,6 +87,8 @@ void ASATORI_RaijinRayoExtensible::BeginPlay()
 		UE_LOG(LogTemp, Warning, TEXT("No decal spawned"));
 	}
 
+	
+
 
 }
 
@@ -101,12 +103,7 @@ void ASATORI_RaijinRayoExtensible::Tick(float DeltaTime)
 	{
 		CapsuleComponent->Activate(true);
 
-		FVector RayoLocation = GetActorLocation();
-	
-		if(Trueno)
-		{
-			UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), Trueno, RayoLocation);
-		}
+		
 
 		decal_size += DeltaTime;
 		scale += DeltaTime;
@@ -176,6 +173,13 @@ void ASATORI_RaijinRayoExtensible::OnComponentBeginOverlap(
 		float dmg_done = USATORI_BlueprintLibrary::ApplyGameplayEffectDamage(Player, Damage, Player, DamageGameplayEffect);
 
 		my_decal->Destroy();
+
+		FVector RayoLocation = Player->GetActorLocation();
+
+		if (Trueno)
+		{
+			UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), Trueno, RayoLocation);
+		}
 		//Destroy();
 		destruible = true;
 		//float dmg_done = USATORI_BlueprintLibrary::ApplyGameplayEffectDamage(OtherActor, Damage, OtherActor, DamageGameplayEffect);

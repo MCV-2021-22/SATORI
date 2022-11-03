@@ -30,37 +30,54 @@ void ASATORI_CharacterBase::AddGameplayTag(const FGameplayTag& TagToAdd)
 
 void ASATORI_CharacterBase::RemoveGameplayTag(const FGameplayTag& TagToRemove)
 {
-	AbilitySystemComponent->RemoveLooseGameplayTag(TagToRemove);
+	if (AbilitySystemComponent.IsValid())
+		AbilitySystemComponent->RemoveLooseGameplayTag(TagToRemove);
 }
 
 void ASATORI_CharacterBase::BlockGameplayTag(const FGameplayTagContainer& TagsToBlock)
 {
-	AbilitySystemComponent->BlockAbilitiesWithTags(TagsToBlock);
+	if (AbilitySystemComponent.IsValid())
+		AbilitySystemComponent->BlockAbilitiesWithTags(TagsToBlock);
 }
 
 void ASATORI_CharacterBase::UnBlockGameplayTag(const FGameplayTagContainer& TagsToBlock)
 {
-	AbilitySystemComponent->UnBlockAbilitiesWithTags(TagsToBlock);
+	if (AbilitySystemComponent.IsValid())
+		AbilitySystemComponent->UnBlockAbilitiesWithTags(TagsToBlock);
 }
 
 void ASATORI_CharacterBase::GetOwnedGameplayTags(FGameplayTagContainer& TagContainer) const
 {
-	AbilitySystemComponent->GetOwnedGameplayTags(TagContainer);
+	if (AbilitySystemComponent.IsValid())
+		AbilitySystemComponent->GetOwnedGameplayTags(TagContainer);
 }
 
 bool ASATORI_CharacterBase::HasMatchingGameplayTag(FGameplayTag TagToCheck) const
 {
-	return AbilitySystemComponent->HasMatchingGameplayTag(TagToCheck);
+	if (AbilitySystemComponent.IsValid())
+	{
+		return AbilitySystemComponent->HasMatchingGameplayTag(TagToCheck);
+	}
+	return false;
 }
 
 bool ASATORI_CharacterBase::HasAllMatchingGameplayTags(const FGameplayTagContainer& TagContainer) const
 {
-	return AbilitySystemComponent->HasAllMatchingGameplayTags(TagContainer);
+	if (AbilitySystemComponent.IsValid())
+	{
+		return AbilitySystemComponent->HasAllMatchingGameplayTags(TagContainer);
+	}
+	return false;
 }
 
 bool ASATORI_CharacterBase::HasAnyMatchingGameplayTags(const FGameplayTagContainer& TagContainer) const
 {
-	return AbilitySystemComponent->HasAnyMatchingGameplayTags(TagContainer);
+	if (AbilitySystemComponent.IsValid())
+	{
+		return AbilitySystemComponent->HasAnyMatchingGameplayTags(TagContainer);
+	}
+	return false;
+
 }
 
 // Getters

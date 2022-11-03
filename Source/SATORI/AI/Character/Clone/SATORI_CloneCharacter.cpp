@@ -1,6 +1,8 @@
 //
 
 #include "AI/Character/Clone/SATORI_CloneCharacter.h"
+
+#include "AI/Character/Melee/SATORI_Melee.h"
 #include "Components/SkeletalMeshComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "Components/SphereComponent.h"
@@ -67,6 +69,9 @@ void ASATORI_CloneCharacter::OnWeaponOverlapBegin(UPrimitiveComponent* Overlappe
 			{
 				AttackingCollision->SetGenerateOverlapEvents(false);
 			}
+
+			ASATORI_Melee* Melee = Cast<ASATORI_Melee>(EnemyCharacter);
+			if(!Melee) USATORI_BlueprintLibrary::ApplyGameplayEffect(EnemyCharacter, DamageEffect);
 			EnemyCharacter->CheckDamage(WeaponDamage);
 		}
 	}

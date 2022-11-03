@@ -34,7 +34,7 @@ public:
 
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Meta = (ExposeOnSpawn = true), Category = "Push")
-		float TimeToDestroy = 1.0f;
+		float TimeToDestroy = 1.5f;
 
 	UFUNCTION(BlueprintCallable, Category = "Push")
 	void OnOverlapSphere(
@@ -55,6 +55,8 @@ public:
 	FGameplayTag  PlayerTag;
 
 	void PushPlayer(ASATORICharacter* Player);
+
+	ASATORICharacter* Player1;
 
 protected:
 
