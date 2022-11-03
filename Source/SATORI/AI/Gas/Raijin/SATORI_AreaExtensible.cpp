@@ -10,11 +10,13 @@
 #include "Kismet/GameplayStatics.h"
 #include "Widgets/Text/ISlateEditableTextWidget.h"
 #include "Kismet/GameplayStatics.h"
+#include "Particles/ParticleSystemComponent.h"
 
 USATORI_AreaExtensible::USATORI_AreaExtensible()
 {
 
 	InstancingPolicy = EGameplayAbilityInstancingPolicy::InstancedPerActor;
+	
 
 }
 
@@ -70,8 +72,10 @@ void USATORI_AreaExtensible::EventReceived(FGameplayTag EventTag, FGameplayEvent
 		// Particles
 		if (Area_Particle)
 		{
-			UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), 
+			Particula_loop= UGameplayStatics::SpawnEmitterAtLocation(GetWorld(),
 				Area_Particle, IA_POS, FRotator::ZeroRotator, true);
+
+			
 		}
 
 		//UGameplayStatics::GetAllActorsOfClass(GetWorld(), ASATORICharacter::StaticClass(), enemigos);
@@ -115,7 +119,7 @@ void USATORI_AreaExtensible::EventReceived(FGameplayTag EventTag, FGameplayEvent
 		}
 
 		TimerDelegate = FTimerDelegate::CreateUObject(this, &USATORI_AreaExtensible::EndRayos, CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo);
-		GetWorld()->GetTimerManager().SetTimer(TimerHandle, TimerDelegate, 0.3f, true);
+		GetWorld()->GetTimerManager().SetTimer(TimerHandle, TimerDelegate, 0.1f, true);
 
 		//EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true);
 
@@ -144,6 +148,22 @@ void USATORI_AreaExtensible::EndRayos(const FGameplayAbilitySpecHandle Handle, c
 			}
 
 			EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true);
+		}
+		else
+		{
+			if(!Particula_loop->IsActive())
+			{
+				if (Area_Particle)
+				{
+					FVector IA_POS = CurrentActorInfo->AvatarActor->GetActorLocation();
+					Particula_loop = UGameplayStatics::SpawnEmitterAtLocation(GetWorld(),
+						Area_Particle, IA_POS, FRotator::ZeroRotator, true);
+
+					
+				}
+			}
+
+				
 		}
 		
 	}
@@ -176,3 +196,5 @@ void USATORI_AreaExtensible::OnCompleted(FGameplayTag EventTag, FGameplayEventDa
 	}*/
 	//EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true);
 }
+
+

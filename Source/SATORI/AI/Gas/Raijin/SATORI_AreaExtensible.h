@@ -5,8 +5,6 @@
 #include "CoreMinimal.h"
 #include "Abilities/GameplayAbility.h"
 #include "GameplayTags.h"
-#include "GameplayTagAssetInterface.h"
-#include "GAS/SATORI_GameplayAbility.h"
 #include "SATORI/AbilityTask/SATORI_PlayMontageandWaitNotify.h"
 #include "AI/Components/Raijin/SATORI_RaijinRayoExtensible.h"
 #include "SATORI_AreaExtensible.generated.h"
@@ -43,6 +41,8 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	UParticleSystem* Area_Particle = nullptr;
 
+	UParticleSystemComponent* Particula_loop = nullptr;
+
 	FTimerDelegate TimerDelegate;
 	FTimerHandle TimerHandle;
 
@@ -52,7 +52,7 @@ public:
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Meta = (ExposeOnSpawn = true), Category = "Missile")
 		float Damage = 0.001;
 
-
+	
 
 protected:
 	UFUNCTION()
@@ -63,7 +63,11 @@ protected:
 
 	UFUNCTION()
 		void EventReceived(FGameplayTag EventTag, FGameplayEventData EventData);
+
+	
 private:
 
 	const bool bStopWhenAbilityEnds = true;
+
+
 };
