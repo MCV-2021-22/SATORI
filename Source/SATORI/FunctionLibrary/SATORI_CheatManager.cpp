@@ -6,6 +6,7 @@
 #include "Components/Player/SATORI_GameplayAbilityComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "Character/SATORI_CharacterBase.h"
+#include "Components/Player/SATORI_ComboSystemComponent.h"
 
 void USATORI_CheatManager::UnlockAllAbilities(bool Value)
 {
@@ -35,5 +36,18 @@ void USATORI_CheatManager::IncreasedAttack()
 	if (Character)
 	{
 		Character->WeaponDamage = 1000.0f;
+	}
+}
+
+void USATORI_CheatManager::ShowMainUI()
+{
+	ASATORICharacter* Character = Cast<ASATORICharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
+	if (Character)
+	{
+		USATORI_ComboSystemComponent* ComboComp = Character->GetComboSystemComponent();
+		if (ComboComp)
+		{
+			ComboComp->SetMainWidgetVisibility(true);
+		}
 	}
 }
