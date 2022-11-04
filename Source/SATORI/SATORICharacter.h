@@ -68,6 +68,9 @@ public:
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	int AbilityToChoose = 0;
 
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	bool isPlayerDead = false;
+
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Weapon")
 	USkeletalMeshComponent* SwordComponent;
 

@@ -137,6 +137,7 @@ void USATORI_StatsComponent::HealthChanged(const FOnAttributeChangeData& Data)
 		ASATORICharacter* SatoriCharacter = Cast<ASATORICharacter>(GetOwner());
 		if (SatoriCharacter)
 		{
+			SatoriCharacter->isPlayerDead = true;
 			// Broadcast
 			OnPlayerDeathBroadCastForDissolver();
 

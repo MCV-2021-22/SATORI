@@ -599,9 +599,18 @@ void ASATORICharacter::CharacterDeath()
 		AbilitySystemComponent->CancelAllAbilities();
 	}
 
+	UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
+	if (!AnimInstance)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("TriggerJumpSection failed: no anim instance!"));
+	}
+
 	// Playe Death montage
 	if (DeathMontage)
 	{
+		// Play montages
+		this->PlayAnimMontage(DeathMontage);
+
 		ASATORI_PlayerController* SatoriController = Cast<ASATORI_PlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
 		if (SatoriController)
 		{
@@ -611,8 +620,12 @@ void ASATORICharacter::CharacterDeath()
 			ShowDeathWidget();
 		}
 
-		// Play montages
-		PlayAnimMontage(DeathMontage);
+		UAnimMontage* CurrentActiveMontage = AnimInstance->GetCurrentActiveMontage();
+		if (CurrentActiveMontage)
+		{
+			GEngine->AddOnScreenDebugMessage(-1, 200, FColor::Green, 
+				FString::Printf(TEXT("Anim Montage Name : %s"), *CurrentActiveMontage->GetName()));
+		}
 	}
 }
 
