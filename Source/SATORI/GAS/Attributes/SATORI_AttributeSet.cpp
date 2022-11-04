@@ -24,7 +24,7 @@ void USATORI_AttributeSet::PreAttributeChange(const FGameplayAttribute& Attribut
 	}
 	else if (Attribute == GetHealthAttribute())
 	{
-		NewValue = FMath::Clamp<float>(NewValue, 0.00f, GetMaxHealth());
+		NewValue = FMath::Clamp<float>(NewValue, 0.0f, GetMaxHealth());
 	}
 	// Mana
 	else if (Attribute == GetMaxManaAttribute())
@@ -33,7 +33,7 @@ void USATORI_AttributeSet::PreAttributeChange(const FGameplayAttribute& Attribut
 	}
 	else if (Attribute == GetManaAttribute())
 	{
-		NewValue = FMath::Clamp<float>(NewValue, 0.001f, GetMaxMana());
+		NewValue = FMath::Clamp<float>(NewValue, 0.0f, GetMaxMana());
 	}
 	// Move Speed
 	else if (Attribute == GetMoveSpeedAttribute())
