@@ -137,6 +137,9 @@ void USATORI_StatsComponent::HealthChanged(const FOnAttributeChangeData& Data)
 		ASATORICharacter* SatoriCharacter = Cast<ASATORICharacter>(GetOwner());
 		if (SatoriCharacter)
 		{
+			// Broadcast
+			OnPlayerDeathBroadCastForDissolver();
+
 			SatoriCharacter->CharacterDeath();
 			ASATORI_PlayerController* PlayerController = Cast<ASATORI_PlayerController>(SatoriCharacter->GetController());
 			if (PlayerController && SatoriCharacter->GetComboSystemComponent()->isInBossFight == true)
@@ -284,4 +287,9 @@ void USATORI_StatsComponent::UpdatePandaCoinText()
 			}
 		}
 	}
+}
+
+void USATORI_StatsComponent::OnPlayerDeathBroadCastForDissolver()
+{
+	FOnPlayerDeathBroadCast.Broadcast(true);
 }
