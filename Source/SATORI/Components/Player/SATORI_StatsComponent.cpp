@@ -134,9 +134,15 @@ void USATORI_StatsComponent::HealthChanged(const FOnAttributeChangeData& Data)
 
 	if (Health <= 0)
 	{
+		GEngine->AddOnScreenDebugMessage(-1, 200, FColor::Green,
+			FString::Printf(TEXT("Health Value : %d"), Health));
 		ASATORICharacter* SatoriCharacter = Cast<ASATORICharacter>(GetOwner());
 		if (SatoriCharacter)
 		{
+			SatoriCharacter->isPlayerDead = true;
+			// Broadcast
+			OnPlayerDeathBroadCastForDissolver();
+
 			SatoriCharacter->CharacterDeath();
 			ASATORI_PlayerController* PlayerController = Cast<ASATORI_PlayerController>(SatoriCharacter->GetController());
 			if (PlayerController && SatoriCharacter->GetComboSystemComponent()->isInBossFight == true)
@@ -284,4 +290,9 @@ void USATORI_StatsComponent::UpdatePandaCoinText()
 			}
 		}
 	}
+}
+
+void USATORI_StatsComponent::OnPlayerDeathBroadCastForDissolver()
+{
+	FOnPlayerDeathBroadCast.Broadcast(true);
 }

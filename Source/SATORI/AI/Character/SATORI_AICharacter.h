@@ -147,6 +147,7 @@ public:
 	virtual void CharacterDeath() override;
 
 	// Check Impact Received
+	UFUNCTION()
 	void CheckImpactReceivedByPlayer(EComboState State);
 
 	// Set Enemy color when received damage
@@ -158,6 +159,9 @@ public:
 	void EnemyDissolveAfterDeath(float Timer = 2.0f);
 
 	SATORIEnemyType GetEnemyType() { return EnemyType; }
+
+	UFUNCTION()
+	void CheckPlayerIsDeathState(bool isDeath);
 protected:
 
 	// Default attributes for a character for initializing on spawn/respawn.
@@ -200,6 +204,10 @@ protected:
 	float TimeCountDown = 3.0f;
 	float LocalRate = 0.05f;
 	FTimerHandle MaterialWaitHandle;
+
+	// Check if player Death
+	bool CheckPlayerDeath = false;
+
 public: //Target System Interface related and Tag Abilities related (Nacho)
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Tag")

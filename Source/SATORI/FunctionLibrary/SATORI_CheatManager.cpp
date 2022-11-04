@@ -60,3 +60,12 @@ void USATORI_CheatManager::SetPlayerHealthToOne()
 		Character->SetHealth(1);
 	}
 }
+
+void USATORI_CheatManager::PlayerInstaDead()
+{
+	ASATORICharacter* Character = Cast<ASATORICharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
+	if (Character)
+	{
+		Character->CharacterDeath();
+	}
+}

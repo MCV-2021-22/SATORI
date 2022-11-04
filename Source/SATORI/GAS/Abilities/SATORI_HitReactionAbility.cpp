@@ -37,6 +37,12 @@ void USATORI_HitReactionAbility::ActivateAbility(
 		return;
 	}
 
+	if (Character->GetHealth() <= 0)
+	{
+		Super::EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true);
+		return;
+	}
+
 	if (!CommitAbility(Handle, ActorInfo, ActivationInfo))
 	{
 		UE_LOG(LogTemp, Display, TEXT("[%s] USATORI_HitReactionAbility: Failed commit ability ... "), *GetName());

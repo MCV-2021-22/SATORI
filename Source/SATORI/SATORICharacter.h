@@ -68,6 +68,9 @@ public:
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	int AbilityToChoose = 0;
 
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	bool isPlayerDead = false;
+
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Weapon")
 	USkeletalMeshComponent* SwordComponent;
 
@@ -160,9 +163,11 @@ public:
 	float timeRayo = 0.0f;
 
 	// Reset All character Datas
+	UFUNCTION()
 	void ResetCharacterDatas();
 
 	// Cancel Ability With Tag
+	UFUNCTION()
 	bool PlayerCancelAbilityWithTag(FGameplayTagContainer& GameplayTagContainer);
 
 	// Getters
@@ -181,21 +186,31 @@ public:
 protected:
 
 	// Initialization for player abilities
+	UFUNCTION()
 	void ApplyDefaultAbilities();
+
 	// Helper function Granting a GameplayAbility to an ASC adds it to the ASC's list of ActivatableAbilities allowing it to activate the GameplayAbility
+	UFUNCTION()
 	void GrantAbilityToPlayer(FGameplayAbilitySpec Ability);
+
+	UFUNCTION()
 	void InitializePassiveAttributes();
 
 	// Check if the enemy is in front
+	UFUNCTION()
 	bool IsEnemyInFront(const FVector StartPosition, const FVector EndPosition, FHitResult& LocalHitResult, int RotationSize = 1);
 
 	TWeakObjectPtr<AActor> FindNearestEnemy(TArray<TWeakObjectPtr<AActor>> Actors);
 
 	// Parry
+	UFUNCTION()
 	bool DoParryBlockAllEnemies();
+
+	UFUNCTION()
 	bool DoParryBlockOneEnemies();
 
 	// Set Anim Instance class 
+	UFUNCTION()
 	void InitializeAnimIntance();
 
 protected:

@@ -29,4 +29,7 @@ public:
 
 	UFUNCTION(Exec)
 	void SetPlayerHealthToOne();
+
+	UFUNCTION(Exec)
+	void PlayerInstaDead();
 };
