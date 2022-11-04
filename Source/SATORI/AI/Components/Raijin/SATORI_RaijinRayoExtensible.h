@@ -22,7 +22,7 @@ class ASATORI_RaijinRayoExtensible : public AActor
 public:
 	ASATORI_RaijinRayoExtensible();
 
-	UPROPERTY(EditDefaultsOnly)
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
 		USphereComponent* SphereComponent = nullptr;
 
 

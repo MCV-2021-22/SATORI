@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <objects serializationModel="Studio.02.02.00">
-	<object class="AudioFile" id="{d7f96080-749b-4383-8641-9203d3bae18c}">
+	<object class="AudioFile" id="{c6373931-5e63-4acd-86d0-0ec1af0d0f38}">
 		<property name="assetPath">
-			<value>Character/Raijin/SFX_RAIJIN_attack_01.mp3</value>
+			<value>Character/Raijin/SFX_RAIJIN_attack_04.mp3</value>
 		</property>
 		<property name="frequencyInKHz">
 			<value>48</value>
@@ -11,7 +11,7 @@
 			<value>2</value>
 		</property>
 		<property name="length">
-			<value>7.056</value>
+			<value>2.8559999999999999</value>
 		</property>
 		<relationship name="masterAssetFolder">
 			<destination>{269b0b2d-b44d-4e19-a3ee-86e302406a27}</destination>
