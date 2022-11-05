@@ -8,6 +8,7 @@
 #include "Savegame/SATORI_ActorSaveData.h"
 #include "Actors/Portal/SATORI_Portal.h"
 #include "Actors/Portal/SATORI_WinPortalActor.h"
+#include "AI/Character/SATORI_AICharacter.h"
 
 ASATORIGameMode::ASATORIGameMode()
 {
@@ -96,4 +97,16 @@ void ASATORIGameMode::AddWinPortalActor(ASATORI_WinPortalActor* Portal)
 int ASATORIGameMode::NumOfPortalActors()
 {
 	return PortalActors.Num();
+}
+
+void ASATORIGameMode::StopAll_AI_Logic()
+{
+	for (int i = 0; i < EnemyActors.Num(); i++)
+	{
+		ASATORI_AICharacter* AI_Enemy = Cast<ASATORI_AICharacter>(EnemyActors[i]);
+		if (AI_Enemy)
+		{
+			AI_Enemy->StopAILogic();
+		}
+	}
 }

@@ -25,6 +25,7 @@ class UWidgetComponent;
 class USATORI_EnemyHealthBar;
 class USATORI_EnemyStatComponent;
 class ASATORI_CoinRewardActor;
+class AAIController;
 
 UENUM(BlueprintType)
 enum class SATORIEnemyType : uint8
@@ -150,6 +151,9 @@ public:
 	UFUNCTION()
 	void CheckImpactReceivedByPlayer(EComboState State);
 
+	UFUNCTION()
+	void StopAILogic();
+
 	// Set Enemy color when received damage
 	UFUNCTION()
 	void SetDamagedColor();
@@ -174,6 +178,9 @@ protected:
 	
 	UPROPERTY(EditAnywhere)
 	TSoftObjectPtr <UBehaviorTree> BehaviorTree;
+
+	UPROPERTY()
+	AAIController* EnemyAIController = nullptr;
 
 	// Enemy Type
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)

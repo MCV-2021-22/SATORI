@@ -18,13 +18,13 @@ public:
 	ASATORIGameMode();
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		TArray<FName> LevelName = { FName("LevelFloorType1"), FName("LevelFloorType1_2"), FName("LevelFloorType1_3") };
+	TArray<FName> LevelName = { FName("LevelFloorType1"), FName("LevelFloorType1_2"), FName("LevelFloorType1_3") };
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		int NumEnemies = 0;
+	int NumEnemies = 0;
 
 	UFUNCTION(BlueprintCallable)
-		void OpenLevel();
+	void OpenLevel();
 
 	//virtual void InitGame(const FString& MapName, const FString& Options, FString& ErrorMessage) override;
 
@@ -53,6 +53,8 @@ public:
 	UFUNCTION()
 	int NumOfPortalActors();
 
+	UFUNCTION()
+	void StopAll_AI_Logic();
 private:
 
 	UPROPERTY()

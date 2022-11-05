@@ -183,11 +183,28 @@ void ASATORI_AICharacter::PossessedBy(AController* NewController)
 			}
 		}
 	}
+
+	if (NewController)
+	{
+		EnemyAIController = Cast<AAIController>(NewController);
+	}
 }
 
 float ASATORI_AICharacter::GetAttackDistance()
 {
 	return AttackDistance;
+}
+
+void ASATORI_AICharacter::StopAILogic()
+{
+	if (EnemyAIController)
+	{
+		UBrainComponent* AIBrain = EnemyAIController->BrainComponent;
+		if (AIBrain)
+		{
+			AIBrain->StopLogic("PlayerDead");
+		}
+	}
 }
 
 float ASATORI_AICharacter::GetMaxRange()
@@ -591,18 +608,4 @@ void ASATORI_AICharacter::EnemyDissolveAfterDeath(float Timer)
 void ASATORI_AICharacter::CheckPlayerIsDeathState(bool isDeath)
 {
 	CheckPlayerDeath = isDeath;
-
-	/*TSubclassOf<AController> EnemyAI_Controller = this->AIControllerClass;
-	if (EnemyAI_Controller.Get())
-	{
-		AAIController* AIController = Cast<AAIController>(EnemyAI_Controller.Get());
-		if (AIController)
-		{
-			UBrainComponent* AIBrain = AIController->BrainComponent;
-			if (AIBrain)
-			{
-				AIBrain->StopLogic("PlayerDead");
-			}
-		}
-	}*/
 }
