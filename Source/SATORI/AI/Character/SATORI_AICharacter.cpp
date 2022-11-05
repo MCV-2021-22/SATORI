@@ -30,6 +30,7 @@
 #include "Materials/MaterialInstanceDynamic.h"
 #include "Actors/Coin/SATORI_CoinRewardActor.h"
 #include "Components/Player/SATORI_StatsComponent.h"
+#include "AIController.h"
 
 ASATORI_AICharacter::ASATORI_AICharacter()
 {
@@ -590,4 +591,18 @@ void ASATORI_AICharacter::EnemyDissolveAfterDeath(float Timer)
 void ASATORI_AICharacter::CheckPlayerIsDeathState(bool isDeath)
 {
 	CheckPlayerDeath = isDeath;
+
+	/*TSubclassOf<AController> EnemyAI_Controller = this->AIControllerClass;
+	if (EnemyAI_Controller.Get())
+	{
+		AAIController* AIController = Cast<AAIController>(EnemyAI_Controller.Get());
+		if (AIController)
+		{
+			UBrainComponent* AIBrain = AIController->BrainComponent;
+			if (AIBrain)
+			{
+				AIBrain->StopLogic("PlayerDead");
+			}
+		}
+	}*/
 }
