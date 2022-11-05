@@ -4,6 +4,7 @@
 #include "Actors/Dummy/SATORI_DummyActor.h"
 #include "Components/BoxComponent.h"
 #include "Components/CapsuleComponent.h"
+#include "Animation/AnimInstance.h"
 
 // Sets default values
 ASATORI_DummyActor::ASATORI_DummyActor()
@@ -29,7 +30,7 @@ void ASATORI_DummyActor::PlayImpactAnimations()
 void ASATORI_DummyActor::OnDamageOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
 	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	UE_LOG(LogTemp, Warning, TEXT("hi!!!!"));
+	
 }
 
 void ASATORI_DummyActor::OnDamageOverlapEnd(class UPrimitiveComponent* OverlappedComp,
@@ -85,6 +86,28 @@ void ASATORI_DummyActor::PlayAnimationWithDamage()
 			{
 				DummyMesh->PlayAnimation(AnimToPlay_3, false);
 			}
+		}
+	}
+}
+
+void ASATORI_DummyActor::PlayDamagedAnimation()
+{
+	UAnimInstance* AnimInstance = this->GetMesh()->GetAnimInstance();
+	if (AnimInstance)
+	{
+		//AnimInstance->StopAllMontages(1.0f);
+		int RandomNumber = FMath::RandRange(0, 2);
+		if (RandomNumber == 0 && AnimMontageToPlay_1)
+		{
+			AnimInstance->Montage_Play(AnimMontageToPlay_1);
+		}
+		else if (RandomNumber == 1 && AnimMontageToPlay_2)
+		{
+			AnimInstance->Montage_Play(AnimMontageToPlay_2);
+		}
+		else if (RandomNumber == 2 && AnimMontageToPlay_3)
+		{
+			AnimInstance->Montage_Play(AnimMontageToPlay_3);
 		}
 	}
 }

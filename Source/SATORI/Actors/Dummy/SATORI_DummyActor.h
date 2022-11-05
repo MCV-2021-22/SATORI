@@ -10,6 +10,7 @@
 
 class USkeletalMeshComponent;
 class UCapsuleComponent;
+class UAnimMontage;
 
 UCLASS()
 class SATORI_API ASATORI_DummyActor : public ACharacter
@@ -45,8 +46,19 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	class UAnimationAsset* AnimToPlay_3;
 
+	// Animation Montage
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Montage")
+	UAnimMontage* AnimMontageToPlay_1;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Montage")
+	UAnimMontage* AnimMontageToPlay_2;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Montage")
+	UAnimMontage* AnimMontageToPlay_3;
+
 	UFUNCTION(BlueprintCallable)
 	void PlayAnimationWithDamage();
+
+	UFUNCTION(BlueprintCallable)
+	void PlayDamagedAnimation();
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
