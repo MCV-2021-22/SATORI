@@ -139,6 +139,7 @@ void USATORI_PunchRaf::OnCancelled(FGameplayTag EventTag, FGameplayEventData Eve
 		Fujin->CollisionR->SetGenerateOverlapEvents(false);
 		Fujin->CollisionL->SetGenerateOverlapEvents(false);
 		Fujin->GetMesh()->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+		Fujin->ActivarInputPlayer();
 		//Fujin->GetMesh()->SetCollisionResponseToChannel(ECC_Pawn, ECR_Block);
 		//Fujin->CollisionR->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 		//Fujin->CollisionL->SetCollisionEnabled(ECollisionEnabled::NoCollision);
@@ -155,6 +156,7 @@ void USATORI_PunchRaf::OnCompleted(FGameplayTag EventTag, FGameplayEventData Eve
 		Fujin->CollisionR->SetGenerateOverlapEvents(false);
 		Fujin->CollisionL->SetGenerateOverlapEvents(false);
 		Fujin->GetMesh()->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+		Fujin->ActivarInputPlayer();
 		//Fujin->GetMesh()->SetCollisionResponseToChannel(ECC_Pawn, ECR_Block);
 		//Fujin->CollisionR->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 		//Fujin->CollisionL->SetCollisionEnabled(ECollisionEnabled::NoCollision);
