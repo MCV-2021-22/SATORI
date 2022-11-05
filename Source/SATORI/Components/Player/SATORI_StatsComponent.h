@@ -15,6 +15,8 @@ class UUserWidget;
 class ASATORI_PlayerController;
 class USATORI_GameInstance;
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FSATORIPlayerIsDead, bool, isDead);
+
 /*
 * Class represent All Player Stats, we can use for UI 
 * To listen for when an Attribute changes to update the UI or other gameplay, 
@@ -32,6 +34,10 @@ public:
 	// Initialize all Health attributes for local values
 	virtual void InitializeStatsAttributes(ASATORI_PlayerState* PlayerState);
 	virtual void InitializeStatsAttributesByInstance(ASATORI_PlayerState* PlayerState, USATORI_GameInstance* GameInstance);
+
+	// For crash when enemy disolver and player death at same time when return to lobby
+	FSATORIPlayerIsDead FOnPlayerDeathBroadCast;
+	void OnPlayerDeathBroadCastForDissolver();
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;

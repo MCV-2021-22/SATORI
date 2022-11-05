@@ -24,10 +24,10 @@ class ASATORI_RaijinRayoMovil : public AActor
 public:
 	ASATORI_RaijinRayoMovil();
 
-	UPROPERTY(EditDefaultsOnly)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		USphereComponent* SphereComponent = nullptr;
 
-	UPROPERTY(EditDefaultsOnly)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		UCapsuleComponent* CapsuleComponentFinal = nullptr;
 
 	UPROPERTY(EditDefaultsOnly)
@@ -37,7 +37,7 @@ public:
 		UNiagaraComponent* ParticleEffect = nullptr;
 
 	
-	UPROPERTY(EditDefaultsOnly)
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
 	UCapsuleComponent* CapsuleComponent = nullptr;
 
 	UPROPERTY(EditDefaultsOnly)
@@ -100,6 +100,9 @@ public:
 	
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Meta = (ExposeOnSpawn = true), Category = "Missile")
 		TSubclassOf<UGameplayEffect> DamageGameplayEffect;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "GameplayEffect")
+		TSubclassOf<UGameplayEffect> HitGameplayEffect;
 
 	bool getDestruido();
 

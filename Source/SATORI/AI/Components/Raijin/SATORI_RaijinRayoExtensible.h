@@ -22,7 +22,7 @@ class ASATORI_RaijinRayoExtensible : public AActor
 public:
 	ASATORI_RaijinRayoExtensible();
 
-	UPROPERTY(EditDefaultsOnly)
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
 		USphereComponent* SphereComponent = nullptr;
 
 
@@ -67,6 +67,10 @@ public:
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Meta = (ExposeOnSpawn = true), Category = "Missile")
 		TSubclassOf<UGameplayEffect> DamageGameplayEffect;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "GameplayEffect")
+		TSubclassOf<UGameplayEffect> HitGameplayEffect;
+
 
 	bool destruible = false;
 

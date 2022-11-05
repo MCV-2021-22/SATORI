@@ -180,7 +180,7 @@ void ASATORICharacter::PossessedBy(AController* NewController)
 		else
 		{
 			StatsComponent->InitializeStatsAttributesByInstance(PS, GameInstanceRef);
-			//SATORIAbilityMaskComponent->GrantedMaskEffects(GameInstanceRef->MaskType);
+			SATORIAbilityMaskComponent->GrantedMaskEffects(GameInstanceRef->MaskType);
 			PlayerGameplayAbilityComponent->SetSavedAbilitiesWithGameInstance(GameInstanceRef);
 			IsAbilityUpgrated = GameInstanceRef->isAbilityUpgrated;
 
@@ -583,6 +583,8 @@ bool ASATORICharacter::PlayerCancelAbilityWithTag(FGameplayTagContainer& Gamepla
 
 void ASATORICharacter::CharacterDeath()
 {
+	InitializeAnimIntance();
+
 	if (!GetComboSystemComponent()->isInBossFight)
 	{
 		ResetCharacterDatas();
@@ -599,9 +601,32 @@ void ASATORICharacter::CharacterDeath()
 		AbilitySystemComponent->CancelAllAbilities();
 	}
 
+	UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
+	if (!AnimInstance)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("TriggerJumpSection failed: no anim instance!"));
+	}
+
+	UAnimMontage* CurrentActiveMontage = AnimInstance->GetCurrentActiveMontage();
+	if (CurrentActiveMontage)
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 200, FColor::Green,
+			FString::Printf(TEXT("Anim Montage Name : %s + Hi"), *CurrentActiveMontage->GetName()));
+	}
+
+	FGameplayTagContainer TagContainer;
+	TagContainer.AddTag(FGameplayTag::RequestGameplayTag("Ability.Dead"));
+	if (AbilitySystemComponent.IsValid())
+	{
+		this->AbilitySystemComponent->TryActivateAbilitiesByTag(TagContainer);
+	}
+
 	// Playe Death montage
 	if (DeathMontage)
 	{
+		// Play montages
+		this->PlayAnimMontage(DeathMontage);
+		//this->GetMesh()->PlayAnimation();
 		ASATORI_PlayerController* SatoriController = Cast<ASATORI_PlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
 		if (SatoriController)
 		{
@@ -610,9 +635,6 @@ void ASATORICharacter::CharacterDeath()
 			SatoriController->SetShowMouseCursor(true);
 			ShowDeathWidget();
 		}
-
-		// Play montages
-		PlayAnimMontage(DeathMontage);
 	}
 }
 
@@ -682,13 +704,17 @@ void ASATORICharacter::OnWeaponOverlapBegin(UPrimitiveComponent* OverlappedComp,
 			{
 				AttackingCollision->SetGenerateOverlapEvents(false);
 			}
+
 			// Adding Knock Back to enemy
 			this->ComboSystemComponent->ApplyKnockBackTagToEnemy(EnemyCharacter);
+
+			// Boss UI Notification changes
 			if (EnemyCharacter->GetEnemyType() == SATORIEnemyType::Boss)
 			{
-				//this->ComboSystemComponent->BossHealthNotifyAbilityChanged();
+				this->ComboSystemComponent->BossHealthNotifyAbilityChanged();
 			}				
 
+			// Enemy change the color when is been hitted
 			EnemyCharacter->SetDamagedColor();
 
 			// Send current damage type recived (light attack o heavy attack)

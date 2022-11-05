@@ -122,7 +122,11 @@ void ASATORI_RaijinRayoMovil::Tick(float DeltaTime)
 	if(my_decal)
 	{
 		my_decal->SetActorLocation(NewPos);
-		ParticleEffect->SetRelativeLocation(NewPos);
+		if(ParticleEffect->IsActive())
+		{
+			ParticleEffect->SetRelativeLocation(NewPos);
+		}
+		
 	}
 	
 
@@ -136,6 +140,7 @@ void ASATORI_RaijinRayoMovil::Tick(float DeltaTime)
 		{
 
 			float dmg_done = USATORI_BlueprintLibrary::ApplyGameplayEffectDamage(Player, Damage, Player, DamageGameplayEffect);
+			USATORI_BlueprintLibrary::ApplyGameplayEffect(Player, HitGameplayEffect);
 
 
 		}
@@ -203,7 +208,12 @@ void ASATORI_RaijinRayoMovil::OnComponentBeginOverlap(
 		//float dmg_done = USATORI_BlueprintLibrary::ApplyGameplayEffectDamage(Player, Damage, Player, DamageGameplayEffect);
 
 		my_decal->Destroy();
-		ParticleEffect->DestroyComponent();
+
+		if (ParticleEffect->IsActive())
+		{
+			ParticleEffect->DestroyComponent();
+		}
+		
 
 		destruido = true;
 		//Destroy();
@@ -247,7 +257,11 @@ void ASATORI_RaijinRayoMovil::OnComponentBeginOverlapFinal(
 		//float dmg_done = USATORI_BlueprintLibrary::ApplyGameplayEffectDamage(Player, Damage, Player, DamageGameplayEffect);
 
 		my_decal->Destroy();
-		ParticleEffect->DestroyComponent();
+		if (ParticleEffect->IsActive())
+		{
+			ParticleEffect->DestroyComponent();
+		}
+
 
 		destruido = true;
 		//Destroy();
@@ -265,7 +279,12 @@ void ASATORI_RaijinRayoMovil::OnComponentBeginOverlapFinal(
 void ASATORI_RaijinRayoMovil::destroyDecal()
 {
 	my_decal->Destroy();
-	ParticleEffect->DestroyComponent();
+
+	if (ParticleEffect->IsActive())
+	{
+		ParticleEffect->DestroyComponent();
+	}
+
 }
 
 

@@ -29,6 +29,7 @@
 #include "AI/Character/Raijin/SATORI_Raijin.h"
 #include "Materials/MaterialInstanceDynamic.h"
 #include "Actors/Coin/SATORI_CoinRewardActor.h"
+#include "Components/Player/SATORI_StatsComponent.h"
 
 ASATORI_AICharacter::ASATORI_AICharacter()
 {
@@ -170,6 +171,16 @@ void ASATORI_AICharacter::PossessedBy(AController* NewController)
 		InitializeAttributes();
 		AddAICharacterAbilities();
 		SetHealth(GetMaxHealth());
+
+		ASATORICharacter* Character = Cast<ASATORICharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
+		if (Character)
+		{
+			USATORI_StatsComponent* StatComponent = Character->GetStatsComponent();
+			if (StatComponent)
+			{
+				StatComponent->FOnPlayerDeathBroadCast.AddDynamic(this, &ASATORI_AICharacter::CheckPlayerIsDeathState);
+			}
+		}
 	}
 }
 
@@ -563,10 +574,20 @@ void ASATORI_AICharacter::EnemyDissolveAfterDeath(float Timer)
 					TimeCountDown -= LocalRate;
 					if (TimeCountDown <= 0)
 					{
+						if (CheckPlayerDeath)
+						{
+							this->Destroy();
+							break;
+						}
 						DynamicMaterials[i]->SetScalarParameterValue(FName(TEXT("Appearance")), -0.1f);
 						GetWorld()->GetTimerManager().ClearTimer(MaterialWaitHandle);
 					}
 				}
 			}, LocalRate, true, 0.0f);
 	}
+}
+
+void ASATORI_AICharacter::CheckPlayerIsDeathState(bool isDeath)
+{
+	CheckPlayerDeath = isDeath;
 }

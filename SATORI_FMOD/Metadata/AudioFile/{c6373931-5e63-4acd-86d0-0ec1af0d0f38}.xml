@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <objects serializationModel="Studio.02.02.00">
-	<object class="AudioFile" id="{9de2f73a-c59a-4261-a4b7-cf0f6940c553}">
+	<object class="AudioFile" id="{c6373931-5e63-4acd-86d0-0ec1af0d0f38}">
 		<property name="assetPath">
 			<value>Character/Raijin/SFX_RAIJIN_attack_04.mp3</value>
 		</property>
@@ -11,7 +11,7 @@
 			<value>2</value>
 		</property>
 		<property name="length">
-			<value>3.7440000000000002</value>
+			<value>2.8559999999999999</value>
 		</property>
 		<relationship name="masterAssetFolder">
 			<destination>{269b0b2d-b44d-4e19-a3ee-86e302406a27}</destination>

@@ -201,7 +201,11 @@ void ASATORI_FujinKickAereo::OnComponentBeginOverlap(
 		int a = 1;
 		//Fujin->GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_Player, ECR_Overlap);
 		//Fujin->GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_Pawn, ECR_Ignore);
-		Player->GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_Pawn, ECR_Overlap);
+		if(Player)
+		{
+			Player->GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_Pawn, ECR_Overlap);
+		}
+		
 
 
 		/*Fujin_inside = true;

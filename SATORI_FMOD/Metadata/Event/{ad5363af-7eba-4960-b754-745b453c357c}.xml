@@ -2,7 +2,7 @@
 <objects serializationModel="Studio.02.02.00">
 	<object class="Event" id="{ad5363af-7eba-4960-b754-745b453c357c}">
 		<property name="name">
-			<value>RaijinAttack12</value>
+			<value>RaijinAttack1</value>
 		</property>
 		<property name="outputFormat">
 			<value>2</value>
@@ -60,7 +60,7 @@
 	<object class="MarkerTrack" id="{f959bebd-c902-4c04-be8c-ce2b4758d635}" />
 	<object class="GroupTrack" id="{7a548e16-57ce-409b-917c-2ea7bddde807}">
 		<relationship name="modules">
-			<destination>{58ac35fe-82d2-4dcf-b7a6-7a8b05b42e68}</destination>
+			<destination>{5d6b92a3-d835-4895-b22c-a6df06ffdbd3}</destination>
 		</relationship>
 		<relationship name="mixerGroup">
 			<destination>{9964142f-3002-4e31-89c7-c8f278842745}</destination>
@@ -68,7 +68,7 @@
 	</object>
 	<object class="Timeline" id="{a5bd10a6-b498-4f63-9baf-dbe0086d45bc}">
 		<relationship name="modules">
-			<destination>{58ac35fe-82d2-4dcf-b7a6-7a8b05b42e68}</destination>
+			<destination>{5d6b92a3-d835-4895-b22c-a6df06ffdbd3}</destination>
 		</relationship>
 	</object>
 	<object class="EventMixerMaster" id="{a9752488-f833-40a4-80f1-82f0eecb9642}">
@@ -88,17 +88,17 @@
 		</relationship>
 	</object>
 	<object class="MixerBusPanner" id="{06e78d43-63c5-4782-9a0d-5af338fd308b}" />
-	<object class="SingleSound" id="{58ac35fe-82d2-4dcf-b7a6-7a8b05b42e68}">
+	<object class="SingleSound" id="{5d6b92a3-d835-4895-b22c-a6df06ffdbd3}">
 		<property name="length">
-			<value>7.056</value>
+			<value>4.4400000000000004</value>
 		</property>
 		<relationship name="audioFile">
-			<destination>{d7f96080-749b-4383-8641-9203d3bae18c}</destination>
+			<destination>{883003c0-1e92-4455-be74-635364af812b}</destination>
 		</relationship>
 	</object>
 	<object class="EventMixerGroup" id="{9964142f-3002-4e31-89c7-c8f278842745}">
 		<property name="volume">
-			<value>-16.5</value>
+			<value>-20</value>
 		</property>
 		<property name="name">
 			<value>Audio 1</value>

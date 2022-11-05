@@ -77,6 +77,7 @@ public:
 	bool isLightAttack = true;
 	bool isHeavyAttack = true;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	bool isInBossFight = false;
 
 	bool isAbilityCanceled = false;
