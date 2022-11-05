@@ -12,6 +12,7 @@
 #include "Character/SATORI_PlayerController.h"
 #include "Blueprint/UserWidget.h"
 #include "GameplayFramework/SATORI_GameInstance.h"
+#include "SATORIGameMode.h"
 
 // Sets default values for this component's properties
 USATORI_StatsComponent::USATORI_StatsComponent()
@@ -134,6 +135,9 @@ void USATORI_StatsComponent::HealthChanged(const FOnAttributeChangeData& Data)
 
 	if (Health <= 0)
 	{
+		// Stop All AI Logic
+		GetWorld()->GetAuthGameMode<ASATORIGameMode>()->StopAll_AI_Logic();
+
 		ASATORICharacter* SatoriCharacter = Cast<ASATORICharacter>(GetOwner());
 		if (SatoriCharacter)
 		{
