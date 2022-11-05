@@ -159,15 +159,6 @@ void ASATORI_Fujin::SetArrayProbs(int Combo, TArray<float> newArray)
 
 }
 
-void ASATORI_Fujin::Tick(float DeltaTime)
-{
-
-
-	Super::Tick(DeltaTime);
-	
-	
-
-}
 
 float ASATORI_Fujin::getDistAttack()
 {
@@ -182,7 +173,51 @@ float ASATORI_Fujin::getCloseDist()
 }
 
 
+void ASATORI_Fujin::ActivarInputPlayer()
+{
+	if(Player)
+	{
+		if (Player->IsRootComponentMovable())
+		{
+			APlayerController* PlayerController = GetWorld()->GetFirstPlayerController();
+			Player->EnableInput(PlayerController);
+			
 
+			if (Player->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag("State.Charmed")))
+			{
+				Player->RemoveGameplayTag(FGameplayTag::RequestGameplayTag("State.Charmed"));
+			}
+		}
+		
+	}
+}
+
+
+void ASATORI_Fujin::Tick(float DeltaTime)
+{
+
+
+	Super::Tick(DeltaTime);
+	/*if (Player)
+	{
+		if (player_inside_l)
+		{
+			if (hit_heavy_l)
+			{
+				float dmg_done = USATORI_BlueprintLibrary::ApplyGameplayEffectDamage(Player, dmg_left_huge, Player, DamageGameplayEffect);
+				USATORI_BlueprintLibrary::ApplyGameplayEffect(Player, HitGameplayEffect1);
+			}
+			else if (hit_l)
+			{
+				float dmg_done = USATORI_BlueprintLibrary::ApplyGameplayEffectDamage(Player, dmg_left_low, Player1, DamageGameplayEffect);
+				USATORI_BlueprintLibrary::ApplyGameplayEffect(Player, HitHeavyGameplayEffect1);
+			}
+		}
+	}*/
+	
+
+
+}
 
 void ASATORI_Fujin::OnOverlapLeft(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
@@ -191,15 +226,33 @@ void ASATORI_Fujin::OnOverlapLeft(UPrimitiveComponent* OverlappedComp, AActor* O
 
 	if (Player1)
 	{
+		Player = Player1;
+		{
+			player_inside_l = true;
+			if (Player->IsRootComponentMovable())
+			{
+				APlayerController* PlayerController = GetWorld()->GetFirstPlayerController();
+				Player->DisableInput(PlayerController);
+				if(!Player->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag("State.Charmed")))
+				{
+					Player->AddGameplayTag(FGameplayTag::RequestGameplayTag("State.Charmed"));
+				}
+				
+			}
+		}
+
 		if (golpe_fuerte)
 		{
 			float dmg_done = USATORI_BlueprintLibrary::ApplyGameplayEffectDamage(Player1, dmg_left_huge, Player1, DamageGameplayEffect);
+			USATORI_BlueprintLibrary::ApplyGameplayEffect(Player1, HitGameplayEffect1);
 		}
 		else
 		{
 			float dmg_done = USATORI_BlueprintLibrary::ApplyGameplayEffectDamage(Player1, dmg_left_low, Player1, DamageGameplayEffect);
+			USATORI_BlueprintLibrary::ApplyGameplayEffect(Player1, HitHeavyGameplayEffect1);
 		}
-		CollisionL->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+		CollisionL->SetGenerateOverlapEvents(false);
+		//CollisionL->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 		
 
 	}
@@ -214,16 +267,34 @@ void ASATORI_Fujin::OnOverlapRight(UPrimitiveComponent* OverlappedComp, AActor* 
 
 	if (Player1)
 	{
+ 		player_inside_r = true;
+		Player = Player1;
+		if(Player)
+		{
+			if (Player->IsRootComponentMovable())
+			{
+				APlayerController* PlayerController = GetWorld()->GetFirstPlayerController();
+				Player->DisableInput(PlayerController);
+				if (!Player->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag("State.Charmed")))
+				{
+					Player->AddGameplayTag(FGameplayTag::RequestGameplayTag("State.Charmed"));
+				}
+			}
+		}
+		
 		if(golpe_fuerte)
 		{
 			float dmg_done = USATORI_BlueprintLibrary::ApplyGameplayEffectDamage(Player1, dmg_right_huge, Player1, DamageGameplayEffect);
+			USATORI_BlueprintLibrary::ApplyGameplayEffect(Player1, HitGameplayEffect1);
 		}
 		else
 		{
-			float dmg_done = USATORI_BlueprintLibrary::ApplyGameplayEffectDamage(Player1, dmg_right_low, Player1, DamageGameplayEffect);
+			float dmg_done = USATORI_BlueprintLibrary::ApplyGameplayEffectDamage(Player1, dmg_right_low*3, Player1, DamageGameplayEffect);
+			USATORI_BlueprintLibrary::ApplyGameplayEffect(Player1, HitHeavyGameplayEffect1);
 		}
+		CollisionR->SetGenerateOverlapEvents(false);
 		
-		CollisionR->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+		//CollisionR->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 
 
 	}
@@ -238,7 +309,12 @@ void ASATORI_Fujin::OnEndOverlapLeft(
 )
 {
 	ASATORI_Fujin* Character = Cast<ASATORI_Fujin>(OtherActor);
-
+	ASATORICharacter* Player1 = Cast<ASATORICharacter>(OtherActor);
+	if(Player1)
+	{
+		player_inside_l = false;
+		
+	}
 	/*if (!Character)
 	{
 		canMove = true;
@@ -256,6 +332,12 @@ void ASATORI_Fujin::OnEndOverlapRight(
 )
 {
 	ASATORI_Fujin* Character = Cast<ASATORI_Fujin>(OtherActor);
+	ASATORICharacter* Player1 = Cast<ASATORICharacter>(OtherActor);
+	if (Player1)
+	{
+		player_inside_r = false;
+
+	}
 
 	/*if (!Character)
 	{

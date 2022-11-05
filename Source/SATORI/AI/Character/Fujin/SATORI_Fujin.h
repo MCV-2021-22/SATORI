@@ -67,6 +67,17 @@ public:
 
 	void setGolpeFuerte(bool golpe);
 
+	void ActivarInputPlayer();
+
+	bool hit_r = false;
+	bool hit_l = false;
+
+	bool hit_heavy_r = false;
+	bool hit_heavy_l = false;
+
+	bool player_inside_l = false;
+
+	bool player_inside_r = false;
 
 	FVector posinicial;
 
@@ -83,6 +94,12 @@ public:
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Meta = (ExposeOnSpawn = true), Category = "Missile")
 		TSubclassOf<UGameplayEffect> DamageGameplayEffect;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "GameplayEffect")
+		TSubclassOf<UGameplayEffect> HitGameplayEffect1;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "GameplayEffect")
+		TSubclassOf<UGameplayEffect> HitHeavyGameplayEffect1;
 
 
 	UFUNCTION()
@@ -157,7 +174,7 @@ protected:
 
 	bool golpe_fuerte = false;
 
-	
+	ASATORICharacter* Player = nullptr;
 
 	TArray< float > Prob_C1;
 	TArray< float > Prob_C2;

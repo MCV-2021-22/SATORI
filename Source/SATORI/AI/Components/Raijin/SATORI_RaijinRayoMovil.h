@@ -119,7 +119,7 @@ protected:
 
 	float inmunity = 1.f;
 
-	float LifeTime = 8.f;
+	float LifeTime = 4.f;
 
 	ADecalActor* my_decal = nullptr;
 
