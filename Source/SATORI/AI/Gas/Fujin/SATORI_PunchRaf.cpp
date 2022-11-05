@@ -29,6 +29,15 @@ void USATORI_PunchRaf::ActivateAbility(const FGameplayAbilitySpecHandle Handle, 
 	Task->EventReceived.AddDynamic(this, &USATORI_PunchRaf::EventReceived);
 	Task->ReadyForActivation();
 
+	ASATORI_Fujin* Fujin = Cast<ASATORI_Fujin>(GetAvatarActorFromActorInfo());
+
+	if (Fujin)
+	{
+		
+		//Fujin->GetMesh()->SetCollisionResponseToChannel(ECC_Pawn, ECR_Overlap);
+		Fujin->GetMesh()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	}
+
 
 }
 
@@ -40,7 +49,8 @@ void USATORI_PunchRaf::EventReceived(FGameplayTag EventTag, FGameplayEventData E
 
 		if (Fujin)
 		{
-			Fujin->CollisionR->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+			Fujin->CollisionR->SetGenerateOverlapEvents(true);
+			//Fujin->CollisionR->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
 		}
 		
 
@@ -51,7 +61,8 @@ void USATORI_PunchRaf::EventReceived(FGameplayTag EventTag, FGameplayEventData E
 
 		if (Fujin)
 		{
-			Fujin->CollisionR->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+			Fujin->CollisionR->SetGenerateOverlapEvents(false);
+			//Fujin->CollisionR->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 		}
 	}
 	else if (EventTag == TagPunchLeft)
@@ -60,7 +71,8 @@ void USATORI_PunchRaf::EventReceived(FGameplayTag EventTag, FGameplayEventData E
 
 		if (Fujin)
 		{
-			Fujin->CollisionL->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+			Fujin->CollisionL->SetGenerateOverlapEvents(true);
+			//Fujin->CollisionL->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
 		}
 	}
 	else if (EventTag == TagPunchLeftEnd)
@@ -69,7 +81,8 @@ void USATORI_PunchRaf::EventReceived(FGameplayTag EventTag, FGameplayEventData E
 
 		if (Fujin)
 		{
-			Fujin->CollisionL->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+			Fujin->CollisionL->SetGenerateOverlapEvents(false);
+			//Fujin->CollisionL->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 		}
 	}
 	else if (EventTag == TagPunchHeavy)
@@ -79,7 +92,8 @@ void USATORI_PunchRaf::EventReceived(FGameplayTag EventTag, FGameplayEventData E
 		if (Fujin)
 		{
 			Fujin->setGolpeFuerte(true);
-			Fujin->CollisionR->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+			Fujin->CollisionR->SetGenerateOverlapEvents(true);
+			//Fujin->CollisionR->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
 		}
 	}
 	else if (EventTag == TagPunchHeavyEnd)
@@ -89,7 +103,8 @@ void USATORI_PunchRaf::EventReceived(FGameplayTag EventTag, FGameplayEventData E
 		if (Fujin)
 		{
 			Fujin->setGolpeFuerte(false);
-			Fujin->CollisionR->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+			Fujin->CollisionR->SetGenerateOverlapEvents(false);
+			//Fujin->CollisionR->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 		}
 	}
 	else if (EventTag == TagPunchHeavyL)
@@ -99,7 +114,8 @@ void USATORI_PunchRaf::EventReceived(FGameplayTag EventTag, FGameplayEventData E
 		if (Fujin)
 		{
 			Fujin->setGolpeFuerte(true);
-			Fujin->CollisionL->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+			Fujin->CollisionL->SetGenerateOverlapEvents(true);
+			//Fujin->CollisionL->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
 		}
 	}
 	else if (EventTag == TagPunchHeavyLEnd)
@@ -109,7 +125,8 @@ void USATORI_PunchRaf::EventReceived(FGameplayTag EventTag, FGameplayEventData E
 		if (Fujin)
 		{
 			Fujin->setGolpeFuerte(false);
-			Fujin->CollisionL->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+			Fujin->CollisionL->SetGenerateOverlapEvents(false);
+			//Fujin->CollisionL->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 		}
 	}
 }
@@ -119,8 +136,12 @@ void USATORI_PunchRaf::OnCancelled(FGameplayTag EventTag, FGameplayEventData Eve
 	ASATORI_Fujin* Fujin = Cast<ASATORI_Fujin>(GetAvatarActorFromActorInfo());
 	if (Fujin)
 	{
-		Fujin->CollisionR->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-		Fujin->CollisionL->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+		Fujin->CollisionR->SetGenerateOverlapEvents(false);
+		Fujin->CollisionL->SetGenerateOverlapEvents(false);
+		Fujin->GetMesh()->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+		//Fujin->GetMesh()->SetCollisionResponseToChannel(ECC_Pawn, ECR_Block);
+		//Fujin->CollisionR->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+		//Fujin->CollisionL->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	}
 	EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true);
 }
@@ -131,8 +152,12 @@ void USATORI_PunchRaf::OnCompleted(FGameplayTag EventTag, FGameplayEventData Eve
 	ASATORI_Fujin* Fujin = Cast<ASATORI_Fujin>(GetAvatarActorFromActorInfo());
 	if (Fujin)
 	{
-		Fujin->CollisionR->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-		Fujin->CollisionL->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+		Fujin->CollisionR->SetGenerateOverlapEvents(false);
+		Fujin->CollisionL->SetGenerateOverlapEvents(false);
+		Fujin->GetMesh()->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+		//Fujin->GetMesh()->SetCollisionResponseToChannel(ECC_Pawn, ECR_Block);
+		//Fujin->CollisionR->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+		//Fujin->CollisionL->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	}
 	EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true);
 }

@@ -39,7 +39,7 @@ ASATORI_Fujin::ASATORI_Fujin()
 		// Sphere Collision
 		CollisionL->SetCapsuleSize(30.f, 50.f, true);
 		//CollisionL->SetCollisionProfileName("Pawn");
-		CollisionL->SetGenerateOverlapEvents(true);
+		CollisionL->SetGenerateOverlapEvents(false);
 		CollisionL->OnComponentBeginOverlap.AddUniqueDynamic(this, &ASATORI_Fujin::OnOverlapLeft);
 		CollisionL->OnComponentEndOverlap.AddUniqueDynamic(this, &ASATORI_Fujin::OnEndOverlapLeft);
 		CollisionL->AttachTo(Left);
@@ -54,7 +54,7 @@ ASATORI_Fujin::ASATORI_Fujin()
 		// Sphere Collision
 		CollisionR->SetCapsuleSize(30.f, 50.f, true);
 		//CollisionR->SetCollisionProfileName("Pawn");
-		CollisionR->SetGenerateOverlapEvents(true);
+		CollisionR->SetGenerateOverlapEvents(false);
 		CollisionR->OnComponentBeginOverlap.AddUniqueDynamic(this, &ASATORI_Fujin::OnOverlapRight);
 		CollisionR->OnComponentEndOverlap.AddUniqueDynamic(this, &ASATORI_Fujin::OnEndOverlapRight);
 		CollisionR->AttachTo(Right);
@@ -96,8 +96,8 @@ void ASATORI_Fujin::BeginPlay()
 		Nube1->AttachToComponent(GetMesh(), AttachmentRules, "BckNubeFujin");
 	}*/
 
-	CollisionL->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-	CollisionR->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	//CollisionL->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	//CollisionR->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 
 	//init de las prob
 	for(int i=0;i<3;i++)
