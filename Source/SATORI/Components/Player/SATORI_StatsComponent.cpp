@@ -134,8 +134,6 @@ void USATORI_StatsComponent::HealthChanged(const FOnAttributeChangeData& Data)
 
 	if (Health <= 0)
 	{
-		GEngine->AddOnScreenDebugMessage(-1, 200, FColor::Green,
-			FString::Printf(TEXT("Health Value : %d"), Health));
 		ASATORICharacter* SatoriCharacter = Cast<ASATORICharacter>(GetOwner());
 		if (SatoriCharacter)
 		{
