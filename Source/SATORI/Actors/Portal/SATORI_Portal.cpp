@@ -142,7 +142,7 @@ void ASATORI_Portal::SetCurrentGameplayAbilityData(FSATORI_PortalAbilitiesDatasR
 
 void ASATORI_Portal::ActivatePortal()
 {
-	Active = true;
+	IsPortalActive = true;
 	//UE_LOG(LogTemp, Display, TEXT("[%s] ASATORI_Portal: Portal is Active ... "), *GetName());
 	
 	SphereComponent->SetCollisionProfileName(FName("IgnoreAllOverlapOnlyPlayer"));
@@ -219,7 +219,7 @@ void ASATORI_Portal::ChangeLevel(ASATORICharacter* Character)
 void ASATORI_Portal::Interact(AActor* ActorInteracting)
 {
 	FVector Delta = ActorInteracting->GetActorLocation() - GetActorLocation();
-	UE_LOG(LogTemp, Display, TEXT("Interact With Door"));
+	//UE_LOG(LogTemp, Display, TEXT("Interact With Door"));
 
 	// Todo : Interact with the player
 	ASATORICharacter* Character = Cast<ASATORICharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
@@ -229,7 +229,7 @@ void ASATORI_Portal::Interact(AActor* ActorInteracting)
 		return;
 	}
 
-	if (Character)
+	if (Character && IsPortalActive)
 	{
 		if (CurrentGameplayEffect.Get())
 		{
@@ -247,12 +247,14 @@ void ASATORI_Portal::Interact(AActor* ActorInteracting)
 
 void ASATORI_Portal::StartCanInteract(AActor* ActorInteracting)
 {
-	WidgetComponent->SetVisibility(true, true);
+	if(IsPortalActive)
+		WidgetComponent->SetVisibility(true, true);
 }
 
 void ASATORI_Portal::StopCanInteract(AActor* ActorInteracting)
 {
-	WidgetComponent->SetVisibility(false, true);
+	if (IsPortalActive)
+		WidgetComponent->SetVisibility(false, true);
 }
 
 void ASATORI_Portal::SetCurrentId(int Id)

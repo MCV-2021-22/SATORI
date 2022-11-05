@@ -144,7 +144,7 @@ private:
 
 	TSubclassOf<USATORI_GameplayAbility> CurrentAbility;
 
-	bool Active = false;
+	bool IsPortalActive = false;
 
 	int CurrentId = 0;
 
