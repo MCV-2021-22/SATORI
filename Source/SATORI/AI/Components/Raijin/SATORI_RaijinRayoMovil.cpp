@@ -122,9 +122,12 @@ void ASATORI_RaijinRayoMovil::Tick(float DeltaTime)
 	if(my_decal)
 	{
 		my_decal->SetActorLocation(NewPos);
-		if(ParticleEffect->IsActive())
+		if(ParticleEffect)
 		{
-			ParticleEffect->SetRelativeLocation(NewPos);
+			if(ParticleEffect->IsActive())
+			{
+				ParticleEffect->SetRelativeLocation(NewPos);
+			}
 		}
 		
 	}
