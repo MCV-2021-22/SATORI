@@ -697,6 +697,7 @@ void ASATORICharacter::OnWeaponOverlapBegin(UPrimitiveComponent* OverlappedComp,
 			UAbilitySystemComponent* EnemyAbilitySystem = EnemyCharacter->GetAbilitySystemComponent();
 			float Damage_Values = USATORI_BlueprintLibrary::ApplyGameplayEffectDamage(EnemyCharacter, WeaponDamage, this, DamageEffect);
 			USATORI_BlueprintLibrary::ApplyGameplayEffect(EnemyCharacter, StunGameplayEffect);
+			UFMODBlueprintStatics::PlayEvent2D(GetWorld(), HitPlayer, true);
 			if (!EnemyCharacter->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag("Boss.Inmune"))) {
 				AbilitySystemComponent->ApplyGameplayEffectToSelf(ManaRecoverGameplayEffect, 1.0f, AbilitySystemComponent->MakeEffectContext());
 			}

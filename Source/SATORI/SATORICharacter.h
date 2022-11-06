@@ -9,6 +9,7 @@
 #include "Character/Mask/SATORI_AbilityMask.h"
 #include "Components/Player/SATORI_TargetSystemComponent.h"
 #include "Character/SATORI_CharacterBase.h"
+#include "FMODBlueprintStatics.h"
 #include "SATORICharacter.generated.h"
 
 class USATORI_AbilityDataAsset;
@@ -38,6 +39,9 @@ public:
 
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UFMODEvent* HitPlayer = nullptr;;
 
 	/** Base turn rate, in deg/sec. Other scaling may affect final turn rate. */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)

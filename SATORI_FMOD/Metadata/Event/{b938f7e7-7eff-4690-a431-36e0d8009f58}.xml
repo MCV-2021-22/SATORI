@@ -5,7 +5,7 @@
 			<value>Menu_pause</value>
 		</property>
 		<property name="outputFormat">
-			<value>0</value>
+			<value>1</value>
 		</property>
 		<relationship name="folder">
 			<destination>{c609c4c8-895e-40bc-a918-166906f1b01d}</destination>
@@ -90,7 +90,7 @@
 	<object class="MixerBusPanner" id="{6fa2d99d-1ff3-4931-a5b4-300893feb7b1}" />
 	<object class="SingleSound" id="{7e6b7ece-c65b-418d-9121-a766cd13ca53}">
 		<property name="length">
-			<value>0.35999999999999999</value>
+			<value>1.3583673469387756</value>
 		</property>
 		<relationship name="audioFile">
 			<destination>{117dd5b8-02ed-4698-a3ec-14d6d29cc670}</destination>
