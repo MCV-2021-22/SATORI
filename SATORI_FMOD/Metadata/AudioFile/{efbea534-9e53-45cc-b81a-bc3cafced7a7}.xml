@@ -8,10 +8,10 @@
 			<value>48</value>
 		</property>
 		<property name="channelCount">
-			<value>1</value>
+			<value>2</value>
 		</property>
 		<property name="length">
-			<value>0.76800000000000002</value>
+			<value>9.9600000000000009</value>
 		</property>
 		<relationship name="masterAssetFolder">
 			<destination>{269b0b2d-b44d-4e19-a3ee-86e302406a27}</destination>

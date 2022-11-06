@@ -5,7 +5,7 @@
 			<value>Menu_victory-lobby</value>
 		</property>
 		<property name="outputFormat">
-			<value>0</value>
+			<value>1</value>
 		</property>
 		<relationship name="folder">
 			<destination>{c609c4c8-895e-40bc-a918-166906f1b01d}</destination>
@@ -90,7 +90,7 @@
 	<object class="MixerBusPanner" id="{27953704-756a-4753-976c-5c7169cd04ef}" />
 	<object class="SingleSound" id="{4868bce9-eb31-42e7-b30e-911809271698}">
 		<property name="length">
-			<value>0.76800000000000002</value>
+			<value>9.9600000000000009</value>
 		</property>
 		<relationship name="audioFile">
 			<destination>{efbea534-9e53-45cc-b81a-bc3cafced7a7}</destination>
