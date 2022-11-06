@@ -38,6 +38,7 @@ void USATORI_GameInstance::BeginLoadingScreen(const FString& MapName)
             isPlayingCinematic = false;
             FLoadingScreenAttributes LoadingScreen;
             LoadingScreen.bAutoCompleteWhenLoadingCompletes = true;
+            LoadingScreen.bWaitForManualStop = false;
 
             LoadingWidget = CreateWidget<UUserWidget>(this, WidgetTemplate);
 
