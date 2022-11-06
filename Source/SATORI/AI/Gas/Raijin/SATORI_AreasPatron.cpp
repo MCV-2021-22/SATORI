@@ -45,7 +45,11 @@ void USATORI_AreasPatron::ActivateAbility(const FGameplayAbilitySpecHandle Handl
 		}
 		if (Raijin->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag(("Boss.Fase.Final"))))
 		{
-			Raijin->Fujin->AddGameplayTag(FGameplayTag::RequestGameplayTag("Boss.Raijin.C4"));
+			if (!Raijin->Fujin->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag(("Boss.Raijin.C4"))))
+			{
+				Raijin->Fujin->AddGameplayTag(FGameplayTag::RequestGameplayTag("Boss.Raijin.C4"));
+			}
+			
 		}
 		
 	}
@@ -156,18 +160,26 @@ void USATORI_AreasPatron::EndRayos(const FGameplayAbilitySpecHandle Handle, cons
 		{
 			AActor* Actor = Rayos[j];
 
-			//ASATORI_RaijinRayoMovil* Rayo = Cast<ASATORI_RaijinRayoMovil>(Actor);
-			ASATORI_RaijinRayoMovil* Rayo = Cast<ASATORI_RaijinRayoMovil>(Rayos[j]);
-
-
-			if(Rayo->getDestruido())
+			if(Rayos[j])
 			{
+				//ASATORI_RaijinRayoMovil* Rayo = Cast<ASATORI_RaijinRayoMovil>(Actor);
+				ASATORI_RaijinRayoMovil* Rayo = Cast<ASATORI_RaijinRayoMovil>(Rayos[j]);
 
-				Rayos.Remove(Rayo);
-				Rayo->Destroy();
+				if(Rayo)
+				{
+					if (Rayo->getDestruido())
+					{
+
+						Rayos.Remove(Rayo);
+						Rayo->Destroy();
+
+
+					}
+				}
 				
-
 			}
+
+			
 
 		}
 

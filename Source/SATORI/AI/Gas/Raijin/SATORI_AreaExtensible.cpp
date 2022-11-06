@@ -47,7 +47,11 @@ void USATORI_AreaExtensible::ActivateAbility(const FGameplayAbilitySpecHandle Ha
 
 		if (Raijin->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag(("Boss.Fase.Final"))))
 		{
-			Raijin->Fujin->AddGameplayTag(FGameplayTag::RequestGameplayTag("Boss.Raijin.C3"));
+			if (!Raijin->Fujin->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag(("Boss.Raijin.C3"))))
+			{
+				Raijin->Fujin->AddGameplayTag(FGameplayTag::RequestGameplayTag("Boss.Raijin.C3"));
+			}
+			
 		}
 		
 	}

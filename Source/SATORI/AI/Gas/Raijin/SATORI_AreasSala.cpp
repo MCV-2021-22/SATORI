@@ -43,7 +43,11 @@ void USATORI_AreasSala::ActivateAbility(const FGameplayAbilitySpecHandle Handle,
 		}
 		if (Raijin->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag(("Boss.Fase.Final"))))
 		{
-			Raijin->Fujin->AddGameplayTag(FGameplayTag::RequestGameplayTag("Boss.Raijin.C2"));
+			if (!Raijin->Fujin->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag(("Boss.Raijin.C2"))))
+			{
+				Raijin->Fujin->AddGameplayTag(FGameplayTag::RequestGameplayTag("Boss.Raijin.C2"));
+			}
+			
 		}
 		
 	}
