@@ -47,6 +47,8 @@ void USATORI_TPUp::EventReceived(FGameplayTag EventTag, FGameplayEventData Event
 			}
 		}
 
+		UFMODBlueprintStatics::PlayEventAtLocation(GetWorld(), EventLaugh, GetAvatarActorFromActorInfo()->GetActorTransform(), true);
+
 		TimerDelegate = FTimerDelegate::CreateUObject(this, &USATORI_TPUp::Teleport, CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo);
 		GetWorld()->GetTimerManager().SetTimer(TimerHandle, TimerDelegate, 1.5f, false);
 	}

@@ -8,6 +8,7 @@
 #include "GameplayTagAssetInterface.h"
 #include "GAS/SATORI_GameplayAbility.h"
 #include "SATORI/AbilityTask/SATORI_PlayMontageandWaitNotify.h"
+#include "FMODBlueprintStatics.h"
 #include "SATORI_TPUp.generated.h"
 
 
@@ -32,7 +33,8 @@ public:
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Ability|Tags")
 		FGameplayTag TagEndAbility;
 
-
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "SFX")
+	UFMODEvent* EventLaugh = nullptr;
 
 	FTimerDelegate TimerDelegate;
 

@@ -78,9 +78,9 @@ void ASATORI_RaijinRayoMovil::BeginPlay()
 	Super::BeginPlay();
 	PrimaryActorTick.bCanEverTick = true;
 
-	ADecalActor* decal = GetWorld()->SpawnActor<ADecalActor>(GetActorLocation(), FRotator());
+	//ADecalActor* decal = GetWorld()->SpawnActor<ADecalActor>(GetActorLocation(), FRotator());
 
-	my_decal = decal;
+	//my_decal = decal;
 	/*if (my_decal)
 	{
 		my_decal->SetDecalMaterial(MaterialDecal);
