@@ -114,24 +114,20 @@ void USATORI_AIDeath::EventReceived(FGameplayTag EventTag, FGameplayEventData Ev
 			GetWorld()->GetTimerManager().SetTimer(WaitHandle, FTimerDelegate::CreateLambda([&]()
 				{
 					AActor* Actor1 = GetAvatarActorFromActorInfo();
-					ASATORI_AICharacter* Character1 = Cast<ASATORI_AICharacter>(Actor1);
+					if (Actor1)
+					{
+						ASATORI_AICharacter* Character1 = Cast<ASATORI_AICharacter>(Actor1);
+						if (Character1)
+						{
+							GetWorld()->GetAuthGameMode<ASATORIGameMode>()->RemoveEnemyActor(Actor1);
 
-					if (Character1) {
-						GetWorld()->GetAuthGameMode<ASATORIGameMode>()->RemoveEnemyActor(Actor1);
-						
-						Character1->canDestroy = true;
-						GetWorld()->GetTimerManager().ClearTimer(WaitHandle);
+							Character1->canDestroy = true;
+							GetWorld()->GetTimerManager().ClearTimer(WaitHandle);
+						}
 					}
-
-
 				}), 5.0f, false);
 		}
 		
-
-		
-		
-	
-
 		//Character->canDestroy = true;
 
 		//Character->SpawnCointActorAfterDeath();
