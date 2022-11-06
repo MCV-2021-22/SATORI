@@ -27,11 +27,17 @@ EBTNodeResult::Type UBTTask_ActivateInmuneBosses::ExecuteTask(UBehaviorTreeCompo
 	{
 		if(!activar)
 		{
-			Fujin->AddGameplayTag(FGameplayTag::RequestGameplayTag("Boss.Inmune"));
+			if (!Fujin->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag(("Boss.Inmune"))))
+			{
+				Fujin->AddGameplayTag(FGameplayTag::RequestGameplayTag("Boss.Inmune"));
+			}
 		}
 		else
 		{
-			Fujin->RemoveGameplayTag(FGameplayTag::RequestGameplayTag("Boss.Inmune"));
+			if (Fujin->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag(("Boss.Inmune"))))
+			{
+				Fujin->RemoveGameplayTag(FGameplayTag::RequestGameplayTag("Boss.Inmune"));
+			}
 			if (Fujin->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag("Boss.FaseFinal.Listos")))
 			{
 				Fujin->RemoveGameplayTag(FGameplayTag::RequestGameplayTag("Boss.FaseFinal.Listos"));
@@ -44,11 +50,17 @@ EBTNodeResult::Type UBTTask_ActivateInmuneBosses::ExecuteTask(UBehaviorTreeCompo
 	{
 		if (!activar)
 		{
-			Raijin->AddGameplayTag(FGameplayTag::RequestGameplayTag("Boss.Inmune"));
+			if (!Raijin->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag(("Boss.Inmune"))))
+			{
+				Raijin->AddGameplayTag(FGameplayTag::RequestGameplayTag("Boss.Inmune"));
+			}
 		}
 		else
 		{
-			Raijin->RemoveGameplayTag(FGameplayTag::RequestGameplayTag("Boss.Inmune"));
+			if (Raijin->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag(("Boss.Inmune"))))
+			{
+				Raijin->RemoveGameplayTag(FGameplayTag::RequestGameplayTag("Boss.Inmune"));
+			}
 			if (Raijin->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag("Boss.FaseFinal.Listos")))
 			{
 				Raijin->RemoveGameplayTag(FGameplayTag::RequestGameplayTag("Boss.FaseFinal.Listos"));
