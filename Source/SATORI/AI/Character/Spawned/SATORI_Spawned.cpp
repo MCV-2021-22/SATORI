@@ -42,13 +42,13 @@ void ASATORI_Spawned::SpawnedDie()
 	{
 		MySpawn->AddNumEnemies(-1);
 		GetWorld()->GetAuthGameMode<ASATORIGameMode>()->RemoveEnemyActor(this);
-		//UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), NS_ParticleEffect2);
+		UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), NS_ParticleEffect2, GetActorLocation());
 		this->Destroy();
 	}
 	else
 	{
 		GetWorld()->GetAuthGameMode<ASATORIGameMode>()->RemoveEnemyActor(this);
-		//UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), NS_ParticleEffect2, SpawnLocation);
+		UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), NS_ParticleEffect2, GetActorLocation());
 		this->Destroy();
 	}
 }

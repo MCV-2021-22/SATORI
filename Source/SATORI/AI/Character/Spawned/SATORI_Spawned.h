@@ -32,6 +32,9 @@ public:
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Particle Effect")
 	UNiagaraSystem* NS_ParticleEffect = nullptr;
 
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Particle Effect")
+	UNiagaraSystem* NS_ParticleEffect2 = nullptr;
+
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "SFX")
 	UFMODEvent* SpawnedDeath = nullptr;
 

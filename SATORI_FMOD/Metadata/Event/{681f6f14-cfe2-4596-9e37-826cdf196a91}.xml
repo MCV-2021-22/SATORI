@@ -501,7 +501,7 @@
 			<value>0.97999999999999998</value>
 		</property>
 		<property name="value">
-			<value>-15.5</value>
+			<value>-14.999999</value>
 		</property>
 	</object>
 	<object class="AutomationPoint" id="{834bf52e-0cad-436f-a290-b0d820d28c0c}">
@@ -509,7 +509,7 @@
 			<value>0.97997916666666662</value>
 		</property>
 		<property name="value">
-			<value>-80</value>
+			<value>-76.6666641</value>
 		</property>
 	</object>
 	<object class="AutomationPoint" id="{6dd0ff9c-8244-4b1e-9d03-396ddf0c05f7}">
@@ -517,7 +517,7 @@
 			<value>1.8423853653530378</value>
 		</property>
 		<property name="value">
-			<value>-80</value>
+			<value>-76.6666641</value>
 		</property>
 	</object>
 	<object class="AutomationPoint" id="{4523a62b-87ee-411d-be65-71de9c5406af}">
@@ -525,7 +525,7 @@
 			<value>1.8423645320197044</value>
 		</property>
 		<property name="value">
-			<value>-15.5000019</value>
+			<value>-15.000001</value>
 		</property>
 	</object>
 	<object class="AutomationPoint" id="{53869708-1a0c-4c4f-aeab-544b5ecdfd44}">
@@ -533,7 +533,7 @@
 			<value>1.9187400451559935</value>
 		</property>
 		<property name="value">
-			<value>-6</value>
+			<value>-10</value>
 		</property>
 	</object>
 	<object class="AutomationPoint" id="{428850df-69f7-457f-bd98-a2ffa4839a98}">
@@ -541,7 +541,7 @@
 			<value>1.9187192118226601</value>
 		</property>
 		<property name="value">
-			<value>-56.6666679</value>
+			<value>-80</value>
 		</property>
 	</object>
 	<object class="AutomationPoint" id="{d2494300-939b-4cde-9022-e9d52c97d9cf}">
@@ -549,7 +549,7 @@
 			<value>2.8500000000000001</value>
 		</property>
 		<property name="value">
-			<value>-6</value>
+			<value>-10</value>
 		</property>
 	</object>
 	<object class="AutomationPoint" id="{3a538899-d445-4bcf-ba07-866248481c92}">
@@ -557,7 +557,7 @@
 			<value>2.8500208333333332</value>
 		</property>
 		<property name="value">
-			<value>-56.6666679</value>
+			<value>-80</value>
 		</property>
 	</object>
 	<object class="AutomationPoint" id="{1c39b939-d832-4c39-9b12-66946e65a735}">
