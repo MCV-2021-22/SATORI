@@ -6,6 +6,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "SATORICharacter.h"
 #include "Character/SATORI_PlayerController.h"
+#include "GameplayFramework/SATORI_GameInstance.h"
 #include "UI/Menu/PopUp/SATORI_MaskVendorPopUp.h"
 
 bool USATORI_MaksInteractUI::Initialize()
@@ -56,6 +57,11 @@ void USATORI_MaksInteractUI::AkaMaskButtonOnClicked()
 		{
 			Character->RemoveMaskGameplayEffect();
 		}
+		USATORI_GameInstance* GameInstanceRef = Cast<USATORI_GameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
+		if (GameInstanceRef)
+		{
+			GameInstanceRef->MaxHealth = Character->GetMaxHealth();
+		}
 		Character->SetCharacterMask(SATORIMaskType::Aka);
 		ASATORI_PlayerController* PlayerController = Cast<ASATORI_PlayerController>(Character->GetController());
 	}
@@ -76,6 +82,11 @@ void USATORI_MaksInteractUI::AoMaskButtonOnClicked()
 		if (Character->MaskType != SATORIMaskType::NONE)
 		{
 			Character->RemoveMaskGameplayEffect();
+		}
+		USATORI_GameInstance* GameInstanceRef = Cast<USATORI_GameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
+		if (GameInstanceRef)
+		{
+			GameInstanceRef->MaxHealth = Character->GetMaxHealth();
 		}
 		Character->SetCharacterMask(SATORIMaskType::Ao);
 		ASATORI_PlayerController* PlayerController = Cast<ASATORI_PlayerController>(Character->GetController());
@@ -100,6 +111,11 @@ void USATORI_MaksInteractUI::MidoriMaskButtonOnClicked()
 		}
 		Character->SetCharacterMask(SATORIMaskType::Midori);
 		// Set Max Health to character
+		USATORI_GameInstance* GameInstanceRef = Cast<USATORI_GameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
+		if(GameInstanceRef)
+		{
+			GameInstanceRef->MaxHealth = Character->GetMaxHealth();
+		}
 		Character->SetHealth(Character->GetMaxHealth());
 		ASATORI_PlayerController* PlayerController = Cast<ASATORI_PlayerController>(Character->GetController());
 	}
