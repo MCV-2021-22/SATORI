@@ -8,6 +8,7 @@
 #include "SATORI/GAS/SATORI_AbilitySystemComponent.h"
 #include "Engine/Texture2D.h"
 #include "GameplayFramework/SATORI_GameInstance.h"
+#include "FunctionLibrary/SATORI_BlueprintLibrary.h"
 
 // Sets default values for this component's properties
 USATORI_AbilityMask::USATORI_AbilityMask()
@@ -41,7 +42,7 @@ void USATORI_AbilityMask::GrantedMaskEffects(SATORIMaskType MaskType)
 			TSubclassOf<UGameplayEffect> GameplayEffect = ChooseMaskEffectoToApply(MaskType);
 
 			// Broadcast
-			PortrailImageChange.Broadcast(CurrentPortrailImage);
+			//PortrailImageChange.Broadcast(CurrentPortrailImage);
 
 			FGameplayEffectSpecHandle NewHandle = AbilitySystemComponent->MakeOutgoingSpec(GameplayEffect,
 				PlayerCharacter->GetCharacterLevel(), EffectContext);
@@ -98,6 +99,7 @@ TSubclassOf<UGameplayEffect> USATORI_AbilityMask::ChooseMaskEffectoToApply(SATOR
 		if (MidoriImage)
 		{
 			CurrentPortrailImage = MidoriImage;
+			//USATORI_BlueprintLibrary::ApplyGameplayEffect(GetOwner(), MidoriHealthGameplayEffect);
 		}
 		break;
 	}

@@ -70,6 +70,9 @@ public:
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "GameplayEffect")
 	TSubclassOf<UGameplayEffect> MidoriGameplayEffect;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "GameplayEffect")
+	TSubclassOf<UGameplayEffect> MidoriHealthGameplayEffect;
 	//TMap<SATORIMaskType, UGameplayEffect> MaskEffects;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "PortrailImage")

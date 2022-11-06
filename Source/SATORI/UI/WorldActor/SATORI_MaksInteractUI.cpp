@@ -99,6 +99,8 @@ void USATORI_MaksInteractUI::MidoriMaskButtonOnClicked()
 			Character->RemoveMaskGameplayEffect();
 		}
 		Character->SetCharacterMask(SATORIMaskType::Midori);
+		// Set Max Health to character
+		Character->SetHealth(Character->GetMaxHealth());
 		ASATORI_PlayerController* PlayerController = Cast<ASATORI_PlayerController>(Character->GetController());
 	}
 
