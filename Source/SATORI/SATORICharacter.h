@@ -178,8 +178,13 @@ public:
 	bool GetIsAbilityUpgrated() { return IsAbilityUpgrated; }
 	void SetIsAbilityUpgrated(bool Value) { IsAbilityUpgrated = Value; }
 	// Getters for Components
+	UFUNCTION(BlueprintCallable)
 	FORCEINLINE class USATORI_StatsComponent* GetStatsComponent() const { return StatsComponent; }
+
+	UFUNCTION(BlueprintCallable)
 	class USATORI_ComboSystemComponent* GetComboSystemComponent() const { return ComboSystemComponent; }
+
+	UFUNCTION(BlueprintCallable)
 	class USATORI_TargetSystemComponent* GetTargetSystemComponent() const { return TargetSystemComponent; }
 
 	UFUNCTION(BlueprintCallable)
