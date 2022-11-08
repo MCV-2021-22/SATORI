@@ -103,6 +103,15 @@ void USATORI_StatsComponent::InitializeStatsAttributesByInstance(ASATORI_PlayerS
 	}
 }
 
+void USATORI_StatsComponent::UpdatePlayerStat()
+{
+	void UpdateHealthBarPercent();
+	void UpdateHealthBarText();
+
+	void UpdateManaBarPercent();
+	void UpdateManaBarText();
+}
+
 void USATORI_StatsComponent::BindAttributeChage(ASATORICharacter* PlayerCharacter)
 {
 	AbilitySystemComponent = PlayerCharacter->GetAbilitySystemComponent();

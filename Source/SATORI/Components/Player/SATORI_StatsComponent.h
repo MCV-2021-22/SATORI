@@ -38,12 +38,16 @@ public:
 	// For crash when enemy disolver and player death at same time when return to lobby
 	FSATORIPlayerIsDead FOnPlayerDeathBroadCast;
 	void OnPlayerDeathBroadCastForDissolver();
-protected:
-	// Called when the game starts
-	virtual void BeginPlay() override;
+
+	UFUNCTION(BlueprintCallable)
+	void UpdatePlayerStat();
 
 	// Helper function if we change some value attributes and we capture the changes
 	virtual void BindAttributeChage(ASATORICharacter* PlayerCharacter);
+
+protected:
+	// Called when the game starts
+	virtual void BeginPlay() override;
 
 	// Health Functions
 	virtual void HealthChanged(const FOnAttributeChangeData& Data);

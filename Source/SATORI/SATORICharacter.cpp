@@ -212,6 +212,12 @@ void ASATORICharacter::PossessedBy(AController* NewController)
 	float AttackPower = GetAttack();
 	WeaponDamage = AttackPower == 1 ? WeaponDamage : AttackPower * WeaponDamage;
 	WeaponSavedDamage = WeaponDamage;
+
+	if (StatsComponent)
+	{
+		StatsComponent->BindAttributeChage(this);
+	}
+
 	//GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Red, FString::Printf(TEXT("Weapon Damage: %f"), WeaponDamage));
 }
 
