@@ -152,6 +152,12 @@ void USATORI_AI_BlockAbilityMelee::RemoveGameplayEffect()
 
 void USATORI_AI_BlockAbilityMelee::Tick(float DeltaTime)
 {
+
+	if (!IsValid(Melee))
+	{
+		return;
+	}
+
 	//If GE was removed ends blocking
 	if (!Melee->HasMatchingGameplayTag(BlockingTag) && bBlocking)
 	{

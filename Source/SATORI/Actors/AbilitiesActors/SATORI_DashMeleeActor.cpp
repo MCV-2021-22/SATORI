@@ -78,7 +78,7 @@ void ASATORI_DashMeleeActor::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 	
-	if (OwnerMelee->IsPendingKill() || MeleeCharacter->IsPendingKill())
+	if (!IsValid(OwnerMelee) || !IsValid(MeleeCharacter))
 	{
 		return;
 	}

@@ -132,7 +132,13 @@ void USATORI_AI_AttackAbilityMelee::MovementToTarget(float DeltaTime)
 
 void USATORI_AI_AttackAbilityMelee::Tick(float DeltaTime)
 {
-	if (Melee && !Melee->IsPendingKill()) {
+
+	if (!IsValid(Melee))
+	{
+		return;
+	}
+
+	if (!Melee->IsPendingKill()) {
 		//Targets smoothly player
 		if (Melee->HasMatchingGameplayTag(TargetingTag))
 		{
