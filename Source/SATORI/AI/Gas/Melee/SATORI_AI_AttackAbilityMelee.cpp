@@ -120,16 +120,25 @@ void USATORI_AI_AttackAbilityMelee::RotateToTargetSnap()
 
 void USATORI_AI_AttackAbilityMelee::MovementToTarget(float DeltaTime)
 {
-	float Distance = FVector::Dist(Enemy->GetActorLocation(), Melee->GetActorLocation());
-	if (Distance > Melee->GetAttackDistance())
+	if(Enemy && Melee)
 	{
-		Melee->SetActorLocation(Melee->GetActorLocation() + Melee->GetActorForwardVector() * FMath::Clamp(Distance - Melee->GetAttackDistance(), 0.0f, ClampDistanceAttack) * MovementSpeed * DeltaTime);
+		float Distance = FVector::Dist(Enemy->GetActorLocation(), Melee->GetActorLocation());
+		if (Distance > Melee->GetAttackDistance())
+		{
+			Melee->SetActorLocation(Melee->GetActorLocation() + Melee->GetActorForwardVector() * FMath::Clamp(Distance - Melee->GetAttackDistance(), 0.0f, ClampDistanceAttack) * MovementSpeed * DeltaTime);
+		}
 	}
 }
 
 void USATORI_AI_AttackAbilityMelee::Tick(float DeltaTime)
 {
-	if (Melee && !Melee->IsPendingKill()) {
+
+	if (!IsValid(Melee))
+	{
+		return;
+	}
+
+	if (!Melee->IsPendingKill()) {
 		//Targets smoothly player
 		if (Melee->HasMatchingGameplayTag(TargetingTag))
 		{

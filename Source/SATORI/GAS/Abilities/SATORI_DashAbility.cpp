@@ -207,24 +207,29 @@ void USATORI_DashAbility::EndDash()
 
 void USATORI_DashAbility::Tick(float DeltaTime)
 {
-	FVector Position = Character->GetActorLocation();
-	
-	//Movement 
-	if (bDashing)
-	{
-		FVector End = Position;
-		End.Z -= 150.0f;
-		bool bHitAnything = GetWorld()->LineTraceSingleByProfile(OutHit, Position, End, FName("BlockOnlyStatic"), CollisionParams);
-		if(bHitAnything)
-			Position.Z = Position.Z + 10.0f;
-		Character->SetActorLocation(Position);
-		Character->AddActorLocalOffset(DirectionDash * DashSpeed * DeltaTime, true);
-	}
 
-	if (bBraking)
+	if(IsValid(Character))
 	{
-		SpeedBraking += DeltaTime * SpeedBrakingFactor;
-		Character->AddActorLocalOffset(DirectionDash * (DashSpeed/SpeedBraking) * DeltaTime, true);
+
+		FVector Position = Character->GetActorLocation();
+	
+		//Movement 
+		if (bDashing)
+		{
+			FVector End = Position;
+			End.Z -= 150.0f;
+			bool bHitAnything = GetWorld()->LineTraceSingleByProfile(OutHit, Position, End, FName("BlockOnlyStatic"), CollisionParams);
+			if(bHitAnything)
+				Position.Z = Position.Z + 10.0f;
+			Character->SetActorLocation(Position);
+			Character->AddActorLocalOffset(DirectionDash * DashSpeed * DeltaTime, true);
+		}
+
+		if (bBraking)
+		{
+			SpeedBraking += DeltaTime * SpeedBrakingFactor;
+			Character->AddActorLocalOffset(DirectionDash * (DashSpeed/SpeedBraking) * DeltaTime, true);
+		}
 	}
 }
 

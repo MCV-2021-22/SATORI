@@ -142,7 +142,7 @@ void USATORI_AI_DashAbilityMelee::SpawnActor()
 void USATORI_AI_DashAbilityMelee::Tick(float DeltaTime)
 {
 
-	if (Melee->IsPendingKill())
+	if (!IsValid(Melee))
 	{
 		return;
 	}
