@@ -63,33 +63,33 @@ void USATORI_LightAttackAbility::CancelAbility(const FGameplayAbilitySpecHandle 
 	const FGameplayAbilityActivationInfo ActivationInfo,
 	bool bReplicateCancelAbility)
 {
-	if (PlayerCharacter)
-	{
-		USATORI_AbilitySystemComponent* AbilitySystemComponent =
-			Cast<USATORI_AbilitySystemComponent>(PlayerCharacter->GetAbilitySystemComponent());
-		if (AbilitySystemComponent)
-		{
-			AbilitySystemComponent->CurrentMontageStop();
-		}
-	}
+	//if (PlayerCharacter)
+	//{
+	//	USATORI_AbilitySystemComponent* AbilitySystemComponent =
+	//		Cast<USATORI_AbilitySystemComponent>(PlayerCharacter->GetAbilitySystemComponent());
+	//	if (AbilitySystemComponent)
+	//	{
+	//		AbilitySystemComponent->CurrentMontageStop();
+	//	}
+	//}
 
-	UAnimInstance* AnimInstance = PlayerCharacter->GetMesh()->GetAnimInstance();
-	if (AnimInstance && AnimMontage)
-	{
-		FAnimMontageInstance* MontageInstance = AnimInstance->GetActiveInstanceForMontage(AnimMontage);
-		if (MontageInstance)
-		{
-			MontageInstance->OnMontageBlendingOutStarted.Unbind();
-			MontageInstance->OnMontageEnded.Unbind();
-			FAlphaBlend* AlfaBlend = nullptr;
-			MontageInstance->Stop(*AlfaBlend);
-		}
-	}
+	//UAnimInstance* AnimInstance = PlayerCharacter->GetMesh()->GetAnimInstance();
+	//if (AnimInstance && AnimMontage)
+	//{
+	//	FAnimMontageInstance* MontageInstance = AnimInstance->GetActiveInstanceForMontage(AnimMontage);
+	//	if (MontageInstance)
+	//	{
+	//		MontageInstance->OnMontageBlendingOutStarted.Unbind();
+	//		MontageInstance->OnMontageEnded.Unbind();
+	//		FAlphaBlend* AlfaBlend = nullptr;
+	//		MontageInstance->Stop(*AlfaBlend);
+	//	}
+	//}
 
-	// This dont work good no way omg
-	//PlayerCharacter->LaunchCharacter(FVector(0.0f, 0.0f, 1.0f), false, false);
+	//// This dont work good no way omg
+	////PlayerCharacter->LaunchCharacter(FVector(0.0f, 0.0f, 1.0f), false, false);
 
-	SourceBlockedTags.Reset();
+	//SourceBlockedTags.Reset();
 
 	Super::CancelAbility(Handle, ActorInfo, ActivationInfo, bReplicateCancelAbility);
 }
@@ -106,5 +106,17 @@ void USATORI_LightAttackAbility::OnCompleted(FGameplayTag EventTag, FGameplayEve
 
 void USATORI_LightAttackAbility::EventReceived(FGameplayTag EventTag, FGameplayEventData EventData)
 {
+	if (EventTag == TagSpawnAbility)
+	{
+		ASATORICharacter* Character = Cast<ASATORICharacter>(GetAvatarActorFromActorInfo());
+		if (!Character)
+		{
+			UE_LOG(LogTemp, Display, TEXT("[%s] USATORI_CloneAbility: Cannot Cast ASATORICharacter ... "), *GetName());
+			Super::EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true);
+		}
+
+		// Camera Shade
+		Character->PlayerCameraShake();
+	}
 	EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, false);
 }
