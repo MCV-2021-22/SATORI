@@ -48,6 +48,10 @@ void USATORI_BossHealthBarUI::NativeConstruct()
 	{
 		Raijin_HealthBar->SetPercent(Raijin->GetHealth() / Raijin->GetMaxHealth());
 		Fujin_HealthBar->SetPercent(Fujin->GetHealth() / Fujin->GetMaxHealth());
+
+		// Notify Event
+		Fujin->BossHealthChanges.AddDynamic(this, &USATORI_BossHealthBarUI::SetHealthBarPercentage);
+		Raijin->BossHealthChanges.AddDynamic(this, &USATORI_BossHealthBarUI::SetHealthBarPercentage);
 	}
 
 	ASATORICharacter* Character = Cast<ASATORICharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));

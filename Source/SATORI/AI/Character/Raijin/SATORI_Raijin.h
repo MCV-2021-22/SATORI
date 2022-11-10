@@ -7,6 +7,8 @@
 #include "AI/Components/Raijin/SATORI_ArcoAltavoces.h"
 #include "SATORI_Raijin.generated.h"
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FSATORIRaijinHealthChanges, bool, isChanges);
+
 class UNiagaraComponent;
 class UNiagaraSystem;
 class ASATORI_Fujin;
@@ -38,6 +40,9 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
 		UNiagaraComponent* ParticleEffectArco = nullptr;
 
+	// Health Notify
+	FSATORIRaijinHealthChanges BossHealthChanges;
+	void BossHealthNotifyAbilityChanged();
 
 	ASATORI_ArcoAltavoces* ArcoAltavoces;
 
