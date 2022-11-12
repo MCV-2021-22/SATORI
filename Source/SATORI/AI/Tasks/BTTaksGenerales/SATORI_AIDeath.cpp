@@ -58,7 +58,7 @@ void USATORI_AIDeath::EventReceived(FGameplayTag EventTag, FGameplayEventData Ev
 			{
 				Character->SetActorEnableCollision(false);
 				Character->SpawnCointActorAfterDeath();
-				Character->EnemyDissolveAfterDeath(7.5);
+				//Character->EnemyDissolveAfterDeath(7.5);
 				Fujin->setDead(false);
 				FTimerHandle WaitHandle;
 				GetWorld()->GetTimerManager().SetTimer(WaitHandle, FTimerDelegate::CreateLambda([&]()
@@ -75,7 +75,7 @@ void USATORI_AIDeath::EventReceived(FGameplayTag EventTag, FGameplayEventData Ev
 								GetWorld()->GetTimerManager().ClearTimer(WaitHandle);
 							}
 						}
-					}), 5.0f, false);
+					}), 4.0f, false);
 			}
 			
 		}
@@ -85,7 +85,7 @@ void USATORI_AIDeath::EventReceived(FGameplayTag EventTag, FGameplayEventData Ev
 			{
 				Character->SetActorEnableCollision(false);
 				Character->SpawnCointActorAfterDeath();
-				Character->EnemyDissolveAfterDeath(7.5);
+				//Character->EnemyDissolveAfterDeath(7.5);
 				Raijin->setDead(false);
 				FTimerHandle WaitHandle;
 				GetWorld()->GetTimerManager().SetTimer(WaitHandle, FTimerDelegate::CreateLambda([&]()
@@ -102,7 +102,7 @@ void USATORI_AIDeath::EventReceived(FGameplayTag EventTag, FGameplayEventData Ev
 								GetWorld()->GetTimerManager().ClearTimer(WaitHandle);
 							}
 						}
-					}), 5.0f, false);
+					}), 4.0f, false);
 			}
 			
 		}
