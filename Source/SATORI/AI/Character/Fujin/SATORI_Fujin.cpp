@@ -159,19 +159,15 @@ void ASATORI_Fujin::SetArrayProbs(int Combo, TArray<float> newArray)
 
 }
 
-
 float ASATORI_Fujin::getDistAttack()
 {
 	return dist_attack;
 }
 
-
-
 float ASATORI_Fujin::getCloseDist()
 {
 	return close_dist;
 }
-
 
 void ASATORI_Fujin::ActivarInputPlayer()
 {
@@ -191,7 +187,6 @@ void ASATORI_Fujin::ActivarInputPlayer()
 		
 	}
 }
-
 
 void ASATORI_Fujin::Tick(float DeltaTime)
 {
@@ -414,7 +409,6 @@ void ASATORI_Fujin::revivirTag()
 
 }
 
-
 void ASATORI_Fujin::revivir()
 {
 	if(!HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag("State.Dead")))
@@ -426,8 +420,9 @@ void ASATORI_Fujin::revivir()
 		SetHealth(GetMaxHealth() * 0.25f);
 		AddGameplayTag(FGameplayTag::RequestGameplayTag("Boss.Jugable"));
 
+		// Notify
+		BossHealthNotifyAbilityChanged();
 	}
-	
 }
 
 bool ASATORI_Fujin::getRaijinDowned()
@@ -445,3 +440,7 @@ void ASATORI_Fujin::setGolpeFuerte(bool golpe)
 	golpe_fuerte = golpe;
 }
 
+void ASATORI_Fujin::BossHealthNotifyAbilityChanged()
+{
+	BossHealthChanges.Broadcast(true);
+}

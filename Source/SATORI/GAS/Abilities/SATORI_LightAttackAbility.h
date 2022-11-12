@@ -36,6 +36,8 @@ public:
 		const FGameplayAbilityActivationInfo ActivationInfo,
 		bool bReplicateCancelAbility) override;
 
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Ability|Tags")
+	FGameplayTag TagSpawnAbility;
 public:
 
 	bool bStopWhenAbilityEnds = true;

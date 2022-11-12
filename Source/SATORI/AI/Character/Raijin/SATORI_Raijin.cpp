@@ -177,9 +177,9 @@ void ASATORI_Raijin::revivir()
 		SetHealth(GetMaxHealth() * 0.25f);
 		AddGameplayTag(FGameplayTag::RequestGameplayTag("Boss.Jugable"));
 
+		// Notify
+		BossHealthNotifyAbilityChanged();
 	}
-	
-
 }
 
 bool ASATORI_Raijin::getFujinDowned()
@@ -203,4 +203,9 @@ void ASATORI_Raijin::EndPartArco()
 		ParticleEffectArco->DestroyComponent();
 	}
 
+}
+
+void ASATORI_Raijin::BossHealthNotifyAbilityChanged()
+{
+	BossHealthChanges.Broadcast(true);
 }

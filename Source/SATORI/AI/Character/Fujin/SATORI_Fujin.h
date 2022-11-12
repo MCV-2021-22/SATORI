@@ -6,6 +6,7 @@
 #include "AI/Character/SATORI_AICharacter.h"
 #include "SATORI_Fujin.generated.h"
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FSATORIFujinHealthChanges, bool, isChanges);
 
 class ASATORI_Raijin;
 class UNiagaraComponent;
@@ -42,6 +43,10 @@ public:
 	FTimerHandle TimerHandle;
 
 	FTimerHandle TimerHandleDowned;
+
+	// Health Notify
+	FSATORIFujinHealthChanges BossHealthChanges;
+	void BossHealthNotifyAbilityChanged();
 
 	void setRaijin();
 
