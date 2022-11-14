@@ -160,10 +160,10 @@ void USATORI_AreasPatron::EndRayos(const FGameplayAbilitySpecHandle Handle, cons
 		{
 			AActor* Actor = Rayos[j];
 
-			if(Rayos[j])
+			if(Actor)
 			{
 				//ASATORI_RaijinRayoMovil* Rayo = Cast<ASATORI_RaijinRayoMovil>(Actor);
-				ASATORI_RaijinRayoMovil* Rayo = Cast<ASATORI_RaijinRayoMovil>(Rayos[j]);
+				ASATORI_RaijinRayoMovil* Rayo = Cast<ASATORI_RaijinRayoMovil>(Actor);
 
 				if(Rayo)
 				{

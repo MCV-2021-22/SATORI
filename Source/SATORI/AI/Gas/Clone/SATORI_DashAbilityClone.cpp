@@ -98,14 +98,17 @@ void USATORI_DashAbilityClone::GetTarget()
 void USATORI_DashAbilityClone::EndDash() 
 {
 	bDashing = false;
-
-	if (USkeletalMeshComponent* Mesh = Clone->GetMesh())
+	if(Clone)
 	{
-		if (UAnimInstance* AnimInstance = Mesh->GetAnimInstance())
+		if (USkeletalMeshComponent* Mesh = Clone->GetMesh())
 		{
-			AnimInstance->Montage_JumpToSection(FName("EndDash"), AnimInstance->GetCurrentActiveMontage());
+			if (UAnimInstance* AnimInstance = Mesh->GetAnimInstance())
+			{
+				AnimInstance->Montage_JumpToSection(FName("EndDash"), AnimInstance->GetCurrentActiveMontage());
+			}
 		}
 	}
+	
 }
 
 void USATORI_DashAbilityClone::Tick(float DeltaTime)
@@ -113,14 +116,18 @@ void USATORI_DashAbilityClone::Tick(float DeltaTime)
 	if(bDashing)
 	{
 		//Dash movement until is close enough
-		FVector Position = Clone->GetActorLocation();
-		if (FVector::Dist(Position, EnemyPosition) < 300)
+		if(Clone)
 		{
-			EndDash();
-		}
+			FVector Position = Clone->GetActorLocation();
+			if (FVector::Dist(Position, EnemyPosition) < 300)
+			{
+				EndDash();
+			}
 
-		FVector NextPos = UKismetMathLibrary::VInterpTo(Position, EnemyPosition, DeltaTime, DashSpeed);
-		Clone->SetActorLocation(NextPos);
+			FVector NextPos = UKismetMathLibrary::VInterpTo(Position, EnemyPosition, DeltaTime, DashSpeed);
+			Clone->SetActorLocation(NextPos);
+		}
+		
 	}
 }
 
