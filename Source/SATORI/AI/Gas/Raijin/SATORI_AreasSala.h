@@ -9,6 +9,7 @@
 #include "GAS/SATORI_GameplayAbility.h"
 #include "SATORI/AbilityTask/SATORI_PlayMontageandWaitNotify.h"
 #include "AI/Components/Raijin/SATORI_RaijinRayo.h"
+#include "FMODBlueprintStatics.h"
 #include "SATORI_AreasSala.generated.h"
 
 
@@ -32,6 +33,9 @@ public:
 
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Ability|Tags")
 		FGameplayTag TagEndAbility;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "SFX")
+		UFMODEvent* Attack3Effect = nullptr;
 
 	// Particle
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)

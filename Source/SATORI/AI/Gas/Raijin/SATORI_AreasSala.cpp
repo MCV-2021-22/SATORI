@@ -111,6 +111,8 @@ void USATORI_AreasSala::EventReceived(FGameplayTag EventTag, FGameplayEventData 
 							ASATORI_RaijinRayo* Rayo = GetWorld()->SpawnActor<ASATORI_RaijinRayo>(ProjectileClass,
 								Player->GetActorLocation(),
 								RotationOfIA);
+							UFMODBlueprintStatics::PlayEvent2D(GetWorld(), Attack3Effect, true);
+
 
 							if(Rayo)
 							{
@@ -126,6 +128,8 @@ void USATORI_AreasSala::EventReceived(FGameplayTag EventTag, FGameplayEventData 
 							ASATORI_RaijinRayo* Rayo = GetWorld()->SpawnActor<ASATORI_RaijinRayo>(ProjectileClass,
 								finalpos,
 								RotationOfIA);
+							UFMODBlueprintStatics::PlayEvent2D(GetWorld(), Attack3Effect, true);
+
 
 							if (Rayo)
 							{
