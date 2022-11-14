@@ -732,6 +732,7 @@ void ASATORICharacter::OnWeaponOverlapBegin(UPrimitiveComponent* OverlappedComp,
 		else if(ASATORI_DummyActor* DummyActor = Cast<ASATORI_DummyActor>(OtherActor))
 		{
 			DummyActor->CheckImpactReceivedByPlayer(this->ComboSystemComponent->GetCurrentComboState());
+			UFMODBlueprintStatics::PlayEvent2D(GetWorld(), HitPlayer, true);
 		}
 	}
 }
