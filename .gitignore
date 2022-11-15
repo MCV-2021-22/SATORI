@@ -91,3 +91,7 @@ SATORI_FMOD/unsaved/
 SATORI_FMOD/restore/
 SATORI_FMOD/fmod.log
 SATORI_FMOD/fmod_editor.log
+
+#lfs
+hooks/*
+lfs/*
