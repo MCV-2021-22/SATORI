@@ -1,4 +1,4 @@
-// Copyright (c), Firelight Technologies Pty, Ltd. 2012-2022.
+// Copyright (c), Firelight Technologies Pty, Ltd. 2012-2023.
 using System.IO;
 
 namespace UnrealBuildTool.Rules
@@ -29,6 +29,7 @@ namespace UnrealBuildTool.Rules
                 {
                     "Core",
                     "CoreUObject",
+                    "DeveloperToolSettings",
                     "Engine",
                     "FMODStudio",
                     "InputCore",

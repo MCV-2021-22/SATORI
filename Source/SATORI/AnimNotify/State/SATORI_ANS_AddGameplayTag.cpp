@@ -12,7 +12,7 @@ USATORI_ANS_AddGameplayTag::USATORI_ANS_AddGameplayTag()
 
 void USATORI_ANS_AddGameplayTag::NotifyBegin(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, float TotalDuration)
 {
-	Super::NotifyBegin(MeshComp, Animation, TotalDuration);
+	//Super::NotifyBegin(MeshComp, Animation, TotalDuration);
 
 	if (!MeshComp || !TagToAdd.IsValid()) 
 	{
@@ -26,7 +26,7 @@ void USATORI_ANS_AddGameplayTag::NotifyBegin(USkeletalMeshComponent* MeshComp, U
 
 void USATORI_ANS_AddGameplayTag::NotifyEnd(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation)
 {
-	Super::NotifyEnd(MeshComp, Animation);
+	//Super::NotifyEnd(MeshComp, Animation);
 
 	if (!MeshComp || !TagToAdd.IsValid())
 	{

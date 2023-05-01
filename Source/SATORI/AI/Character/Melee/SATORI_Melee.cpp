@@ -24,7 +24,7 @@ ASATORI_Melee::ASATORI_Melee()
 		AttackingCollision->SetCapsuleSize(20.f, 60.f, true);
 		AttackingCollision->SetCollisionProfileName("Pawn");
 		AttackingCollision->SetGenerateOverlapEvents(false);
-		AttackingCollision->AttachTo(SwordComponentRight);
+		AttackingCollision->SetupAttachment(SwordComponentRight);
 
 		AttackingCollision->OnComponentBeginOverlap.AddDynamic(this, &ASATORI_Melee::OnWeaponOverlapBegin);
 	}
@@ -39,7 +39,7 @@ ASATORI_Melee::ASATORI_Melee()
 		AttackingCollisionLeft->SetCapsuleSize(20.f, 60.f, true);
 		AttackingCollisionLeft->SetCollisionProfileName("Pawn");
 		AttackingCollisionLeft->SetGenerateOverlapEvents(false);
-		AttackingCollisionLeft->AttachTo(SwordComponentLeft);
+		AttackingCollisionLeft->SetupAttachment(SwordComponentLeft);
 
 		AttackingCollisionLeft->OnComponentBeginOverlap.AddDynamic(this, &ASATORI_Melee::OnWeaponOverlapBegin);
 	}

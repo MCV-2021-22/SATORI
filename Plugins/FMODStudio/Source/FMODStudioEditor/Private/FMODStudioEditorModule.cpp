@@ -1,4 +1,4 @@
-// Copyright (c), Firelight Technologies Pty, Ltd. 2012-2022.
+// Copyright (c), Firelight Technologies Pty, Ltd. 2012-2023.
 
 #include "FMODStudioEditorModule.h"
 #include "FMODStudioModule.h"
@@ -20,7 +20,7 @@
 #include "Sequencer/FMODEventParameterTrackEditor.h"
 #include "AssetTypeActions_FMODEvent.h"
 
-#include "AssetRegistryModule.h"
+#include "AssetRegistry/AssetRegistryModule.h"
 #include "UnrealEd/Public/AssetSelection.h"
 #include "Slate/Public/Framework/Notifications/NotificationManager.h"
 #include "Slate/Public/Widgets/Notifications/SNotificationList.h"
@@ -241,7 +241,7 @@ public:
     FTickerDelegate OnTick;
 
     /** Handle for registered delegates. */
-    FDelegateHandle TickDelegateHandle;
+    FTSTicker::FDelegateHandle TickDelegateHandle;
     FDelegateHandle BeginPIEDelegateHandle;
     FDelegateHandle EndPIEDelegateHandle;
     FDelegateHandle PausePIEDelegateHandle;
@@ -357,7 +357,7 @@ void FFMODStudioEditorModule::OnPostEngineInit()
     ViewportDrawingDelegateHandle = UDebugDrawService::Register(TEXT("Editor"), ViewportDrawingDelegate);
 
     OnTick = FTickerDelegate::CreateRaw(this, &FFMODStudioEditorModule::Tick);
-    TickDelegateHandle = FTicker::GetCoreTicker().AddTicker(OnTick);
+    TickDelegateHandle = FTSTicker::GetCoreTicker().AddTicker(OnTick);
 
     // Create asset builder
     AssetBuilder.Create();
@@ -412,7 +412,7 @@ void FFMODStudioEditorModule::RegisterHelpMenuEntries()
         NAME_None,
         LOCTEXT("FMODHelpCHMTitle", "FMOD Documentation..."),
         LOCTEXT("FMODHelpCHMToolTip", "Opens the local FMOD documentation."),
-        FSlateIcon(FEditorStyle::GetStyleSetName(), "LevelEditor.BrowseAPIReference"),
+        FSlateIcon(FAppStyle::GetAppStyleSetName(), "LevelEditor.BrowseAPIReference"),
         FUIAction(FExecuteAction::CreateRaw(this, &FFMODStudioEditorModule::OpenIntegrationDocs))
     ));
 #endif
@@ -421,7 +421,7 @@ void FFMODStudioEditorModule::RegisterHelpMenuEntries()
         NAME_None,
         LOCTEXT("FMODHelpOnlineTitle", "FMOD Online Documentation..."),
         LOCTEXT("FMODHelpOnlineToolTip", "Go to the online FMOD documentation."),
-        FSlateIcon(FEditorStyle::GetStyleSetName(), "LevelEditor.BrowseDocumentation"),
+        FSlateIcon(FAppStyle::GetAppStyleSetName(), "LevelEditor.BrowseDocumentation"),
         FUIAction(FExecuteAction::CreateRaw(this, &FFMODStudioEditorModule::OpenAPIDocs))
     ));
 
@@ -429,7 +429,7 @@ void FFMODStudioEditorModule::RegisterHelpMenuEntries()
         NAME_None,
         LOCTEXT("FMODHelpVideosTitle", "FMOD Tutorial Videos..."),
         LOCTEXT("FMODHelpVideosToolTip", "Go to the online FMOD tutorial videos."),
-        FSlateIcon(FEditorStyle::GetStyleSetName(), "LevelEditor.Tutorials"),
+        FSlateIcon(FAppStyle::GetAppStyleSetName(), "LevelEditor.Tutorials"),
         FUIAction(FExecuteAction::CreateRaw(this, &FFMODStudioEditorModule::OpenVideoTutorials))
     ));
 
@@ -521,12 +521,12 @@ void FFMODStudioEditorModule::ShowVersion()
 
 void FFMODStudioEditorModule::OpenIntegrationDocs()
 {
-    FPlatformProcess::LaunchFileInDefaultExternalApplication(TEXT("https://fmod.com/resources/documentation-ue4"));
+    FPlatformProcess::LaunchFileInDefaultExternalApplication(TEXT("https://www.fmod.com/docs/unreal"));
 }
 
 void FFMODStudioEditorModule::OpenAPIDocs()
 {
-    FPlatformProcess::LaunchFileInDefaultExternalApplication(TEXT("https://fmod.com/resources/documentation-api"));
+    FPlatformProcess::LaunchFileInDefaultExternalApplication(TEXT("https://www.fmod.com/docs/api"));
 }
 
 void FFMODStudioEditorModule::OpenVideoTutorials()
@@ -965,7 +965,7 @@ void FFMODStudioEditorModule::ValidateFMOD()
                 PackagingSettings->DirectoriesToAlwaysStageAsNonUFS.Add(Settings.BankOutputDirectory);
             }
 
-            PackagingSettings->UpdateDefaultConfigFile();
+            PackagingSettings->TryUpdateDefaultConfigFile();
         }
     }
     else if (!bPackagingFound)
@@ -978,7 +978,7 @@ void FFMODStudioEditorModule::ValidateFMOD()
         if (EAppReturnType::Yes == FMessageDialog::Open(EAppMsgType::YesNo, message))
         {
             PackagingSettings->DirectoriesToAlwaysStageAsNonUFS.Add(Settings.BankOutputDirectory);
-            PackagingSettings->UpdateDefaultConfigFile();
+            PackagingSettings->TryUpdateDefaultConfigFile();
         }
     }
 
@@ -1006,7 +1006,7 @@ void FFMODStudioEditorModule::ValidateFMOD()
                 GeneratedDir.Path = Settings.GetFullContentPath() / folder;
                 PackagingSettings->DirectoriesToAlwaysCook.Add(GeneratedDir);
             }
-            PackagingSettings->UpdateDefaultConfigFile();
+            PackagingSettings->TryUpdateDefaultConfigFile();
         }
     }
 
@@ -1171,7 +1171,7 @@ void FFMODStudioEditorModule::ShutdownModule()
         BankUpdateNotifier.BanksUpdatedEvent.RemoveAll(this);
 
         // Unregister tick function.
-        FTicker::GetCoreTicker().RemoveTicker(TickDelegateHandle);
+        FTSTicker::GetCoreTicker().RemoveTicker(TickDelegateHandle);
 
         FEditorDelegates::BeginPIE.Remove(BeginPIEDelegateHandle);
         FEditorDelegates::EndPIE.Remove(EndPIEDelegateHandle);
@@ -1268,7 +1268,7 @@ void FFMODStudioEditorModule::ReloadBanks()
 void FFMODStudioEditorModule::ShowNotification(const FText &Text, SNotificationItem::ECompletionState State)
 {
     FNotificationInfo Info(Text);
-    Info.Image = FEditorStyle::GetBrush(TEXT("NoBrush"));
+    Info.Image = FAppStyle::GetBrush(TEXT("NoBrush"));
     Info.FadeInDuration = 0.1f;
     Info.FadeOutDuration = 0.5f;
     Info.ExpireDuration = State == SNotificationItem::CS_Fail ? 6.0f : 1.5f;

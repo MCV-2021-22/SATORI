@@ -46,6 +46,7 @@
 <li><a href="#live-update-port">Live Update Port</a></li>
 <li><a href="#editor-live-update-port">Editor Live Update Port</a></li>
 <li><a href="#reload-banks-delay">Reload Banks Delay</a></li>
+<li><a href="#enable-api-error-logging">Enable API Error Logging</a></li>
 <li><a href="#enable-memory-tracking">Enable Memory Tracking</a></li>
 <li><a href="#plugin-files">Plugin Files</a></li>
 <li><a href="#content-browser-prefix">Content Browser Prefix</a></li>
@@ -97,7 +98,7 @@
 <pre><code>Default: Enabled
 </code></pre>
 <h3 id="load-all-sample-data"><a href="#load-all-sample-data">3.1.2 Load All Sample Data</a></h3>
-<p>When enabled the sample data from all FMOD bank files is loaded at startup. Only effective when <a class="apilink" href="#load-all-banks" title="">Load All Banks</a> is also enabled.</p>
+<p>When enabled the sample data from all FMOD bank files is loaded at startup. Only effective when <a class="apilink" href="#load-all-banks">Load All Banks</a> is also enabled.</p>
 <pre><code>Default: Disabled
 </code></pre>
 <h3 id="enable-live-update"><a href="#enable-live-update">3.1.3 Enable Live Update</a></h3>
@@ -132,15 +133,15 @@
 <p>When loading banks, banks which correspond to the active locale are loaded while banks which correspond to any other recognized locale are skipped.</p>
 <h2 id="init"><a href="#init">3.3 Init</a></h2>
 <h3 id="vol-0-virtual"><a href="#vol-0-virtual">3.3.1 Vol 0 Virtual</a></h3>
-<p>Controls whether the <a class="apilink" href="#vol-0-virtual-level" title="">Vol 0 Virtual Level</a> setting is honored.</p>
+<p>Controls whether the <a class="apilink" href="#vol-0-virtual-level">Vol 0 Virtual Level</a> setting is honored.</p>
 <pre><code>Default: Enabled
 </code></pre>
 <h3 id="vol-0-virtual-level"><a href="#vol-0-virtual-level">3.3.2 Vol 0 Virtual Level</a></h3>
-<p>Sets the signal level at which <a href="https://fmod.com/resources/documentation-api?version=2.2&amp;page=core-api-channel.html">Channel</a>s are virtualized when the <a class="apilink" href="#vol-0-virtual" title="">Vol 0 Virtual</a> setting is enabled. This corresponds directly to the <code>vol0virtual</code> member of <a href="https://fmod.com/resources/documentation-api?version=2.2&amp;page=core-api-system.html#fmod_advancedsettings"><code>FMOD_ADVANCED_SETTINGS</code></a> in the Core API.</p>
+<p>Sets the signal level at which <a href="https://fmod.com/docs/2.02/api/core-api-channel.html">Channel</a>s are virtualized when the <a class="apilink" href="#vol-0-virtual">Vol 0 Virtual</a> setting is enabled. This corresponds directly to the <code>vol0virtual</code> member of <a href="https://fmod.com/docs/2.02/api/core-api-system.html#fmod_advancedsettings"><code>FMOD_ADVANCED_SETTINGS</code></a> in the Core API.</p>
 <pre><code>Default: 0.0001
 </code></pre>
 <h3 id="sample-rate"><a href="#sample-rate">3.3.3 Sample Rate</a></h3>
-<p>The sample rate for the FMOD mixer. This corresponds to the <code>samplerate</code> parameter of <a href="https://fmod.com/resources/documentation-api?version=2.2&amp;page=core-api-system.html#system_setsoftwareformat"><code>FMOD::System::setSoftwareFormat</code></a> in the Core API.</p>
+<p>The sample rate for the FMOD mixer. This corresponds to the <code>samplerate</code> parameter of <a href="https://fmod.com/docs/2.02/api/core-api-system.html#system_setsoftwareformat"><code>FMOD::System::setSoftwareFormat</code></a> in the Core API.</p>
 <pre><code>Default: 0 (uses the default sample rate for the platform)
 </code></pre>
 <h3 id="match-hardware-sample-rate"><a href="#match-hardware-sample-rate">3.3.4 Match Hardware Sample Rate</a></h3>
@@ -148,29 +149,29 @@
 <pre><code>Default: Enabled
 </code></pre>
 <h3 id="real-channel-count"><a href="#real-channel-count">3.3.5 Real Channel Count</a></h3>
-<p>The maximum number of active <a href="https://fmod.com/resources/documentation-api?version=2.2&amp;page=core-api-channel.html">Channel</a>s. This corresponds to the <code>numsoftwarechannels</code> parameter of <a href="https://fmod.com/resources/documentation-api?version=2.2&amp;page=core-api-system.html#system_setsoftwarechannels"><code>FMOD::System::setSoftwareChannels</code></a> in the Core API.</p>
+<p>The maximum number of active <a href="https://fmod.com/docs/2.02/api/core-api-channel.html">Channel</a>s. This corresponds to the <code>numsoftwarechannels</code> parameter of <a href="https://fmod.com/docs/2.02/api/core-api-system.html#system_setsoftwarechannels"><code>FMOD::System::setSoftwareChannels</code></a> in the Core API.</p>
 <pre><code>Default: 64
 </code></pre>
 <h3 id="total-channel-count"><a href="#total-channel-count">3.3.6 Total Channel Count</a></h3>
-<p>The maximum number of <a href="https://fmod.com/resources/documentation-api?version=2.2&amp;page=core-api-channel.html">Channel</a>s to be used in FMOD. This corresponds to the <code>maxchannels</code> parameter of <a href="https://fmod.com/resources/documentation-api?version=2.2&amp;page=studio-api-system.html#studio_system_initialize"><code>FMOD::Studio::System::initialize</code></a> in the Studio API.</p>
+<p>The maximum number of <a href="https://fmod.com/docs/2.02/api/core-api-channel.html">Channel</a>s to be used in FMOD. This corresponds to the <code>maxchannels</code> parameter of <a href="https://fmod.com/docs/2.02/api/studio-api-system.html#studio_system_initialize"><code>FMOD::Studio::System::initialize</code></a> in the Studio API.</p>
 <pre><code>Default: 512
 </code></pre>
 <h3 id="dsp-buffer-length"><a href="#dsp-buffer-length">3.3.7 DSP Buffer Length</a></h3>
-<p>The mixer block length for the FMOD mixer. This corresponds to the <code>bufferlength</code> parameter of <a href="https://fmod.com/resources/documentation-api?version=2.2&amp;page=core-api-system.html#system_setdspbuffersize"><code>FMOD::System::setDSPBufferSize</code></a> in the Core API.</p>
+<p>The mixer block length for the FMOD mixer. This corresponds to the <code>bufferlength</code> parameter of <a href="https://fmod.com/docs/2.02/api/core-api-system.html#system_setdspbuffersize"><code>FMOD::System::setDSPBufferSize</code></a> in the Core API.</p>
 <pre><code>Units: samples
 Default: 0 (uses the default DSP buffer length for the platform)
 </code></pre>
 <h3 id="dsp-buffer-count"><a href="#dsp-buffer-count">3.3.8 DSP Buffer Count</a></h3>
-<p>The number of mixer blocks for the FMOD mixer to use. This corresponds to the <code>numbuffers</code> parameter of <a href="https://fmod.com/resources/documentation-api?version=2.2&amp;page=core-api-system.html#system_setdspbuffersize"><code>FMOD::System::setDSPBufferSize</code></a> in the Core API.</p>
+<p>The number of mixer blocks for the FMOD mixer to use. This corresponds to the <code>numbuffers</code> parameter of <a href="https://fmod.com/docs/2.02/api/core-api-system.html#system_setdspbuffersize"><code>FMOD::System::setDSPBufferSize</code></a> in the Core API.</p>
 <pre><code>Default: 0 (uses the default DSP buffer count for the platform)
 </code></pre>
 <h3 id="file-buffer-size"><a href="#file-buffer-size">3.3.9 File Buffer Size</a></h3>
-<p>File buffering chunk size. This corresponds to the <code>blockalign</code> parameter of <a href="https://fmod.com/resources/documentation-api?version=2.2&amp;page=core-api-system.html#system_setfilesystem"><code>FMOD::System::setFileSystem</code></a> in the Core API.</p>
+<p>File buffering chunk size. This corresponds to the <code>blockalign</code> parameter of <a href="https://fmod.com/docs/2.02/api/core-api-system.html#system_setfilesystem"><code>FMOD::System::setFileSystem</code></a> in the Core API.</p>
 <pre><code>Units: bytes
 Default: 2048
 </code></pre>
 <h3 id="studio-update-period"><a href="#studio-update-period">3.3.10 Studio Update Period</a></h3>
-<p>Update period of FMOD Studio. This corresponds to the <code>studioupdateperiod</code> member of <a href="https://fmod.com/resources/documentation-api?version=2.2&amp;page=studio-api-system.html#fmod_studio_advancedsettings"><code>FMOD_STUDIO_ADVANCEDSETTINGS</code></a> in the Studio API.</p>
+<p>Update period of FMOD Studio. This corresponds to the <code>studioupdateperiod</code> member of <a href="https://fmod.com/docs/2.02/api/studio-api-system.html#fmod_studio_advancedsettings"><code>FMOD_STUDIO_ADVANCEDSETTINGS</code></a> in the Studio API.</p>
 <pre><code>Units: milliseconds
 Default: 0 (uses the default update period for FMOD Studio)
 </code></pre>
@@ -201,47 +202,51 @@ Default: 0
 <pre><code>Units: seconds
 Default: 5
 </code></pre>
-<h3 id="enable-memory-tracking"><a href="#enable-memory-tracking">3.4.4 Enable Memory Tracking</a></h3>
-<p>Enables FMOD's detailed memory tracking for non-final builds. This corresponds to setting the <a href="https://fmod.com/resources/documentation-api?version=2.2&amp;page=studio-api-system.html#fmod_studio_initflags"><code>FMOD_STUDIO_INIT_MEMORY_TRACKING</code></a> flag into the <code>studioflags</code> when initializing the Studio API.</p>
+<h3 id="enable-api-error-logging"><a href="#enable-api-error-logging">3.4.4 Enable API Error Logging</a></h3>
+<p>Will log internal API errors when enabled.</p>
 <pre><code>Default: Disabled
 </code></pre>
-<h3 id="plugin-files"><a href="#plugin-files">3.4.5 Plugin Files</a></h3>
+<h3 id="enable-memory-tracking"><a href="#enable-memory-tracking">3.4.5 Enable Memory Tracking</a></h3>
+<p>Enables FMOD's detailed memory tracking for non-final builds. This corresponds to setting the <a href="https://fmod.com/docs/2.02/api/studio-api-system.html#fmod_studio_initflags"><code>FMOD_STUDIO_INIT_MEMORY_TRACKING</code></a> flag into the <code>studioflags</code> when initializing the Studio API.</p>
+<pre><code>Default: Disabled
+</code></pre>
+<h3 id="plugin-files"><a href="#plugin-files">3.4.6 Plugin Files</a></h3>
 <p>List of FMOD Studio plugins to be loaded when the system starts up. See <a href="plugins.html">Plugins</a> for more information.</p>
-<h3 id="content-browser-prefix"><a href="#content-browser-prefix">3.4.6 Content Browser Prefix</a></h3>
+<h3 id="content-browser-prefix"><a href="#content-browser-prefix">3.4.7 Content Browser Prefix</a></h3>
 <p>Root directory for FMOD assets.</p>
 <pre><code>Default: /Game/FMOD
 </code></pre>
-<h3 id="force-platform-name"><a href="#force-platform-name">3.4.7 Force Platform Name</a></h3>
+<h3 id="force-platform-name"><a href="#force-platform-name">3.4.8 Force Platform Name</a></h3>
 <p>Override platform name for loading banks at runtime.</p>
 <pre><code>Default: Empty (use default platform name)
 </code></pre>
-<h3 id="master-bank-name"><a href="#master-bank-name">3.4.8 Master Bank Name</a></h3>
+<h3 id="master-bank-name"><a href="#master-bank-name">3.4.9 Master Bank Name</a></h3>
 <p>Name of master bank (without extension). Must match the FMOD Studio project.</p>
 <pre><code>Default: Master
 </code></pre>
-<h3 id="skip-load-bank-name"><a href="#skip-load-bank-name">3.4.9 Skip Load Bank Name</a></h3>
-<p>String to filter banks loaded when <a class="apilink" href="#load-all-banks" title="">Load All Banks</a> is enabled. If Skip Load Bank Name is not empty then any bank with a name containing the specified string will be skipped by automatic bank loading.</p>
+<h3 id="skip-load-bank-name"><a href="#skip-load-bank-name">3.4.10 Skip Load Bank Name</a></h3>
+<p>String to filter banks loaded when <a class="apilink" href="#load-all-banks">Load All Banks</a> is enabled. If Skip Load Bank Name is not empty then any bank with a name containing the specified string will be skipped by automatic bank loading.</p>
 <pre><code>Default: Empty
 </code></pre>
-<h3 id="encryption-key"><a href="#encryption-key">3.4.10 Encryption Key</a></h3>
-<p>Key for loading encrypted banks. This corresponds to the <code>encryptionkey</code> member of <a href="https://fmod.com/resources/documentation-api?version=2.2&amp;page=studio-api-system.html#fmod_studio_advancedsettings"><code>FMOD_STUDIO_ADVANCEDSETTINGS</code></a> in the Studio API.</p>
-<h3 id="wav-writer-path"><a href="#wav-writer-path">3.4.11 Wav Writer Path</a></h3>
-<p>File name that the wav writer will output to. If this is not empty then the runtime FMOD Studio system will use <a href="https://fmod.com/resources/documentation-api?version=2.2&amp;page=core-api-system.html#fmod_outputtype"><code>FMOD_OUTPUTTYPE_WAVWRITER</code></a> and the mixed audio produced by FMOD will be sent to the specified file. There will be no audible output when using this setting.</p>
+<h3 id="encryption-key"><a href="#encryption-key">3.4.11 Encryption Key</a></h3>
+<p>Key for loading encrypted banks. This corresponds to the <code>encryptionkey</code> member of <a href="https://fmod.com/docs/2.02/api/studio-api-system.html#fmod_studio_advancedsettings"><code>FMOD_STUDIO_ADVANCEDSETTINGS</code></a> in the Studio API.</p>
+<h3 id="wav-writer-path"><a href="#wav-writer-path">3.4.12 Wav Writer Path</a></h3>
+<p>File name that the wav writer will output to. If this is not empty then the runtime FMOD Studio system will use <a href="https://fmod.com/docs/2.02/api/core-api-system.html#fmod_outputtype"><code>FMOD_OUTPUTTYPE_WAVWRITER</code></a> and the mixed audio produced by FMOD will be sent to the specified file. There will be no audible output when using this setting.</p>
 <pre><code>Default: Empty
 </code></pre>
-<h3 id="logging-level"><a href="#logging-level">3.4.12 Logging Level</a></h3>
-<p>Logging level for non-final builds. The logging levels correspond to the similarly named <a href="https://fmod.com/resources/documentation-api?version=2.2&amp;page=core-api-common.html#fmod_debug_flags"><code>FMOD_DEBUG_LEVEL_XXX</code></a> flags used by the <a href="https://fmod.com/resources/documentation-api?version=2.2&amp;page=core-api-common.html#debug_initialize"><code>FMOD::Debug_Initialize</code></a> function in the Core API.</p>
+<h3 id="logging-level"><a href="#logging-level">3.4.13 Logging Level</a></h3>
+<p>Logging level for non-final builds. The logging levels correspond to the similarly named <a href="https://fmod.com/docs/2.02/api/core-api-common.html#fmod_debug_flags"><code>FMOD_DEBUG_LEVEL_XXX</code></a> flags used by the <a href="https://fmod.com/docs/2.02/api/core-api-common.html#debug_initialize"><code>FMOD::Debug_Initialize</code></a> function in the Core API.</p>
 <pre><code>Default: LEVEL NONE
 </code></pre>
-<h3 id="occlusion-parameter"><a href="#occlusion-parameter">3.4.13 Occlusion Parameter</a></h3>
+<h3 id="occlusion-parameter"><a href="#occlusion-parameter">3.4.14 Occlusion Parameter</a></h3>
 <p>Name of event parameter to automate using Unreal occlusion ray casts. See <a href="user-guide.html#occlusion">Occlusion Settings</a> for more information.</p>
 <pre><code>Default: Empty
 </code></pre>
-<h3 id="ambient-volume-parameter"><a href="#ambient-volume-parameter">3.4.14 Ambient Volume Parameter</a></h3>
+<h3 id="ambient-volume-parameter"><a href="#ambient-volume-parameter">3.4.15 Ambient Volume Parameter</a></h3>
 <p>Name of event parameter to automate using Unreal ambient zone volume settings. See <a href="user-guide.html#ambient-zone-settings">Ambient Zone Settings</a> for more information.</p>
 <pre><code>Default: Empty
 </code></pre>
-<h3 id="ambient-lpf-parameter"><a href="#ambient-lpf-parameter">3.4.15 Ambient LPF Parameter</a></h3>
+<h3 id="ambient-lpf-parameter"><a href="#ambient-lpf-parameter">3.4.16 Ambient LPF Parameter</a></h3>
 <p>Name of event parameter to automate using Unreal ambient zone LPF settings. See <a href="user-guide.html#ambient-zone-settings">Ambient Zone Settings</a> for more information.</p>
 <pre><code>Default: Empty
 </code></pre>
@@ -250,11 +255,11 @@ Default: 5
 <h3 id="platform"><a href="#platform">3.5.1 Platform</a></h3>
 <p>Name of the platform.</p>
 <h4 id="real-channel-count_1"><a href="#real-channel-count_1">Real Channel Count</a></h4>
-<p>The maximum number of active channels. This corresponds to the <code>numsoftwarechannels</code> parameter of <a href="https://fmod.com/resources/documentation-api?version=2.2&amp;page=core-api-system.html#system_setsoftwarechannels"><code>FMOD::System::setSoftwareChannels</code></a> in the Core API.</p>
+<p>The maximum number of active channels. This corresponds to the <code>numsoftwarechannels</code> parameter of <a href="https://fmod.com/docs/2.02/api/core-api-system.html#system_setsoftwarechannels"><code>FMOD::System::setSoftwareChannels</code></a> in the Core API.</p>
 <pre><code>Default: 64
 </code></pre>
 <h4 id="sample-rate_1"><a href="#sample-rate_1">Sample Rate</a></h4>
-<p>The sample rate for the FMOD mixer. This corresponds to the <code>samplerate</code> parameter of <a href="https://fmod.com/resources/documentation-api?version=2.2&amp;page=core-api-system.html#system_setsoftwareformat"><code>FMOD::System::setSoftwareFormat</code></a> in the Core API.</p>
+<p>The sample rate for the FMOD mixer. This corresponds to the <code>samplerate</code> parameter of <a href="https://fmod.com/docs/2.02/api/core-api-system.html#system_setsoftwareformat"><code>FMOD::System::setSoftwareFormat</code></a> in the Core API.</p>
 <pre><code>Default: 0 (uses the default sample rate for the platform)
 </code></pre>
 <h4 id="speaker-mode"><a href="#speaker-mode">Speaker Mode</a></h4>
@@ -275,7 +280,7 @@ Default: 0
 <h2 id="packaging"><a href="#packaging">3.6 Packaging</a></h2>
 <p>As well as settings exposed by FMOD For Unreal you will need to add the directory containing the FMOD bank files to the Additional Non-asset Directory To Copy setting in Unreal's Project - Packaging settings. The FMOD Studio settings UI will prompt you to update this setting if it is not correctly configured. See <a href="user-guide.html#packaging-banks">Packaging banks</a> in the user guide for more information.</p></div>
 
-<p class="manual-footer">Unreal Integration 2.02.07 (2022-05-18). &copy; 2022 Firelight Technologies Pty Ltd.</p>
+<p class="manual-footer">Unreal Integration 2.02.13 (2023-03-20). &copy; 2023 Firelight Technologies Pty Ltd.</p>
 </body>
 </html>
 

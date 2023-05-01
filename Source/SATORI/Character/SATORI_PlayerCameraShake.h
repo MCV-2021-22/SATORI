@@ -3,12 +3,12 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "MatineeCameraShake.h"
-#include "SATORI_PlayerCameraShake.generated.h"
+//#include "MatineeCameraShake.h"
+//#include "SATORI_PlayerCameraShake.generated.h"
 
 /**
  * 
- */
+ 
 UCLASS()
 class SATORI_API USATORI_PlayerCameraShake : public UMatineeCameraShake
 {
@@ -53,4 +53,4 @@ public:
 	float Roll_Max_Amplitude = 0.5f;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Setting")
 	float Roll_Max_Frequency = 5.0f;
-};
+};*/

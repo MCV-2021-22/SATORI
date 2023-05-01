@@ -264,8 +264,8 @@ private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 	class UCameraComponent* FollowCamera;
 
-	UPROPERTY(EditAnywhere)
-	TSubclassOf<USATORI_PlayerCameraShake> CameraShake;
+	//UPROPERTY(EditAnywhere)
+	//TSubclassOf<USATORI_PlayerCameraShake> CameraShake;
 public:
 	/** Returns CameraBoom subobject **/
 	FORCEINLINE class USpringArmComponent* GetCameraBoom() const { return CameraBoom; }

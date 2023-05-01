@@ -27,6 +27,7 @@
 <li><a href="#live-update">Live Update</a></li>
 <li><a href="#additional-logging">Additional Logging</a></li>
 <li><a href="#blueprint-only-projects">Blueprint only projects</a></li>
+<li><a href="#audio-not-muted-when-game-loses-focus">Audio not muted when game loses focus</a></li>
 </ul>
 </li>
 <li><a href="glossary.html">Glossary</a></li>
@@ -63,9 +64,30 @@ However any such changes aren't going to change the underlying Studio project, s
 </pre></div>
 
 <p>The only way to work around this is to add a blank code class to the project and build the resulting solution before packaging again.<br />
-This is mentioned by Epic on their forum: <a href="https://answers.unrealengine.com/questions/72781/unable-to-run-community-plugins-when-packaged.html">Unable to run plugins when packaged</a>.</p></div>
+This is mentioned by Epic on their forum: <a href="https://answers.unrealengine.com/questions/72781/unable-to-run-community-plugins-when-packaged.html">Unable to run plugins when packaged</a>.</p>
+<h2 id="audio-not-muted-when-game-loses-focus"><a href="#audio-not-muted-when-game-loses-focus">8.8 Audio not muted when game loses focus</a></h2>
+<p>FMOD will not automatically mute its audio output when your game loses focus due to the user hitting alt-tab or switching to a different app. If you would like to mute FMOD audio when your game loses focus, make an <a href="https://docs.unrealengine.com/4.27/en-US/API/Runtime/Slate/Framework/Application/FSlateApplication/OnApplicationAct-_2/">OnApplicationActivationStateChanged</a> callback and write code to mute the FMOD master bus. Here is an example :</p>
+<div class="highlight language-cpp"><pre><span></span><span class="kt">void</span> <span class="n">AExampleGameMode</span><span class="o">::</span><span class="n">InitFMODFocusChangeCallback</span><span class="p">()</span>
+<span class="p">{</span>
+    <span class="n">FSlateApplication</span><span class="o">::</span><span class="n">Get</span><span class="p">().</span><span class="n">OnApplicationActivationStateChanged</span><span class="p">()</span>
+        <span class="p">.</span><span class="n">AddUObject</span><span class="p">(</span><span class="k">this</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">AExampleGameMode</span><span class="o">::</span><span class="n">OnWindowFocusChanged</span><span class="p">);</span>
+<span class="p">}</span>
 
-<p class="manual-footer">Unreal Integration 2.02.07 (2022-05-18). &copy; 2022 Firelight Technologies Pty Ltd.</p>
+<span class="kt">void</span> <span class="n">AExampleGameMode</span><span class="o">::</span><span class="n">OnWindowFocusChanged</span><span class="p">(</span><span class="kt">bool</span> <span class="n">bIsFocused</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="cp">#if !WITH_EDITOR</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">IFMODStudioModule</span><span class="o">::</span><span class="n">IsAvailable</span><span class="p">())</span>
+    <span class="p">{</span>
+        <span class="n">FMOD</span><span class="o">::</span><span class="n">Studio</span><span class="o">::</span><span class="n">System</span><span class="o">*</span> <span class="n">StudioSystem</span> <span class="o">=</span> <span class="n">IFMODStudioModule</span><span class="o">::</span><span class="n">Get</span><span class="p">().</span><span class="n">GetStudioSystem</span><span class="p">(</span><span class="n">EFMODSystemContext</span><span class="o">::</span><span class="n">Runtime</span><span class="p">);</span>
+        <span class="n">FMOD</span><span class="o">::</span><span class="n">Studio</span><span class="o">::</span><span class="n">Bus</span><span class="o">*</span> <span class="n">masterBus</span><span class="p">;</span>
+        <span class="n">StudioSystem</span><span class="o">-&gt;</span><span class="n">getBus</span><span class="p">(</span><span class="s">&quot;bus:/&quot;</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">masterBus</span><span class="p">);</span>
+        <span class="n">masterBus</span><span class="o">-&gt;</span><span class="n">setMute</span><span class="p">(</span><span class="o">!</span><span class="n">bIsFocused</span><span class="p">);</span>
+    <span class="p">}</span>
+<span class="cp">#endif</span>
+<span class="p">}</span>
+</pre></div></div>
+
+<p class="manual-footer">Unreal Integration 2.02.13 (2023-03-20). &copy; 2023 Firelight Technologies Pty Ltd.</p>
 </body>
 </html>
 

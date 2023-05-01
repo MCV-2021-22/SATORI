@@ -43,7 +43,7 @@ ASATORI_RangeMovable::ASATORI_RangeMovable()
 		CollisionB->SetGenerateOverlapEvents(true);
 		CollisionB->OnComponentBeginOverlap.AddUniqueDynamic(this, &ASATORI_RangeMovable::OnOverlapBehind);
 		CollisionB->OnComponentEndOverlap.AddUniqueDynamic(this, &ASATORI_RangeMovable::OnEndOverlapBehind);
-		CollisionB->AttachTo(Back);
+		CollisionB->SetupAttachment(Back);
 	}
 
 	Left = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("Left"));
@@ -58,7 +58,7 @@ ASATORI_RangeMovable::ASATORI_RangeMovable()
 		CollisionL->SetGenerateOverlapEvents(true);
 		CollisionL->OnComponentBeginOverlap.AddUniqueDynamic(this, &ASATORI_RangeMovable::OnOverlapLeft);
 		CollisionL->OnComponentEndOverlap.AddUniqueDynamic(this, &ASATORI_RangeMovable::OnEndOverlapLeft);
-		CollisionL->AttachTo(Left);
+		CollisionL->SetupAttachment(Left);
 	}
 
 	Right = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("Right"));
@@ -73,7 +73,7 @@ ASATORI_RangeMovable::ASATORI_RangeMovable()
 		CollisionR->SetGenerateOverlapEvents(true);
 		CollisionR->OnComponentBeginOverlap.AddUniqueDynamic(this, &ASATORI_RangeMovable::OnOverlapRight);
 		CollisionR->OnComponentEndOverlap.AddUniqueDynamic(this, &ASATORI_RangeMovable::OnEndOverlapRight);
-		CollisionR->AttachTo(Right);
+		CollisionR->SetupAttachment(Right);
 	}
 
 

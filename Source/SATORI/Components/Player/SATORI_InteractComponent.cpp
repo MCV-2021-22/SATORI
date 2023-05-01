@@ -60,7 +60,7 @@ void USATORI_InteractComponent::TickComponent(float DeltaTime, ELevelTick TickTy
 			bool bHitAnything = World->LineTraceSingleByChannel(HitResult, PosStart, newEndPos, CollisionChannel, TraceParams);
 			//::DrawDebugLine(World, PosStart, PosEnd, bHitAnything ? FColor::Green : FColor::Red, false, 1.0f);
  
-			NewActor = bHitAnything ? HitResult.Actor : nullptr;
+			NewActor = bHitAnything ? HitResult.GetActor() : nullptr;
 
 			// Did we change anything?
 			if (NewActor == CurrentActor)

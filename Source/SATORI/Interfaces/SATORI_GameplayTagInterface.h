@@ -17,11 +17,13 @@ class SATORI_API ISATORI_GameplayTagInterface
 {
 	GENERATED_BODY()
 
-	UFUNCTION(BlueprintCallable, Category = SATORIGameplayTags)
-	virtual void AddGameplayTag(const FGameplayTag& TagToAdd) = 0;
+	//UFUNCTION(BlueprintCallable, NotBlueprintable, Category = SATORIGameplayTags)
+	//UFUNCTION(NotBlueprintable, Category = SATORIGameplayTags)
+	//virtual void AddGameplayTag(const FGameplayTag& TagToAdd);
 
-	UFUNCTION(BlueprintCallable, Category= SATORIGameplayTags)
-	virtual void RemoveGameplayTag(const FGameplayTag& TagToRemove) = 0;
+	//UFUNCTION(BlueprintCallable,NotBlueprintable, Category= SATORIGameplayTags)
+	//UFUNCTION(NotBlueprintable, Category= SATORIGameplayTags)
+	//virtual void RemoveGameplayTag(const FGameplayTag& TagToRemove);
 
 };
 

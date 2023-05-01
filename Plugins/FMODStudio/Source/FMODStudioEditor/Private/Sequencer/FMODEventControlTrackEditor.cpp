@@ -1,4 +1,4 @@
-// Copyright (c), Firelight Technologies Pty, Ltd. 2012-2022.
+// Copyright (c), Firelight Technologies Pty, Ltd. 2012-2023.
 
 #include "FMODEventControlTrackEditor.h"
 #include "Rendering/DrawElements.h"
@@ -105,12 +105,12 @@ int32 FFMODEventControlSection::OnPaintSection(FSequencerSectionPainter &InPaint
             InPainter.SectionGeometry.ToPaintGeometry(
                 FVector2D(XOffset, (InPainter.SectionGeometry.GetLocalSize().Y - SequencerSectionConstants::KeySize.Y) / 2),
                 FVector2D(XSize, SequencerSectionConstants::KeySize.Y)),
-            FEditorStyle::GetBrush("Sequencer.Section.Background"), DrawEffects);
+            FAppStyle::GetBrush("Sequencer.Section.Background"), DrawEffects);
         FSlateDrawElement::MakeBox(InPainter.DrawElements, InPainter.LayerId,
             InPainter.SectionGeometry.ToPaintGeometry(
                 FVector2D(XOffset, (InPainter.SectionGeometry.GetLocalSize().Y - SequencerSectionConstants::KeySize.Y) / 2),
                 FVector2D(XSize, SequencerSectionConstants::KeySize.Y)),
-            FEditorStyle::GetBrush("Sequencer.Section.BackgroundTint"), DrawEffects, TrackColor);
+            FAppStyle::GetBrush("Sequencer.Section.BackgroundTint"), DrawEffects, TrackColor);
     }
 
     return InPainter.LayerId + 1;

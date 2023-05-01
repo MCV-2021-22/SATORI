@@ -1,6 +1,6 @@
 {
 	"FileVersion": 3,
-	"EngineAssociation": "4.27",
+	"EngineAssociation": "5.1",
 	"Category": "",
 	"Description": "",
 	"Modules": [
@@ -19,6 +19,13 @@
 	],
 	"Plugins": [
 		{
+			"Name": "ModelingToolsEditorMode",
+			"Enabled": true,
+			"TargetAllowList": [
+				"Editor"
+			]
+		},
+		{
 			"Name": "GameplayAbilities",
 			"Enabled": true
 		},
@@ -35,12 +42,13 @@
 			"Enabled": true
 		},
 		{
-			"Name": "NiagaraExtras",
-			"Enabled": true
+			"Name": "UdpMessaging",
+			"Enabled": false
 		}
 	],
 	"TargetPlatforms": [
 		"AllDesktop",
-		"WindowsNoEditor"
+		"WindowsNoEditor",
+		"HoloLens"
 	]
 }

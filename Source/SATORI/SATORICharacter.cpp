@@ -264,7 +264,7 @@ bool ASATORICharacter::DoParryBlockAllEnemies()
 	 /*Declare the Collision Shape, assign a Sphere shape and set it's radius*/
 	FCollisionShape CollisionShape;
 	CollisionShape.ShapeType = ECollisionShape::Box;
-	CollisionShape.SetBox(FVector(EndPosition.X, 10.0f, 10.f));
+	CollisionShape.SetBox(FVector3f(EndPosition.X, 10.0f, 10.f));
 
 	FVector CenterOfBox = ((EndPosition - StartPosition) / 2) + StartPosition;
 
@@ -276,7 +276,7 @@ bool ASATORICharacter::DoParryBlockAllEnemies()
 	{
 		for (int i = 0; i < HitResults.Num(); i++)
 		{
-			TWeakObjectPtr<ASATORI_AICharacter> AICharacter = Cast<ASATORI_AICharacter>(HitResults[i].Actor);
+			TWeakObjectPtr<ASATORI_AICharacter> AICharacter = Cast<ASATORI_AICharacter>(HitResults[i].GetActor());
 			if (AICharacter.IsValid())
 			{
 				bool isInFront = AICharacter->CheckPlayerWithRayCast();
@@ -299,7 +299,7 @@ bool ASATORICharacter::DoParryBlockAllEnemies()
 					}
 				}
 			}
-			else if (ASATORI_ArcherProjectile* EnemyProjectiles = Cast<ASATORI_ArcherProjectile>(HitResults[i].Actor))
+			else if (ASATORI_ArcherProjectile* EnemyProjectiles = Cast<ASATORI_ArcherProjectile>(HitResults[i].GetActor()))
 			{
 				if (EnemyProjectiles)
 				{
@@ -326,10 +326,10 @@ bool ASATORICharacter::DoParryBlockOneEnemies()
 
 	if (IsEnemyInFront(StartPosition, EndPosition, HitResult, 5))
 	{
-		NewActor = HitResult.Actor;
+		NewActor = HitResult.GetActor();
 	}
 
-	TWeakObjectPtr<ASATORI_AICharacter> AICharacter = Cast<ASATORI_AICharacter>(HitResult.Actor);
+	TWeakObjectPtr<ASATORI_AICharacter> AICharacter = Cast<ASATORI_AICharacter>(HitResult.GetActor());
 	if (AICharacter.IsValid())
 	{
 		bool isInFront = AICharacter->CheckPlayerWithRayCast();
@@ -352,7 +352,7 @@ bool ASATORICharacter::DoParryBlockOneEnemies()
 			}
 		}
 	}
-	else if (ASATORI_ArcherProjectile* EnemyProjectiles = Cast<ASATORI_ArcherProjectile>(HitResult.Actor))
+	else if (ASATORI_ArcherProjectile* EnemyProjectiles = Cast<ASATORI_ArcherProjectile>(HitResult.GetActor()))
 	{
 		if (EnemyProjectiles)
 		{
@@ -383,7 +383,7 @@ bool ASATORICharacter::IsEnemyInFrontOfAngle()
 	// Check enemy is in front
 	if (IsEnemyInFront(StartPosition, EndPosition, HitResult))
 	{
-		NewActors.Add(HitResult.Actor);
+		NewActors.Add(HitResult.GetActor());
 		bHit = true;
 	}
 	// Check enemy is in front of the angle
@@ -392,7 +392,7 @@ bool ASATORICharacter::IsEnemyInFrontOfAngle()
 		bHit = IsEnemyInFront(StartPosition, EndPosition, HitResult, AttackRange);
 		if (bHit)
 		{
-			NewActors.Add(HitResult.Actor);
+			NewActors.Add(HitResult.GetActor());
 		}
 	}
 
@@ -858,7 +858,7 @@ void ASATORICharacter::PlayerSenseOfBlow(float DilationTime, float WaitTime)
 void ASATORICharacter::PlayerCameraShake()
 {
 	// Camera shake
-	GetWorld()->GetFirstPlayerController()->PlayerCameraManager->StartCameraShake(CameraShake);
+	//GetWorld()->GetFirstPlayerController()->PlayerCameraManager->StartCameraShake(CameraShake);
 }
 
 void ASATORICharacter::ActivatePlayerCheat()

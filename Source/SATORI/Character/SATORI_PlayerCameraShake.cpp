@@ -2,7 +2,7 @@
 
 
 #include "Character/SATORI_PlayerCameraShake.h"
-
+/*
 USATORI_PlayerCameraShake::USATORI_PlayerCameraShake()
 {
 	OscillationDuration = Local_OscillationDuration;
@@ -17,4 +17,4 @@ USATORI_PlayerCameraShake::USATORI_PlayerCameraShake()
 
 	RotOscillation.Roll.Amplitude = FMath::RandRange(Roll_Amplitude, Roll_Max_Amplitude);
 	RotOscillation.Roll.Frequency = FMath::RandRange(Roll_Frequency, Roll_Max_Frequency);
-}
+}*/

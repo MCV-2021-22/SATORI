@@ -41,7 +41,7 @@ void USATORI_ANS_CanceAbility::NotifyBegin(USkeletalMeshComponent* MeshComp, UAn
 
 void USATORI_ANS_CanceAbility::NotifyTick(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, float FrameDeltaTime)
 {
-	Super::NotifyTick(MeshComp, Animation, FrameDeltaTime);
+	//Super::NotifyTick(MeshComp, Animation, FrameDeltaTime);
 
 	ASATORICharacter* PlayerCharacter = Cast<ASATORICharacter>(MeshComp->GetOwner());
 	FGameplayTagContainer CancelAbilityTag;
@@ -67,5 +67,5 @@ void USATORI_ANS_CanceAbility::NotifyTick(USkeletalMeshComponent* MeshComp, UAni
 
 void USATORI_ANS_CanceAbility::NotifyEnd(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation)
 {
-	Super::NotifyEnd(MeshComp, Animation);
+	//Super::NotifyEnd(MeshComp, Animation);
 }

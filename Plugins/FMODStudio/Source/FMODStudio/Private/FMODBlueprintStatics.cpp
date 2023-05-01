@@ -1,4 +1,4 @@
-// Copyright (c), Firelight Technologies Pty, Ltd. 2012-2022.
+// Copyright (c), Firelight Technologies Pty, Ltd. 2012-2023.
 
 #include "FMODBlueprintStatics.h"
 #include "FMODAudioComponent.h"
@@ -61,6 +61,11 @@ FFMODEventInstance UFMODBlueprintStatics::PlayEventAtLocation(
 class UFMODAudioComponent *UFMODBlueprintStatics::PlayEventAttached(class UFMODEvent *Event, class USceneComponent *AttachToComponent,
     FName AttachPointName, FVector Location, EAttachLocation::Type LocationType, bool bStopWhenAttachedToDestroyed, bool bAutoPlay, bool bAutoDestroy)
 {
+    if (!IFMODStudioModule::Get().UseSound())
+    {
+        return nullptr;
+    }
+
     if (Event == nullptr)
     {
         return nullptr;
@@ -74,7 +79,7 @@ class UFMODAudioComponent *UFMODBlueprintStatics::PlayEventAttached(class UFMODE
     AActor *Actor = AttachToComponent->GetOwner();
 
     // Avoid creating component if we're trying to play a sound on an already destroyed actor.
-    if (Actor && Actor->IsPendingKill())
+    if (!IsValid(Actor))
     {
         return nullptr;
     }
@@ -137,14 +142,13 @@ void UFMODBlueprintStatics::LoadBank(class UFMODBank *Bank, bool bBlocking, bool
         FString BankPath = IFMODStudioModule::Get().GetBankPath(*Bank);
         FMOD::Studio::Bank *bank = nullptr;
         FMOD_STUDIO_LOAD_BANK_FLAGS flags = (bBlocking || bLoadSampleData) ? FMOD_STUDIO_LOAD_BANK_NORMAL : FMOD_STUDIO_LOAD_BANK_NONBLOCKING;
-        FMOD_RESULT result = StudioSystem->loadBankFile(TCHAR_TO_UTF8(*BankPath), flags, &bank);
 
+        FMOD_RESULT result = StudioSystem->loadBankFile(TCHAR_TO_UTF8(*BankPath), flags, &bank);
         if (result != FMOD_OK)
         {
             UE_LOG(LogFMOD, Error, TEXT("Failed to load bank %s: %s"), *Bank->GetName(), UTF8_TO_TCHAR(FMOD_ErrorString(result)));
         }
-
-        if (result == FMOD_OK)
+        if (result == FMOD_OK && bLoadSampleData)
         {
             bank->loadSampleData();
         }

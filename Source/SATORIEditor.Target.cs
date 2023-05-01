@@ -5,11 +5,11 @@ using System.Collections.Generic;
 
 public class SATORIEditorTarget : TargetRules
 {
-	public SATORIEditorTarget(TargetInfo Target) : base(Target)
+	public SATORIEditorTarget( TargetInfo Target) : base(Target)
 	{
 		Type = TargetType.Editor;
 		DefaultBuildSettings = BuildSettingsVersion.V2;
+		IncludeOrderVersion = EngineIncludeOrderVersion.Unreal5_1;
 		ExtraModuleNames.Add("SATORI");
-		//ExtraModuleNames.Add("SATORIDebug");
 	}
 }

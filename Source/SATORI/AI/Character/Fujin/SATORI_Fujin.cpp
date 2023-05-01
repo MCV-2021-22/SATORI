@@ -42,7 +42,7 @@ ASATORI_Fujin::ASATORI_Fujin()
 		CollisionL->SetGenerateOverlapEvents(false);
 		CollisionL->OnComponentBeginOverlap.AddUniqueDynamic(this, &ASATORI_Fujin::OnOverlapLeft);
 		CollisionL->OnComponentEndOverlap.AddUniqueDynamic(this, &ASATORI_Fujin::OnEndOverlapLeft);
-		CollisionL->AttachTo(Left);
+		CollisionL->SetupAttachment(Left);
 	}
 
 	Right = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("Right"));
@@ -57,7 +57,7 @@ ASATORI_Fujin::ASATORI_Fujin()
 		CollisionR->SetGenerateOverlapEvents(false);
 		CollisionR->OnComponentBeginOverlap.AddUniqueDynamic(this, &ASATORI_Fujin::OnOverlapRight);
 		CollisionR->OnComponentEndOverlap.AddUniqueDynamic(this, &ASATORI_Fujin::OnEndOverlapRight);
-		CollisionR->AttachTo(Right);
+		CollisionR->SetupAttachment(Right);
 	}
 
 	

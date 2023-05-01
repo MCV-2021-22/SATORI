@@ -175,7 +175,7 @@ void USATORI_PlayMontageandWaitNotify::Activate()
 
 void USATORI_PlayMontageandWaitNotify::ExternalCancel()
 {
-	check(AbilitySystemComponent);
+	check(AbilitySystemComponent.IsValid());
 
 	OnAbilityCancelled();
 
@@ -230,7 +230,7 @@ bool USATORI_PlayMontageandWaitNotify::StopPlayingMontage()
 
 	// Check if the montage is still playing
 	// The ability would have been interrupted, in which case we should automatically stop the montage
-	if (AbilitySystemComponent && Ability)
+	if (AbilitySystemComponent.IsValid() && Ability)
 	{
 		if (AbilitySystemComponent->GetAnimatingAbility() == Ability
 			&& AbilitySystemComponent->GetCurrentMontage() == MontageToPlay)

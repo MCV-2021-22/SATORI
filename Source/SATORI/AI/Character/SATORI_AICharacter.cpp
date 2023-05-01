@@ -244,13 +244,13 @@ bool ASATORI_AICharacter::CheckPlayerWithRayCast()
 
 		if (Hit)
 		{
-			NewActor = HitResult.Actor;
+			NewActor = HitResult.GetActor();
 			bHit = true;
 			break;
 		}
 	}
 
-	TWeakObjectPtr<ASATORICharacter> PlayerCharacter = Cast<ASATORICharacter>(HitResult.Actor);
+	TWeakObjectPtr<ASATORICharacter> PlayerCharacter = Cast<ASATORICharacter>(HitResult.GetActor());
 	if (bHit)
 	{
 		if (PlayerCharacter.IsValid() && EnemyType == SATORIEnemyType::Melee)

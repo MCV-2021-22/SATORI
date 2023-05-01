@@ -11,7 +11,7 @@ USATORI_ANS_BlockTag::USATORI_ANS_BlockTag()
 
 void USATORI_ANS_BlockTag::NotifyBegin(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, float TotalDuration)
 {
-	Super::NotifyBegin(MeshComp, Animation, TotalDuration);
+	//Super::NotifyBegin(MeshComp, Animation, TotalDuration);
 
 	if (!MeshComp || !TagToBlock.IsValid())
 	{
@@ -28,7 +28,9 @@ void USATORI_ANS_BlockTag::NotifyBegin(USkeletalMeshComponent* MeshComp, UAnimSe
 
 void USATORI_ANS_BlockTag::NotifyEnd(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation)
 {
-	Super::NotifyEnd(MeshComp, Animation);
+	//Super::NotifyEnd(MeshComp, Animation);
+	
+	
 
 	if (!MeshComp || !TagToBlock.IsValid())
 	{

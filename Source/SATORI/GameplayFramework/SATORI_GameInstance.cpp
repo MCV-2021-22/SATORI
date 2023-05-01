@@ -82,7 +82,8 @@ void USATORI_GameInstance::EndLoadingScreen(UWorld* InLoadedWorld)
 					if(LoadingWidget)
 					{
                         LoadingWidget->RemoveFromParent();
-                        LoadingWidget->MarkPendingKill();
+                       
+                        LoadingWidget->MarkAsGarbage();
 					}
                 }), LoadingTimerValue, false);
         }

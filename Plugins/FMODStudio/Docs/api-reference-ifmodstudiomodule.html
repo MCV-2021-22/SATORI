@@ -13,7 +13,7 @@
 <li><a href="user-guide.html">User Guide</a></li>
 <li><a href="settings.html">Settings</a></li>
 <li><a href="plugins.html">Plugins</a></li>
-<li class="manual-current-chapter manual-inactive-chapter"><a href="api-reference.html">API Reference</a><ul class="subchapters"><li><a href="api-reference-ffmodstudiomodule.html">FFMODStudioModule</a></li><li class="manual-current-chapter manual-active-chapter"><a href="api-reference-ifmodstudiomodule.html">IFMODStudioModule</a></li><li><a href="api-reference-fmodutils.html">FMODUtils</a></li><li><a href="api-reference-ufmodblueprintstatics.html">UFMODBlueprintStatics</a></li><li><a href="api-reference-ufmodaudiocomponent.html">UFMODAudioComponent</a></li><li><a href="api-reference-afmodambientsound.html">AFMODAmbientSound</a></li><li><a href="api-reference-ufmodanimnotifyplay.html">UFMODAnimNotifyPlay</a></li><li><a href="api-reference-ffmodlistener.html">FFMODListener</a></li><li><a href="api-reference-ufmodbank.html">UFMODBank</a></li><li><a href="api-reference-ufmodbus.html">UFMODBus</a></li><li><a href="api-reference-ufmodvca.html">UFMODVCA</a></li><li><a href="api-reference-ufmodevent.html">UFMODEvent</a></li><li><a href="api-reference-ufmodsnapshot.html">UFMODSnapshot</a></li><li><a href="api-reference-ufmodsnapshotreverb.html">UFMODSnapshotReverb</a></li><li><a href="api-reference-ufmodasset.html">UFMODAsset</a></li><li><a href="api-reference-ufmodsettings.html">UFMODSettings</a></li><li><a href="api-reference-ffmodassettable.html">FFmodAssetTable</a></li><li><a href="api-reference-ffmodfilecallbacks.html">FFMODFileCallbacks</a></li><li><a href="api-reference-ffmodbankupdatenotifier.html">FFMODBankUpdateNotifier</a></li><li><a href="api-reference-fmodplatformloaddll_generic.html">FMODPlatformLoadDll_Generic</a></li><li><a href="api-reference-ffmodeventcontrolsectiontemplate.html">FFMODEventControlSectionTemplate</a></li><li><a href="api-reference-ffmodeventparametersectiontemplate.html">FFMODEventParameterSectionTemplate</a></li><li><a href="api-reference-ufmodeventcontrolsection.html">UFMODEventControlSection</a></li><li><a href="api-reference-ufmodeventcontroltrack.html">UFMODEventControlTrack</a></li><li><a href="api-reference-ufmodeventparametertrack.html">UFMODEventParameterTrack</a></li></ul></li>
+<li class="manual-current-chapter manual-inactive-chapter"><a href="api-reference.html">API Reference</a><ul class="subchapters"><li><a href="api-reference-common.html">Common</a></li><li class="manual-current-chapter manual-active-chapter"><a href="api-reference-ifmodstudiomodule.html">IFMODStudioModule</a></li><li><a href="api-reference-ufmodblueprintstatics.html">UFMODBlueprintStatics</a></li><li><a href="api-reference-ufmodaudiocomponent.html">UFMODAudioComponent</a></li><li><a href="api-reference-afmodambientsound.html">AFMODAmbientSound</a></li><li><a href="api-reference-ufmodanimnotifyplay.html">UFMODAnimNotifyPlay</a></li><li><a href="api-reference-ufmodbank.html">UFMODBank</a></li><li><a href="api-reference-ufmodbus.html">UFMODBus</a></li><li><a href="api-reference-ufmodvca.html">UFMODVCA</a></li><li><a href="api-reference-ufmodevent.html">UFMODEvent</a></li><li><a href="api-reference-ufmodport.html">UFMODPort</a></li><li><a href="api-reference-ufmodsnapshot.html">UFMODSnapshot</a></li><li><a href="api-reference-ufmodsnapshotreverb.html">UFMODSnapshotReverb</a></li><li><a href="api-reference-ufmodasset.html">UFMODAsset</a></li><li><a href="api-reference-ufmodsettings.html">UFMODSettings</a></li></ul></li>
 <li><a href="blueprint-reference.html">Blueprint Reference</a></li>
 <li><a href="platform-specifics.html">Platform Specifics</a></li>
 <li><a href="troubleshooting.html">Troubleshooting</a></li>
@@ -22,43 +22,40 @@
 </div>
 <div class="manual-content api">
 <h1>5. API Reference | IFMODStudioModule</h1>
-<div class="admonition warning">
-<p class="admonition-title">This documentation is preliminary and is subject to change.</p>
-</div>
 <p>This class inherits from <a href="">IModuleInterface</a>.</p>
-<p><strong>Defines:</strong></p>
-<ul>
-<li><span class="dead-link" class="apilink" href="#efmodsystemcontext" title="">EFMODSystemContext</span class="dead-link"> </li>
-</ul>
 <p><strong>Methods:</strong></p>
 <ul>
-<li><span class="dead-link" class="apilink" href="#ifmodstudiomodule_get" title="">IFMODStudioModule::Get</span class="dead-link"> </li>
-<li><span class="dead-link" class="apilink" href="#ifmodstudiomodule_isavailable" title="">IFMODStudioModule::IsAvailable</span class="dead-link"> </li>
-<li><span class="dead-link" class="apilink" href="#ifmodstudiomodule_getstudiosystem" title="">IFMODStudioModule::GetStudioSystem</span class="dead-link"> </li>
-<li><span class="dead-link" class="apilink" href="#ifmodstudiomodule_setsystempaused" title="">IFMODStudioModule::SetSystemPaused</span class="dead-link"> </li>
-<li><span class="dead-link" class="apilink" href="#ifmodstudiomodule_refreshsettings" title="">IFMODStudioModule::RefreshSettings</span class="dead-link"> </li>
-<li><span class="dead-link" class="apilink" href="#ifmodstudiomodule_setinpie" title="">IFMODStudioModule::SetInPIE</span class="dead-link"> </li>
-<li><span class="dead-link" class="apilink" href="#ifmodstudiomodule_findassetbyname" title="">IFMODStudioModule::FindAssetByName</span class="dead-link"> </li>
-<li><span class="dead-link" class="apilink" href="#ifmodstudiomodule_findeventbyname" title="">IFMODStudioModule::FindEventByName</span class="dead-link"> </li>
-<li><span class="dead-link" class="apilink" href="#ifmodstudiomodule_getbankpath" title="">IFMODStudioModule::GetBankPath</span class="dead-link"> </li>
-<li><span class="dead-link" class="apilink" href="#ifmodstudiomodule_geteventdescription" title="">IFMODStudioModule::GetEventDescription</span class="dead-link"> </li>
-<li><span class="dead-link" class="apilink" href="#ifmodstudiomodule_createauditioninginstance" title="">IFMODStudioModule::CreateAuditioningInstance</span class="dead-link"> </li>
-<li><span class="dead-link" class="apilink" href="#ifmodstudiomodule_stopauditioninginstance" title="">IFMODStudioModule::StopAuditioningInstance</span class="dead-link"> </li>
-<li><span class="dead-link" class="apilink" href="#ifmodstudiomodule_haslistenermoved" title="">IFMODStudioModule::HasListenerMoved</span class="dead-link"> </li>
-<li><span class="dead-link" class="apilink" href="#ifmodstudiomodule_setlistenerposition" title="">IFMODStudioModule::SetListenerPosition</span class="dead-link"> </li>
-<li><span class="dead-link" class="apilink" href="#ifmodstudiomodule_finishsetlistenerposition" title="">IFMODStudioModule::FinishSetListenerPosition</span class="dead-link"> </li>
-<li><span class="dead-link" class="apilink" href="#ifmodstudiomodule_getnearestlistener" title="">IFMODStudioModule::GetNearestListener</span class="dead-link"> </li>
-<li><span class="dead-link" class="apilink" href="#ifmodstudiomodule_banksreloadedevent" title="">IFMODStudioModule::BanksReloadedEvent</span class="dead-link"> </li>
-<li><span class="dead-link" class="apilink" href="#ifmodstudiomodule_getfailedbankloads" title="">IFMODStudioModule::GetFailedBankLoads</span class="dead-link"> </li>
-<li><span class="dead-link" class="apilink" href="#ifmodstudiomodule_getrequiredplugins" title="">IFMODStudioModule::GetRequiredPlugins</span class="dead-link"> </li>
-<li><span class="dead-link" class="apilink" href="#ifmodstudiomodule_addrequiredplugin" title="">IFMODStudioModule::AddRequiredPlugin</span class="dead-link"> </li>
-<li><span class="dead-link" class="apilink" href="#ifmodstudiomodule_usesound" title="">IFMODStudioModule::UseSound</span class="dead-link"> </li>
-<li><span class="dead-link" class="apilink" href="#ifmodstudiomodule_loadplugin" title="">IFMODStudioModule::LoadPlugin</span class="dead-link"> </li>
-<li><span class="dead-link" class="apilink" href="#ifmodstudiomodule_logerror" title="">IFMODStudioModule::LogError</span class="dead-link"> </li>
-<li><span class="dead-link" class="apilink" href="#ifmodstudiomodule_arebanksloaded" title="">IFMODStudioModule::AreBanksLoaded</span class="dead-link"> </li>
+<li><span class="dead-link" class="apilink" href="#ifmodstudiomodule_get">IFMODStudioModule::Get</span class="dead-link"></li>
+<li><span class="dead-link" class="apilink" href="#ifmodstudiomodule_isavailable">IFMODStudioModule::IsAvailable</span class="dead-link"></li>
+<li><span class="dead-link" class="apilink" href="#ifmodstudiomodule_getstudiosystem">IFMODStudioModule::GetStudioSystem</span class="dead-link"></li>
+<li><span class="dead-link" class="apilink" href="#ifmodstudiomodule_setsystempaused">IFMODStudioModule::SetSystemPaused</span class="dead-link"></li>
+<li><span class="dead-link" class="apilink" href="#ifmodstudiomodule_refreshsettings">IFMODStudioModule::RefreshSettings</span class="dead-link"></li>
+<li><span class="dead-link" class="apilink" href="#ifmodstudiomodule_setinpie">IFMODStudioModule::SetInPIE</span class="dead-link"></li>
+<li><span class="dead-link" class="apilink" href="#ifmodstudiomodule_findassetbyname">IFMODStudioModule::FindAssetByName</span class="dead-link"></li>
+<li><span class="dead-link" class="apilink" href="#ifmodstudiomodule_findeventbyname">IFMODStudioModule::FindEventByName</span class="dead-link"></li>
+<li><span class="dead-link" class="apilink" href="#ifmodstudiomodule_getbankpath">IFMODStudioModule::GetBankPath</span class="dead-link"></li>
+<li><span class="dead-link" class="apilink" href="#ifmodstudiomodule_getallbankpaths">IFMODStudioModule::GetAllBankPaths</span class="dead-link"></li>
+<li><span class="dead-link" class="apilink" href="#ifmodstudiomodule_reloadbanks">IFMODStudioModule::ReloadBanks</span class="dead-link"></li>
+<li><span class="dead-link" class="apilink" href="#ifmodstudiomodule_getlocale">IFMODStudioModule::GetLocale</span class="dead-link"></li>
+<li><span class="dead-link" class="apilink" href="#ifmodstudiomodule_setlocale">IFMODStudioModule::SetLocale</span class="dead-link"></li>
+<li><span class="dead-link" class="apilink" href="#ifmodstudiomodule_geteventdescription">IFMODStudioModule::GetEventDescription</span class="dead-link"></li>
+<li><span class="dead-link" class="apilink" href="#ifmodstudiomodule_createauditioninginstance">IFMODStudioModule::CreateAuditioningInstance</span class="dead-link"></li>
+<li><span class="dead-link" class="apilink" href="#ifmodstudiomodule_stopauditioninginstance">IFMODStudioModule::StopAuditioningInstance</span class="dead-link"></li>
+<li><span class="dead-link" class="apilink" href="#ifmodstudiomodule_haslistenermoved">IFMODStudioModule::HasListenerMoved</span class="dead-link"></li>
+<li><span class="dead-link" class="apilink" href="#ifmodstudiomodule_setlistenerposition">IFMODStudioModule::SetListenerPosition</span class="dead-link"></li>
+<li><span class="dead-link" class="apilink" href="#ifmodstudiomodule_finishsetlistenerposition">IFMODStudioModule::FinishSetListenerPosition</span class="dead-link"></li>
+<li><span class="dead-link" class="apilink" href="#ifmodstudiomodule_getnearestlistener">IFMODStudioModule::GetNearestListener</span class="dead-link"></li>
+<li><span class="dead-link" class="apilink" href="#ifmodstudiomodule_getfailedbankloads">IFMODStudioModule::GetFailedBankLoads</span class="dead-link"></li>
+<li><span class="dead-link" class="apilink" href="#ifmodstudiomodule_banksreloadedevent">IFMODStudioModule::BanksReloadedEvent</span class="dead-link"></li>
+<li><span class="dead-link" class="apilink" href="#ifmodstudiomodule_getrequiredplugins">IFMODStudioModule::GetRequiredPlugins</span class="dead-link"></li>
+<li><span class="dead-link" class="apilink" href="#ifmodstudiomodule_addrequiredplugin">IFMODStudioModule::AddRequiredPlugin</span class="dead-link"></li>
+<li><span class="dead-link" class="apilink" href="#ifmodstudiomodule_usesound">IFMODStudioModule::UseSound</span class="dead-link"></li>
+<li><span class="dead-link" class="apilink" href="#ifmodstudiomodule_loadplugin">IFMODStudioModule::LoadPlugin</span class="dead-link"></li>
+<li><span class="dead-link" class="apilink" href="#ifmodstudiomodule_logerror">IFMODStudioModule::LogError</span class="dead-link"></li>
+<li><span class="dead-link" class="apilink" href="#ifmodstudiomodule_arebanksloaded">IFMODStudioModule::AreBanksLoaded</span class="dead-link"></li>
 </ul></div>
 
-<p class="manual-footer">Unreal Integration 2.02.07 (2022-05-18). &copy; 2022 Firelight Technologies Pty Ltd.</p>
+<p class="manual-footer">Unreal Integration 2.02.13 (2023-03-20). &copy; 2023 Firelight Technologies Pty Ltd.</p>
 </body>
 </html>
 

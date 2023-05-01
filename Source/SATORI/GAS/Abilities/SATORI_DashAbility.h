@@ -78,7 +78,7 @@ protected:
 private:
 
 	FVector DirectionDash;
-	FVector Direction = FVector::FVector(1.0f, 0.0f, 0.0f);
+	FVector Direction = FVector(1.0f, 0.0f, 0.0f);
 
 	bool bDashing;
 	bool bBraking;

@@ -7,7 +7,7 @@
 
 void USATORI_ANS_Combo::NotifyBegin(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, float TotalDuration)
 {
-	Super::NotifyBegin(MeshComp, Animation, TotalDuration);
+	//Super::NotifyBegin(MeshComp, Animation, TotalDuration);
 
 	ASATORI_CharacterBase* Character = Cast<ASATORI_CharacterBase>(MeshComp->GetOwner());
 	if (Character)
@@ -18,7 +18,7 @@ void USATORI_ANS_Combo::NotifyBegin(USkeletalMeshComponent* MeshComp, UAnimSeque
 
 void USATORI_ANS_Combo::NotifyEnd(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation)
 {
-	Super::NotifyEnd(MeshComp, Animation);
+	//Super::NotifyEnd(MeshComp, Animation);
 
 	ASATORI_CharacterBase* Character = Cast<ASATORI_CharacterBase>(MeshComp->GetOwner());
 	if (Character)

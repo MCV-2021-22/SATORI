@@ -15,14 +15,14 @@ UAbilityTask_WaitInputReleaseByTm::UAbilityTask_WaitInputReleaseByTm(const FObje
 
 void UAbilityTask_WaitInputReleaseByTm::OnReleaseByTimeCallback()
 {
-	if (!Ability || !AbilitySystemComponent)
+	if (!Ability || !AbilitySystemComponent.IsValid())
 	{
 		return;
 	}
 
 	AbilitySystemComponent->AbilityReplicatedEventDelegate(EAbilityGenericReplicatedEvent::InputReleased, GetAbilitySpecHandle(), GetActivationPredictionKey()).Remove(DelegateHandle);
 
-	FScopedPredictionWindow ScopedPrediction(AbilitySystemComponent, IsPredictingClient());
+	FScopedPredictionWindow ScopedPrediction(AbilitySystemComponent.Get(), IsPredictingClient());
 
 	if (IsPredictingClient())
 	{
