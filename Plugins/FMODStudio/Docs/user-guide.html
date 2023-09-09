@@ -408,7 +408,7 @@ You will need to add these parameter names to the integration settings.</p>
 <p>You can also call <a href="blueprint-reference-common.html#play-event-attached">Play Event Attached</a> to create a new audio component attached to an actor, which will update the location automatically as the actor moves around the world.</p>
 <h3 id="programming-with-the-fmod-studio-c-api"><a href="#programming-with-the-fmod-studio-c-api">2.13.2 Programming with the FMOD Studio C++ API</a></h3>
 <p>Programmers can interface with FMOD Studio directly by including "fmod_studio.hpp".</p>
-<p>The Studio system can be obtained by <span class="dead-link" href="api-reference-ifmodstudiomodule.html#ifmodstudiomodule_getstudiosystem">GetStudioSystem</span class="dead-link">. The function takes an enum because there may be a separate Studio system for auditioning in-editor and the proper system for play-in-editor. Normally, you will want to obtain the system with <span class="dead-link" href="api-reference-common.html#efmodsystemcontext">EFMODSystemContext.Runtime</span class="dead-link"> since that is the real system used in game.</p>
+<p>The Studio system can be obtained by <a href="api-reference-ifmodstudiomodule.html#ifmodstudiomodule_getstudiosystem">GetStudioSystem</a>. The function takes an enum because there may be a separate Studio system for auditioning in-editor and the proper system for play-in-editor. Normally, you will want to obtain the system with <a href="api-reference-common.html#efmodsystemcontext">EFMODSystemContext.Runtime</a> since that is the real system used in game.</p>
 <div class="highlight language-cpp"><pre><span></span><span class="k">if</span> <span class="p">(</span><span class="n">IFMODStudioModule</span><span class="o">::</span><span class="n">IsAvailable</span><span class="p">())</span>
 <span class="p">{</span>
     <span class="n">FMOD</span><span class="o">::</span><span class="n">Studio</span><span class="o">::</span><span class="n">System</span><span class="o">*</span> <span class="n">StudioSystem</span> <span class="o">=</span> <span class="n">IFMODStudioModule</span><span class="o">::</span><span class="n">Get</span><span class="p">().</span><span class="n">GetStudioSystem</span><span class="p">(</span><span class="n">EFMODSystemContext</span><span class="o">::</span><span class="n">Runtime</span><span class="p">);</span>
@@ -709,7 +709,7 @@ AudioMixerModuleName=
 </ul>
 <p>This can be especially useful for build machines that don't normally run the Editor at all, which is what normally triggers the assets to be built, and does not require the generated assets to be checked in to source control.</p></div>
 
-<p class="manual-footer">Unreal Integration 2.02.13 (2023-03-20). &copy; 2023 Firelight Technologies Pty Ltd.</p>
+<p class="manual-footer">Unreal Integration 2.02.17 (2023-08-21). &copy; 2023 Firelight Technologies Pty Ltd.</p>
 </body>
 </html>
 

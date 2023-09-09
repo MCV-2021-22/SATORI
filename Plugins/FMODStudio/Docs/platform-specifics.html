@@ -388,7 +388,7 @@ AudioMixerModuleName=
 </pre></div>
 
 <h2 id="linux"><a href="#linux">7.5 Linux</a></h2>
-<p>To deploy on linux, you will need to rebuild the engine from source via github. For compiling linux from windows, see this <a href="https://wiki.unrealengine.com/Compiling_For_Linux">page</a> for instructions how to get up and running with Unreal. Then, add in both the fmodstudio linux .zip and windows .zip on top of each other into the engine plugins directory.</p>
+<p>To deploy on linux, you will need to rebuild the engine from source via github. For compiling linux from windows, see this <a href="https://docs.unrealengine.com/linux-development-requirements-for-unreal-engine">page</a> for instructions how to get up and running with Unreal. Then, add in both the fmodstudio linux .zip and windows .zip on top of each other into the engine plugins directory.</p>
 <p>The last thing you will need to do is to get the FMOD .so libraries into a directory that the executable can read them. The easiest way is to copy them from</p>
 <div class="highlight language-text"><pre><span></span>&lt;DeployedDir&gt;\Engine\Plugins\FMODStudio\Binaries\Linux\x86_64
 </pre></div>
@@ -453,7 +453,7 @@ AudioMixerModuleName=
 
 <h2 id="xbox-one_1"><a href="#xbox-one_1">7.10 Xbox One</a></h2>
 <h3 id="enabling-xboxone-microphone-input"><a href="#enabling-xboxone-microphone-input">7.10.1 Enabling XboxOne Microphone Input</a></h3>
-<p>To enable FMOD Studio the use of any microphone input, including Kinect, on the Xbox One. The Engine ini file specific for the platform, located in '/Config/XboxOne/XboxOneEngine.ini', needs to have the following lines added:</p>
+<p>To enable FMOD Studio the use of any microphone input, including Kinect, on the Xbox One. The Engine ini file specific for the platform, located in <code>/Config/XboxOne/XboxOneEngine.ini</code>, needs to have the following lines added:</p>
 <div class="highlight language-xml"><pre><span></span>[AppxManifest]
 Package.Capabilities.mx:Capability[0].Name=kinectAudio
 Package.Capabilities.mx:Capability[1].Name=kinectGamechat
@@ -557,7 +557,7 @@ EnvironmentVariables.Add(&quot;_NT_SYMBOL_PATH&quot;, SymbolPath);
 <p>Then, on your build machine you need to set the value of <code>_NT_SYMBOL_PATH</code> to where the FMOD PDBs will be.<br />
 Eg. "[MyGame]\Plugins\FMODStudio\Binaries\XBoxOne" or "[MyGame]\Platforms\XboxOne\Plugins\FMODStudio\Binaries".</p></div>
 
-<p class="manual-footer">Unreal Integration 2.02.13 (2023-03-20). &copy; 2023 Firelight Technologies Pty Ltd.</p>
+<p class="manual-footer">Unreal Integration 2.02.17 (2023-08-21). &copy; 2023 Firelight Technologies Pty Ltd.</p>
 </body>
 </html>
 
